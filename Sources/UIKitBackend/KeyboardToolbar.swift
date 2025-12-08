@@ -301,7 +301,7 @@ final class KeyboardToolbar: UIToolbar {
 @available(tvOS, unavailable)
 @available(visionOS, unavailable)
 extension EnvironmentValues {
-    @Entry var updateToolbar: ((KeyboardToolbar, EnvironmentValues) -> Void)?
+    @Entry var updateToolbar: (@Sendable @MainActor (KeyboardToolbar, EnvironmentValues) -> Void)?
 }
 
 extension View {
@@ -314,7 +314,7 @@ extension View {
     @available(visionOS, unavailable)
     public func keyboardToolbar(
         animateChanges: Bool = true,
-        @ToolbarBuilder body: @escaping () -> ToolbarBuilder.FinalResult
+        @ToolbarBuilder body: @escaping @Sendable @MainActor () -> ToolbarBuilder.FinalResult
     ) -> some View {
         EnvironmentModifier(self) { environment in
             environment.with(\.updateToolbar) { toolbar, environment in

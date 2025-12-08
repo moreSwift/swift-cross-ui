@@ -47,7 +47,7 @@ public struct Menu {
             case .submenu(let submenu):
                 .submenu(submenu.resolve())
             case .modifiedEnvironment(let item, let modification):
-                .modifiedEnvironment(resolve(item: item), modification)
+                .modifiedEnvironment(resolve(item: item()), modification())
         }
     }
 

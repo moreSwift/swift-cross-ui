@@ -2,6 +2,7 @@ import SwiftCrossUI
 import UIKit
 
 /// The context associated with an instance of ``Representable``.
+@MainActor
 public struct UIViewControllerRepresentableContext<
     Representable: UIViewControllerRepresentable
 > {
@@ -163,24 +164,31 @@ final class ControllerRepresentingWidget<
     var representable: Representable
     var context: Representable.Context?
 
-    lazy var subcontroller: Representable.UIViewControllerType = {
-        let subcontroller = representable.makeUIViewController(context: context!)
+    var _subcontroller: Representable.UIViewControllerType?
 
-        view.addSubview(subcontroller.view)
-        addChild(subcontroller)
+    var subcontroller: Representable.UIViewControllerType {
+        if let _subcontroller {
+            return _subcontroller
+        } else {
+            let subcontroller = representable.makeUIViewController(context: context!)
 
-        subcontroller.view.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            subcontroller.view.topAnchor.constraint(equalTo: view.topAnchor),
-            subcontroller.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            subcontroller.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            subcontroller.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
+            view.addSubview(subcontroller.view)
+            addChild(subcontroller)
 
-        subcontroller.didMove(toParent: self)
+            subcontroller.view.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                subcontroller.view.topAnchor.constraint(equalTo: view.topAnchor),
+                subcontroller.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                subcontroller.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                subcontroller.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            ])
 
-        return subcontroller
-    }()
+            subcontroller.didMove(toParent: self)
+
+            _subcontroller = subcontroller
+            return subcontroller
+        }
+    }
 
     func update(with environment: EnvironmentValues) {
         if context == nil {
@@ -200,11 +208,13 @@ final class ControllerRepresentingWidget<
     }
 
     deinit {
-        if let context {
-            Representable.dismantleUIViewController(
-                subcontroller,
-                coordinator: context.coordinator
-            )
+        if let context, let _subcontroller {
+            Task { @MainActor in
+                Representable.dismantleUIViewController(
+                    _subcontroller,
+                    coordinator: context.coordinator
+                )
+            }
         }
     }
 }

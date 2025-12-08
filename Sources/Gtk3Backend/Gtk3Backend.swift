@@ -500,7 +500,7 @@ public final class Gtk3Backend: AppBackend {
 
     private static func runInMainThread(
         afterMilliseconds delay: Int,
-        action: @escaping () -> Void
+        action: @escaping @MainActor () -> Void
     ) {
         let action = ThreadActionContext(action: action)
         g_timeout_add_full(
@@ -530,7 +530,7 @@ public final class Gtk3Backend: AppBackend {
             .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
+    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
         // TODO: React to theme changes
         self.rootEnvironmentChangeHandler = action
     }
@@ -547,7 +547,7 @@ public final class Gtk3Backend: AppBackend {
 
     public func setWindowEnvironmentChangeHandler(
         of window: Window,
-        to action: @escaping () -> Void
+        to action: @escaping @Sendable @MainActor () -> Void
     ) {
         window.notifyScaleFactor = { _ in
             action()

@@ -284,13 +284,15 @@ public final class AppKitBackend: AppBackend {
             .with(\.appPhase, NSApplication.shared.isActive ? .active : .inactive)
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
+    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
         DistributedNotificationCenter.default.addObserver(
             forName: .AppleInterfaceThemeChangedNotification,
             object: nil,
             queue: OperationQueue.main
         ) { _ in
-            action()
+            Task { @MainActor in
+                action()
+            }
         }
 
         // This doesn't strictly affect the root environment, but it does require us
@@ -302,7 +304,9 @@ public final class AppKitBackend: AppBackend {
             queue: OperationQueue.main
         ) { _ in
             // Self.scrollBarWidth has changed
-            action()
+            Task { @MainActor in
+                action()
+            }
         }
 
         NotificationCenter.default.addObserver(
@@ -310,7 +314,9 @@ public final class AppKitBackend: AppBackend {
             object: nil,
             queue: .main
         ) { _ in
-            action()
+            Task { @MainActor in
+                action()
+            }
         }
 
         // For updating views that rely on `appPhase`
@@ -319,14 +325,18 @@ public final class AppKitBackend: AppBackend {
             object: nil,
             queue: .main
         ) { _ in
-            action()
+            Task { @MainActor in
+                action()
+            }
         }
         NotificationCenter.default.addObserver(
             forName: NSApplication.didResignActiveNotification,
             object: nil,
             queue: .main
         ) { _ in
-            action()
+            Task { @MainActor in
+                action()
+            }
         }
     }
 
@@ -343,7 +353,7 @@ public final class AppKitBackend: AppBackend {
 
     public func setWindowEnvironmentChangeHandler(
         of window: Window,
-        to action: @escaping () -> Void
+        to action: @escaping @Sendable @MainActor () -> Void
     ) {
         // For updating window scale factor
         NotificationCenter.default.addObserver(
@@ -351,11 +361,13 @@ public final class AppKitBackend: AppBackend {
             object: window,
             queue: .main
         ) { notification in
-            let backingScaleFactorChanged =
-                window.lastBackingScaleFactor != window.backingScaleFactor
+            Task { @MainActor in
+                let backingScaleFactorChanged =
+                    window.lastBackingScaleFactor != window.backingScaleFactor
 
-            if backingScaleFactorChanged {
-                action()
+                if backingScaleFactorChanged {
+                    action()
+                }
             }
         }
 
@@ -365,14 +377,18 @@ public final class AppKitBackend: AppBackend {
             object: nil,
             queue: .main
         ) { _ in
-            action()
+            Task { @MainActor in
+                action()
+            }
         }
         NotificationCenter.default.addObserver(
             forName: NSWindow.didResignKeyNotification,
             object: nil,
             queue: .main
         ) { _ in
-            action()
+            Task { @MainActor in
+                action()
+            }
         }
     }
 
@@ -2102,6 +2118,7 @@ enum AssociationPolicy {
 }
 
 // Source: https://gist.github.com/sindresorhus/3580ce9426fff8fafb1677341fca4815
+@MainActor
 final class ObjectAssociation<T: Any> {
     private let policy: AssociationPolicy
 
@@ -2127,6 +2144,7 @@ extension NSControl {
     typealias ActionClosure = ((NSControl) -> Void)
     typealias EditClosure = ((NSTextField) -> Void)
 
+    @MainActor
     struct AssociatedKeys {
         static let onActionClosure = ObjectAssociation<ActionClosure>()
         static let onEditClosure = ObjectAssociation<EditClosure>()

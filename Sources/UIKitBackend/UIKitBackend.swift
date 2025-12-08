@@ -194,7 +194,7 @@ public final class UIKitBackend: AppBackend {
         return environment
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
+    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
         onTraitCollectionChange = action
         if timeZoneObserver == nil {
             timeZoneObserver = NotificationCenter.default.addObserver(
@@ -236,7 +236,7 @@ public final class UIKitBackend: AppBackend {
 
     public func setWindowEnvironmentChangeHandler(
         of window: Window,
-        to action: @escaping () -> Void
+        to action: @escaping @Sendable @MainActor () -> Void
     ) {
         // TODO: Notify when window scale factor changes
 

@@ -2,7 +2,7 @@
 ///
 /// If no stroke color or fill color is specified, the default is no stroke and
 /// a fill of the current foreground color.
-public protocol Shape: View, Sendable where Content == EmptyView {
+public protocol Shape: View, Sendable, _RemoveGlobalActorIsolation where Content == EmptyView {
     /// Draw the path for this shape.
     ///
     /// The bounds passed to a shape that is immediately drawn as a view will

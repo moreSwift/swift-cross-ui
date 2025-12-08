@@ -332,7 +332,7 @@ public protocol AppBackend: Sendable {
     /// or may not override the previous handler.
     ///
     /// - Parameter action: The root environment change handler.
-    func setRootEnvironmentChangeHandler(to action: @escaping () -> Void)
+    func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void)
 
     /// Resolves the given text style to concrete font properties.
     ///
@@ -392,7 +392,7 @@ public protocol AppBackend: Sendable {
     ///   - action: The window environment change handler.
     func setWindowEnvironmentChangeHandler(
         of window: Window,
-        to action: @escaping () -> Void
+        to action: @escaping @Sendable @MainActor () -> Void
     )
 
     /// Sets the handler for URLs directed to the application (e.g. URLs

@@ -2,7 +2,7 @@
 //  Copyright © 2016 Tomas Linhart. All rights reserved.
 //
 
-public struct Size {
+public struct Size: Sendable {
     static let zero = Size(width: 0, height: 0)
 
     public var width: Int
