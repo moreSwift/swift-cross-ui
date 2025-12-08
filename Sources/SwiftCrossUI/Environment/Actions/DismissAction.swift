@@ -57,7 +57,7 @@ extension EnvironmentValues {
     ///
     /// Example:
     /// ```swift
-    /// struct ContentView: View {
+    /// struct SheetContentView: View {
     ///     @Environment(\.dismiss) var dismiss
     ///
     ///     var body: some View {

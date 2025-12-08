@@ -1,4 +1,4 @@
-// swift-tools-version:5.10
+// swift-tools-version:6.1
 
 import CompilerPluginSupport
 import Foundation
@@ -284,6 +284,7 @@ let package = Package(
                 .product(name: "WinUI", package: "swift-winui"),
                 .product(name: "WinAppSDK", package: "swift-windowsappsdk"),
                 .product(name: "WindowsFoundation", package: "swift-windowsfoundation"),
+                .product(name: "Mutex", package: "swift-mutex"),
             ]
         ),
         .target(
