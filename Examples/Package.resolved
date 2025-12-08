@@ -11,6 +11,14 @@
       }
     },
     {
+      "identity" : "androidkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/moreSwift/AndroidKit",
+      "state" : {
+        "revision" : "5825000272d7f65d94b2a4c7bb65a76ce6c668e1"
+      }
+    },
+    {
       "identity" : "async-collections",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/adam-fowler/async-collections.git",
@@ -112,7 +120,7 @@
     {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-argument-parser.git",
+      "location" : "https://github.com/apple/swift-argument-parser",
       "state" : {
         "revision" : "c5d11a805e765f52ba34ec7284bd4fcd6ba68615",
         "version" : "1.7.0"
@@ -223,6 +231,14 @@
       "state" : {
         "revision" : "aaaaff43d5ddfe05f18c373fd811cc45f9301c86",
         "version" : "0.4.0"
+      }
+    },
+    {
+      "identity" : "swift-java",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stackotter/swift-java",
+      "state" : {
+        "revision" : "fec4d95d17bfa019803c2d904e2d2e12194341c9"
       }
     },
     {

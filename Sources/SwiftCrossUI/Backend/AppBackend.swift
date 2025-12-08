@@ -270,7 +270,7 @@ public protocol AppBackend: Sendable {
     /// Closes a window.
     ///
     /// At some point during or after execution of this function, the handler
-    /// set by ``setCloseHandler(ofWindow:to:)-8ogpa`` should be called.
+    /// set by ``setCloseHandler(ofWindow:to:)`` should be called.
     /// Oftentimes this will be done automatically by the backend's underlying
     /// UI framework.
     ///
