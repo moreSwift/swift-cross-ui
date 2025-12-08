@@ -37,11 +37,19 @@ if let backend = env["SCUI_DEFAULT_BACKEND"] {
         defaultBackendDependencies = [
             .target(name: "AppKitBackend", condition: .when(platforms: [.macOS])),
             .target(name: "UIKitBackend", condition: .when(platforms: [.iOS, .tvOS, .macCatalyst, .visionOS])),
+            .target(
+                name: "AndroidBackend",
+                condition: .when(platforms: [.android])
+            ),
         ]
     #else
         defaultBackendDependencies = [
             .target(name: "WinUIBackend", condition: .when(platforms: [.windows])),
             .target(name: "GtkBackend", condition: .when(platforms: [.linux])),
+            .target(
+                name: "AndroidBackend",
+                condition: .when(platforms: [.android])
+            ),
         ]
     #endif
 }
@@ -106,6 +114,7 @@ let package = Package(
         .library(name: "WinUIBackend", type: libraryType, targets: ["WinUIBackend"]),
         .library(name: "DefaultBackend", type: libraryType, targets: ["DefaultBackend"]),
         .library(name: "UIKitBackend", type: libraryType, targets: ["UIKitBackend"]),
+        .library(name: "AndroidBackend", type: libraryType, targets: ["AndroidBackend"]),
         .library(name: "Gtk", type: libraryType, targets: ["Gtk"]),
         .library(name: "Gtk3", type: libraryType, targets: ["Gtk3"]),
         .executable(name: "GtkExample", targets: ["GtkExample"]),
@@ -158,6 +167,10 @@ let package = Package(
         .package(
             url: "https://github.com/swhitty/swift-mutex",
             .upToNextMinor(from: "0.0.6")
+        ),
+        .package(
+            url: "https://github.com/moreSwift/AndroidKit",
+            revision: "5825000272d7f65d94b2a4c7bb65a76ce6c668e1"
         ),
         // .package(
         //     url: "https://github.com/stackotter/TermKit",
@@ -314,6 +327,15 @@ let package = Package(
             swiftSettings: swiftSettings
         ),
 
+        .target(
+            name: "AndroidBackend",
+            dependencies: [
+                "SwiftCrossUI",
+                "AndroidBackendShim",
+                "AndroidKit",
+            ]
+        ),
+        .target(name: "AndroidBackendShim"),
         // .target(
         //     name: "CursesBackend",
         //     dependencies: ["SwiftCrossUI", "TermKit"]

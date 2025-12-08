@@ -1,6 +1,14 @@
 {
-  "originHash" : "f7096de98a2358418bf13c1ca834df621e657ea346a45c12b57dfe385c4091f5",
+  "originHash" : "114cc6acab31e35145137abf6fea62a5c29bafd55e5dc0f14de3398f4be851a6",
   "pins" : [
+    {
+      "identity" : "androidkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/moreSwift/AndroidKit",
+      "state" : {
+        "revision" : "5825000272d7f65d94b2a4c7bb65a76ce6c668e1"
+      }
+    },
     {
       "identity" : "jpeg",
       "kind" : "remoteSourceControl",
@@ -83,6 +91,14 @@
       }
     },
     {
+      "identity" : "swift-java",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stackotter/swift-java",
+      "state" : {
+        "revision" : "fec4d95d17bfa019803c2d904e2d2e12194341c9"
+      }
+    },
+    {
       "identity" : "swift-log",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-log.git",
@@ -116,6 +132,15 @@
       "state" : {
         "revision" : "f99ae8aa18f0cf0d53481901f88a0991dc3bd4a2",
         "version" : "601.0.1"
+      }
+    },
+    {
+      "identity" : "swift-system",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-system",
+      "state" : {
+        "revision" : "7c6ad0fc39d0763e0b699210e4124afd5041c5df",
+        "version" : "1.6.4"
       }
     },
     {
