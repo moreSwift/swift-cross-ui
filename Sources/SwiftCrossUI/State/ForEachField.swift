@@ -13,6 +13,9 @@
 @_silgen_name("swift_reflectionMirror_recursiveCount")
 private func _getRecursiveChildCount(_: Any.Type) -> Int
 
+@_silgen_name("swift_reflectionMirror_recursiveChildOffset")
+private func _getChildOffset(_: Any.Type, index: Int) -> Int
+
 private typealias NameFreeFunc = @convention(c) (UnsafePointer<CChar>?) -> Void
 
 @_silgen_name("swift_reflectionMirror_subscript")
@@ -29,24 +32,26 @@ private func _getChild<T>(
 /// - Parameters:
 ///   - value: The value to inspect.
 ///   - body: A closure to call with information about each field in `value`.
-///     The parameters to `body` are the name of the field and the value of the
-///     field.
-func _forEachField<Value>(of value: Value, body: (String?, Any) -> Void) {
+///     The parameters to `body` are the name of the field, the offset of the
+///     field, and the value of the field.
+func _forEachField<Value>(of value: Value, body: (String?, Int, Any) -> Void) {
     let childCount = _getRecursiveChildCount(Value.self)
     for index in 0..<childCount {
+        let offset = _getChildOffset(Value.self, index: index)
+
         var nameC: UnsafePointer<CChar>? = nil
         var freeFunc: NameFreeFunc? = nil
-        defer { unsafe freeFunc?(nameC) }
+        defer { freeFunc?(nameC) }
 
-        let childValue = unsafe _getChild(
+        let childValue = _getChild(
             of: value,
             type: Value.self,
             index: index,
             outName: &nameC,
             outFreeFunc: &freeFunc
         )
-        let childName = unsafe nameC.flatMap(String.init(validatingCString:))
+        let childName = nameC.flatMap(String.init(validatingCString:))
 
-        body(childName, childValue)
+        body(childName, offset, childValue)
     }
 }
