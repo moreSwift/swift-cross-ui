@@ -5,16 +5,14 @@ import AndroidKit
 import AndroidBackendShim
 
 func log(_ message: String) {
-    // TODO: Figure out why this gives linker errors
-    // __android_log_write(Int32(ANDROID_LOG_DEBUG.rawValue), "swift", message)
-    print(message)
+    android_log(Int32(ANDROID_LOG_DEBUG.rawValue), "swift", message)
 }
 
 /// A valid AndroidBackend shim must call this to begin execution of the app.
 /// Once initial setup and rendering is done, this function returns control
 /// back to the JVM (by returning).
 @MainActor
-@_cdecl("dev_swiftcrossui_AndroidBackend_entrypoint")
+@_cdecl("AndroidBackend_entrypoint")
 public func entrypoint(_ env: UnsafeMutablePointer<JNIEnv?>, _ object: jobject) {
     let env = JNIEnvWrapper(env: env)
     AndroidBackend.env = env
@@ -41,7 +39,8 @@ public final class AndroidBackend: AppBackend {
     public typealias Path = Never
     public typealias Sheet = Never
 
-    let inputPipe = Pipe()
+    let stdoutPipe = Pipe()
+    let stderrPipe = Pipe()
 
     public let deviceClass = DeviceClass.phone
     public let defaultTableRowContentHeight = 0
@@ -65,24 +64,37 @@ public final class AndroidBackend: AppBackend {
 
     public init() {
         // Source: https://phatbl.at/2019/01/08/intercepting-stdout-in-swift.html
-        // TODO: Fix this once we can import __android_log_write again (from Android; gives a linker error atm)
-        // inputPipe.fileHandleForReading.readabilityHandler = { fileHandle in
-        //     let data = fileHandle.availableData
-        //     guard let string = String(data: data, encoding: .utf8) else {
-        //         return
-        //     }
+        func makeMessageHandler(priority: UInt32) -> @Sendable (FileHandle) -> Void {
+            @Sendable
+            nonisolated func forward(_ fileHandle: FileHandle) {
+                let data = fileHandle.availableData
+                guard let string = String(data: data, encoding: .utf8) else {
+                    return
+                }
 
-        //     // TODO: Figure out why this gives linker errors
-        //     // __android_log_write(
-        //     //     Int32(ANDROID_LOG_DEBUG.rawValue),
-        //     //     "Swift.print",
-        //     //     string
-        //     // )
-        // }
+                android_log(
+                    Int32(priority),
+                    "Swift",
+                    string
+                )
+            }
+            return forward
+        }
+
+        stdoutPipe.fileHandleForReading.readabilityHandler =
+            makeMessageHandler(priority: ANDROID_LOG_INFO.rawValue)
+
+        stderrPipe.fileHandleForReading.readabilityHandler =
+            makeMessageHandler(priority: ANDROID_LOG_ERROR.rawValue)
 
         dup2(
-            inputPipe.fileHandleForWriting.fileDescriptor,
+            stdoutPipe.fileHandleForWriting.fileDescriptor,
             FileHandle.standardOutput.fileDescriptor
+        )
+
+        dup2(
+            stderrPipe.fileHandleForWriting.fileDescriptor,
+            FileHandle.standardError.fileDescriptor
         )
     }
 
@@ -127,6 +139,7 @@ public final class AndroidBackend: AppBackend {
         let getHeightMethod = try! Self.env.getMethodID(cls, "getWindowHeight", "()I")
         let width = Self.env.callIntMethod(activity, getWidthMethod, [])
         let height = Self.env.callIntMethod(activity, getHeightMethod, [])
+        log("Size of window: \(width)x\(height)")
         return SIMD2(Int(width), Int(height))
     }
 
@@ -147,7 +160,9 @@ public final class AndroidBackend: AppBackend {
         to action: @escaping (_ newSize: SIMD2<Int>) -> Void
     ) {}
 
-    public func show(window: Window) {}
+    public func show(window: Window) {
+        log("Show window")
+    }
 
     public func activate(window: Window) {}
 
