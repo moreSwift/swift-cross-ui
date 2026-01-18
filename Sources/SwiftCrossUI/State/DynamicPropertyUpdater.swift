@@ -7,7 +7,7 @@
 /// From some basic testing, this caching seems to reduce layout times by 5-10%
 /// (at the time of implementation).
 @MainActor
-var updaterCache: [ObjectIdentifier: Any] = [:]
+private var updaterCache: [ObjectIdentifier: Any] = [:]
 
 /// A helper for updating the dynamic properties of a stateful struct (e.g.
 /// a struct conforming to ``View`` or ``App``).
@@ -46,23 +46,21 @@ struct DynamicPropertyUpdater<Base> {
     ///   - mirror: An existing mirror of `base`. If not provided, a mirror will
     ///     be created.
     @MainActor
-    init(for base: Base, mirror: Mirror? = nil) {
+    init(for base: Base) {
         // Unlikely shortcut, but worthwhile when we can.
         if MemoryLayout<Base>.size == 0 {
             self.propertyUpdaters = []
             return
         }
 
-        if let cachedUpdater = updaterCache[ObjectIdentifier(Base.self)],
-           let cachedUpdater = cachedUpdater as? Self
-        {
-            self = cachedUpdater
+        if let cachedUpdater = updaterCache[ObjectIdentifier(Base.self)] {
+            self = cachedUpdater as! Self
             return
         }
 
         var propertyUpdaters: [PropertyUpdater] = []
 
-        let mirror = mirror ?? Mirror(reflecting: base)
+        let mirror = Mirror(reflecting: base)
         for child in mirror.children {
             let label = child.label ?? "<unlabelled>"
             let value = child.value
@@ -108,6 +106,12 @@ struct DynamicPropertyUpdater<Base> {
             Self.updateFallback(of: value, previousValue: previousValue, environment: environment)
             return
         }
+
+        logger.info("_forEachField start")
+        _forEachField(of: value) { name, value in
+            logger.info("name: \(name), value: \(value)")
+        }
+        logger.info("_forEachField end")
 
         for updater in propertyUpdaters {
             updater(previousValue, value, environment)

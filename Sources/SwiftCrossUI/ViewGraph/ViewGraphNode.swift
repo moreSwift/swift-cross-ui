@@ -86,7 +86,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         cancellables = []
 
         let mirror = Mirror(reflecting: view)
-        dynamicPropertyUpdater = DynamicPropertyUpdater(for: view, mirror: mirror)
+        dynamicPropertyUpdater = DynamicPropertyUpdater(for: view)
 
         let viewEnvironment = updateEnvironment(environment)
 
