@@ -25,7 +25,7 @@ struct DynamicPropertyUpdater<Base> {
     /// - Parameters:
     ///   - base: The base value to update the dynamic properties of.
     @MainActor
-    init(for base: Base) {
+    init(for _: Base.Type) {
         self.propertyOffsets = []
 
         // Unlikely shortcut, but worthwhile when we can.
@@ -38,9 +38,9 @@ struct DynamicPropertyUpdater<Base> {
             return
         }
 
-        _forEachField(of: base) { _, offset, value in
-            if let value = value as? any DynamicProperty {
-                propertyOffsets.append((offset, type(of: value)))
+        _forEachField(of: Base.self) { _, offset, type in
+            if let type = type as? any DynamicProperty.Type {
+                propertyOffsets.append((offset, type))
             }
         }
 

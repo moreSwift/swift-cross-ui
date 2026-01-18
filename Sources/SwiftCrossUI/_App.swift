@@ -25,7 +25,7 @@ class _App<AppRoot: App> {
         self.environment = EnvironmentValues(backend: backend)
         self.cancellables = []
 
-        dynamicPropertyUpdater = DynamicPropertyUpdater(for: app)
+        dynamicPropertyUpdater = DynamicPropertyUpdater(for: AppRoot.self)
     }
 
     func refreshSceneGraph() {

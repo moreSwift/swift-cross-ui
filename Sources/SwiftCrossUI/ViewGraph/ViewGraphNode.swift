@@ -85,8 +85,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         parentEnvironment = environment
         cancellables = []
 
-        let mirror = Mirror(reflecting: view)
-        dynamicPropertyUpdater = DynamicPropertyUpdater(for: view)
+        dynamicPropertyUpdater = DynamicPropertyUpdater(for: NodeView.self)
 
         let viewEnvironment = updateEnvironment(environment)
 
@@ -110,6 +109,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         backend.tag(widget: widget, as: tag)
 
         // Update the view and its children when state changes (children are always updated first).
+        let mirror = Mirror(reflecting: view)
         for property in mirror.children {
             if property.label == "state" && property.value is ObservableObject {
                 logger.warning(
@@ -125,13 +125,10 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
                 continue
             }
 
-            cancellables.append(
-                value.didChange
-                    .observeAsUIUpdater(backend: backend) { [weak self] in
-                        guard let self else { return }
-                        self.bottomUpUpdate()
-                    }
-            )
+            let cancellable = value.didChange.observeAsUIUpdater(backend: backend) { [weak self] in
+                self?.bottomUpUpdate()
+            }
+            cancellables.append(cancellable)
         }
     }
 
