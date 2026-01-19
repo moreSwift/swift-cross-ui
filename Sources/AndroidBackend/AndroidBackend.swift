@@ -317,8 +317,9 @@ public final class AndroidBackend: AppBackend {
 
     public func size(
         of text: String,
-        whenDisplayedIn textView: Widget,
-        proposedFrame: SIMD2<Int>?,
+        whenDisplayedIn widget: Widget,
+        proposedWidth: Int?,
+        proposedHeight: Int?,
         environment: EnvironmentValues
     ) -> SIMD2<Int> {
         // let widget = createTextView()
