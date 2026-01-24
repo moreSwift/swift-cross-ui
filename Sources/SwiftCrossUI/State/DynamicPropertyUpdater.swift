@@ -38,7 +38,7 @@ struct DynamicPropertyUpdater<Base> {
             return
         }
 
-        _forEachField(of: Base.self) { _, offset, type in
+        forEachField(of: Base.self) { _, offset, type in
             if let type = type as? any DynamicProperty.Type {
                 propertyOffsets.append((offset, type))
             }
@@ -53,18 +53,12 @@ struct DynamicPropertyUpdater<Base> {
             update(type)
 
             func update<Property: DynamicProperty>(_: Property.Type) {
-                getProperty(of: value).update(
+                getProperty(Property.self, of: value, at: offset).update(
                     with: environment,
-                    previousValue: previousValue.map(getProperty(of:))
-                )
-
-                func getProperty(of base: Base) -> Property {
-                    withUnsafeBytes(of: base) { buffer in
-                        buffer.baseAddress!.advanced(by: offset)
-                            .assumingMemoryBound(to: Property.self)
-                            .pointee
+                    previousValue: previousValue.map {
+                        getProperty(Property.self, of: $0, at: offset)
                     }
-                }
+                )
             }
         }
     }

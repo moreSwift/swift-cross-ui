@@ -7,17 +7,17 @@
 private import SwiftShims
 
 @_silgen_name("swift_reflectionMirror_recursiveCount")
-private func _getRecursiveChildCount(_: Any.Type) -> Int
+private func getRecursiveChildCount(of: Any.Type) -> Int
 
 @_silgen_name("swift_reflectionMirror_recursiveChildMetadata")
-private func _getChildMetadata(
-    _: Any.Type,
+private func getChildMetadata(
+    of: Any.Type,
     index: Int,
     fieldMetadata: UnsafeMutablePointer<_FieldReflectionMetadata>
 ) -> Any.Type
 
 @_silgen_name("swift_reflectionMirror_recursiveChildOffset")
-private func _getChildOffset(_: Any.Type, index: Int) -> Int
+private func getChildOffset(of: Any.Type, index: Int) -> Int
 
 /// Calls the given closure on every field of the specified type.
 ///
@@ -49,15 +49,26 @@ private func _getChildOffset(_: Any.Type, index: Int) -> Int
 ///   - body: A closure to call with information about each field in `type`.
 ///     The parameters to `body` are the name of the field, the offset of the
 ///     field, and the type of the field.
-func _forEachField(of type: Any.Type, body: (String?, Int, Any.Type) -> Void) {
-    let childCount = _getRecursiveChildCount(type)
+func forEachField(
+    of type: Any.Type,
+    body: (_ name: String?, _ offset: Int, _ type: Any.Type) -> Void
+) {
+    let childCount = getRecursiveChildCount(of: type)
     for index in 0..<childCount {
-        let offset = _getChildOffset(type, index: index)
+        let offset = getChildOffset(of: type, index: index)
 
         var field = _FieldReflectionMetadata()
-        let childType = _getChildMetadata(type, index: index, fieldMetadata: &field)
+        let childType = getChildMetadata(of: type, index: index, fieldMetadata: &field)
         defer { field.freeFunc?(field.name) }
 
         body(field.name.flatMap(String.init(validatingCString:)), offset, childType)
+    }
+}
+
+func getProperty<Base, Property>(_: Property.Type, of base: Base, at offset: Int) -> Property {
+    withUnsafeBytes(of: base) { buffer in
+        buffer.baseAddress!.advanced(by: offset)
+            .assumingMemoryBound(to: Property.self)
+            .pointee
     }
 }
