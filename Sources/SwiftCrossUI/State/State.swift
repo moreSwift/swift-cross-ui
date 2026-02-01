@@ -17,7 +17,7 @@ public struct State<Value>: ObservableProperty {
     }
 
     private let implementation: StateImpl<Storage>
-    private var storage: Storage { implementation.box.value }
+    private var storage: Storage { implementation.storage }
 
     public var didChange: Publisher { storage.didChange }
 

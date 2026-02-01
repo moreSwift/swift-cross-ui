@@ -46,7 +46,8 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
                     // if it exists, or the default value otherwise; either way, we add it to the
                     // cache so subsequent accesses of `value` won't have to read from disk again.
                     guard let cachedValue = cache[key] else {
-                        let value = provider.retrieveValue(ofType: Value.self, forKey: key) ?? defaultValue
+                        let value =
+                            provider.retrieveValue(ofType: Value.self, forKey: key) ?? defaultValue
                         cache[key] = value
                         return value
                     }
@@ -89,7 +90,7 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
                             "failed to encode '@AppStorage' data",
                             metadata: [
                                 "value": "\(newValue)",
-                                "error": "\(error.localizedDescription)"
+                                "error": "\(error.localizedDescription)",
                             ]
                         )
                     }
@@ -99,7 +100,7 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
     }
 
     private let implementation: StateImpl<Storage>
-    private var storage: Storage { implementation.box.value }
+    private var storage: Storage { implementation.storage }
 
     /// The default value, used when no value has been persisted yet.
     let defaultValue: Value

@@ -6,6 +6,11 @@ struct StateImpl<Storage: StateStorageProtocol> {
     /// bindings can be stored across view updates.
     var box: Box<Storage>
 
+    var storage: Storage {
+        get { box.value }
+        nonmutating set { box.value = newValue }
+    }
+
     init(initialStorage: Storage) {
         self.box = Box(initialStorage)
 
@@ -15,32 +20,30 @@ struct StateImpl<Storage: StateStorageProtocol> {
         if Storage.Value.self is ObservableObject.Type,
             let value = initialStorage.value as? ObservableObject
         {
-            box.value.downstreamObservation = box.value.didChange.link(toUpstream: value.didChange)
+            storage.downstreamObservation = storage.didChange.link(toUpstream: value.didChange)
         } else if let value = initialStorage.value as? OptionalObservableObject,
             let innerDidChange = value.didChange
         {
             // If we have an `Optional<some ObservableObject>.some`, then observe its
             // inner value's publisher.
-            box.value.downstreamObservation = box.value.didChange.link(toUpstream: innerDidChange)
+            storage.downstreamObservation = storage.didChange.link(toUpstream: innerDidChange)
         }
     }
 
     var wrappedValue: Storage.Value {
-        get { box.value.value }
+        get { storage.value }
         nonmutating set {
-            box.value.value = newValue
-            box.value.postSet()
+            storage.value = newValue
+            storage.postSet()
         }
     }
 
     var projectedValue: Binding<Storage.Value> {
         // Specifically link the binding to the inner storage instead of the
         // outer box which changes with each view update.
-        let storage = box.value
+        let storage = storage
         return Binding(
-            get: {
-                storage.value
-            },
+            get: { storage.value },
             set: { newValue in
                 storage.value = newValue
                 storage.postSet()
@@ -50,7 +53,7 @@ struct StateImpl<Storage: StateStorageProtocol> {
 
     func update(with environment: EnvironmentValues, previousValue: Self?) {
         if let previousValue {
-            box.value = previousValue.box.value
+            storage = previousValue.storage
         }
     }
 }
