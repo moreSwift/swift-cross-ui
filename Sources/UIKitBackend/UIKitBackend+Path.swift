@@ -119,8 +119,8 @@ extension UIKitBackend {
     public func renderPath(
         _ path: Path,
         container: Widget,
-        strokeColor: Color,
-        fillColor: Color,
+        strokeColor: Color.Resolved,
+        fillColor: Color.Resolved,
         overrideStrokeStyle: StrokeStyle?
     ) {
         if let overrideStrokeStyle {

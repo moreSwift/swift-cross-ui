@@ -29,7 +29,8 @@ extension UIKitBackend {
             string: text,
             attributes: [
                 .font: resolvedFont.uiFont,
-                .foregroundColor: environment.foregroundColor?.uiColor ?? defaultForegroundColor,
+                .foregroundColor: environment.foregroundColor?
+                    .resolve(in: environment).uiColor ?? defaultForegroundColor,
                 .paragraphStyle: paragraphStyle,
             ]
         )

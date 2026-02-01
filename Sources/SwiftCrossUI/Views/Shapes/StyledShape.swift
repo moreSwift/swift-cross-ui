@@ -97,8 +97,8 @@ extension StyledShape {
         backend.renderPath(
             backendPath,
             container: widget,
-            strokeColor: strokeColor ?? .clear,
-            fillColor: fillColor ?? .clear,
+            strokeColor: (strokeColor ?? .clear).resolve(in: environment),
+            fillColor: (fillColor ?? .clear).resolve(in: environment),
             overrideStrokeStyle: strokeStyle
         )
     }

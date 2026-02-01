@@ -321,7 +321,8 @@ extension UIKitBackend {
         textFieldWidget.child.isEnabled = environment.isEnabled
         textFieldWidget.child.placeholder = placeholder
         textFieldWidget.child.font = environment.resolvedFont.uiFont
-        textFieldWidget.child.textColor = UIColor(color: environment.suggestedForegroundColor)
+        textFieldWidget.child.textColor = environment.suggestedForegroundColor
+            .resolve(in: environment).uiColor
         textFieldWidget.onChange = onChange
         textFieldWidget.onSubmit = onSubmit
 
@@ -334,7 +335,7 @@ extension UIKitBackend {
                 let toolbar =
                     (textFieldWidget.child.inputAccessoryView as? KeyboardToolbar)
                     ?? KeyboardToolbar()
-                updateToolbar(toolbar)
+                updateToolbar(toolbar, environment)
                 textFieldWidget.child.inputAccessoryView = toolbar
             } else {
                 textFieldWidget.child.inputAccessoryView = nil
@@ -369,7 +370,8 @@ extension UIKitBackend {
 
         textEditorWidget.isEditable = environment.isEnabled
         textEditorWidget.child.font = environment.resolvedFont.uiFont
-        textEditorWidget.child.textColor = UIColor(color: environment.suggestedForegroundColor)
+        textEditorWidget.child.textColor = environment.suggestedForegroundColor
+            .resolve(in: environment).uiColor
         textEditorWidget.onChange = onChange
 
         let (keyboardType, contentType) = splitTextContentType(environment.textContentType)
@@ -381,7 +383,7 @@ extension UIKitBackend {
                 let toolbar =
                     (textEditorWidget.child.inputAccessoryView as? KeyboardToolbar)
                     ?? KeyboardToolbar()
-                updateToolbar(toolbar)
+                updateToolbar(toolbar, environment)
                 textEditorWidget.child.inputAccessoryView = toolbar
             } else {
                 textEditorWidget.child.inputAccessoryView = nil

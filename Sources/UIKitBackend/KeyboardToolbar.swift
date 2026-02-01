@@ -16,11 +16,11 @@ public protocol ToolbarItem {
 
     /// Convert the item to an instance of `ItemType`.
     @MainActor
-    func createBarButtonItem() -> ItemType
+    func createBarButtonItem(in environment: EnvironmentValues) -> ItemType
 
     /// Update the item with new information (e.g. updated bindings). May be a no-op.
     @MainActor
-    func updateBarButtonItem(_ item: inout ItemType)
+    func updateBarButtonItem(_ item: inout ItemType, in environment: EnvironmentValues)
 }
 
 @available(tvOS, unavailable)
@@ -88,11 +88,11 @@ extension Button: ToolbarItem {
         }
     }
 
-    public func createBarButtonItem() -> ItemType {
+    public func createBarButtonItem(in environment: EnvironmentValues) -> ItemType {
         ItemType(title: label, callback: action)
     }
 
-    public func updateBarButtonItem(_ item: inout ItemType) {
+    public func updateBarButtonItem(_ item: inout ItemType, in environment: EnvironmentValues) {
         item.callback = action
         item.title = label
     }
@@ -105,7 +105,7 @@ extension Button: ToolbarItem {
 @available(tvOS, unavailable, introduced: 14)
 @available(visionOS, unavailable)
 extension Spacer: ToolbarItem {
-    public func createBarButtonItem() -> UIBarButtonItem {
+    public func createBarButtonItem(in environment: EnvironmentValues) -> UIBarButtonItem {
         if let minLength, minLength > 0 {
             logger.warning(
                 """
@@ -118,7 +118,7 @@ extension Spacer: ToolbarItem {
         return .flexibleSpace()
     }
 
-    public func updateBarButtonItem(_: inout UIBarButtonItem) {
+    public func updateBarButtonItem(_: inout UIBarButtonItem, in environment: EnvironmentValues) {
         // no-op
     }
 }
@@ -129,16 +129,16 @@ struct FixedWidthToolbarItem<Base: ToolbarItem>: ToolbarItem {
     var base: Base
     var width: Int?
 
-    func createBarButtonItem() -> Base.ItemType {
-        let item = base.createBarButtonItem()
+    func createBarButtonItem(in environment: EnvironmentValues) -> Base.ItemType {
+        let item = base.createBarButtonItem(in: environment)
         if let width {
             item.width = CGFloat(width)
         }
         return item
     }
 
-    func updateBarButtonItem(_ item: inout Base.ItemType) {
-        base.updateBarButtonItem(&item)
+    func updateBarButtonItem(_ item: inout Base.ItemType, in environment: EnvironmentValues) {
+        base.updateBarButtonItem(&item, in: environment)
         if let width {
             item.width = CGFloat(width)
         }
@@ -152,7 +152,7 @@ struct FixedWidthToolbarItem<Base: ToolbarItem>: ToolbarItem {
 struct FixedWidthSpacerItem: ToolbarItem {
     var width: Int?
 
-    func createBarButtonItem() -> UIBarButtonItem {
+    func createBarButtonItem(in environment: EnvironmentValues) -> UIBarButtonItem {
         if let width {
             .fixedSpace(CGFloat(width))
         } else {
@@ -160,8 +160,8 @@ struct FixedWidthSpacerItem: ToolbarItem {
         }
     }
 
-    func updateBarButtonItem(_ item: inout UIBarButtonItem) {
-        item = createBarButtonItem()
+    func updateBarButtonItem(_ item: inout UIBarButtonItem, in environment: EnvironmentValues) {
+        item = createBarButtonItem(in: environment)
     }
 }
 
@@ -171,15 +171,15 @@ struct ColoredToolbarItem<Base: ToolbarItem>: ToolbarItem {
     var base: Base
     var color: Color
 
-    func createBarButtonItem() -> Base.ItemType {
-        let item = base.createBarButtonItem()
-        item.tintColor = color.uiColor
+    func createBarButtonItem(in environment: EnvironmentValues) -> Base.ItemType {
+        let item = base.createBarButtonItem(in: environment)
+        item.tintColor = color.resolve(in: environment).uiColor
         return item
     }
 
-    func updateBarButtonItem(_ item: inout Base.ItemType) {
-        base.updateBarButtonItem(&item)
-        item.tintColor = color.uiColor
+    func updateBarButtonItem(_ item: inout Base.ItemType, in environment: EnvironmentValues) {
+        base.updateBarButtonItem(&item, in: environment)
+        item.tintColor = color.resolve(in: environment).uiColor
     }
 }
 
@@ -224,7 +224,8 @@ final class KeyboardToolbar: UIToolbar {
 
     func setItems(
         _ components: ToolbarBuilder.FinalResult,
-        animated: Bool
+        animated: Bool,
+        in environment: EnvironmentValues
     ) {
         var newItems: [UIBarButtonItem] = []
         var newLocations: [ToolbarItemLocation: UIBarButtonItem] = [:]
@@ -232,9 +233,9 @@ final class KeyboardToolbar: UIToolbar {
         visitItems(component: components, inside: nil) { location, expression in
             let item =
                 if let oldItem = locations[location] {
-                    updateErasedItem(expression, oldItem)
+                    updateErasedItem(expression, oldItem, in: environment)
                 } else {
-                    expression.createBarButtonItem()
+                    expression.createBarButtonItem(in: environment)
                 }
 
             newItems.append(item)
@@ -246,14 +247,16 @@ final class KeyboardToolbar: UIToolbar {
     }
 
     /// Used to open the existential to call ``ToolbarItem/updateBarButtonItem(_:)``.
-    private func updateErasedItem<T: ToolbarItem>(_ expression: T, _ item: UIBarButtonItem)
-        -> UIBarButtonItem
-    {
+    private func updateErasedItem<T: ToolbarItem>(
+        _ expression: T,
+        _ item: UIBarButtonItem,
+        in environment: EnvironmentValues
+    ) -> UIBarButtonItem {
         if var castedItem = item as? T.ItemType {
-            expression.updateBarButtonItem(&castedItem)
+            expression.updateBarButtonItem(&castedItem, in: environment)
             return castedItem
         } else {
-            return expression.createBarButtonItem()
+            return expression.createBarButtonItem(in: environment)
         }
     }
 
@@ -298,13 +301,13 @@ final class KeyboardToolbar: UIToolbar {
 @available(tvOS, unavailable)
 @available(visionOS, unavailable)
 enum ToolbarKey: EnvironmentKey {
-    static let defaultValue: ((KeyboardToolbar) -> Void)? = nil
+    static let defaultValue: ((KeyboardToolbar, EnvironmentValues) -> Void)? = nil
 }
 
 @available(tvOS, unavailable)
 @available(visionOS, unavailable)
 extension EnvironmentValues {
-    var updateToolbar: ((KeyboardToolbar) -> Void)? {
+    var updateToolbar: ((KeyboardToolbar, EnvironmentValues) -> Void)? {
         get { self[ToolbarKey.self] }
         set { self[ToolbarKey.self] = newValue }
     }
@@ -323,8 +326,8 @@ extension View {
         @ToolbarBuilder body: @escaping () -> ToolbarBuilder.FinalResult
     ) -> some View {
         EnvironmentModifier(self) { environment in
-            environment.with(\.updateToolbar) { toolbar in
-                toolbar.setItems(body(), animated: animateChanges)
+            environment.with(\.updateToolbar) { toolbar, environment in
+                toolbar.setItems(body(), animated: animateChanges, in: environment)
                 toolbar.sizeToFit()
             }
         }

@@ -146,7 +146,7 @@ public final class WinUIBackend: AppBackend {
             //   let pv: __ABI_Windows_Foundation.IPropertyValue = try! iinspectable.QueryInterface()
             //   let value = try! pv.GetDoubleImpl()
 
-            self.measurementTextBlock = self.createTextView() as! TextBlock
+            self.measurementTextBlock = (self.createTextView() as! TextBlock)
 
             callback()
         }
@@ -431,7 +431,7 @@ public final class WinUIBackend: AppBackend {
 
     public func setColor(
         ofColorableRectangle widget: Widget,
-        to color: SwiftCrossUI.Color
+        to color: SwiftCrossUI.Color.Resolved
     ) {
         let canvas = widget as! Canvas
         let brush = WinUI.SolidColorBrush()
@@ -924,7 +924,7 @@ public final class WinUIBackend: AppBackend {
 
         picker.onChangeSelection = onChange
         environment.apply(to: picker)
-        picker.actualForegroundColor = environment.suggestedForegroundColor.uwpColor
+        picker.actualForegroundColor = environment.suggestedForegroundColor.resolve(in: environment).uwpColor
 
         // Only update options past this point, otherwise the early return
         // will cause issues.
@@ -1773,8 +1773,8 @@ public final class WinUIBackend: AppBackend {
     public func renderPath(
         _ path: Path,
         container: Widget,
-        strokeColor: SwiftCrossUI.Color,
-        fillColor: SwiftCrossUI.Color,
+        strokeColor: SwiftCrossUI.Color.Resolved,
+        fillColor: SwiftCrossUI.Color.Resolved,
         overrideStrokeStyle: StrokeStyle?
     ) {
         let winUiPath = container as! WinUI.Path
@@ -1906,30 +1906,11 @@ public final class WinUIBackend: AppBackend {
     // }
 }
 
-extension SwiftCrossUI.Color {
-    var uwpColor: UWP.Color {
-        UWP.Color(
-            a: UInt8((alpha * Float(UInt8.max)).rounded()),
-            r: UInt8((red * Float(UInt8.max)).rounded()),
-            g: UInt8((green * Float(UInt8.max)).rounded()),
-            b: UInt8((blue * Float(UInt8.max)).rounded())
-        )
-    }
-
-    init(uwpColor: UWP.Color) {
-        self.init(
-            Float(uwpColor.r) / Float(UInt8.max),
-            Float(uwpColor.g) / Float(UInt8.max),
-            Float(uwpColor.b) / Float(UInt8.max),
-            Float(uwpColor.a) / Float(UInt8.max)
-        )
-    }
-}
-
 extension EnvironmentValues {
+    @MainActor
     var winUIForegroundBrush: WinUI.Brush {
         let brush = SolidColorBrush()
-        brush.color = suggestedForegroundColor.uwpColor
+        brush.color = suggestedForegroundColor.resolve(in: self).uwpColor
         return brush
     }
 

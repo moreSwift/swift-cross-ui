@@ -223,6 +223,14 @@ public protocol AppBackend: Sendable {
     /// from Apple's typography guidelines. See ``TextStyle/resolve(for:)``.
     func resolveTextStyle(_ textStyle: Font.TextStyle) -> Font.TextStyle.Resolved
 
+    /// Resolves the given adaptive color to a concrete color given the current environment.
+    ///
+    /// The default implementation uses Apple's adaptive colors.
+    func resolveAdaptiveColor(
+        _ adaptiveColor: Color.SystemAdaptive,
+        in environment: EnvironmentValues
+    ) -> Color.Resolved
+
     /// Computes a window's environment based off the root environment. This may involve
     /// updating ``EnvironmentValues/windowScaleFactor`` etc.
     func computeWindowEnvironment(
@@ -281,7 +289,7 @@ public protocol AppBackend: Sendable {
     /// Creates a rectangular widget with configurable color.
     func createColorableRectangle() -> Widget
     /// Sets the color of a colorable rectangle.
-    func setColor(ofColorableRectangle widget: Widget, to color: Color)
+    func setColor(ofColorableRectangle widget: Widget, to color: Color.Resolved)
 
     /// Sets the corner radius of a widget (any widget). Should affect the view's border radius
     /// as well.
@@ -705,7 +713,7 @@ public protocol AppBackend: Sendable {
         cornerRadius: Double?,
         detents: [PresentationDetent],
         dragIndicatorVisibility: Visibility,
-        backgroundColor: Color?,
+        backgroundColor: Color.Resolved?,
         interactiveDismissDisabled: Bool
     )
 
@@ -823,8 +831,8 @@ public protocol AppBackend: Sendable {
     func renderPath(
         _ path: Path,
         container: Widget,
-        strokeColor: Color,
-        fillColor: Color,
+        strokeColor: Color.Resolved,
+        fillColor: Color.Resolved,
         overrideStrokeStyle: StrokeStyle?
     )
 
@@ -848,6 +856,24 @@ extension AppBackend {
         _ textStyle: Font.TextStyle
     ) -> Font.TextStyle.Resolved {
         textStyle.resolve(for: deviceClass)
+    }
+
+    public func resolveAdaptiveColor(
+        _ adaptiveColor: Color.SystemAdaptive,
+        in environment: EnvironmentValues
+    ) -> Color.Resolved {
+        let color: Color = switch adaptiveColor.kind {
+            case .blue: .blue
+            case .brown: .brown
+            case .gray: .gray
+            case .green: .green
+            case .orange: .orange
+            case .purple: .purple
+            case .red: .red
+            case .yellow: .yellow
+        }
+
+        return color.resolve(in: environment)
     }
 
     public func tag(widget: Widget, as tag: String) {
@@ -897,7 +923,7 @@ extension AppBackend {
         todo()
     }
 
-    public func setColor(ofColorableRectangle widget: Widget, to color: Color) {
+    public func setColor(ofColorableRectangle widget: Widget, to color: Color.Resolved) {
         todo()
     }
 
@@ -1280,8 +1306,8 @@ extension AppBackend {
     public func renderPath(
         _ path: Path,
         container: Widget,
-        strokeColor: Color,
-        fillColor: Color,
+        strokeColor: Color.Resolved,
+        fillColor: Color.Resolved,
         overrideStrokeStyle: StrokeStyle?
     ) {
         todo()
@@ -1328,7 +1354,7 @@ extension AppBackend {
         cornerRadius: Double?,
         detents: [PresentationDetent],
         dragIndicatorVisibility: Visibility,
-        backgroundColor: Color?,
+        backgroundColor: Color.Resolved?,
         interactiveDismissDisabled: Bool
     ) {
         todo()

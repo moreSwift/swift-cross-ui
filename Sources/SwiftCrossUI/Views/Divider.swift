@@ -5,21 +5,14 @@ public struct Divider: View, Sendable {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.layoutOrientation) var layoutOrientation
 
-    var color: Color {
-        switch colorScheme {
-            case .dark:
-                Color(1, 1, 1, 0.1)
-            case .light:
-                Color(0, 0, 0, 0.1)
-        }
-    }
-
     public init() {}
 
     public var body: some View {
-        color.frame(
-            width: layoutOrientation == .horizontal ? 1 : nil,
-            height: layoutOrientation == .vertical ? 1 : nil
-        )
+        Color.adaptive(light: .black, dark: .white)
+            .opacity(0.1)
+            .frame(
+                width: layoutOrientation == .horizontal ? 1 : nil,
+                height: layoutOrientation == .vertical ? 1 : nil
+            )
     }
 }

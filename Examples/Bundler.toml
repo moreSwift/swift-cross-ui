@@ -74,3 +74,8 @@ version = '0.1.0'
 identifier = 'dev.swiftcrossui.AdvancedCustomizationExample'
 product = 'AdvancedCustomizationExample'
 version = '0.1.0'
+
+[apps.ColorsExample]
+identifier = 'dev.swiftcrossui.ColorsExample'
+product = 'ColorsExample'
+version = '0.1.0'

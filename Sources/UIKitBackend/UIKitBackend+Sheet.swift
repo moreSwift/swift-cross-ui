@@ -46,7 +46,7 @@ extension UIKitBackend {
         cornerRadius: Double?,
         detents: [PresentationDetent],
         dragIndicatorVisibility: Visibility,
-        backgroundColor: Color?,
+        backgroundColor: Color.Resolved?,
         interactiveDismissDisabled: Bool
     ) {
         sheet.onDismiss = onDismiss

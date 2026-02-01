@@ -532,7 +532,7 @@ public final class AppKitBackend: AppBackend {
         return widget
     }
 
-    public func setColor(ofColorableRectangle widget: Widget, to color: Color) {
+    public func setColor(ofColorableRectangle widget: Widget, to color: Color.Resolved) {
         widget.layer?.backgroundColor = color.nsColor.cgColor
     }
 
@@ -1197,7 +1197,7 @@ public final class AppKitBackend: AppBackend {
         paragraphStyle.lineSpacing = 0
 
         return [
-            .foregroundColor: environment.suggestedForegroundColor.nsColor,
+            .foregroundColor: environment.suggestedForegroundColor.resolve(in: environment).nsColor,
             .font: font(for: resolvedFont),
             .paragraphStyle: paragraphStyle,
         ]
@@ -1742,8 +1742,8 @@ public final class AppKitBackend: AppBackend {
     public func renderPath(
         _ path: Path,
         container: Widget,
-        strokeColor: Color,
-        fillColor: Color,
+        strokeColor: Color.Resolved,
+        fillColor: Color.Resolved,
         overrideStrokeStyle: StrokeStyle?
     ) {
         if let overrideStrokeStyle {
@@ -1827,7 +1827,7 @@ public final class AppKitBackend: AppBackend {
         cornerRadius: Double?,
         detents: [PresentationDetent],
         dragIndicatorVisibility: Visibility,
-        backgroundColor: Color?,
+        backgroundColor: Color.Resolved?,
         interactiveDismissDisabled: Bool
     ) {
         sheet.setContentSize(NSSize(width: size.x, height: size.y))
@@ -1903,7 +1903,7 @@ public final class AppKitBackend: AppBackend {
         let datePicker = datePicker as! CustomDatePicker
 
         datePicker.isEnabled = environment.isEnabled
-        datePicker.textColor = environment.suggestedForegroundColor.nsColor
+        datePicker.textColor = environment.suggestedForegroundColor.resolve(in: environment).nsColor
 
         // If the time zone is set to autoupdatingCurrent, then the cursor position is reset after
         // every keystroke. Thanks Apple
@@ -2175,34 +2175,6 @@ extension ColorScheme {
             case .dark:
                 return NSAppearance(named: .darkAqua)
         }
-    }
-}
-
-extension Color {
-    init(_ nsColor: NSColor) {
-        guard let resolvedNSColor = nsColor.usingColorSpace(.deviceRGB) else {
-            logger.error(
-                "failed to convert NSColor to RGB",
-                metadata: ["NSColor": "\(nsColor)"]
-            )
-            self = .black
-            return
-        }
-        self.init(
-            Float(resolvedNSColor.redComponent),
-            Float(resolvedNSColor.greenComponent),
-            Float(resolvedNSColor.blueComponent),
-            Float(resolvedNSColor.alphaComponent)
-        )
-    }
-
-    var nsColor: NSColor {
-        NSColor(
-            calibratedRed: CGFloat(red),
-            green: CGFloat(green),
-            blue: CGFloat(blue),
-            alpha: CGFloat(alpha)
-        )
     }
 }
 

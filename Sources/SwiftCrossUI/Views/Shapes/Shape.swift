@@ -114,8 +114,8 @@ extension Shape {
         backend.renderPath(
             backendPath,
             container: widget,
-            strokeColor: .clear,
-            fillColor: environment.suggestedForegroundColor,
+            strokeColor: Color.clear.resolve(in: environment),
+            fillColor: environment.suggestedForegroundColor.resolve(in: environment),
             overrideStrokeStyle: nil
         )
     }

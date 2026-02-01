@@ -37,13 +37,6 @@ final class RootViewController: UIViewController {
         fatalError("init(coder:) is not used for the root view controller")
     }
 
-    override func loadView() {
-        super.loadView()
-        if traitCollection.userInterfaceStyle != .dark {
-            view.backgroundColor = .white
-        }
-    }
-
     override func viewWillTransition(
         to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator
     ) {
@@ -87,6 +80,10 @@ extension UIKitBackend {
         } else {
             window = UIWindow()
         }
+
+        #if !os(tvOS)
+        window.backgroundColor = .systemBackground
+        #endif
 
         window.rootViewController = RootViewController(backend: self)
         return window

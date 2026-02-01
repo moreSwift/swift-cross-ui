@@ -34,17 +34,6 @@ struct Note: Codable, Equatable, Identifiable {
 struct ContentView: View {
     let notesFile = URL(fileURLWithPath: "notes.json")
 
-    @Environment(\.colorScheme) var colorScheme
-
-    var textEditorBackground: Color {
-        switch colorScheme {
-            case .light:
-                Color(0.8, 0.8, 0.8)
-            case .dark:
-                Color(0.18, 0.18, 0.18)
-        }
-    }
-
     @State var notes: [Note] = [
         Note(title: "Hello, world!", content: "Welcome SwiftCrossNotes!"),
         Note(
@@ -141,7 +130,12 @@ struct ContentView: View {
 
                             TextEditor(text: selectedNote.content)
                                 .padding()
-                                .background(textEditorBackground)
+                                .background(
+                                    Color.adaptive(
+                                        light: Color(white: 0.8),
+                                        dark: Color(white: 0.18)
+                                    )
+                                )
                                 .cornerRadius(4)
                                 .frame(maxHeight: .infinity)
                         }
