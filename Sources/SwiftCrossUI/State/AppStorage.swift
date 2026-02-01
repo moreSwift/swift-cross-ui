@@ -21,21 +21,16 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
             self.defaultValue = defaultValue
         }
 
-        private var _didChange: Publisher?
-        var didChange: Publisher {
-            if let _didChange {
-                _didChange
-            } else {
-                appStoragePublisherCache.withLock { cache in
-                    guard let publisher = cache[key] else {
-                        let newPublisher = Publisher()
-                        cache[key] = newPublisher
-                        return newPublisher
-                    }
-                    return publisher
+        lazy var didChange: Publisher = {
+            appStoragePublisherCache.withLock { cache in
+                guard let publisher = cache[key] else {
+                    let newPublisher = Publisher()
+                    cache[key] = newPublisher
+                    return newPublisher
                 }
+                return publisher
             }
-        }
+        }()
 
         var value: Value {
             get {
