@@ -123,13 +123,38 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
         implementation = StateImpl(initialStorage: Storage(key: key, defaultValue: defaultValue))
     }
 
-    public init<T>(_ key: String) where Value == T? {
+    public init(_ key: String) where Value: ExpressibleByNilLiteral {
         self.init(wrappedValue: nil, key)
     }
 
     public func update(with environment: EnvironmentValues, previousValue: AppStorage<Value>?) {
         implementation.update(with: environment, previousValue: previousValue?.implementation)
         storage.provider = environment.appStorageProvider
+    }
+}
+
+extension AppStorage {
+    @available(
+        *, deprecated,
+        message: "'AppStorage' does not work correctly with classes; use a struct instead"
+    )
+    public init(wrappedValue defaultValue: Value, _ key: String) where Value: AnyObject {
+        self.key = key
+        self.defaultValue = defaultValue
+        implementation = StateImpl(initialStorage: Storage(key: key, defaultValue: defaultValue))
+    }
+
+    @available(
+        *, deprecated,
+        message: """
+            'AppStorage' currently does not persist 'ObservableObject' types \
+            to disk when published properties update
+            """
+    )
+    public init(wrappedValue defaultValue: Value, _ key: String) where Value: ObservableObject {
+        self.key = key
+        self.defaultValue = defaultValue
+        implementation = StateImpl(initialStorage: Storage(key: key, defaultValue: defaultValue))
     }
 }
 

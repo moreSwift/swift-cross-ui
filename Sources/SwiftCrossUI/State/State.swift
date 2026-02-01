@@ -37,6 +37,30 @@ public struct State<Value>: ObservableProperty {
     }
 }
 
+extension State {
+    // NB: `ExpressibleByNilLiteral` is what SwiftUI checks for too.
+    public init() where Value: ExpressibleByNilLiteral {
+        self.init(wrappedValue: nil)
+    }
+
+    @available(
+        *, deprecated,
+        message: """
+            'State' does not work correctly with non-observable classes; conform \
+            your class to 'ObservableObject' or use a struct instead
+            """
+    )
+    public init(wrappedValue initialValue: Value) where Value: AnyObject {
+        implementation = StateImpl(initialStorage: Storage(initialValue))
+    }
+
+    // NB: Needed to prevent deprecation warnings for `ObservableObject` types, which
+    // *are* fully supported by `State`
+    public init(wrappedValue initialValue: Value) where Value: ObservableObject {
+        implementation = StateImpl(initialStorage: Storage(initialValue))
+    }
+}
+
 extension State: SnapshottableProperty {
     public func tryRestoreFromSnapshot(_ snapshot: Data) {
         guard
