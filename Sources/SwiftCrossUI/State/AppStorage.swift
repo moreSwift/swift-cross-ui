@@ -83,7 +83,7 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
                 appStorageCache.withLock { cache in
                     cache[key] = newValue
                     do {
-                        logger.debug("persisting '\(newValue)' for '\(key)'")
+                        logger.trace("persisting '\(newValue)' for '\(key)'")
                         try provider.persistValue(newValue, forKey: key)
                     } catch {
                         logger.warning(
