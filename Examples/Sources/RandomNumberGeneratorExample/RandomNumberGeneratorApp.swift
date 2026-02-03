@@ -26,6 +26,7 @@ enum ColorOption: String, CaseIterable {
 @HotReloadable
 struct RandomNumberGeneratorApp: App {
     @State var viewModel = ViewModel()
+
     var body: some Scene {
         WindowGroup("Random Number Generator") {
             #hotReloadable {
@@ -39,29 +40,31 @@ struct RandomNumberGeneratorApp: App {
 }
 
 struct ContentView: View {
-    @Environment(ViewModel.self) var vm
+    @Environment(ViewModel.self) var viewModel
+
     var body: some View {
         VStack {
-            Text("Random Number: \(vm.randomNumber)")
+            Text("Random Number: \(viewModel.randomNumber)")
             Button("Generate") {
-                vm.randomNumber = Int.random(in: Int(vm.minNum)...Int(vm.maxNum))
+                viewModel.randomNumber = Int.random(
+                    in: Int(viewModel.minNum)...Int(viewModel.maxNum))
             }
 
-            Text("Minimum: \(vm.minNum)")
+            Text("Minimum: \(viewModel.minNum)")
             Slider(
-                value: vm.$minNum.onChange { newValue in
-                    if newValue > vm.maxNum {
-                        vm.minNum = vm.maxNum
+                value: viewModel.$minNum.onChange { newValue in
+                    if newValue > viewModel.maxNum {
+                        viewModel.minNum = viewModel.maxNum
                     }
                 },
                 in: 0...100
             )
 
-            Text("Maximum: \(vm.maxNum)")
+            Text("Maximum: \(viewModel.maxNum)")
             Slider(
-                value: vm.$maxNum.onChange { newValue in
-                    if newValue < vm.minNum {
-                        vm.maxNum = vm.minNum
+                value: viewModel.$maxNum.onChange { newValue in
+                    if newValue < viewModel.minNum {
+                        viewModel.maxNum = viewModel.minNum
                     }
                 },
                 in: 0...100
@@ -69,11 +72,11 @@ struct ContentView: View {
 
             HStack {
                 Text("Choose a color:")
-                Picker(of: ColorOption.allCases, selection: vm.$colorOption)
+                Picker(of: ColorOption.allCases, selection: viewModel.$colorOption)
             }
         }
         .padding(10)
-        .foregroundColor(vm.colorOption?.color ?? .red)
+        .foregroundColor(viewModel.colorOption?.color ?? .red)
     }
 }
 

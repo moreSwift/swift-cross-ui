@@ -57,7 +57,16 @@ public struct Environment<Value>: DynamicProperty {
         guard let value = value.value else {
             fatalError(
                 """
-                Environment value at \(mode) used before initialization. Don't \
+                Environment value at \(
+                    { 
+                        return switch mode {
+                            case .keyPath(let keyPath):
+                                "\(keyPath)"
+                            case .observableObject:
+                                "\(Value.self).self"
+                        }
+                    }
+                ) used before initialization. Don't \
                 use @Environment properties before SwiftCrossUI requests the \
                 view's body.
                 """

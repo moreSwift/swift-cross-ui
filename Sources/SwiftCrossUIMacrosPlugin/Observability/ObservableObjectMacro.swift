@@ -37,15 +37,13 @@ public struct ObservableObjectMacro: MemberAttributeMacro, ExtensionMacro {
                     ].contains(attr.attribute?.name.name)
             }),
             // Only include properties without accessors
-            variable.isStoredProperty
+            let binding = destructureSingle(variable.bindings),
+            // Don't allow any accessors, because even when the property is
+            // stored (i.e. supports `@Published`), the added property wrapper
+            // changes the meaning of `didSet` and `willSet` accessors.
+            binding.accessors.isEmpty
         else {
             return []
-        }
-
-        if variable.bindings.count != 1 {
-            throw MacroError(
-                "@Observable only supports single variables. Split up your variable declaration or ignore it with @ObservationIgnored"
-            )
         }
 
         return ["@SwiftCrossUI.Published"]
