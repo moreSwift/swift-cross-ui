@@ -22,7 +22,10 @@ class _App<AppRoot: App> {
     init(_ app: AppRoot) {
         backend = app.backend
         self.app = app
-        self.environment = EnvironmentValues(backend: backend)
+        self.environment = EnvironmentValues(
+            backend: backend,
+            appStorageProvider: app.appStorageProvider
+        )
         self.cancellables = []
 
         dynamicPropertyUpdater = DynamicPropertyUpdater(for: app)
@@ -47,7 +50,10 @@ class _App<AppRoot: App> {
     /// Runs the app using the app's selected backend.
     func run() {
         backend.runMainLoop { [self] in
-            let baseEnvironment = EnvironmentValues(backend: backend)
+            let baseEnvironment = EnvironmentValues(
+                backend: backend,
+                appStorageProvider: app.appStorageProvider
+            )
             environment = backend.computeRootEnvironment(
                 defaultEnvironment: baseEnvironment
             )

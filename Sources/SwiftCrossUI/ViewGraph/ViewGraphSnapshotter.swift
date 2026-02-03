@@ -55,7 +55,7 @@ public struct ViewGraphSnapshotter: ErasedViewGraphNodeTransformer {
             let mirror = Mirror(reflecting: view)
             for property in mirror.children {
                 guard
-                    let stateProperty = property as? any ObservableProperty,
+                    let stateProperty = property as? any SnapshottableProperty,
                     let propertyName = property.label,
                     let encodedState = state[propertyName]
                 else {
@@ -80,7 +80,7 @@ public struct ViewGraphSnapshotter: ErasedViewGraphNodeTransformer {
         for property in mirror.children {
             guard
                 let propertyName = property.label,
-                let property = property as? any ObservableProperty,
+                let property = property as? any SnapshottableProperty,
                 let encodedState = try? property.snapshot()
             else {
                 continue

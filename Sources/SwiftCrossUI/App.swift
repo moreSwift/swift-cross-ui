@@ -2,6 +2,11 @@ import Foundation
 import Logging
 
 /// Backing storage for `logger`.
+///
+/// ## Safety
+/// This is only ever mutated once, almost immediately after the app is launched and
+/// well before we do any concurrency shenanigans. Subsequent reads are always safe
+/// since `Logger` is `Sendable`.
 nonisolated(unsafe) private var _logger: Logger?
 
 /// The global logger.
@@ -20,6 +25,8 @@ package var logger: Logger {
 public protocol App {
     /// The backend used to render the app.
     associatedtype Backend: AppBackend
+    /// The app storage provider used to persist state annotated with ``AppStorage``.
+    associatedtype StorageProvider: AppStorageProvider
     /// The type of scene representing the content of the app.
     associatedtype Body: Scene
 
@@ -32,6 +39,10 @@ public protocol App {
 
     /// The application's backend.
     var backend: Backend { get }
+
+    /// The application's app storage provider, used for persisting ``AppStorage``
+    /// data to disk.
+    var appStorageProvider: StorageProvider { get }
 
     /// The content of the app.
     @SceneBuilder var body: Body { get }
@@ -125,6 +136,14 @@ extension App {
         metadataProvider: Logger.MetadataProvider?
     ) -> any LogHandler {
         StreamLogHandler.standardError(label: label)
+    }
+
+    /// The default app storage provider for apps which don't specify a
+    /// custom one.
+    ///
+    /// This uses `UserDefaults` on all platforms.
+    public var appStorageProvider: some AppStorageProvider {
+        DefaultAppStorageProvider()
     }
 
     /// Runs the application.

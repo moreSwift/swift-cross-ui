@@ -9,7 +9,7 @@ import SwiftCrossUI
 @main
 @HotReloadable
 struct ControlsApp: App {
-    @State var count = 0
+    @AppStorage("count") var count = 0
     @State var exampleButtonState = false
     @State var exampleSwitchState = false
     @State var exampleCheckboxState = false
@@ -23,7 +23,7 @@ struct ControlsApp: App {
     @State var progressViewSize: Int = 10
     @State var isProgressViewResizable = true
 
-    @Environment(\.supportedDatePickerStyles) var supportedDatePickerStyles: [DatePickerStyle]
+    @Environment(\.supportedDatePickerStyles) var supportedDatePickerStyles
 
     var body: some Scene {
         WindowGroup("ControlsApp") {
@@ -31,7 +31,7 @@ struct ControlsApp: App {
                 ScrollView {
                     VStack(spacing: 30) {
                         VStack {
-                            Text("Button")
+                            Text("Button (persisted)")
                             Button("Click me!") {
                                 count += 1
                             }

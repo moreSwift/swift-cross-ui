@@ -104,6 +104,9 @@ public struct EnvironmentValues {
     /// The menu ordering to use.
     public var menuOrder: MenuOrder
 
+    /// The app storage provider to use for `@AppStorage` property wrappers.
+    public let appStorageProvider: any AppStorageProvider
+
     /// Backing storage for extensible subscript
     private var extraValues: [ObjectIdentifier: Any]
 
@@ -241,8 +244,12 @@ public struct EnvironmentValues {
     public let supportedDatePickerStyles: [DatePickerStyle]
 
     /// Creates the default environment.
-    package init<Backend: AppBackend>(backend: Backend) {
+    package init<Backend: AppBackend>(
+        backend: Backend,
+        appStorageProvider: any AppStorageProvider = DefaultAppStorageProvider()
+    ) {
         self.backend = backend
+        self.appStorageProvider = appStorageProvider
 
         onResize = { _ in }
         layoutOrientation = .vertical

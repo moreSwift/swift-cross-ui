@@ -76,12 +76,12 @@ public struct Environment<Value>: DynamicProperty {
     }
 
     public init(_ keyPath: KeyPath<EnvironmentValues, Value>) {
-        self.value = Box(value: nil)
+        self.value = Box(nil)
         self.mode = .keyPath(keyPath)
     }
 
     public init(_ type: Value.Type) where Value: ObservableObject {
-        self.value = Box(value: nil)
+        self.value = Box(nil)
         self.mode = .observableObject
     }
 
