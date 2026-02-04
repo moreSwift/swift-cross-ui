@@ -9,6 +9,11 @@ public class ApplicationWindow: Window {
         self.init(
             gtk_application_window_new(application.applicationPointer)
         )
+        registerSignals()
+    }
+
+    public override func registerSignals() {
+        super.registerSignals()
 
         let handler2:
             @convention(c) (

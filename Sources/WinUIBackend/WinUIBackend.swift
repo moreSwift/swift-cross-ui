@@ -66,6 +66,7 @@ public final class WinUIBackend: AppBackend {
     public let requiresImageUpdateOnScaleFactorChange = false
     public let menuImplementationStyle = MenuImplementationStyle.dynamicPopover
     public let canRevealFiles = false
+    public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
     public let supportedDatePickerStyles: [DatePickerStyle] = [
         .automatic, .graphical, .compact, .wheel,
@@ -257,7 +258,15 @@ public final class WinUIBackend: AppBackend {
         minimizable: Bool,
         resizable: Bool
     ) {
-        // TODO: Set window closability (need to reach down to Win32 for this)
+        // Source: https://devblogs.microsoft.com/oldnewthing/20100604-00/?p=13803
+        let hwnd = window.getHWND()!
+        let flags = if closable { MF_ENABLED } else { MF_DISABLED | MF_GRAYED }
+        EnableMenuItem(
+            GetSystemMenu(hwnd, false),
+            numericCast(SC_CLOSE),
+            numericCast(MF_BYCOMMAND | flags)
+        )
+
         (window.appWindow.presenter as? OverlappedPresenter)?.isMinimizable = minimizable
         (window.appWindow.presenter as? OverlappedPresenter)?.isResizable = resizable
     }
@@ -276,6 +285,19 @@ public final class WinUIBackend: AppBackend {
 
     public func activate(window: Window) {
         try! window.activate()
+    }
+
+    public func close(window: Window) {
+        try! window.close()
+    }
+
+    public func setCloseHandler(
+        ofWindow window: Window,
+        to action: @escaping () -> Void
+    ) {
+        window.closed.addHandler { _, _ in
+            action()
+        }
     }
 
     public func openExternalURL(_ url: URL) throws {
@@ -866,7 +888,8 @@ public final class WinUIBackend: AppBackend {
         slider.valueChanged.addHandler { [weak internalState] _, event in
             guard let internalState else { return }
             internalState.sliderChangeActions[ObjectIdentifier(slider)]?(
-                Double(event?.newValue ?? 0))
+                Double(event?.newValue ?? 0)
+            )
         }
         slider.stepFrequency = 0.01
         return slider
@@ -1461,9 +1484,7 @@ public final class WinUIBackend: AppBackend {
         tapGestureTarget.background = brush
 
         tapGestureTarget.pointerPressed.addHandler { [weak tapGestureTarget] _, _ in
-            guard let tapGestureTarget else {
-                return
-            }
+            guard let tapGestureTarget else { return }
             tapGestureTarget.clickHandler?()
         }
         return tapGestureTarget

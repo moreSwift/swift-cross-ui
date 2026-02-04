@@ -1,45 +1,112 @@
-#if !os(WASI)
-    import Foundation
-#endif
+import Foundation
 
-/// A scene that presents a group of identically structured windows. Currently
-/// only supports having a single instance of the window but will eventually
-/// support duplicating the window.
-public struct WindowGroup<Content: View>: Scene {
+/// A scene that presents a group of identically structured windows.
+public struct WindowGroup<Content: View>: WindowingScene {
     public typealias Node = WindowGroupNode<Content>
-
-    /// Storing the window group contents lazily allows us to recompute the view
-    /// when the window size changes without having to recompute the whole app.
-    /// This allows the window group contents to remain linked to the app state
-    /// instead of getting frozen in time when the app's body gets evaluated.
-    var content: () -> Content
-
-    var body: Content {
-        content()
-    }
 
     /// The title of the window (shown in the title bar on most OSes).
     var title: String
-    /// The default size of the window (only has effect at time of creation). Defaults to
-    /// 900x450.
-    var defaultSize: SIMD2<Int>
+    /// The window's content.
+    var content: () -> Content
+    /// The window's ID.
+    ///
+    /// This should never change after creation.
+    let id: String?
 
-    /// Creates a window group optionally specifying a title. Window title defaults
-    /// to `ProcessInfo.processInfo.processName`.
-    public init(_ title: String? = nil, @ViewBuilder _ content: @escaping () -> Content) {
-        self.content = content
+    /// Creates a window group optionally specifying a title and an ID. Window title
+    /// defaults to `ProcessInfo.processInfo.processName`.
+    public init(
+        _ title: String? = nil,
+        id: String? = nil,
+        @ViewBuilder _ content: @escaping () -> Content
+    ) {
         #if os(WASI)
-            self.title = title ?? "Title"
+            let title = title ?? "Title"
         #else
-            self.title = title ?? ProcessInfo.processInfo.processName
+            let title = title ?? ProcessInfo.processInfo.processName
         #endif
-        defaultSize = SIMD2(900, 450)
+        self.id = id
+        self.title = title
+        self.content = content
+    }
+}
+
+/// The ``SceneGraphNode`` corresponding to a ``WindowGroup`` scene.
+public final class WindowGroupNode<Content: View>: SceneGraphNode {
+    public typealias NodeScene = WindowGroup<Content>
+
+    /// The references to the underlying window objects, which also manage
+    /// each window's view graph.
+    ///
+    /// Empty if there are currently no instances of the window.
+    private var windowReferences: [UUID: WindowReference<WindowGroup<Content>>] = [:]
+
+    /// The underlying scene.
+    private var scene: WindowGroup<Content>
+
+    public init<Backend: AppBackend>(
+        from scene: WindowGroup<Content>,
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        self.scene = scene
+
+        let openOnAppLaunch =
+            switch environment.defaultLaunchBehavior {
+                case .automatic, .presented: true
+                case .suppressed: false
+            }
+
+        if openOnAppLaunch {
+            let windowID = UUID()
+            self.windowReferences = [
+                windowID: WindowReference(
+                    scene: scene,
+                    backend: backend,
+                    environment: environment,
+                    onClose: { self.windowReferences[windowID] = nil }
+                )
+            ]
+        }
     }
 
-    /// Sets the default size of a window (used when creating new instances of the window).
-    public func defaultSize(width: Int, height: Int) -> Self {
-        var windowGroup = self
-        windowGroup.defaultSize = SIMD2(width, height)
-        return windowGroup
+    public func update<Backend: AppBackend>(
+        _ newScene: WindowGroup<Content>?,
+        backend: Backend,
+        environment: EnvironmentValues
+    ) -> SceneUpdateResult {
+        if let newScene {
+            self.scene = newScene
+        }
+
+        if let id = scene.id {
+            environment.openWindowFunctionsByID.value[id] = { [weak self] in
+                guard let self else { return }
+
+                let windowID = UUID()
+                let reference = WindowReference(
+                    scene: scene,
+                    backend: backend,
+                    environment: environment,
+                    onClose: { self.windowReferences[windowID] = nil }
+                )
+                windowReferences[windowID] = reference
+
+                _ = reference.update(
+                    nil,
+                    backend: backend,
+                    environment: environment
+                )
+            }
+        }
+
+        let results = windowReferences.values.map { windowReference in
+            windowReference.update(
+                newScene,
+                backend: backend,
+                environment: environment
+            )
+        }
+        return SceneUpdateResult(childResults: results)
     }
 }

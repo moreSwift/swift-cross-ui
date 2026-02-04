@@ -9,6 +9,7 @@ public class ApplicationWindow: Window {
         self.init(
             gtk_application_window_new(application.applicationPointer)
         )
+        registerSignals()
     }
 
     @GObjectProperty(named: "show-menubar") public var showMenuBar: Bool

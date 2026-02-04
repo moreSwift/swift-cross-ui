@@ -1,7 +1,10 @@
 /// An action that dismisses the current presentation context.
 ///
 /// Use the `dismiss` environment value to get an instance of this action,
-/// then call it to dismiss the current sheet.
+/// then call it to dismiss (close) the enclosing sheet.
+///
+/// If you want to close the enclosing window, use ``EnvironmentValues/dismissWindow``
+/// instead.
 ///
 /// Example usage:
 /// ```swift
@@ -47,7 +50,10 @@ extension EnvironmentValues {
     /// An action that dismisses the current presentation context.
     ///
     /// Use this environment value to get a dismiss action that can be called
-    /// to dismiss the current sheet, popover, or other presentation.
+    /// to dismiss (close) the enclosing sheet, popover, or other presentation.
+    ///
+    /// If you want to close the enclosing window, use ``EnvironmentValues/dismissWindow``
+    /// instead.
     ///
     /// Example:
     /// ```swift

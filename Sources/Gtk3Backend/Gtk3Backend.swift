@@ -31,6 +31,7 @@ public final class Gtk3Backend: AppBackend {
     public let requiresImageUpdateOnScaleFactorChange = true
     public let menuImplementationStyle = MenuImplementationStyle.dynamicPopover
     public let canRevealFiles = true
+    public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
     public let supportedDatePickerStyles: [DatePickerStyle] = []
 
@@ -360,6 +361,31 @@ public final class Gtk3Backend: AppBackend {
 
     public func activate(window: Window) {
         window.present()
+    }
+
+    public func close(window: Window) {
+        window.close()
+
+        // NB: It seems GTK3 won't automatically signal `::delete-event` if
+        // the window is closed programmatically. Since the close handler
+        // calls `window.destroy()`, we avoid calling that ourselves to avoid
+        // a double-free; however, if the handler isn't set, we _do_ call
+        // `destroy()` to avoid leaking the window.
+        if let onCloseRequest = window.onCloseRequest {
+            onCloseRequest(window)
+        } else {
+            window.destroy()
+        }
+    }
+
+    public func setCloseHandler(
+        ofWindow window: Window,
+        to action: @escaping () -> Void
+    ) {
+        window.onCloseRequest = { _ in
+            action()
+            window.destroy()
+        }
     }
 
     public func openExternalURL(_ url: URL) throws {

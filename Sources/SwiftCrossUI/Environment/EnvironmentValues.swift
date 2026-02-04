@@ -98,8 +98,20 @@ public struct EnvironmentValues {
     /// Whether the text should be selectable. Set by ``View/textSelectionEnabled(_:)``.
     public var isTextSelectionEnabled: Bool
 
-    /// The resizing behaviour of the current window.
+    /// The resizing behaviour of windows.
+    ///
+    /// Set by ``Window/windowResizability(_:)->Scene``.
     var windowResizability: WindowResizability
+    /// The default launch behavior of windows.
+    ///
+    /// Set by ``Window/defaultLaunchBehavior(_:)->Scene``.
+    var defaultLaunchBehavior: SceneLaunchBehavior
+    /// The default size of windows.
+    ///
+    /// Defaults to 900x450.
+    ///
+    /// Set by ``Window/defaultSize(width:height:)->Scene``.
+    var defaultWindowSize: SIMD2<Int>
 
     /// The menu ordering to use.
     public var menuOrder: MenuOrder
@@ -109,6 +121,9 @@ public struct EnvironmentValues {
 
     /// Backing storage for extensible subscript
     private var extraValues: [ObjectIdentifier: Any]
+
+    /// A mapping of window IDs to functions that open the corresponding windows.
+    var openWindowFunctionsByID: Box<[String: @MainActor () -> Void]>
 
     /// Backing storage for observable subscript
     private var observableObjects: [ObjectIdentifier: any ObservableObject]
@@ -178,9 +193,9 @@ public struct EnvironmentValues {
     @MainActor
     @available(tvOS, unavailable, message: "tvOS does not provide file system access")
     public var chooseFile: PresentSingleFileOpenDialogAction {
-        return PresentSingleFileOpenDialogAction(
+        PresentSingleFileOpenDialogAction(
             backend: backend,
-            window: .init(value: window)
+            window: MainActorBox(value: window)
         )
     }
 
@@ -192,9 +207,9 @@ public struct EnvironmentValues {
     /// its chooosing).
     @MainActor
     public var chooseFileSaveDestination: PresentFileSaveDialogAction {
-        return PresentFileSaveDialogAction(
+        PresentFileSaveDialogAction(
             backend: backend,
-            window: .init(value: window)
+            window: MainActorBox(value: window)
         )
     }
 
@@ -204,9 +219,7 @@ public struct EnvironmentValues {
     /// window of its choosing).
     @MainActor
     public var presentAlert: PresentAlertAction {
-        return PresentAlertAction(
-            environment: self
-        )
+        PresentAlertAction(environment: self)
     }
 
     /// Opens a URL with the default application. May present an application
@@ -214,8 +227,21 @@ public struct EnvironmentValues {
     /// protocol.
     @MainActor
     public var openURL: OpenURLAction {
-        return OpenURLAction(
-            backend: backend
+        OpenURLAction(backend: backend)
+    }
+
+    /// Opens a window with the specified ID.
+    @MainActor
+    public var openWindow: OpenWindowAction {
+        OpenWindowAction(environment: self)
+    }
+
+    /// Closes the enclosing window.
+    @MainActor
+    public var dismissWindow: DismissWindowAction {
+        DismissWindowAction(
+            backend: backend,
+            window: MainActorBox(value: window)
         )
     }
 
@@ -226,9 +252,14 @@ public struct EnvironmentValues {
     /// iOS.
     @MainActor
     public var revealFile: RevealFileAction? {
-        return RevealFileAction(
-            backend: backend
-        )
+        RevealFileAction(backend: backend)
+    }
+
+    /// Whether the backend can have multiple windows open at once. Mobile
+    /// backends generally can't.
+    @MainActor
+    public var supportsMultipleWindows: Bool {
+        backend.supportsMultipleWindows
     }
 
     /// The current calendar that views should use when handling dates.
@@ -271,11 +302,14 @@ public struct EnvironmentValues {
         scrollDismissesKeyboardMode = .automatic
         isTextSelectionEnabled = false
         windowResizability = .automatic
+        defaultLaunchBehavior = .automatic
+        defaultWindowSize = SIMD2(900, 450)
         menuOrder = .automatic
         allowLayoutCaching = false
         calendar = .current
         timeZone = .current
         datePickerStyle = .automatic
+        openWindowFunctionsByID = Box([:])
 
         let supportedDatePickerStyles = backend.supportedDatePickerStyles
         if supportedDatePickerStyles.isEmpty {

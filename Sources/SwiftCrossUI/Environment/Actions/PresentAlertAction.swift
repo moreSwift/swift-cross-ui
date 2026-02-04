@@ -24,12 +24,7 @@ public struct PresentAlertAction {
                         actionLabels: actions.map(\.label),
                         environment: environment
                     )
-                    let window: Backend.Window? =
-                        if let window = environment.window {
-                            .some(window as! Backend.Window)
-                        } else {
-                            nil
-                        }
+                    let window = environment.window.map { $0 as! Backend.Window }
                     backend.showAlert(alert, window: window) { actionIndex in
                         actions[actionIndex].action()
                         continuation.resume(returning: actionIndex)
