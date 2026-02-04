@@ -55,18 +55,18 @@ public struct Environment<Value>: DynamicProperty {
 
     public var wrappedValue: Value {
         guard let value = value.value else {
+            let pathDescription = {
+                return switch mode {
+                    case .keyPath(let keyPath):
+                        "\(keyPath)"
+                    case .observableObject:
+                        "\(Value.self).self"
+                }
+            }()
+
             fatalError(
                 """
-                Environment value at \(
-                    { 
-                        return switch mode {
-                            case .keyPath(let keyPath):
-                                "\(keyPath)"
-                            case .observableObject:
-                                "\(Value.self).self"
-                        }
-                    }
-                ) used before initialization. Don't \
+                Environment value at \(pathDescription) used before initialization. Don't \
                 use @Environment properties before SwiftCrossUI requests the \
                 view's body.
                 """
