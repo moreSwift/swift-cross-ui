@@ -294,6 +294,9 @@ struct WindowingApp: App {
             }
             .defaultSize(width: 200, height: 200)
             .windowResizability(enforceMaxSize ? .contentSize : .contentMinSize)
+            #if os(Windows)
+                .defaultLaunchBehavior(.suppressed)
+            #endif
 
             WindowGroup("Tertiary window (hidden)", id: "tertiary-window") {
                 #hotReloadable {
@@ -310,6 +313,9 @@ struct WindowingApp: App {
                 }
             }
             .defaultSize(width: 200, height: 200)
+            #if os(Windows)
+                .defaultLaunchBehavior(.suppressed)
+            #endif
         #endif
     }
 }
