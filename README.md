@@ -3,15 +3,14 @@
 </p>
 
 <p align="center">
-    <img src="https://github.com/moreSwift/swift-cross-ui/workflows/Build%20macOS/badge.svg?branch=main">
-    <img src="https://github.com/moreSwift/swift-cross-ui/workflows/Build%20Linux/badge.svg?branch=main">
-    <img src="https://github.com/moreSwift/swift-cross-ui/workflows/Build%20Windows/badge.svg?branch=main">
-    <img alt="GitHub" src="https://img.shields.io/github/license/moreSwift/swift-cross-ui">
+    <a href="https://github.com/moreSwift/swift-cross-ui/actions/workflows/build-test-and-docs.yml"><img alt="Workflow status" src="https://github.com/moreSwift/swift-cross-ui/actions/workflows/build-test-and-docs.yml/badge.svg?event=push"></a>
+    <img alt="License" src="https://img.shields.io/github/license/moreSwift/swift-cross-ui">
+    <a href="https://moreswift.dev/discord"><img src="https://img.shields.io/discord/1123965445687484466?color=6A7EC2&label=discord&logo=discord&logoColor=ffffff"></a> 
 </p>
 
 A SwiftUI-like framework for creating cross-platform apps in Swift (5.10+).
 
-To dive right in with SwiftCrossUI, check out [the SwiftCrossUI quick start guide](https://docs.swiftcrossui.dev/documentation/swiftcrossui/quick-start).
+To get started with SwiftCrossUI, check out [the quick start guide](https://docs.swiftcrossui.dev/documentation/swiftcrossui/quick-start).
 
 > [!NOTE]
 > SwiftCrossUI does not attempt to replicate SwiftUI's API perfectly since that would be a constantly-moving target and SwiftUI has many entrenched Apple-centric concepts. That said, SwiftCrossUI's built-in views and scenes share much of their API surface with their SwiftUI cousins, and over time SwiftCrossUI will likely adopt many of SwiftUI's commonly-used APIs.
@@ -26,11 +25,11 @@ To dive right in with SwiftCrossUI, check out [the SwiftCrossUI quick start guid
 
 ## Community
 
-Discussion about SwiftCrossUI happens in the [SwiftCrossUI Discord server](https://discord.gg/fw2trT48ny). [Join](https://discord.gg/fw2trT48ny) to discuss the library, get involved, or just be kept up-to-date on progress!
+Discussion about SwiftCrossUI happens in the [moreSwift Discord server](https://moreswift.dev/discord). [Join](https://moreswift.dev/discord) to discuss the library, get involved, or just be kept up-to-date on progress!
 
 ## Supporting SwiftCrossUI
 
-If you find SwiftCrossUI useful, please consider supporting me by [becoming a sponsor](https://github.com/sponsors/stackotter). I spend most of my spare time working on open-source projects, and each sponsorship helps me focus more time on making high quality libraries and tools for the community.
+If you find SwiftCrossUI useful, please consider supporting its development by [becoming a sponsor](https://github.com/sponsors/stackotter). I spend most of my spare time working on open-source projects, and each sponsorship helps me focus more time on making high quality libraries and tools for the community.
 
 ## Documentation
 
