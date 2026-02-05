@@ -26,7 +26,7 @@ public class Pango {
         proposedHeight: Double? = nil
     ) -> (width: Int, height: Int) {
         let layout = pango_layout_new(pangoContext)!
-        pango_layout_set_text(layout, text, Int32(text.count))
+        pango_layout_set_text(layout, text, Int32(text.utf8.count))
         pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR)
         pango_layout_set_ellipsize(layout, ellipsize.toGtk())
 
