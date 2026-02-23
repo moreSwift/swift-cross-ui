@@ -890,7 +890,10 @@ public final class GtkBackend: AppBackend {
 
     public func setState(ofToggle toggle: Widget, to state: Bool) {
         let toggle = toggle as! Gtk.ToggleButton
-        toggle.active = state
+
+        toggle.withBlockedSignal(named: "toggled") {
+            toggle.active = state
+        }
     }
 
     public func createSwitch() -> Widget {
@@ -910,7 +913,11 @@ public final class GtkBackend: AppBackend {
     }
 
     public func setState(ofSwitch switchWidget: Widget, to state: Bool) {
-        (switchWidget as! Gtk.Switch).active = state
+        let switchWidget = switchWidget as! Gtk.Switch
+
+        switchWidget.withBlockedSignal(named: "notify::active") {
+            switchWidget.active = state
+        }
     }
 
     public func createCheckbox() -> Widget {
@@ -930,7 +937,11 @@ public final class GtkBackend: AppBackend {
     }
 
     public func setState(ofCheckbox checkboxWidget: Widget, to state: Bool) {
-        (checkboxWidget as! Gtk.CheckButton).active = state
+        let checkboxWidget = checkboxWidget as! Gtk.CheckButton
+
+        checkboxWidget.withBlockedSignal(named: "notify::active") {
+            checkboxWidget.active = state
+        }
     }
 
     public func createSlider() -> Widget {
@@ -959,7 +970,10 @@ public final class GtkBackend: AppBackend {
 
     public func setValue(ofSlider slider: Widget, to value: Double) {
         let slider = slider as! Scale
-        slider.value = value
+
+        slider.withBlockedSignal(named: "value-changed") {
+            slider.value = value
+        }
     }
 
     public func createTextField() -> Widget {

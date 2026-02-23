@@ -23,11 +23,21 @@ open class GObject: GObjectRepresentable {
 
     private var signals: [(UInt, Any)] = []
 
-    private static let blockableSignalNames: Set<String> = [
-        "changed"
+    /// GObject signals sometimes get invoked when you programmatically set something.
+    /// If you don't want them to, you can temporarily disable them, by adding the signal name here
+    /// and wrapping the set operation in ``GObject/withBlockedSignal(named:block:)``.
+    ///
+    /// We made blocking support opt in to save memory.
+    public static let blockableSignalNames: Set<String> = [
+        "changed", "notify::active", "toggled", "value-changed",
     ]
 
-    private var blockableSignalIDs = [String: UInt]()
+    /// Stores the signal handler ID for a  signal name.
+    /// Signal handler IDs need to be stored, as `g_signal_handler_block` and `g_signal_handler_unblock`
+    /// need it to block/unblock it.
+    ///
+    /// We have no other way to retrieve them later.
+    private var blockableSignalIDs: [String: UInt] = [:]
 
     open func registerSignals() {}
 
@@ -147,7 +157,6 @@ open class GObject: GObjectRepresentable {
         storeHandler(handlerId, box: box, for: name)
     }
 
-    @inline(__always)
     private func storeHandler(_ id: UInt, box: Any, for signalName: String) {
         signals.append((id, box))
         if Self.blockableSignalNames.contains(signalName) {
@@ -156,6 +165,7 @@ open class GObject: GObjectRepresentable {
     }
 
     /// Executes a closure while temporarily suppressing a specific signal handler.
+    /// You can only block signals included in ``GObject/blockableSignalNames``.
     ///
     /// - Parameters:
     ///   - named: The name of the GObject signal to block (e.g., "changed").
@@ -166,11 +176,12 @@ open class GObject: GObjectRepresentable {
         block: @escaping () -> Void
     ) {
         guard let signalID = blockableSignalIDs[signalName] else {
-            print(
-                """
-                Notice: Skipping signal block for '\(signalName)' (ID missing). \
-                Proceeding with block execution anyway.
-                """)
+            if !Self.blockableSignalNames.contains(signalName) {
+                print(
+                    """
+                    Warning: Could not block signal '\(signalName)' because it is not included in GObject.blockableSignalNames.
+                    """)
+            }
             block()
             return
         }

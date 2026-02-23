@@ -96,7 +96,7 @@ public struct Slider: ElementaryView, View {
                 #if DEBUG
                     logger.warning(
                         """
-                        Unnecessary write to text Binding of Slider detected, \
+                        Unnecessary write to wrappedValue Binding of Slider, \
                         please open an issue on the SwiftCrossUI GitHub repository \
                         so we can fix it on \(type(of: backend)).
                         """
