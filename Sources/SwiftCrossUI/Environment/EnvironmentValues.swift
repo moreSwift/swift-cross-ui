@@ -346,6 +346,7 @@ extension EnvironmentValues {
     /// Whether user interaction is enabled. Set by ``View/disabled(_:)``.
     @Entry public var isEnabled: Bool = true
 
+    /// The number of lines text can occupy and whether to reserve that space.
     @Entry public var lineLimitSettings: LineLimit?
 
     /// The maximum number of lines that text can occupy in a view.

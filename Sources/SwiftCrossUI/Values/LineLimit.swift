@@ -1,4 +1,8 @@
-public struct LineLimit: Sendable {
-    public let limit: Int
-    public let reservesSpace: Bool
+/// Configuration for text height limits, propagated vi ``EnvironmentValues/lineLimitSettings``.
+public struct LineLimit: Sendable, Hashable {
+    /// The maximum number of lines text may occupy.
+    public var limit: Int
+    /// A Boolean value indicating whether the view should reserve the full height
+    /// required by the line limit, regardless of the content's length.
+    public var reservesSpace: Bool
 }

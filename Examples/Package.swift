@@ -98,10 +98,6 @@ let package = Package(
         .executableTarget(
             name: "ColorsExample",
             dependencies: exampleDependencies
-        ),
-        .executableTarget(
-            name: "LineLimitTest",
-            dependencies: exampleDependencies
         )
     ]
 )

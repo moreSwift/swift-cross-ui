@@ -79,8 +79,3 @@ version = '0.1.0'
 identifier = 'dev.swiftcrossui.ColorsExample'
 product = 'ColorsExample'
 version = '0.1.0'
-
-[apps.LineLimitTest]
-identifier = 'dev.swiftcrossui.LineLimitTest'
-product = 'LineLimitTest'
-version = '0.1.0'

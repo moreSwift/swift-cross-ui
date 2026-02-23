@@ -695,6 +695,7 @@ public final class GtkBackend: AppBackend {
         textView.wrap = true
         textView.lineWrapMode = .wordCharacter
         textView.ellipsize = .end
+        textView.yalign = 0.0
         return textView
     }
 
@@ -735,7 +736,7 @@ public final class GtkBackend: AppBackend {
             proposedHeight: proposedHeight.map(Double.init)
         )
 
-        var usedHeight = height
+        var imposedHeight = height
 
         if let lineLimitSettings = environment.lineLimitSettings {
             let multilineString = [String](repeating: "a", count: lineLimitSettings.limit)
@@ -747,19 +748,20 @@ public final class GtkBackend: AppBackend {
             )
 
             let pango = Pango(for: measurementCustomLabel)
-            let (_, potentialHeight) = pango.getTextSize(
+
+            let (_, heightLimit) = pango.getTextSize(
                 multilineString,
                 ellipsize: (widget as! CustomLabel).ellipsize,
-                proposedWidth: proposedWidth.map(Double.init),
-                proposedHeight: proposedHeight.map(Double.init)
+                proposedWidth: nil,
+                proposedHeight: nil
             )
 
-            if potentialHeight < usedHeight || lineLimitSettings.reservesSpace {
-                usedHeight = potentialHeight
+            if heightLimit < imposedHeight || lineLimitSettings.reservesSpace {
+                imposedHeight = heightLimit
             }
         }
 
-        return SIMD2(width, usedHeight)
+        return SIMD2(width, imposedHeight)
     }
 
     public func createImageView() -> Widget {

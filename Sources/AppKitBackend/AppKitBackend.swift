@@ -161,7 +161,7 @@ public final class AppKitBackend: AppBackend {
     public func activate(window: Window) {
         window.makeKeyAndOrderFront(nil)
     }
-    
+
     public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
         MenuBar.setUpMenuBar(extraMenus: submenus.map(Self.renderSubmenu(_:)))
     }
@@ -494,20 +494,20 @@ public final class AppKitBackend: AppBackend {
             attributes: Self.attributes(forTextIn: environment)
         )
 
-        var usedHeight = rect.size.height
+        var height = rect.size.height
 
         if let lineLimitSettings = environment.lineLimitSettings {
-            let height =
+            let limitedHeight =
                 Double(max(lineLimitSettings.limit, 1)) * environment.resolvedFont.lineHeight
 
-            if height < usedHeight || lineLimitSettings.reservesSpace {
-                usedHeight = height
+            if limitedHeight < height || lineLimitSettings.reservesSpace {
+                height = limitedHeight
             }
         }
 
         return SIMD2(
             Int(rect.size.width.rounded(.awayFromZero)),
-            Int(usedHeight.rounded(.awayFromZero))
+            Int(height.rounded(.awayFromZero))
         )
     }
 

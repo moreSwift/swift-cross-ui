@@ -1,4 +1,4 @@
-public struct StateImpl<Storage: StateStorageProtocol> {
+struct StateImpl<Storage: StateStorageProtocol> {
     /// The inner `Storage` is what stays constant between view updates.
     /// The wrapping box is used so that we can assign the storage to future
     /// state instances from the non-mutating ``update(with:previousValue:)``

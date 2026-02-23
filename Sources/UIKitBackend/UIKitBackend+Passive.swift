@@ -71,20 +71,20 @@ extension UIKitBackend {
             context: nil
         )
 
-        var usedHeight = size.height
+        var height = size.height
 
         if let lineLimitSettings = environment.lineLimitSettings {
-            let height =
+            let limitedHeight =
                 Double(max(lineLimitSettings.limit, 1)) * environment.resolvedFont.lineHeight
 
-            if height < usedHeight || lineLimitSettings.reservesSpace {
-                usedHeight = height
+            if limitedHeight < height || lineLimitSettings.reservesSpace {
+                height = limitedHeight
             }
         }
 
         return SIMD2(
             Int(size.width.rounded(.awayFromZero)),
-            Int(usedHeight.rounded(.awayFromZero))
+            Int(height.rounded(.awayFromZero))
         )
     }
 
