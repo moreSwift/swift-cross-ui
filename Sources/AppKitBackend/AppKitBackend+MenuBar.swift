@@ -10,14 +10,17 @@ enum MenuBar {
     // method matching the selector, then AppKit automatically disables
     // the corresponding menu item.
 
-    private static var appMenu: (appMenu: NSMenu, servicesMenu: NSMenu) {
-        // The first menu item is special and always takes on the name of the app.
-        let appName = ProcessInfo.processInfo.processName
+    /// The app's name to use in menus.
+    private static var appName: String {
+        ProcessInfo.processInfo.processName
+    }
 
+    private static var appMenu: (appMenu: NSMenu, servicesMenu: NSMenu) {
         let servicesMenu = NSMenu(title: "Services")
         let servicesMenuItem = NSMenuItem(title: "Services", action: nil)
         servicesMenuItem.submenu = servicesMenu
 
+        // The first menu item is special and always takes on the name of the app.
         let appMenu = NSMenu(
             title: appName,
             items: [
@@ -148,7 +151,15 @@ enum MenuBar {
     }
 
     private static var helpMenu: NSMenu {
-        NSMenu(title: "Help")
+        NSMenu(
+            title: "Help",
+            items: [
+                NSMenuItem(
+                    title: "\(appName) Help",
+                    action: #selector(NSApplication.showHelp(_:))
+                )
+            ]
+        )
     }
 
     static func setUpMenuBar(extraMenus: [NSMenuItem]) {
