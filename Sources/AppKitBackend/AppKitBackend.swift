@@ -48,14 +48,20 @@ public final class AppKitBackend: AppBackend {
     }
 
     public func runMainLoop(_ callback: @escaping @MainActor () -> Void) {
+        // Immediately set up the default menus so that the Window menu can populate
+        // correctly.
+        MenuBar.setUpMenuBar(extraMenus: [])
+
         callback()
         NSApplication.shared.activate(ignoringOtherApps: true)
         NSApplication.shared.run()
     }
 
     public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
-        let nsApp = NSApplication.shared
-        nsApp.setActivationPolicy(.regular)
+        // For bundled apps, the default activation policy is `regular`, but for unbundled
+        // apps without an Info.plist the default is `prohibited` -- i.e. the app can't
+        // create windows. We override that here.
+        NSApplication.shared.setActivationPolicy(.regular)
 
         let window = NSCustomWindow(
             contentRect: NSRect(
@@ -155,6 +161,10 @@ public final class AppKitBackend: AppBackend {
     public func activate(window: Window) {
         window.makeKeyAndOrderFront(nil)
     }
+    
+    public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
+        MenuBar.setUpMenuBar(extraMenus: submenus.map(Self.renderSubmenu(_:)))
+    }
 
     public func close(window: Window) {
         window.close()
@@ -219,166 +229,14 @@ public final class AppKitBackend: AppBackend {
         }
     }
 
-    private static func renderSubmenu(_ submenu: ResolvedMenu.Submenu) -> NSMenuItem {
+    static func renderSubmenu(_ submenu: ResolvedMenu.Submenu) -> NSMenuItem {
         let renderedMenu = NSMenu()
-        for item in renderMenuItems(submenu.content.items) {
-            renderedMenu.addItem(item)
-        }
+        renderedMenu.items = renderMenuItems(submenu.content.items)
 
         let menuItem = NSMenuItem()
         menuItem.title = submenu.label
         menuItem.submenu = renderedMenu
         return menuItem
-    }
-
-    /// The submenu pointed to by `helpMenu` still appears in `menuBar`. It's
-    /// whichever submenu has the name 'Help'.
-    private static func renderMenuBar(
-        _ submenus: [ResolvedMenu.Submenu]
-    ) -> (menuBar: NSMenu, helpMenu: NSMenu?) {
-        let menuBar = NSMenu()
-
-        // The first menu item is special and always takes on the name of the app.
-        let about = NSMenuItem()
-        about.submenu = createDefaultAboutMenu()
-        menuBar.addItem(about)
-        let edit = NSMenuItem()
-        edit.submenu = createDefaultEditMenu()
-        menuBar.addItem(edit)
-
-        var helpMenu: NSMenu?
-        for submenu in submenus {
-            let renderedSubmenu = renderSubmenu(submenu)
-            menuBar.addItem(renderedSubmenu)
-
-            if submenu.label == "Help" {
-                helpMenu = renderedSubmenu.submenu
-            }
-        }
-
-        return (menuBar, helpMenu)
-    }
-
-    public static func createDefaultAboutMenu() -> NSMenu {
-        let appName = ProcessInfo.processInfo.processName
-        let appMenu = NSMenu(title: appName)
-        appMenu.addItem(
-            withTitle: "About \(appName)",
-            action: #selector(NSApp.orderFrontStandardAboutPanel(_:)),
-            keyEquivalent: ""
-        )
-        appMenu.addItem(NSMenuItem.separator())
-
-        let hideMenu = appMenu.addItem(
-            withTitle: "Hide \(appName)",
-            action: #selector(NSApp.hide(_:)),
-            keyEquivalent: "h"
-        )
-        hideMenu.keyEquivalentModifierMask = .command
-
-        let hideOthers = appMenu.addItem(
-            withTitle: "Hide Others",
-            action: #selector(NSApp.hideOtherApplications(_:)),
-            keyEquivalent: "h"
-        )
-        hideOthers.keyEquivalentModifierMask = [.option, .command]
-
-        appMenu.addItem(
-            withTitle: "Show All",
-            action: #selector(NSApp.unhideAllApplications(_:)),
-            keyEquivalent: ""
-        )
-
-        let quitMenu = appMenu.addItem(
-            withTitle: "Quit \(appName)",
-            action: #selector(NSApp.terminate(_:)),
-            keyEquivalent: "q"
-        )
-        quitMenu.keyEquivalentModifierMask = .command
-
-        return appMenu
-    }
-
-    /// A vessel for empty methods that we use to construct selectors. We only
-    /// do it this way, because Swift complains if we provide method selectors
-    /// such as `undo:` and `redo:` as strings (even though they don't come
-    /// from any particular class as far as I can tell).
-    ///
-    /// I've failed to find which class (if any) these methods are supposed to
-    /// come from, and the following Apple documentation article makes it sound
-    /// like undo and redo are just stringly-typed objc messages:
-    /// https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/UndoArchitecture/Articles/AppKitUndo.html
-    class FirstResponder {
-        /// I'm not sure exactly what type this first argument is meant to have,
-        /// but I believe that it actually doesn't matter, because the number
-        /// of parameters (and their corresponding labels) are what actually matter.
-        @objc func undo(_ sender: NSObject) {}
-        @objc func redo(_ sender: NSObject) {}
-    }
-
-    public static func createDefaultEditMenu() -> NSMenu {
-        // You may notice that multiple different base types are used in the
-        // action selectors of the various menu items. This is because the
-        // selectors get sent to the app's first responder at the time of
-        // the command getting sent. If the first responder doesn't have a
-        // method matching the selector, then AppKit automatically disables
-        // the corresponding menu item.
-
-        let editMenu = NSMenu(title: "Edit")
-        let undoItem = editMenu.addItem(
-            withTitle: "Undo",
-            action: #selector(FirstResponder.undo(_:)),
-            keyEquivalent: "z"
-        )
-        undoItem.keyEquivalentModifierMask = .command
-
-        let redoItem = editMenu.addItem(
-            withTitle: "Redo",
-            action: #selector(FirstResponder.redo(_:)),
-            keyEquivalent: "z"
-        )
-        redoItem.keyEquivalentModifierMask = [.command, .shift]
-
-        editMenu.addItem(NSMenuItem.separator())
-
-        let cutItem = editMenu.addItem(
-            withTitle: "Cut",
-            action: #selector(NSTextView.cut),
-            keyEquivalent: "x"
-        )
-        cutItem.keyEquivalentModifierMask = .command
-
-        let copyItem = editMenu.addItem(
-            withTitle: "Copy",
-            action: #selector(NSTextView.copy),
-            keyEquivalent: "c"
-        )
-        copyItem.keyEquivalentModifierMask = .command
-
-        let pasteItem = editMenu.addItem(
-            withTitle: "Paste",
-            action: #selector(NSTextView.paste),
-            keyEquivalent: "v"
-        )
-        pasteItem.keyEquivalentModifierMask = .command
-
-        let selectAllItem = editMenu.addItem(
-            withTitle: "Select all",
-            action: #selector(NSTextView.selectAll),
-            keyEquivalent: "a"
-        )
-        selectAllItem.keyEquivalentModifierMask = .command
-
-        return editMenu
-    }
-
-    public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
-        let (menuBar, helpMenu) = Self.renderMenuBar(submenus)
-        NSApplication.shared.mainMenu = menuBar
-
-        // We point the app's `helpMenu` at whichever submenu is named 'Help'
-        // (if any) so that AppKit can install its help menu search function.
-        NSApplication.shared.helpMenu = helpMenu
     }
 
     public func runInMainThread(action: @escaping @MainActor () -> Void) {
@@ -883,6 +741,7 @@ public final class AppKitBackend: AppBackend {
         textEditor.drawsBackground = false
         textEditor.delegate = textEditor
         textEditor.allowsUndo = true
+        textEditor.isRichText = false
         textEditor.textContainerInset = .zero
         textEditor.textContainer?.lineFragmentPadding = 0
         return textEditor
