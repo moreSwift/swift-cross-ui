@@ -201,17 +201,20 @@ final class UIButtonPicker: WrapperWidget<UIButton>, Picker {
         super.init(child: UIButton())
 
         let imageName =
-            if #available(iOS 18, macCatalyst 18, tvOS 18, visionOS 2, *) {
+            if #available(iOS 26, macCatalyst 26, tvOS 26, visionOS 2, *) {
                 "chevron.compact.up.chevron.compact.down"
             } else {
                 "chevron.up.chevron.down"
             }
+        let image = UIImage(systemName: imageName)
 
-        child.setImage(UIImage(systemName: imageName), for: .normal)
-        child.showsMenuAsPrimaryAction = true
+        child.setImage(image, for: .normal)
+        child.imageEdgeInsets.left = 2
 
         // Render the chevrons to the right of the text (they render to the left by default)
         child.semanticContentAttribute = .forceRightToLeft
+
+        child.showsMenuAsPrimaryAction = true
     }
 
     func setOptions(to options: [String]) {
@@ -245,7 +248,7 @@ final class UIButtonPicker: WrapperWidget<UIButton>, Picker {
     func updateEnvironment(_ environment: EnvironmentValues) {
         child.isEnabled = environment.isEnabled
 
-        let color = environment.foregroundColor?.resolve(in: environment).uiColor ?? .label
+        let color = environment.foregroundColor?.resolve(in: environment).uiColor ?? .link
         let title = selectedIndex.map { options[$0] } ?? ""
 
         #if os(tvOS)
@@ -255,11 +258,22 @@ final class UIButtonPicker: WrapperWidget<UIButton>, Picker {
                 UIKitBackend.attributedString(
                     text: title,
                     environment: environment,
-                    defaultForegroundColor: .label
+                    defaultForegroundColor: .link
                 ),
                 for: .normal
             )
         #endif
+
+        // This was obtained experimentally by trying to visually match SwiftUI
+        let chevronPointSizeScaleFactor = 0.8
+        let resolvedFont = environment.resolvedFont
+        let symbolConfiguration = UIImage.SymbolConfiguration(
+            pointSize: resolvedFont.pointSize * chevronPointSizeScaleFactor
+        )
+        child.setPreferredSymbolConfiguration(
+            symbolConfiguration,
+            forImageIn: .normal
+        )
 
         child.tintColor = color
 
