@@ -5,7 +5,7 @@ protocol Picker: WidgetProtocol {
     func setOptions(to options: [String])
     func setChangeHandler(to onChange: @escaping (Int?) -> Void)
     func setSelectedOption(to index: Int?)
-    func setEnabled(_ isEnabled: Bool)
+    func updateEnvironment(_ environment: EnvironmentValues)
 }
 
 @available(tvOS, unavailable)
@@ -35,11 +35,14 @@ final class UIPickerViewPicker: WrapperWidget<UIPickerView>, Picker, UIPickerVie
 
     func setSelectedOption(to index: Int?) {
         child.selectRow(
-            (index ?? -1) + 1, inComponent: 0, animated: false)
+            (index ?? -1) + 1,
+            inComponent: 0,
+            animated: false
+        )
     }
 
-    func setEnabled(_ isEnabled: Bool) {
-        child.isUserInteractionEnabled = isEnabled
+    func updateEnvironment(_ environment: EnvironmentValues) {
+        child.isUserInteractionEnabled = environment.isEnabled
     }
 
     func numberOfComponents(in _: UIPickerView) -> Int {
@@ -108,14 +111,17 @@ final class UITableViewPicker: WrapperWidget<UITableView>, Picker, UITableViewDe
     func setSelectedOption(to index: Int?) {
         if let index {
             child.selectRow(
-                at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .middle)
+                at: IndexPath(row: index, section: 0),
+                animated: true,
+                scrollPosition: .middle
+            )
         } else {
             child.selectRow(at: nil, animated: false, scrollPosition: .none)
         }
     }
 
-    func setEnabled(_ isEnabled: Bool) {
-        child.isUserInteractionEnabled = isEnabled
+    func updateEnvironment(_ environment: EnvironmentValues) {
+        child.isUserInteractionEnabled = environment.isEnabled
     }
 
     func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
@@ -139,19 +145,161 @@ final class UITableViewPicker: WrapperWidget<UITableView>, Picker, UITableViewDe
     }
 }
 
-extension UIKitBackend {
-    public func createPicker() -> Widget {
-        #if targetEnvironment(macCatalyst)
-            if #available(macCatalyst 14, *), UIDevice.current.userInterfaceIdiom == .mac {
-                return UITableViewPicker()
-            } else {
-                return UIPickerViewPicker()
+final class UISegmentedControlPicker: WrapperWidget<UISegmentedControl>, Picker {
+    private var options: [String] = []
+    private var onSelect: ((Int?) -> Void)?
+
+    init() {
+        super.init(child: UISegmentedControl())
+
+        child.addTarget(self, action: #selector(selectionChanged), for: .valueChanged)
+    }
+
+    func setOptions(to options: [String]) {
+        self.options = options
+
+        for i in 0..<min(options.count, child.numberOfSegments) {
+            child.setTitle(options[i], forSegmentAt: i)
+        }
+
+        if options.count > child.numberOfSegments {
+            for option in options[child.numberOfSegments...] {
+                child.insertSegment(withTitle: option, at: child.numberOfSegments, animated: false)
             }
-        #elseif os(tvOS)
-            return UITableViewPicker()
+        } else {
+            for i in (options.count..<child.numberOfSegments).reversed() {
+                child.removeSegment(at: i, animated: false)
+            }
+        }
+    }
+
+    func setChangeHandler(to onChange: @escaping (Int?) -> Void) {
+        onSelect = onChange
+    }
+
+    func setSelectedOption(to index: Int?) {
+        child.selectedSegmentIndex = index ?? UISegmentedControl.noSegment
+    }
+
+    func updateEnvironment(_ environment: EnvironmentValues) {
+        child.isEnabled = environment.isEnabled
+    }
+
+    @objc func selectionChanged() {
+        let selectedIndex = child.selectedSegmentIndex
+        onSelect?(selectedIndex == UISegmentedControl.noSegment ? nil : selectedIndex)
+    }
+}
+
+@available(iOS 14, macCatalyst 14, tvOS 17, *)
+final class UIButtonPicker: WrapperWidget<UIButton>, Picker {
+    private var options: [String] = []
+    private var onSelect: ((Int?) -> Void)?
+    private var selectedIndex: Int?
+
+    init() {
+        super.init(child: UIButton())
+
+        let imageName =
+            if #available(iOS 18, macCatalyst 18, tvOS 18, visionOS 2, *) {
+                "chevron.compact.up.chevron.compact.down"
+            } else {
+                "chevron.up.chevron.down"
+            }
+
+        child.setImage(UIImage(systemName: imageName), for: .normal)
+        child.showsMenuAsPrimaryAction = true
+
+        // Render the chevrons to the right of the text (they render to the left by default)
+        child.semanticContentAttribute = .forceRightToLeft
+    }
+
+    func setOptions(to options: [String]) {
+        self.options = options
+        updateMenu()
+    }
+
+    func setChangeHandler(to onChange: @escaping (Int?) -> Void) {
+        onSelect = onChange
+    }
+
+    func setSelectedOption(to index: Int?) {
+        selectedIndex = index
+        updateMenu()
+    }
+
+    private func updateMenu() {
+        child.menu = UIMenu(
+            children: options.enumerated().map { offset, element in
+                UIAction(title: element, state: offset == selectedIndex ? .on : .off) {
+                    [unowned self] _ in
+
+                    selectedIndex = offset
+                    onSelect?(offset)
+                    updateMenu()
+                }
+            }
+        )
+    }
+
+    func updateEnvironment(_ environment: EnvironmentValues) {
+        child.isEnabled = environment.isEnabled
+
+        let color = environment.foregroundColor?.resolve(in: environment).uiColor ?? .label
+        let title = selectedIndex.map { options[$0] } ?? ""
+
+        #if os(tvOS)
+            child.setTitle(title, for: .normal)
         #else
-            return UIPickerViewPicker()
+            child.setAttributedTitle(
+                UIKitBackend.attributedString(
+                    text: title,
+                    environment: environment,
+                    defaultForegroundColor: .label
+                ),
+                for: .normal
+            )
         #endif
+
+        child.tintColor = color
+
+        if #available(iOS 16, macCatalyst 16, *) {
+            child.preferredMenuElementOrder =
+                switch environment.menuOrder {
+                    case .automatic: .automatic
+                    case .priority: .priority
+                    case .fixed: .fixed
+                }
+        }
+    }
+}
+
+extension UIKitBackend {
+    public func createPicker(style: BackendPickerStyle) -> Widget {
+        switch style {
+            case .menu:
+                if #available(iOS 14, macCatalyst 14, tvOS 17, *) {
+                    UIButtonPicker()
+                } else {
+                    preconditionFailure("Current OS is too old to support menu buttons.")
+                }
+            case .radioGroup:
+                preconditionFailure("radioGroup is unsupported in UIKitBackend")
+            case .segmented:
+                UISegmentedControlPicker()
+            case .wheel:
+                #if targetEnvironment(macCatalyst)
+                    if #available(macCatalyst 14, *), UIDevice.current.userInterfaceIdiom == .mac {
+                        UITableViewPicker()
+                    } else {
+                        UIPickerViewPicker()
+                    }
+                #elseif os(tvOS)
+                    preconditionFailure("wheel is unsupported on tvOS")
+                #else
+                    UIPickerViewPicker()
+                #endif
+        }
     }
 
     public func updatePicker(
@@ -161,9 +309,9 @@ extension UIKitBackend {
         onChange: @escaping (Int?) -> Void
     ) {
         let pickerWidget = picker as! any Picker
-        pickerWidget.setEnabled(environment.isEnabled)
         pickerWidget.setChangeHandler(to: onChange)
         pickerWidget.setOptions(to: options)
+        pickerWidget.updateEnvironment(environment)
     }
 
     public func setSelectedOption(ofPicker picker: Widget, to selectedOption: Int?) {

@@ -71,6 +71,7 @@ public final class WinUIBackend: AppBackend {
     public let supportedDatePickerStyles: [DatePickerStyle] = [
         .automatic, .graphical, .compact, .wheel,
     ]
+    public let supportedPickerStyles: [BackendPickerStyle] = [.menu, .radioGroup]
 
     public var scrollBarWidth: Int {
         12
@@ -915,26 +916,43 @@ public final class WinUIBackend: AppBackend {
         slider.value = value
     }
 
-    public func createPicker() -> Widget {
-        let picker = CustomComboBox()
-        picker.selectionChanged.addHandler { [weak picker] _, _ in
-            guard let picker else { return }
-            picker.onChangeSelection?(Int(picker.selectedIndex))
-        }
+    public func createPicker(style: BackendPickerStyle) -> Widget {
+        switch style {
+            case .menu:
+                let picker = CustomComboBox()
+                picker.selectionChanged.addHandler { [weak picker] _, _ in
+                    guard let picker else { return }
+                    picker.onChangeSelection?(Int(picker.selectedIndex))
+                }
 
-        // When hovering over a picker, its foreground changes to black,
-        // when the pointer exits the picker the foreground color remains
-        // black instead of returning to its regular value. I've tried various
-        // variations of the solution below and it seems like the only thing
-        // that works is fully recreating the brush.
-        picker.pointerExited.addHandler { [weak picker] _, _ in
-            guard let picker else { return }
-            let brush = SolidColorBrush()
-            brush.color = picker.actualForegroundColor
-            picker.foreground = brush
-        }
+                // When hovering over a picker, its foreground changes to black,
+                // when the pointer exits the picker the foreground color remains
+                // black instead of returning to its regular value. I've tried various
+                // variations of the solution below and it seems like the only thing
+                // that works is fully recreating the brush.
+                picker.pointerExited.addHandler { [weak picker] _, _ in
+                    guard let picker else { return }
+                    let brush = SolidColorBrush()
+                    brush.color = picker.actualForegroundColor
+                    picker.foreground = brush
+                }
 
-        return picker
+                return picker
+            case .radioGroup:
+                let picker = CustomRadioButtons()
+
+                picker.selectionChanged.addHandler { [weak picker] _, _ in
+                    guard let picker else { return }
+                    picker.onChangeSelection?(
+                        picker.selectedIndex == -1 ? nil : Int(picker.selectedIndex)
+                    )
+                }
+
+                return picker
+            default:
+                logger.critical("unsupported picker style \(style)")
+                fatalError("unsupported picker style \(style)")
+        }
     }
 
     public func updatePicker(
@@ -943,58 +961,80 @@ public final class WinUIBackend: AppBackend {
         environment: EnvironmentValues,
         onChange: @escaping (Int?) -> Void
     ) {
-        let picker = picker as! CustomComboBox
+        if let picker = picker as? CustomComboBox {
+            picker.onChangeSelection = onChange
+            environment.apply(to: picker)
+            picker.actualForegroundColor =
+                environment.suggestedForegroundColor.resolve(in: environment).uwpColor
 
-        picker.onChangeSelection = onChange
-        environment.apply(to: picker)
-        picker.actualForegroundColor =
-            environment.suggestedForegroundColor.resolve(in: environment).uwpColor
+            // Only update options past this point, otherwise the early return
+            // will cause issues.
+            guard options.count > 0 else {
+                picker.options = []
+                return
+            }
 
-        // Only update options past this point, otherwise the early return
-        // will cause issues.
-        guard options.count > 0 else {
-            picker.options = []
-            return
-        }
-
-        if options.count == picker.items.count {
-            // for i in 0 ..< options.count {
-            // TODO: Understands how to get ComboBox items in WinUI
-            // if picker.items.getAt(UInt32(i)) as? String != options[i] {
-            // picker.items.setAt(UInt32(1), options[i])
-            // }
-            // }
-        } else if options.count > picker.items.count {
-            if !picker.items.isEmpty {
-                for i in 0..<picker.items.count {
+            if options.count == picker.items.count {
+                // for i in 0 ..< options.count {
+                // TODO: Understands how to get ComboBox items in WinUI
+                // if picker.items.getAt(UInt32(i)) as? String != options[i] {
+                // picker.items.setAt(UInt32(1), options[i])
+                // }
+                // }
+            } else if options.count > picker.items.count {
+                if !picker.items.isEmpty {
+                    for i in 0..<picker.items.count {
+                        // if picker.items.getAt(UInt32(i)) as? String != options[i] {
+                        picker.items.setAt(UInt32(i), options[i])
+                        // }
+                    }
+                }
+                for i in picker.items.count..<options.count {
+                    picker.items.append(options[i])
+                }
+            } else {
+                for i in 0..<options.count {
                     // if picker.items.getAt(UInt32(i)) as? String != options[i] {
                     picker.items.setAt(UInt32(i), options[i])
                     // }
                 }
+                for i in options.count..<picker.items.count {
+                    picker.items.removeAt(UInt32(i))
+                }
             }
-            for i in picker.items.count..<options.count {
-                picker.items.append(options[i])
+
+            // TODO: Proper picker updating logic
+            // TODO: Picker font handling
+
+            picker.options = options
+        } else if let picker = picker as? CustomRadioButtons {
+            for i in 0..<min(picker.items.count, options.count) {
+                (picker.items[i] as! TextBlock).text = options[i]
             }
-        } else {
-            for i in 0..<options.count {
-                // if picker.items.getAt(UInt32(i)) as? String != options[i] {
-                picker.items.setAt(UInt32(i), options[i])
-                // }
+
+            if picker.items.count > options.count {
+                for i in (options.count..<picker.items.count).reversed() {
+                    picker.items.remove(at: i)
+                }
+            } else {
+                for option in options[picker.items.count...] {
+                    let block = TextBlock()
+                    block.text = option
+                    environment.apply(to: block)
+                    picker.items.append(block)
+                }
             }
-            for i in options.count..<picker.items.count {
-                picker.items.removeAt(UInt32(i))
-            }
+
+            picker.onChangeSelection = onChange
         }
-
-        // TODO: Proper picker updating logic
-        // TODO: Picker font handling
-
-        picker.options = options
     }
 
     public func setSelectedOption(ofPicker picker: Widget, to selectedOption: Int?) {
-        let picker = picker as! ComboBox
-        picker.selectedIndex = Int32(selectedOption ?? 0)
+        if let picker = picker as? ComboBox {
+            picker.selectedIndex = Int32(selectedOption ?? 0)
+        } else if let picker = picker as? RadioButtons {
+            picker.selectedIndex = Int32(selectedOption ?? -1)
+        }
     }
 
     public func createTextField() -> Widget {
@@ -1995,6 +2035,10 @@ final class CustomComboBox: ComboBox {
     var options: [String] = []
     var onChangeSelection: ((Int?) -> Void)?
     var actualForegroundColor: UWP.Color = UWP.Color(a: 255, r: 0, g: 0, b: 0)
+}
+
+final class CustomRadioButtons: RadioButtons {
+    var onChangeSelection: ((Int?) -> Void)?
 }
 
 final class CustomSplitView: SplitView {

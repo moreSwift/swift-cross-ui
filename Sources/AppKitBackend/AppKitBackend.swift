@@ -28,6 +28,9 @@ public final class AppKitBackend: AppBackend {
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
     public let supportedDatePickerStyles: [DatePickerStyle] = [.automatic, .graphical, .compact]
+    public let supportedPickerStyles: [BackendPickerStyle] = [
+        .menu, .segmented, .radioGroup,
+    ]
 
     public var scrollBarWidth: Int {
         // We assume that all scrollers have their controlSize set to `.regular` by default.
@@ -647,8 +650,18 @@ public final class AppKitBackend: AppBackend {
         slider.doubleValue = value
     }
 
-    public func createPicker() -> Widget {
-        return NSPopUpButton()
+    public func createPicker(style: BackendPickerStyle) -> Widget {
+        switch style {
+            case .menu:
+                return NSPopUpButton()
+            case .segmented:
+                return NSSegmentedControl()
+            case .radioGroup:
+                return RadioGroup()
+            default:
+                logger.critical("unsupported picker style \(style)")
+                fatalError("unsupported picker style \(style)")
+        }
     }
 
     public func updatePicker(
@@ -657,27 +670,47 @@ public final class AppKitBackend: AppBackend {
         environment: EnvironmentValues,
         onChange: @escaping (Int?) -> Void
     ) {
-        let picker = picker as! NSPopUpButton
-        picker.isEnabled = environment.isEnabled
-        picker.menu?.removeAllItems()
-        for option in options {
-            let item = NSMenuItem()
-            item.attributedTitle = Self.attributedString(for: option, in: environment)
-            picker.menu?.addItem(item)
+        if let picker = picker as? NSPopUpButton {
+            picker.isEnabled = environment.isEnabled
+            picker.menu?.removeAllItems()
+            for option in options {
+                let item = NSMenuItem()
+                item.attributedTitle = Self.attributedString(for: option, in: environment)
+                picker.menu?.addItem(item)
+            }
+            picker.onAction = { picker in
+                let picker = picker as! NSPopUpButton
+                onChange(picker.indexOfSelectedItem)
+            }
+            picker.bezelStyle = .regularSquare
+        } else if let picker = picker as? NSSegmentedControl {
+            picker.isEnabled = environment.isEnabled
+            picker.segmentCount = options.count
+            for (i, option) in options.enumerated() {
+                picker.setLabel(option, forSegment: i)
+            }
+            picker.onAction = { picker in
+                let picker = picker as! NSSegmentedControl
+                let selectedIndex = picker.selectedSegment
+                onChange(selectedIndex == -1 ? nil : selectedIndex)
+            }
+        } else if let picker = picker as? RadioGroup {
+            picker.update(options: options, environment: environment)
+            picker.onChange = onChange
         }
-        picker.onAction = { picker in
-            let picker = picker as! NSPopUpButton
-            onChange(picker.indexOfSelectedItem)
-        }
-        picker.bezelStyle = .regularSquare
     }
 
     public func setSelectedOption(ofPicker picker: Widget, to selectedOption: Int?) {
-        let picker = picker as! NSPopUpButton
-        if let index = selectedOption {
-            picker.selectItem(at: index)
-        } else {
-            picker.select(nil)
+        if let picker = picker as? NSPopUpButton {
+            if let index = selectedOption {
+                picker.selectItem(at: index)
+            } else {
+                picker.select(nil)
+            }
+        } else if let picker = picker as? NSSegmentedControl {
+            picker.selectedSegment = selectedOption ?? -1
+        } else if let picker = picker as? RadioGroup {
+            picker.setSelectedIndex(to: selectedOption)
         }
     }
 
@@ -1042,7 +1075,7 @@ public final class AppKitBackend: AppBackend {
         table.reloadData()
     }
 
-    private static func attributedString(
+    internal static func attributedString(
         for text: String,
         in environment: EnvironmentValues
     ) -> NSAttributedString {
@@ -2360,5 +2393,72 @@ final class CustomDatePickerDelegate: NSObject, NSDatePickerCellDelegate {
         timeInterval _: UnsafeMutablePointer<TimeInterval>?
     ) {
         onChange?(proposedDateValue.pointee as Date)
+    }
+}
+
+final class RadioGroup: NSStackView {
+    private var buttons: [NSButton]
+    var onChange: ((Int?) -> Void)?
+
+    override var intrinsicContentSize: NSSize {
+        buttons.reduce(
+            into: NSSize(width: 0.0, height: max(0.0, spacing * Double(buttons.count - 1)))
+        ) { partialResult, button in
+            let buttonIntrinsicSize = button.intrinsicContentSize
+            partialResult.width = max(partialResult.width, buttonIntrinsicSize.width)
+            partialResult.height += buttonIntrinsicSize.height
+        }
+    }
+
+    init() {
+        self.buttons = []
+        super.init(frame: .zero)
+        self.orientation = .vertical
+        self.alignment = .leading
+        self.setAccessibilityRole(.radioGroup)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("not used")
+    }
+
+    func update(options: [String], environment: EnvironmentValues) {
+        for i in 0..<min(buttons.count, options.count) {
+            buttons[i].attributedTitle = AppKitBackend.attributedString(
+                for: options[i], in: environment)
+            buttons[i].isEnabled = environment.isEnabled
+        }
+
+        if options.count > buttons.count {
+            for i in buttons.count..<options.count {
+                let button = NSButton()
+                button.attributedTitle = AppKitBackend.attributedString(
+                    for: options[i], in: environment)
+                button.isEnabled = environment.isEnabled
+                button.target = self
+                button.action = #selector(buttonClicked(sender:))
+                button.tag = i
+                button.setButtonType(.radio)
+                addArrangedSubview(button)
+                buttons.append(button)
+            }
+        } else {
+            for i in (options.count..<buttons.count).reversed() {
+                removeView(buttons[i])
+                buttons.remove(at: i)
+            }
+        }
+    }
+
+    func setSelectedIndex(to index: Int?) {
+        if let index {
+            buttons[index].state = .on
+        } else {
+            buttons.forEach { $0.state = .off }
+        }
+    }
+
+    @objc func buttonClicked(sender: NSButton) {
+        onChange?(sender.tag)
     }
 }

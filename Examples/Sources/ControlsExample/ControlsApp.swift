@@ -6,6 +6,21 @@ import SwiftCrossUI
     import SwiftBundlerRuntime
 #endif
 
+enum BuiltInPickerStyle: CaseIterable, Equatable {
+    case automatic, inline, menu, radioGroup, segmented, wheel
+
+    var asPickerStyle: any PickerStyle {
+        switch self {
+            case .automatic: .automatic
+            case .inline: .inline
+            case .menu: .menu
+            case .radioGroup: .radioGroup
+            case .segmented: .segmented
+            case .wheel: .wheel
+        }
+    }
+}
+
 @main
 @HotReloadable
 struct ControlsApp: App {
@@ -22,8 +37,10 @@ struct ControlsApp: App {
     @State var menuToggleState = false
     @State var progressViewSize: Int = 10
     @State var isProgressViewResizable = true
+    @State var pickerStyle: BuiltInPickerStyle? = .automatic
 
     @Environment(\.supportedDatePickerStyles) var supportedDatePickerStyles
+    @Environment(\.isPickerStyleSupported) var isPickerStyleSupported
 
     var body: some Scene {
         WindowGroup("ControlsApp") {
@@ -77,12 +94,14 @@ struct ControlsApp: App {
                             }
                         #endif
 
-                        VStack {
-                            Text("Slider")
-                            Slider(value: $sliderValue, in: 0...10)
-                                .frame(maxWidth: 200)
-                            Text("Value: \(String(format: "%.02f", sliderValue))")
-                        }
+                        #if !os(tvOS)
+                            VStack {
+                                Text("Slider")
+                                Slider(value: $sliderValue, in: 0...10)
+                                    .frame(maxWidth: 200)
+                                Text("Value: \(String(format: "%.02f", sliderValue))")
+                            }
+                        #endif
 
                         VStack {
                             Text("Text field")
@@ -90,23 +109,41 @@ struct ControlsApp: App {
                             Text("Value: \(text)")
                         }
 
-                        VStack {
-                            Toggle(
-                                "Enable ProgressView resizability", isOn: $isProgressViewResizable)
-                            Slider(value: $progressViewSize, in: 10...100)
-                            ProgressView()
-                                .resizable(isProgressViewResizable)
-                                .frame(width: progressViewSize, height: progressViewSize)
-                        }
+                        #if !os(tvOS)
+                            VStack {
+                                Toggle(
+                                    "Enable ProgressView resizability",
+                                    isOn: $isProgressViewResizable)
+                                Slider(value: $progressViewSize, in: 10...100)
+                                ProgressView()
+                                    .resizable(isProgressViewResizable)
+                                    .frame(width: progressViewSize, height: progressViewSize)
+                            }
+                        #endif
 
                         #if !canImport(Gtk3Backend)
                             VStack {
-                                Text("Drop down")
+                                Text("Picker")
+
+                                HStack {
+                                    Text("Picker Style:")
+                                    Picker(
+                                        of: BuiltInPickerStyle.allCases.filter {
+                                            isPickerStyleSupported($0.asPickerStyle)
+                                        },
+                                        selection: $pickerStyle
+                                    )
+                                }
+
                                 HStack {
                                     Text("Flavor: ")
+
                                     Picker(
                                         of: ["Vanilla", "Chocolate", "Strawberry"],
                                         selection: $flavor
+                                    )
+                                    .pickerStyle(
+                                        pickerStyle?.asPickerStyle ?? DefaultPickerStyle()
                                     )
                                 }
                                 Text("You chose: \(flavor ?? "Nothing yet!")")
