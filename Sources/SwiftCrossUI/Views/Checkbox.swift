@@ -32,16 +32,6 @@ struct Checkbox: ElementaryView, View {
         backend.updateCheckbox(widget, environment: environment) { newActiveState in
             if active.wrappedValue != newActiveState {
                 active.wrappedValue = newActiveState
-            } else {
-                #if DEBUG
-                    logger.warning(
-                        """
-                        Unnecessary write to wrappedValue binding of Checkbox detected, \
-                        please open an issue on the SwiftCrossUI GitHub repository \
-                        so we can fix it on \(type(of: backend)).
-                        """
-                    )
-                #endif
             }
         }
         backend.setState(ofCheckbox: widget, to: active.wrappedValue)

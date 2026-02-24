@@ -89,7 +89,7 @@ struct ObservableTests {
         )
     }
     
-    @Test("Private and static  properties are ignored")
+    @Test("Private and static properties are ignored")
     func testPrivateAndStaticAreIgnored() {
         assertMacroExpansion(
             """

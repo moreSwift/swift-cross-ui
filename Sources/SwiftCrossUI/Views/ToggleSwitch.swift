@@ -31,16 +31,6 @@ struct ToggleSwitch: ElementaryView, View {
         backend.updateSwitch(widget, environment: environment) { newActiveState in
             if active.wrappedValue != newActiveState {
                 active.wrappedValue = newActiveState
-            } else {
-                #if DEBUG
-                    logger.warning(
-                        """
-                        Unnecessary write to wrappedValue binding of ToggleSwitch detected, \
-                        please open an issue on the SwiftCrossUI GitHub repository \
-                        so we can fix it on \(type(of: backend)).
-                        """
-                    )
-                #endif
             }
         }
         backend.setState(ofSwitch: widget, to: active.wrappedValue)
