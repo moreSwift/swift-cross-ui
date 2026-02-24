@@ -175,9 +175,6 @@ public struct EnvironmentValues {
     /// The display styles supported by ``DatePicker``. ``datePickerStyle`` must be one of these.
     public let supportedDatePickerStyles: [DatePickerStyle]
 
-    /// The display style used by ``Picker``.
-    public var pickerStyle: any PickerStyle
-
     /// Checks whether a picker style is supported by the current backend.
     @MainActor
     public var isPickerStyleSupported: PickerSupportedAction {
@@ -195,7 +192,6 @@ public struct EnvironmentValues {
         onResize = { _ in }
         values = [:]
         observableObjects = [:]
-        pickerStyle = .automatic
 
         let supportedDatePickerStyles = backend.supportedDatePickerStyles
         if supportedDatePickerStyles.isEmpty {
@@ -349,6 +345,9 @@ extension EnvironmentValues {
 
     /// The current time zone that views should use when handling dates.
     @Entry public var timeZone: TimeZone = .current
+
+    /// The display style used by ``Picker``.
+    @Entry public var pickerStyle: any PickerStyle = .automatic
 
     /// The display style used by ``DatePicker``.
     @Entry public var datePickerStyle: DatePickerStyle = .automatic

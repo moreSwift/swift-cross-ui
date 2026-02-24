@@ -950,8 +950,9 @@ public final class WinUIBackend: AppBackend {
 
                 return picker
             default:
-                logger.critical("unsupported picker style \(style)")
-                fatalError("unsupported picker style \(style)")
+                let message = "unsupported picker style \(style)"
+                logger.critical("\(message)")
+                fatalError(message)
         }
     }
 

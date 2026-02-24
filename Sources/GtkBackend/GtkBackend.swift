@@ -1027,8 +1027,9 @@ public final class GtkBackend: AppBackend {
 
     public func createPicker(style: BackendPickerStyle) -> Widget {
         if style != .menu {
-            logger.critical("unsupported picker style \(style)")
-            fatalError("unsupported picker style \(style)")
+            let message = "unsupported picker style \(style)"
+            logger.critical("\(message)")
+            fatalError(message)
         }
 
         return DropDown(strings: [])
