@@ -889,7 +889,11 @@ public final class GtkBackend: AppBackend {
     }
 
     public func setState(ofToggle toggle: Widget, to state: Bool) {
-        (toggle as! Gtk.ToggleButton).active = state
+        let toggle = toggle as! Gtk.ToggleButton
+
+        toggle.withBlockedSignal(named: "toggled") {
+            toggle.active = state
+        }
     }
 
     public func createSwitch() -> Widget {
@@ -909,7 +913,11 @@ public final class GtkBackend: AppBackend {
     }
 
     public func setState(ofSwitch switchWidget: Widget, to state: Bool) {
-        (switchWidget as! Gtk.Switch).active = state
+        let switchWidget = switchWidget as! Gtk.Switch
+
+        switchWidget.withBlockedSignal(named: "notify::active") {
+            switchWidget.active = state
+        }
     }
 
     public func createCheckbox() -> Widget {
@@ -929,7 +937,11 @@ public final class GtkBackend: AppBackend {
     }
 
     public func setState(ofCheckbox checkboxWidget: Widget, to state: Bool) {
-        (checkboxWidget as! Gtk.CheckButton).active = state
+        let checkboxWidget = checkboxWidget as! Gtk.CheckButton
+
+        checkboxWidget.withBlockedSignal(named: "notify::active") {
+            checkboxWidget.active = state
+        }
     }
 
     public func createSlider() -> Widget {
@@ -957,7 +969,11 @@ public final class GtkBackend: AppBackend {
     }
 
     public func setValue(ofSlider slider: Widget, to value: Double) {
-        (slider as! Scale).value = value
+        let slider = slider as! Scale
+
+        slider.withBlockedSignal(named: "value-changed") {
+            slider.value = value
+        }
     }
 
     public func createTextField() -> Widget {
@@ -986,7 +1002,11 @@ public final class GtkBackend: AppBackend {
     }
 
     public func setContent(ofTextField textField: Widget, to content: String) {
-        (textField as! Entry).text = content
+        let textField = textField as! Entry
+
+        textField.withBlockedSignal(named: "changed") {
+            textField.text = content
+        }
     }
 
     public func getContent(ofTextField textField: Widget) -> String {
@@ -1016,7 +1036,10 @@ public final class GtkBackend: AppBackend {
 
     public func setContent(ofTextEditor textEditor: Widget, to content: String) {
         let textEditor = textEditor as! Gtk.TextView
-        textEditor.buffer.text = content
+
+        textEditor.buffer.withBlockedSignal(named: "changed") {
+            textEditor.buffer.text = content
+        }
     }
 
     public func getContent(ofTextEditor textEditor: Widget) -> String {

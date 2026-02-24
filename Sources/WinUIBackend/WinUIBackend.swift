@@ -885,8 +885,12 @@ public final class WinUIBackend: AppBackend {
 
     public func createSlider() -> Widget {
         let slider = Slider()
-        slider.valueChanged.addHandler { [weak internalState] _, event in
-            guard let internalState else { return }
+        slider.valueChanged.addHandler { [weak internalState, weak slider] _, event in
+            guard
+                let internalState,
+                let slider
+            else { return }
+
             internalState.sliderChangeActions[ObjectIdentifier(slider)]?(
                 Double(event?.newValue ?? 0)
             )
@@ -1030,7 +1034,8 @@ public final class WinUIBackend: AppBackend {
     }
 
     public func setContent(ofTextField textField: Widget, to content: String) {
-        (textField as! TextBox).text = content
+        let textField = textField as! TextBox
+        textField.text = content
     }
 
     public func getContent(ofTextField textField: Widget) -> String {
@@ -1039,8 +1044,15 @@ public final class WinUIBackend: AppBackend {
 
     public func createTextEditor() -> Widget {
         let textEditor = TextBox()
-        textEditor.textChanged.addHandler { [weak internalState] _, _ in
-            guard let internalState else { return }
+        textEditor.textChanged.addHandler { [weak internalState, weak textEditor] _, _ in
+            guard
+                let internalState,
+                let textEditor
+            else { return }
+            guard !textEditor.shouldBlockNextChangedSignal else {
+                textEditor.shouldBlockNextChangedSignal = false
+                return
+            }
             // Reuse this storage because it's the same widget type as a text field
             internalState.textFieldChangeActions[ObjectIdentifier(textEditor)]?(textEditor.text)
         }
@@ -1076,7 +1088,9 @@ public final class WinUIBackend: AppBackend {
     }
 
     public func setContent(ofTextEditor textEditor: Widget, to content: String) {
-        (textEditor as! TextBox).text = content
+        let textEditor = textEditor as! TextBox
+        textEditor.shouldBlockNextChangedSignal = true
+        textEditor.text = content
     }
 
     public func getContent(ofTextEditor textEditor: Widget) -> String {
@@ -1242,7 +1256,8 @@ public final class WinUIBackend: AppBackend {
     }
 
     public func setState(ofToggle toggle: Widget, to state: Bool) {
-        (toggle as! ToggleButton).isChecked = state
+        let toggle = toggle as! ToggleButton
+        toggle.isChecked = state
     }
 
     public func createSwitch() -> Widget {
@@ -2375,6 +2390,19 @@ final class CustomDatePicker: StackPanel {
                 x: max(timeViewSize.x, dateViewSize.x),
                 y: timeViewSize.y + dateViewSize.y + Int(self.spacing)
             )
+        }
+    }
+}
+
+extension WinUI.FrameworkElement {
+    var shouldBlockNextChangedSignal: Bool {
+        get {
+            (self.tag as? [String: Any])?["shouldBlockNextChangedSignal"] as? Bool ?? false
+        }
+        set {
+            var value = self.tag as? [String: Any] ?? [:]
+            value["shouldBlockNextChangedSignal"] = newValue
+            self.tag = value
         }
     }
 }

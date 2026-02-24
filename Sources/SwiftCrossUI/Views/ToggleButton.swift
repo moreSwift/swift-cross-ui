@@ -24,7 +24,19 @@ struct ToggleButton: ElementaryView, View {
         // TODO: Implement toggle button sizing within SwiftCrossUI so that we
         //   can delay updating the underlying widget until `commit`.
         backend.updateToggle(widget, label: label, environment: environment) { newActiveState in
-            active.wrappedValue = newActiveState
+            if active.wrappedValue != newActiveState {
+                active.wrappedValue = newActiveState
+            } else {
+                #if DEBUG
+                    logger.warning(
+                        """
+                        Unnecessary write to wrappedValue binding of ToggleButton detected, \
+                        please open an issue on the SwiftCrossUI GitHub repository \
+                        so we can fix it on \(type(of: backend)).
+                        """
+                    )
+                #endif
+            }
         }
         return ViewLayoutResult.leafView(
             size: ViewSize(backend.naturalSize(of: widget))
