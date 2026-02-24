@@ -66,7 +66,11 @@ public final class UIKitBackend: AppBackend {
         #elseif os(visionOS)
             .menu
         #else
-            .wheel
+            if #available(iOS 14, macCatalyst 14, *) {
+                .menu
+            } else {
+                .wheel
+            }
         #endif
     }
 
