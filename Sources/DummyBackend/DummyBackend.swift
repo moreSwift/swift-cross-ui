@@ -253,6 +253,7 @@ public final class DummyBackend: AppBackend {
     public var canRevealFiles = false
     public var supportsMultipleWindows = true
     public var supportedDatePickerStyles: [DatePickerStyle] = []
+    public var supportedPickerStyles: [BackendPickerStyle] = []
 
     public var incomingURLHandler: ((URL) -> Void)?
 

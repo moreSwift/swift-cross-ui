@@ -1,9 +1,8 @@
 import CGtk
 
-/// A `GtkSpinButton` is an ideal way to allow the user to set the
-/// value of some attribute.
+/// Allows to enter or change numeric values.
 ///
-/// ![An example GtkSpinButton](spinbutton.png)
+/// <picture><source srcset="spinbutton-dark.png" media="(prefers-color-scheme: dark)"><img alt="An example GtkSpinButton" src="spinbutton.png"></picture>
 ///
 /// Rather than having to directly type a number into a `GtkEntry`,
 /// `GtkSpinButton` allows the user to click on one of two arrows
@@ -83,6 +82,12 @@ import CGtk
 /// }
 /// ```
 ///
+/// # Shortcuts and Gestures
+///
+/// The following signals have default keybindings:
+///
+/// - [signal@Gtk.SpinButton::change-value]
+///
 /// # CSS nodes
 ///
 /// ```
@@ -111,7 +116,7 @@ import CGtk
 ///
 /// # Accessibility
 ///
-/// `GtkSpinButton` uses the %GTK_ACCESSIBLE_ROLE_SPIN_BUTTON role.
+/// `GtkSpinButton` uses the [enum@Gtk.AccessibleRole.spin_button] role.
 open class SpinButton: Widget, CellEditable, Editable, Orientable {
     /// Creates a new `GtkSpinButton`.
     public convenience init(

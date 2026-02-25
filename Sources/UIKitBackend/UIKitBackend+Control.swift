@@ -97,7 +97,8 @@ final class TextEditorWidget: WrapperWidget<UITextView>, UITextViewDelegate {
                 child: UISegmentedControl(items: [
                     "OFF" as NSString,
                     "ON" as NSString,
-                ]))
+                ])
+            )
 
             child.addTarget(self, action: #selector(switchFlipped), for: .valueChanged)
         }

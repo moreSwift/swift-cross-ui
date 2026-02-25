@@ -119,6 +119,11 @@ public protocol AppBackend: Sendable {
     /// Must include ``DatePickerStyle/automatic`` if date pickers are supported at all.
     nonisolated var supportedDatePickerStyles: [DatePickerStyle] { get }
 
+    /// The supported picker styles.
+    var supportedPickerStyles: [BackendPickerStyle] { get }
+    /// The picker style used by ``PickerStyle/automatic``.
+    var defaultPickerStyle: BackendPickerStyle { get }
+
     /// Runs the backend's main run loop.
     ///
     /// The app will exit when this method returns. This will always be the
@@ -961,8 +966,9 @@ public protocol AppBackend: Sendable {
     ///
     /// Predominantly used by ``Picker``.
     ///
+    /// - Parameter style: The picker's style.
     /// - Returns: A picker.
-    func createPicker() -> Widget
+    func createPicker(style: BackendPickerStyle) -> Widget
     /// Sets the options for a picker to display, along with a change handler for when its
     /// selected option changes.
     ///
@@ -1383,6 +1389,10 @@ public protocol AppBackend: Sendable {
 }
 
 extension AppBackend {
+    public var defaultPickerStyle: BackendPickerStyle {
+        supportedPickerStyles.first ?? .menu
+    }
+
     public func resolveTextStyle(
         _ textStyle: Font.TextStyle
     ) -> Font.TextStyle.Resolved {
@@ -1725,7 +1735,7 @@ extension AppBackend {
         todo()
     }
 
-    public func createPicker() -> Widget {
+    public func createPicker(style: BackendPickerStyle) -> Widget {
         todo()
     }
     public func updatePicker(

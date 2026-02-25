@@ -1,9 +1,8 @@
 import CGtk
 
-/// `GtkCalendar` is a widget that displays a Gregorian calendar, one month
-/// at a time.
+/// Displays a Gregorian calendar, one month at a time.
 ///
-/// ![An example GtkCalendar](calendar.png)
+/// <picture><source srcset="calendar-dark.png" media="(prefers-color-scheme: dark)"><img alt="An example GtkCalendar" src="calendar.png"></picture>
 ///
 /// A `GtkCalendar` can be created with [ctor@Gtk.Calendar.new].
 ///
