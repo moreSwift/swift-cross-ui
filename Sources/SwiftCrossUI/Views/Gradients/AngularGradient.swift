@@ -1,4 +1,4 @@
-/// An angular gradient.
+/// An angular gradient, often also referred to as a conic gradient.
 ///
 /// Currently unsupported on WinUIBackend.
 public struct AngularGradient: ElementaryView {
@@ -9,11 +9,13 @@ public struct AngularGradient: ElementaryView {
     /// The angle at which the gradient starts drawing. 0° is trailing center.
     public let startAngle: Angle
     /// The angle at which the gradient stops drawing. Everything after is filled with the last used color.
+    ///
+    /// Ends 360° from ``AngularGradient/startAngle`` when `nil`.
     public let endAngle: Angle?
 
     private static let idealSize = ViewSize(10, 10)
 
-    /// Creates a conic gradient that completes a full turn.
+    /// Creates an angular gradient that completes a full turn.
     public init(
         gradient: Gradient,
         center: UnitPoint,
@@ -25,7 +27,7 @@ public struct AngularGradient: ElementaryView {
         self.endAngle = nil
     }
 
-    /// Creates a conic gradient that completes a partial rotation.
+    /// Creates an angular gradient that completes a partial rotation.
     ///
     /// Stops are expected to be in 360° unit space.
     public init(
@@ -74,7 +76,7 @@ public struct AngularGradient: ElementaryView {
 }
 
 extension AngularGradient {
-    /// Creates a conic gradient from a collection of colors that completes a full turn.
+    /// Creates an angular gradient from a collection of colors that completes a full turn.
     public init(
         colors: [Color],
         center: UnitPoint,
@@ -87,7 +89,7 @@ extension AngularGradient {
         )
     }
 
-    /// Creates a conic gradient from a collection of color stops that completes a full turn.
+    /// Creates an angular gradient from a collection of color stops that completes a full turn.
     public init(
         stops: [Gradient.Stop],
         center: UnitPoint,
@@ -100,7 +102,7 @@ extension AngularGradient {
         )
     }
 
-    /// Creates a conic gradient from a collection of colors that completes a partial rotation.
+    /// Creates an angular gradient from a collection of colors that completes a partial rotation.
     public init(
         colors: [Color],
         center: UnitPoint,
@@ -115,7 +117,7 @@ extension AngularGradient {
         )
     }
 
-    /// Creates a conic gradient from a collection of color stops that completes a partial rotation.
+    /// Creates an angular gradient from a collection of color stops that completes a partial rotation.
     ///
     /// Stops are expected to be in 360° unit space.
     public init(

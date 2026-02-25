@@ -168,7 +168,7 @@ extension CAGradientLayer {
         let adjustedStops = gradient.adjustedStops
 
         layer.locations = adjustedStops.map {
-            NSNumber(floatLiteral: $0.location)
+            NSNumber(value: $0.location)
         }
 
         layer.colors = adjustedStops.map {

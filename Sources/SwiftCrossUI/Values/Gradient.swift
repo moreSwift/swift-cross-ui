@@ -1,13 +1,13 @@
-/// A color gradient represented as an array of color stops, each having a parametric location value.
-public struct Gradient {
-    /// The array of color stops.
+/// A color gradient represented as an array of color stops, each having a normalized location value.
+public struct Gradient: Sendable, Hashable {
+    /// The array of color stops, ordered by location.
     public var stops: [Gradient.Stop]
 
-    /// Creates a gradient from an array of color stops.
+    /// Creates a gradient from an array of color stops ordered by location.
+    ///
+    /// If no stop is passed, the gradient will be fully transparent.
     init(stops: [Gradient.Stop]) {
-        guard
-            let first = stops.first
-        else {
+        guard let first = stops.first else {
             let invisible = Color.black.opacity(0)
             self.stops = [
                 Stop(color: invisible, location: 0),
@@ -27,18 +27,18 @@ public struct Gradient {
                 Stop(color: first.color, location: 0),
                 Stop(color: first.color, location: 1),
             ]
-            return
+        } else {
+            self.stops = stops
         }
-        self.stops = stops
     }
 
     /// Creates a gradient from an array of colors.
     ///
     /// The gradient synthesizes its location values to evenly space the colors along the gradient.
+    ///
+    /// If no color is passed, the gradient will be fully transparent.
     init(colors: [Color]) {
-        guard
-            let first = colors.first
-        else {
+        guard let first = colors.first else {
             let invisible = Color.black.opacity(0)
             self.stops = [
                 Stop(color: invisible, location: 0),
@@ -60,18 +60,18 @@ public struct Gradient {
         var stops = [Stop(color: first, location: 0)]
         var currentLocation = 0.0
 
-        for color in colors[1...] {
-            currentLocation += locationDifference
+        for (i, color) in colors[1...].enumerated() {
+            let location = Double(i + 1) / Double(colors.count - 1)
             stops.append(
-                Stop(color: color, location: currentLocation)
+                Stop(color: color, location: location)
             )
         }
 
         self.stops = stops
     }
 
-    /// One color stop in the gradient.
-    public struct Stop {
+    /// One color stop in a gradient.
+    public struct Stop: Sendable, Equatable, Hashable {
         /// Creates a color stop with a color and location.
         public init(color: Color, location: Double) {
             self.color = color
@@ -84,5 +84,3 @@ public struct Gradient {
         public var location: Double
     }
 }
-
-extension Gradient.Stop: Equatable {}

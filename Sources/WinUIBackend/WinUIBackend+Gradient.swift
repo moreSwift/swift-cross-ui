@@ -17,18 +17,18 @@ extension WinUIBackend {
 
         let collection = GradientStopCollection()
 
-        gradient.gradient.stops.forEach {
-            let color = $0.color.resolve(in: environment)
-            let stop = GradientStop()
-            stop.color = .init(
+        for stop in gradient.gradient.stops {
+            let color = stop.color.resolve(in: environment)
+            let winUIstop = GradientStop()
+            winUIstop.color = .init(
                 a: UInt8(color.opacity * 255),
                 r: UInt8(color.red * 255),
                 g: UInt8(color.green * 255),
                 b: UInt8(color.blue * 255)
             )
-            stop.offset = $0.location
+            winUIstop.offset = $0.location
 
-            collection.append(stop)
+            collection.append(winUIstop)
         }
 
         let brush = LinearGradientBrush()
@@ -53,18 +53,18 @@ extension WinUIBackend {
 
         let brush = RadialGradientBrush()
 
-        gradient.adjustedStops.forEach {
-            let color = $0.color.resolve(in: environment)
-            let stop = GradientStop()
-            stop.color = .init(
+        for stop in gradient.adjustedStops {
+            let color = stop.color.resolve(in: environment)
+            let winUIstop = GradientStop()
+            winUIstop.color = .init(
                 a: UInt8(color.opacity * 255),
                 r: UInt8(color.red * 255),
                 g: UInt8(color.green * 255),
                 b: UInt8(color.blue * 255)
             )
-            stop.offset = $0.location
+            winUIstop.offset = $0.location
 
-            brush.gradientStops.append(stop)
+            brush.gradientStops.append(winUIstop)
         }
 
         brush.gradientOrigin = gradient.center.point

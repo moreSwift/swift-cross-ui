@@ -886,8 +886,8 @@ public protocol AppBackend: Sendable {
     /// - Parameters:
     ///   - widget: The widget to update.
     ///   - gradient: The SwiftCrossUI representation of the widget.
-    ///   - withSize: The size dictated by ``ViewLayoutResult``.
-    ///   - in: The environment of the gradient.
+    ///   - size: The size dictated by ``ViewLayoutResult``.
+    ///   - environment: The environment of the gradient.
     func updateLinearGradient(
         _ widget: Widget,
         gradient: LinearGradient,
@@ -900,8 +900,8 @@ public protocol AppBackend: Sendable {
     /// - Parameters:
     ///   - widget: The widget to update.
     ///   - gradient: The SwiftCrossUI representation of the widget.
-    ///   - withSize: The size dictated by ``ViewLayoutResult``.
-    ///   - in: The environment of the gradient.
+    ///   - size: The size dictated by ``ViewLayoutResult``.
+    ///   - environment: The environment of the gradient.
     func updateRadialGradient(
         _ widget: Widget,
         gradient: RadialGradient,
@@ -914,8 +914,8 @@ public protocol AppBackend: Sendable {
     /// - Parameters:
     ///   - widget: The widget to update.
     ///   - gradient: The SwiftCrossUI representation of the widget.
-    ///   - withSize: The size dictated by ``ViewLayoutResult``.
-    ///   - in: The environment of the gradient.
+    ///   - size: The size dictated by ``ViewLayoutResult``.
+    ///   - environment: The environment of the gradient.
     func updateAngularGradient(
         _ widget: Widget,
         gradient: AngularGradient,

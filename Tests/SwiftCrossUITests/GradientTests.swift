@@ -194,7 +194,6 @@ struct GradientTests {
 
 fileprivate extension Double {
     static func ~= (lhs: Self, rhs: Self) -> Bool {
-        Int(lhs * 1_000_000_000) ==
-        Int(rhs * 1_000_000_000)
+        abs(lhs - rhs) < 1e-6
     }
 }

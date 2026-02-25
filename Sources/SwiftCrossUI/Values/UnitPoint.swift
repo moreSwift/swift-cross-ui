@@ -1,5 +1,4 @@
-/// A normalized 2D point in a view’s coordinate space.
-@frozen
+/// A normalized 2D point in a view's coordinate space.
 public struct UnitPoint {
     /// The normalized distance from the origin to the point in the horizontal direction.
     public var x: Double
@@ -20,27 +19,27 @@ public struct UnitPoint {
 }
 
 extension UnitPoint {
-    /// The origin of a view.
+    /// The origin of a view, in the top, leading corner.
     public static let zero = UnitPoint()
 
-    /// A point that’s in the top, leading corner of a view.
+    /// A point that's in the top, leading corner of a view.
     public static let topLeading = UnitPoint(x: 0, y: 0)
-    /// A point that’s centered horizontally on the top edge of a view.
+    /// A point that's centered horizontally on the top edge of a view.
     public static let top = UnitPoint(x: 0.5, y: 0)
-    /// A point that’s in the top, trailing corner of a view.
+    /// A point that's in the top, trailing corner of a view.
     public static let topTrailing = UnitPoint(x: 1, y: 0)
 
-    /// A point that’s centered vertically on the leading edge of a view.
+    /// A point that's centered vertically on the leading edge of a view.
     public static let leading = UnitPoint(x: 0, y: 0.5)
-    /// A point that’s centered in a view.
+    /// A point that's centered vertically on the trailing edge of a view.
     public static let trailing = UnitPoint(x: 1, y: 0.5)
-    /// A point that’s centered vertically on the trailing edge of a view.
+    /// A point that's centered in a view.
     public static let center = UnitPoint(x: 0.5, y: 0.5)
 
-    /// A point that’s in the bottom, leading corner of a view.
+    /// A point that's in the bottom, leading corner of a view.
     public static let bottomLeading = UnitPoint(x: 0, y: 1)
-    /// A point that’s centered horizontally on the bottom edge of a view.
+    /// A point that's centered horizontally on the bottom edge of a view.
     public static let bottom = UnitPoint(x: 0.5, y: 1)
-    /// A point that’s in the bottom, trailing corner of a view.
+    /// A point that's in the bottom, trailing corner of a view.
     public static let bottomTrailing = UnitPoint(x: 1, y: 1)
 }

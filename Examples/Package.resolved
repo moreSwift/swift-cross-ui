@@ -333,7 +333,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stackotter/swift-winui",
       "state" : {
-        "revision" : "42c47f4e4129c8b5a5d9912f05e1168c924ac180"
+        "revision" : "1e3d14aaab0795add5e0586365767c15119942fb"
       }
     },
     {

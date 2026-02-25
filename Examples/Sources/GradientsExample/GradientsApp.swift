@@ -11,36 +11,34 @@ struct GradientsApp: App {
     static let colors: [Color] = [.red, .orange, .yellow, .green, .blue, .purple]
 
     static let stops: [Gradient.Stop] = [
-        .init(color: .red, location: 0), .init(color: .blue, location: 0.25),
-        .init(color: .purple, location: 1),
+        Gradient.Stop(color: .red, location: 0),
+        Gradient.Stop(color: .blue, location: 0.25),
+        Gradient.Stop(color: .purple, location: 1),
     ]
 
     @State var gradientType: GradientType = .linear
 
     var body: some Scene {
         WindowGroup("Gradients Example") {
-            HStack {
+            NavigationSplitView {
                 ForEach(GradientType.allCases, id: \.rawValue) { type in
                     Button(type.rawValue) {
                         gradientType = type
                     }
                     .disabled(gradientType == type)
                 }
-            }
-            ScrollView {
-                switch gradientType {
-                    case .linear:
-                        LinearGradientView()
-                    case .radial:
-                        RadialGradientView()
-                    case .angular:
-                        #if canImport(UIKitBackend)
+            } detail: {
+                ScrollView {
+                    switch gradientType {
+                        case .linear:
+                            LinearGradientView()
+                        case .radial:
+                            RadialGradientView()
+                        case .angular:
                             ScrollView(.horizontal) {
                                 AngularGradientView()
                             }
-                        #else
-                            AngularGradientView()
-                        #endif
+                    }
                 }
             }
         }
@@ -145,13 +143,13 @@ struct AngularGradientView: View {
     var stops: [Gradient.Stop] { GradientsApp.stops }
 
     var specialStops: [Gradient.Stop] = [
-        .init(color: .red, location: 1 / 12),
-        .init(color: .orange, location: 3 / 12),
-        .init(color: .yellow, location: 5 / 12),
-        .init(color: .green, location: 7 / 12),
-        .init(color: .blue, location: 9 / 12),
-        .init(color: .purple, location: 11 / 12),
-        .init(color: .red, location: 1),
+        Gradient.Stop(color: .red, location: 1 / 12),
+        Gradient.Stop(color: .orange, location: 3 / 12),
+        Gradient.Stop(color: .yellow, location: 5 / 12),
+        Gradient.Stop(color: .green, location: 7 / 12),
+        Gradient.Stop(color: .blue, location: 9 / 12),
+        Gradient.Stop(color: .purple, location: 11 / 12),
+        Gradient.Stop(color: .red, location: 1),
     ]
 
     var body: some View {
@@ -194,10 +192,10 @@ struct AngularGradientView: View {
 
                 AngularGradient(
                     stops: [
-                        .init(color: .white, location: 0),
-                        .init(color: .black, location: 0.1),
-                        .init(color: .white, location: 0.2),
-                        .init(color: .white, location: 0.5),
+                        Gradient.Stop(color: .white, location: 0),
+                        Gradient.Stop(color: .black, location: 0.1),
+                        Gradient.Stop(color: .white, location: 0.2),
+                        Gradient.Stop(color: .white, location: 0.5),
                     ],
                     center: .center,
                     angle: .degrees(230)
@@ -205,7 +203,6 @@ struct AngularGradientView: View {
                 .frame(width: 300)
             }
             .frame(height: 300)
-
         }
     }
 }

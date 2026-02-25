@@ -2,16 +2,26 @@ import Foundation
 
 /// A geometric angle whose value you access in either radians or degrees.
 public struct Angle {
-    public var degrees: Double
+    /// An angle in degrees
+    public var degrees: Double {
+        get {
+            radians / Self.conversionFactor
+        }
+        set {
+            radians = newValue * Self.conversionFactor
+        }
+    }
+
+    /// An angle in radians
     public var radians: Double
 
+    /// Creates an angle from a double value in degrees.
     public init(degrees: Double) {
-        self.degrees = degrees
         self.radians = degrees * Self.conversionFactor
     }
 
+    /// Creates an angle from a double value in radians.
     public init(radians: Double) {
-        self.degrees = radians / Self.conversionFactor
         self.radians = radians
     }
 
@@ -26,24 +36,30 @@ public struct Angle {
         self.init(radians: atan2(deltaY, deltaX))
     }
 
+    /// The factor for converting an angle in degrees to the same angle in radians.
     public static let conversionFactor = Double.pi / 180
 
+    /// Adds two angles together.
     public static func + (lhs: Self, rhs: Self) -> Self {
-        Angle(degrees: lhs.degrees + rhs.degrees)
+        Angle(radians: lhs.radians + rhs.radians)
     }
 
+    /// Subtracts two angles.
     public static func - (lhs: Self, rhs: Self) -> Self {
-        Angle(degrees: lhs.degrees - rhs.degrees)
+        Angle(radians: lhs.radians - rhs.radians)
     }
 }
 
 extension Angle {
-    public static var zero: Self { Angle(degrees: 0) }
+    /// The zero angle (0 degrees).
+    public static let zero = Angle(degrees: 0)
 
+    /// Creates an angle from a double value in radians.
     public static func radians(_ radians: Double) -> Angle {
         Angle(radians: radians)
     }
 
+    /// Creates an angle from a double value in degrees.
     public static func degrees(_ degrees: Double) -> Angle {
         Angle(degrees: degrees)
     }
