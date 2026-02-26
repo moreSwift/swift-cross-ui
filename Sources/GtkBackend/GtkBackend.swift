@@ -138,7 +138,9 @@ public final class GtkBackend: AppBackend {
 
     private static func mainRunLoopTicklingLoop(nextDelayMilliseconds: Int? = nil) {
         Self.runInMainThread(afterMilliseconds: nextDelayMilliseconds ?? 50) {
+            // This performs one pass through the run loop
             let nextDate = RunLoop.main.limitDate(forMode: .default)
+
             // This isn't expected to be nil, but if it is we can just loop
             // again quickly with the default delay.
             let nextDelay = nextDate.map {
