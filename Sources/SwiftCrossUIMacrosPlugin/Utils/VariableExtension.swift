@@ -8,7 +8,7 @@ extension Variable {
     // Copyright (c) 2014 - 2024 Apple Inc. and the Swift project authors
     // Licensed under Apache License v2.0 with Runtime Library Exception
     // Source https://github.com/swiftlang/swift/blob/2e8977f/lib/Macros/Sources/ObservationMacros/Extensions.swift#L111
-    func hasMacroApplication(_ name: String) throws -> Bool {
+    func hasMacroApplication(_ name: String) -> Bool {
         let parts = name.split(separator: ".")
 
         var expectation: [TokenKind] = []
