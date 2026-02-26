@@ -30,7 +30,9 @@ struct Checkbox: ElementaryView, View {
         backend: Backend
     ) {
         backend.updateCheckbox(widget, environment: environment) { newActiveState in
-            active.wrappedValue = newActiveState
+            if active.wrappedValue != newActiveState {
+                active.wrappedValue = newActiveState
+            }
         }
         backend.setState(ofCheckbox: widget, to: active.wrappedValue)
     }

@@ -1,5 +1,5 @@
 {
-  "originHash" : "18b77d9642b1a945f56419a1a256fcaf6c77f88634144224f2e005a3c837514a",
+  "originHash" : "3d675502d56fe36dcbbe3728d02c2faab74da359e17f9148eab4a4b8099b5150",
   "pins" : [
     {
       "identity" : "aexml",
@@ -85,7 +85,7 @@
     {
       "identity" : "pathkit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/kylef/PathKit",
+      "location" : "https://github.com/kylef/PathKit.git",
       "state" : {
         "revision" : "3bfd2737b700b9a36565a8c94f4ad2b050a5e574",
         "version" : "1.0.1"
@@ -200,7 +200,7 @@
     {
       "identity" : "swift-filestreamer",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sersoft-gmbh/swift-filestreamer.git",
+      "location" : "https://github.com/sersoft-gmbh/swift-filestreamer",
       "state" : {
         "revision" : "b01ff214cc629718a8729f33d2a8b88e47532dbd",
         "version" : "0.6.0"

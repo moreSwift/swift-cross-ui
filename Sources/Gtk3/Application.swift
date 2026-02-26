@@ -27,6 +27,13 @@ public class Application: GObject, GActionMap {
                 applicationPointer,
                 (newValue?.pointer).map(UnsafeMutablePointer.init)
             )
+
+            // works around issue with adding a menubar after showing the window
+            // https://gitlab.gnome.org/GNOME/gtk/-/issues/2834
+            if let settings = gtk_settings_get_default() {
+                g_object_notify(settings.cast(), "gtk-shell-shows-menubar")
+            }
+
             _menuBarModel = newValue
         }
     }
