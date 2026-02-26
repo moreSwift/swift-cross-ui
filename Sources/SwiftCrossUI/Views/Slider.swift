@@ -88,7 +88,7 @@ public struct Slider: ElementaryView, View {
             decimalPlaces: decimalPlaces,
             environment: environment
         ) { newValue in
-            if let value {
+            if let value, value.wrappedValue != newValue {
                 value.wrappedValue = newValue
             }
         }

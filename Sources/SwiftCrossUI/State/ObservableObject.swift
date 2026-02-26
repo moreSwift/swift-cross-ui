@@ -114,7 +114,7 @@ public macro ObservableObject() =
         type: "ObservableObjectMacro"
     )
 
-/// Apply to a member inside your `@ObservableObject` class to  opt out of observation
+/// Apply to a member inside your `@ObservableObject` class to opt out of observation
 // This macro is just used as a flag for `@ObservableObject` to ignore a specific property
 @attached(accessor)
 public macro ObservationIgnored() =

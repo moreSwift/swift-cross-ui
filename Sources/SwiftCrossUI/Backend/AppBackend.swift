@@ -105,6 +105,11 @@ public protocol AppBackend: Sendable {
     /// are supported at all.
     nonisolated var supportedDatePickerStyles: [DatePickerStyle] { get }
 
+    /// The supported picker styles.
+    var supportedPickerStyles: [BackendPickerStyle] { get }
+    /// The picker style used by `automatic`.
+    var defaultPickerStyle: BackendPickerStyle { get }
+
     /// Often in UI frameworks (such as Gtk), code is run in a callback
     /// after starting the app, and hence this generic root window creation
     /// API must reflect that. This is always the first method to be called
@@ -599,7 +604,7 @@ public protocol AppBackend: Sendable {
     /// Creates a picker for selecting from a finite set of options (e.g. a radio button group,
     /// a drop-down, a picker wheel). Predominantly used by ``Picker``. The change handler is
     /// called whenever a selection is made (even if the same option is picked again).
-    func createPicker() -> Widget
+    func createPicker(style: BackendPickerStyle) -> Widget
     /// Sets the options for a picker to display, along with a change handler for when its
     /// selected option changes. The change handler replaces any existing change handlers and
     /// is called whenever a selection is made (even if the same option is picked again).
@@ -880,6 +885,10 @@ public protocol AppBackend: Sendable {
 }
 
 extension AppBackend {
+    public var defaultPickerStyle: BackendPickerStyle {
+        supportedPickerStyles.first ?? .menu
+    }
+
     public func resolveTextStyle(
         _ textStyle: Font.TextStyle
     ) -> Font.TextStyle.Resolved {
@@ -1222,7 +1231,7 @@ extension AppBackend {
         todo()
     }
 
-    public func createPicker() -> Widget {
+    public func createPicker(style: BackendPickerStyle) -> Widget {
         todo()
     }
     public func updatePicker(
