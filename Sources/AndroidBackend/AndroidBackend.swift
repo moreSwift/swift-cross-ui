@@ -57,6 +57,9 @@ public final class AndroidBackend: AppBackend {
     public let canOverrideWindowColorScheme = false
     public nonisolated let supportedDatePickerStyles: [DatePickerStyle] = [.automatic]
 
+    /// A reference used to keep the tickler alive.
+    var tickler: MainRunLoopTickler?
+
     /// The JNI environment. Set by ``entrypoint``.
     static var env: JNIEnvWrapper!
     /// The main activity. Set by ``entrypoint``.
@@ -101,6 +104,10 @@ public final class AndroidBackend: AppBackend {
     public func runMainLoop(
         _ callback: @escaping @MainActor () -> Void
     ) {
+        let tickler = MainRunLoopTickler(environment: Self.env.env)
+        tickler.start()
+        self.tickler = tickler
+
         // We just fall through to return control to Java when we're done
         // setting up the initial view hierarchy.
         callback()
@@ -287,17 +294,62 @@ public final class AndroidBackend: AppBackend {
             .as(AndroidKit.View.self)!
     }
 
+    /// Converts a Swift String to a Java CharSequence.
+    private func charSequence(from string: String) -> CharSequence {
+        let jstring = JavaString(string, environment: Self.env.env)
+        return jstring.as(CharSequence.self)!
+    }
+
     public func updateButton(
         _ button: Widget,
         label: String,
         environment: EnvironmentValues,
         action: @escaping () -> Void
     ) {
+        // TODO(stackotter): Handle environment.
         let button = button.as(AndroidKit.Button.self)!
-        let label = JavaString(label, environment: Self.env.env)
-        button.setText(label.as(CharSequence.self))
-        // TODO: Handle environment. Set callback.
+        button.setText(charSequence(from: label))
+        let listener = ViewOnClickListener(action: action, environment: Self.env.env)
+        button.setOnClickListener(listener.as(AndroidView.View.OnClickListener.self))
     }
+
+    final class CustomEditText: AndroidKit.EditText {
+        var onChange: ((String) -> Void)?
+        var onSubmit: (() -> Void)?
+    }
+
+    // public func createTextField() -> Widget {
+    //     let textField = CustomEditText(Self.activity, environment: Self.env.env)
+    //         .as(AndroidKit.View.self)!
+
+    //     // let watcher = 
+    //     // textField.addTextChangedListener(watcher)
+
+    //     return textField
+    // }
+
+    // public func updateTextField(
+    //     _ textField: Widget,
+    //     placeholder: String,
+    //     environment: EnvironmentValues,
+    //     onChange: @escaping (String) -> Void,
+    //     onSubmit: @escaping () -> Void
+    // ) {
+    //     // TODO(stackotter): Handle environment
+    //     let textField = textField.as(CustomEditText.self)!
+    //     textField.setHint(charSequence(from: placeholder))
+    //     textField.onChange = onChange
+    //     textField.onSubmit = onSubmit
+    // }
+
+    // public func setContent(ofTextField textField: Widget, to content: String) {
+    //     // TODO(stackotter): Implement text fields
+    // }
+
+    // public func getContent(ofTextField textField: Widget) -> String {
+    //     // TODO(stackotter): Implement text fields
+    //     ""
+    // }
 
     public func createTextView() -> Widget {
         AndroidKit.TextView(Self.activity, environment: Self.env.env)
@@ -322,19 +374,14 @@ public final class AndroidBackend: AppBackend {
         proposedHeight: Int?,
         environment: EnvironmentValues
     ) -> SIMD2<Int> {
-        // let widget = createTextView()
-        // updateTextView(widget, content: text, environment: environment)
-        // setSize(of: widget, to: proposedFrame ?? SIMD2(10000, 10000))
-        // let cls = try! Self.env.findClass("android/view/View")
-        // let measureMethod = try! Self.env.getMethodID(cls, "measure", "(II)V")
-        // let getWidth = try! Self.env.getMethodID(cls, "getMeasuredWidth", "()I")
-        // let getHeight = try! Self.env.getMethodID(cls, "getMeasuredHeight", "()I")
-        // var zero = jvalue()
-        // zero.i = 0
-        // Self.env.callVoidMethod(cls, measureMethod, [zero, zero])
-        // let width = Self.env.callIntMethod(cls, getWidth, [])
-        // let height = Self.env.callIntMethod(cls, getHeight, [])
-        // return SIMD2(Int(width), Int(height))
-        [100, 100]
+        let widget = createTextView()
+        updateTextView(widget, content: text, environment: environment)
+        widget.measure(
+            proposedWidth.map(Int32.init) ?? Int32.max,
+            proposedHeight.map(Int32.init) ?? Int32.max
+        )
+        let width = widget.getMeasuredWidth()
+        let height = widget.getMeasuredHeight()
+        return SIMD2(Int(width), Int(height))
     }
 }

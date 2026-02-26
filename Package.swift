@@ -172,6 +172,10 @@ let package = Package(
             url: "https://github.com/moreSwift/AndroidKit",
             revision: "5825000272d7f65d94b2a4c7bb65a76ce6c668e1"
         ),
+        .package(
+            url: "https://github.com/stackotter/swift-java",
+            revision: "fec4d95d17bfa019803c2d904e2d2e12194341c9"
+        ),
         // .package(
         //     url: "https://github.com/stackotter/TermKit",
         //     revision: "163afa64f1257a0c026cc83ed8bc47a5f8fc9704"
@@ -215,6 +219,9 @@ let package = Package(
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .target(name: "AppKitBackend", condition: .when(platforms: [.macOS])),
+                .product(
+                    name: "ImageFormats", package: "swift-image-formats",
+                    moduleAliases: ["ImageFormats": "Asdf"], condition: .when(platforms: [.macOS])),
             ]
         ),
         .target(name: "SwiftCrossUIMetadataSupport"),
@@ -333,7 +340,9 @@ let package = Package(
                 "SwiftCrossUI",
                 "AndroidBackendShim",
                 "AndroidKit",
-            ]
+                .product(name: "JavaKit", package: "swift-java"),
+            ],
+            exclude: ["Kotlin"]
         ),
         .target(name: "AndroidBackendShim"),
         // .target(
