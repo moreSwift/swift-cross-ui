@@ -34,7 +34,8 @@ public struct ObservableObjectMacro: MemberAttributeMacro, ExtensionMacro {
                         "SwiftCrossUI.Published",
                     ].contains(attr.attribute?._syntax.trimmedDescription)
             }),
-            !variable.hasMacroApplication("ObservationIgnored"),
+            try !variable.hasMacroApplication("ObservationIgnored"),
+            try !variable.hasMacroApplication("SwiftCrossUI.ObservationIgnored"),
             // Only include properties without accessors
             let binding = destructureSingle(variable.bindings),
             // Don't allow any accessors, because even when the property is

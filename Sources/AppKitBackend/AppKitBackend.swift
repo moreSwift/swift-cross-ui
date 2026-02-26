@@ -161,7 +161,7 @@ public final class AppKitBackend: AppBackend {
     public func activate(window: Window) {
         window.makeKeyAndOrderFront(nil)
     }
-    
+
     public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
         MenuBar.setUpMenuBar(extraMenus: submenus.map(Self.renderSubmenu(_:)))
     }
