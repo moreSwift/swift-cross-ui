@@ -5,79 +5,65 @@ import JavaKit
 @JavaClass("dev.swiftcrossui.androidbackend.SwiftObject")
 open class SwiftObject: JavaObject {
     @JavaMethod
-    @_nonoverride public convenience init(swiftObject: Int64, type: String, environment: JNIEnvironment? = nil)
+    @_nonoverride public convenience init(
+        pointerValue: Int64,
+        environment: JNIEnvironment? = nil
+    )
 
     @JavaMethod
-    open func getSwiftObject() -> Int64
-
-    @JavaMethod
-    open func getType() -> String
+    open func getPointerValue() -> Int64
 }
 
 @JavaImplementation("dev.swiftcrossui.androidbackend.SwiftObject")
 extension SwiftObject {
     @JavaMethod
     public func toStringSwift() -> String {
-        "[a Swift object]"
+        "\(value())"
     }
 
     @JavaMethod
     public func finalizeSwift() {
-        // release owned swift value
-        release()
+        Box.finalize(pointerValue: getPointerValue())
     }
 }
 
 extension SwiftObject {
     convenience init<T>(_ value: T, environment: JNIEnvironment? = nil) {
-        let box = JavaRetainedValue(value)
-        let type = box.type
-        self.init(swiftObject: box.id, type: type, environment: environment)
-        // retain value
-        retain(box)
+        let box = Box(value)
+        self.init(pointerValue: box.pointerValue, environment: environment)
     }
 
-    @MainActor
-    func valueObject() -> JavaRetainedValue {
-        let id = getSwiftObject()
-        guard let object = Self.retained[id] else {
-            fatalError()
-        }
-        return object
-    }
-}
-
-private extension SwiftObject {
-    @MainActor
-    static var retained = [JavaRetainedValue.ID: JavaRetainedValue]()
-
-    func retain(_ value: JavaRetainedValue) {
-        Task { @MainActor in
-            Self.retained[value.id] = value
-        }
-    }
-
-    func release() {
-        let id = getSwiftObject()
-        Task { @MainActor in
-            Self.retained[id] = nil
-        }
+    func value() -> Any {
+        let pointerValue = getPointerValue()
+        let box = Box.from(pointerValue: pointerValue)
+        return box.value
     }
 }
 
 /// Swift Object retained until released by Java object.
-final class JavaRetainedValue: Identifiable, @unchecked Sendable {
+final class Box: Identifiable {
     let value: Any
-
-    var type: String {
-        String(describing: Swift.type(of: value))
-    }
-
-    var id: Int64 {
-        Int64(ObjectIdentifier(self).hashValue)
-    }
 
     init<T>(_ value: T) {
         self.value = value
+    }
+
+    static func from(pointerValue: Int64) -> Box {
+        let pointerValue = Int(pointerValue)
+        let pointer = UnsafeRawPointer(bitPattern: pointerValue)!
+        let box = Unmanaged<Box>.fromOpaque(pointer)
+            .takeUnretainedValue()
+        return box
+    }
+
+    static func finalize(pointerValue: Int64) {
+        let pointerValue = Int(pointerValue)
+        let pointer = UnsafeRawPointer(bitPattern: pointerValue)!
+        Unmanaged<Box>.fromOpaque(pointer).release()
+    }
+
+    var pointerValue: Int64 {
+        let pointer = Unmanaged<Box>.passRetained(self)
+        return Int64(Int(bitPattern: pointer.toOpaque()))
     }
 }
