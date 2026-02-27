@@ -19,10 +19,8 @@ class ViewOnClickListener: JavaObject, @unchecked Sendable {
 extension ViewOnClickListener {
     @JavaMethod
     func onClick() {
-        Task { @MainActor in
-            let action = getAction()!.valueObject().value as! Action
-            action()
-        }
+        let action = getAction()!.value() as! Action
+        action()
     }
 }
 
