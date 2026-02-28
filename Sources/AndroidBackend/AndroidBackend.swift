@@ -20,6 +20,40 @@ public func entrypoint(_ env: UnsafeMutablePointer<JNIEnv?>, _ object: jobject) 
     let holder = JavaObjectHolder(object: object, environment: env.env)
     AndroidBackend.activity = Activity(javaHolder: holder)
 
+    // Source: https://phatbl.at/2019/01/08/intercepting-stdout-in-swift.html
+    func makeMessageHandler(priority: UInt32) -> @Sendable (FileHandle) -> Void {
+        @Sendable
+        nonisolated func forward(_ fileHandle: FileHandle) {
+            let data = fileHandle.availableData
+            guard let string = String(data: data, encoding: .utf8) else {
+                return
+            }
+
+            android_log(
+                Int32(priority),
+                "Swift",
+                string
+            )
+        }
+        return forward
+    }
+
+    AndroidBackend.stdoutPipe.fileHandleForReading.readabilityHandler =
+        makeMessageHandler(priority: ANDROID_LOG_INFO.rawValue)
+
+    AndroidBackend.stderrPipe.fileHandleForReading.readabilityHandler =
+        makeMessageHandler(priority: ANDROID_LOG_ERROR.rawValue)
+
+    dup2(
+        AndroidBackend.stdoutPipe.fileHandleForWriting.fileDescriptor,
+        FileHandle.standardOutput.fileDescriptor
+    )
+
+    dup2(
+        AndroidBackend.stderrPipe.fileHandleForWriting.fileDescriptor,
+        FileHandle.standardError.fileDescriptor
+    )
+
     main()
 }
 
@@ -39,8 +73,8 @@ public final class AndroidBackend: AppBackend {
     public typealias Path = Never
     public typealias Sheet = Never
 
-    let stdoutPipe = Pipe()
-    let stderrPipe = Pipe()
+    static let stdoutPipe = Pipe()
+    static let stderrPipe = Pipe()
 
     public let deviceClass = DeviceClass.phone
     public let defaultTableRowContentHeight = 0
@@ -65,41 +99,7 @@ public final class AndroidBackend: AppBackend {
     /// The main activity. Set by ``entrypoint``.
     static var activity: Activity!
 
-    public init() {
-        // Source: https://phatbl.at/2019/01/08/intercepting-stdout-in-swift.html
-        func makeMessageHandler(priority: UInt32) -> @Sendable (FileHandle) -> Void {
-            @Sendable
-            nonisolated func forward(_ fileHandle: FileHandle) {
-                let data = fileHandle.availableData
-                guard let string = String(data: data, encoding: .utf8) else {
-                    return
-                }
-
-                android_log(
-                    Int32(priority),
-                    "Swift",
-                    string
-                )
-            }
-            return forward
-        }
-
-        stdoutPipe.fileHandleForReading.readabilityHandler =
-            makeMessageHandler(priority: ANDROID_LOG_INFO.rawValue)
-
-        stderrPipe.fileHandleForReading.readabilityHandler =
-            makeMessageHandler(priority: ANDROID_LOG_ERROR.rawValue)
-
-        dup2(
-            stdoutPipe.fileHandleForWriting.fileDescriptor,
-            FileHandle.standardOutput.fileDescriptor
-        )
-
-        dup2(
-            stderrPipe.fileHandleForWriting.fileDescriptor,
-            FileHandle.standardError.fileDescriptor
-        )
-    }
+    public init() {}
 
     public func runMainLoop(
         _ callback: @escaping @MainActor () -> Void
@@ -313,43 +313,44 @@ public final class AndroidBackend: AppBackend {
         button.setOnClickListener(listener.as(AndroidView.View.OnClickListener.self))
     }
 
-    final class CustomEditText: AndroidKit.EditText {
-        var onChange: ((String) -> Void)?
-        var onSubmit: (() -> Void)?
+    public func createTextField() -> Widget {
+        CustomEditText(activity: Self.activity, environment: Self.env.env)
+            .as(AndroidKit.View.self)!
     }
 
-    // public func createTextField() -> Widget {
-    //     let textField = CustomEditText(Self.activity, environment: Self.env.env)
-    //         .as(AndroidKit.View.self)!
+    public func updateTextField(
+        _ textField: Widget,
+        placeholder: String,
+        environment: EnvironmentValues,
+        onChange: @escaping (String) -> Void,
+        onSubmit: @escaping () -> Void
+    ) {
+        // TODO(stackotter): Handle environment
+        let textField = textField.as(CustomEditText.self)!
+        textField.as(AndroidKit.TextView.self)!.setHint(charSequence(from: placeholder))
+        textField.setOnChange(
+            SwiftAction(environment: Self.env.env) {
+                // Don't take textField as a weak reference, because otherwise it
+                // gets dropped immediately (it's not actually held anywhere; it's
+                // just a wrapper around a Java class instance). This doesn't cause
+                // a reference cycle because textField doesn't hold the SwiftAction,
+                // (Java does).
+                let content = textField.as(AndroidKit.TextView.self)!.getText().toString()
+                onChange(content)
+            }
+        )
+        textField.setOnSubmit(SwiftAction(environment: Self.env.env, action: onSubmit))
+    }
 
-    //     // let watcher = 
-    //     // textField.addTextChangedListener(watcher)
+    public func setContent(ofTextField textField: Widget, to content: String) {
+        let textField = textField.as(AndroidKit.TextView.self)!
+        textField.setText(charSequence(from: content))
+    }
 
-    //     return textField
-    // }
-
-    // public func updateTextField(
-    //     _ textField: Widget,
-    //     placeholder: String,
-    //     environment: EnvironmentValues,
-    //     onChange: @escaping (String) -> Void,
-    //     onSubmit: @escaping () -> Void
-    // ) {
-    //     // TODO(stackotter): Handle environment
-    //     let textField = textField.as(CustomEditText.self)!
-    //     textField.setHint(charSequence(from: placeholder))
-    //     textField.onChange = onChange
-    //     textField.onSubmit = onSubmit
-    // }
-
-    // public func setContent(ofTextField textField: Widget, to content: String) {
-    //     // TODO(stackotter): Implement text fields
-    // }
-
-    // public func getContent(ofTextField textField: Widget) -> String {
-    //     // TODO(stackotter): Implement text fields
-    //     ""
-    // }
+    public func getContent(ofTextField textField: Widget) -> String {
+        let textField = textField.as(AndroidKit.TextView.self)!
+        return textField.getText().toString()
+    }
 
     public func createTextView() -> Widget {
         AndroidKit.TextView(Self.activity, environment: Self.env.env)

@@ -5,7 +5,7 @@ import AndroidKit
     "dev.swiftcrossui.androidbackend.ViewOnClickListener",
     extends: AndroidView.View.OnClickListener.self
 )
-class ViewOnClickListener: JavaObject, @unchecked Sendable {
+class ViewOnClickListener: JavaObject {
     typealias Action = () -> ()
     
     @JavaMethod
@@ -25,10 +25,7 @@ extension ViewOnClickListener {
 }
 
 extension ViewOnClickListener {
-    convenience init(
-        action: @escaping () -> (),
-        environment: JNIEnvironment? = nil
-    ) {
+    convenience init(action: @escaping () -> (), environment: JNIEnvironment? = nil) {
         let object = SwiftObject(action, environment: environment)
         self.init(action: object, environment: environment)
     }
