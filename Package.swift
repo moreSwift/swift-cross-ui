@@ -129,16 +129,16 @@ let package = Package(
             .upToNextMinor(from: "0.3.3")
         ),
         .package(
-            url: "https://github.com/stackotter/swift-windowsappsdk",
-            revision: "f1c50892f10c0f7f635d3c7a3d728fd634ad001a"
+            url: "https://github.com/moreSwift/swift-windowsappsdk",
+            .upToNextMinor(from: "0.1.0")
         ),
         .package(
-            url: "https://github.com/stackotter/swift-windowsfoundation",
-            revision: "4ad57d20553514bcb23724bdae9121569b19f172"
+            url: "https://github.com/moreSwift/swift-windowsfoundation",
+            .upToNextMinor(from: "0.1.0")
         ),
         .package(
-            url: "https://github.com/stackotter/swift-winui",
-            revision: "42c47f4e4129c8b5a5d9912f05e1168c924ac180"
+            url: "https://github.com/moreSwift/swift-winui",
+            .upToNextMinor(from: "0.1.0")
         ),
         .package(
             url: "https://github.com/stackotter/swift-benchmark",
@@ -146,7 +146,8 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/apple/swift-log.git",
-            exact: "1.6.4"
+            // swift-log bumped its swift-tools-version in 1.7.0
+            .upToNextMinor(from: "1.6.4")
         ),
         .package(
             url: "https://github.com/swhitty/swift-mutex",
