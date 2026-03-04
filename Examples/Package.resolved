@@ -85,7 +85,7 @@
     {
       "identity" : "pathkit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/kylef/PathKit.git",
+      "location" : "https://github.com/kylef/PathKit",
       "state" : {
         "revision" : "3bfd2737b700b9a36565a8c94f4ad2b050a5e574",
         "version" : "1.0.1"
@@ -132,8 +132,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-async-algorithms",
       "state" : {
-        "revision" : "6c050d5ef8e1aa6342528460db614e9770d7f804",
-        "version" : "1.1.1"
+        "revision" : "2971dd5d9f6e0515664b01044826bcea16e59fac",
+        "version" : "1.1.2"
       }
     },
     {
@@ -167,8 +167,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-certificates",
       "state" : {
-        "revision" : "7d5f6124c91a2d06fb63a811695a3400d15a100e",
-        "version" : "1.17.1"
+        "revision" : "24ccdeeeed4dfaae7955fcac9dbf5489ed4f1a25",
+        "version" : "1.18.0"
       }
     },
     {
@@ -192,15 +192,16 @@
     {
       "identity" : "swift-cwinrt",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/thebrowsercompany/swift-cwinrt",
+      "location" : "https://github.com/moreSwift/swift-cwinrt",
       "state" : {
-        "revision" : "eb46cdb66f770a1e006f9fcfebbf9e99a0fba811"
+        "revision" : "f0900d61c863ced3a230d757d5dbda7de7043deb",
+        "version" : "0.1.1"
       }
     },
     {
       "identity" : "swift-filestreamer",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sersoft-gmbh/swift-filestreamer",
+      "location" : "https://github.com/sersoft-gmbh/swift-filestreamer.git",
       "state" : {
         "revision" : "b01ff214cc629718a8729f33d2a8b88e47532dbd",
         "version" : "0.6.0"
@@ -256,8 +257,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "5e72fc102906ebe75a3487595a653e6f43725552",
-        "version" : "2.94.0"
+        "revision" : "e932d3c4d8f77433c8f7093b5ebcbf91463948a0",
+        "version" : "2.95.0"
       }
     },
     {
@@ -299,41 +300,46 @@
     {
       "identity" : "swift-uwp",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stackotter/swift-uwp",
+      "location" : "https://github.com/moreSwift/swift-uwp",
       "state" : {
-        "revision" : "8128f6615b7c5b46ada289ab6d49d871ca1e13a5"
+        "revision" : "a0a86467514eaa63272eae848c70d49e6874ede4",
+        "version" : "0.1.0"
       }
     },
     {
       "identity" : "swift-webview2core",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stackotter/swift-webview2core",
+      "location" : "https://github.com/moreSwift/swift-webview2core",
       "state" : {
-        "revision" : "4396f5d94d6dfd1f95ab25e79de98141b7f4f183"
+        "revision" : "a8ed52a57f6d81ee06c8db692f8ee0431174379a",
+        "version" : "0.1.0"
       }
     },
     {
       "identity" : "swift-windowsappsdk",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stackotter/swift-windowsappsdk",
+      "location" : "https://github.com/moreSwift/swift-windowsappsdk",
       "state" : {
-        "revision" : "f1c50892f10c0f7f635d3c7a3d728fd634ad001a"
+        "revision" : "c93d4a59889f0c0cfad8e42a977614485a2f4bc0",
+        "version" : "0.1.0"
       }
     },
     {
       "identity" : "swift-windowsfoundation",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stackotter/swift-windowsfoundation",
+      "location" : "https://github.com/moreSwift/swift-windowsfoundation",
       "state" : {
-        "revision" : "4ad57d20553514bcb23724bdae9121569b19f172"
+        "revision" : "94d56a5aea472672bc5d041c091f6cdf72e3cc44",
+        "version" : "0.1.0"
       }
     },
     {
       "identity" : "swift-winui",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stackotter/swift-winui",
+      "location" : "https://github.com/moreSwift/swift-winui",
       "state" : {
-        "revision" : "42c47f4e4129c8b5a5d9912f05e1168c924ac180"
+        "revision" : "44efe1355248be1a9bf1d500118f183582a75f07",
+        "version" : "0.1.0"
       }
     },
     {
@@ -386,8 +392,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
       "state" : {
-        "revision" : "34e463e98ab8541c604af706c99bed7160f5ec70",
-        "version" : "1.8.1"
+        "revision" : "dfd70507def84cb5fb821278448a262c6ff2bbad",
+        "version" : "1.9.0"
       }
     },
     {
