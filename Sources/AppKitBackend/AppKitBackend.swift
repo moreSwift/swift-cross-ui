@@ -898,6 +898,15 @@ public final class AppKitBackend: AppBackend {
         return scrollView
     }
 
+    public func updateSelectableListView(
+        _ selectableListView: Widget,
+        environment: EnvironmentValues
+    ) {
+        let scrollView = selectableListView as! NSDisabledScrollView
+        let listView = scrollView.documentView! as! NSCustomTableView
+        listView.isEnabled = environment.isEnabled
+    }
+
     public func baseItemPadding(
         ofSelectableListView listView: Widget
     ) -> SwiftCrossUI.EdgeInsets {

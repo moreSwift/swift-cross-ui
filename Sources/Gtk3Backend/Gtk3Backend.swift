@@ -671,6 +671,14 @@ public final class Gtk3Backend: AppBackend {
         return listView
     }
 
+    public func updateSelectableListView(
+        _ selectableListView: Widget,
+        environment: EnvironmentValues
+    ) {
+        let listView = selectableListView as! ListBox
+        listView.sensitive = environment.isEnabled
+    }
+
     public func baseItemPadding(
         ofSelectableListView listView: Widget
     ) -> SwiftCrossUI.EdgeInsets {

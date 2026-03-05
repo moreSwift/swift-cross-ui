@@ -367,6 +367,12 @@ public protocol AppBackend: Sendable {
 
     /// Creates a list with selectable rows.
     func createSelectableListView() -> Widget
+    /// Updates a list with the current environment. Should update list view to
+    /// respect ``EnvironmentValues/isEnabled``.
+    func updateSelectableListView(
+        _ selectableListView: Widget,
+        environment: EnvironmentValues
+    )
     /// Gets the amount of padding introduced by the backend around the content of
     /// each row. Ideally backends should get rid of base padding so that SwiftCrossUI
     /// can give developers more freedom, but this isn't always possible.
@@ -1015,6 +1021,13 @@ extension AppBackend {
     }
 
     public func createSelectableListView() -> Widget {
+        todo()
+    }
+
+    public func updateSelectableListView(
+        _ selectableListView: Widget,
+        environment: EnvironmentValues
+    ) {
         todo()
     }
 

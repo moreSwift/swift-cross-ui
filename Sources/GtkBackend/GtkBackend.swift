@@ -636,6 +636,14 @@ public final class GtkBackend: AppBackend {
         return listView
     }
 
+    public func updateSelectableListView(
+        _ selectableListView: Widget,
+        environment: EnvironmentValues
+    ) {
+        let selectableListView = selectableListView as! CustomListBox
+        selectableListView.sensitive = environment.isEnabled
+    }
+
     public func baseItemPadding(
         ofSelectableListView listView: Widget
     ) -> SwiftCrossUI.EdgeInsets {
@@ -729,10 +737,23 @@ public final class GtkBackend: AppBackend {
         proposedHeight: Int?,
         environment: EnvironmentValues
     ) -> SIMD2<Int> {
+        let ellipsize: EllipsizeMode
+        if let widget = widget as? CustomLabel {
+            ellipsize = widget.ellipsize
+        } else if let widget = widget as? TextView {
+            // We don't ellipsize multi-line text editors
+            ellipsize = .none
+        } else {
+            logger.warning(
+                "\(#function) called with unexpected widget type \(type(of: widget))"
+            )
+            ellipsize = .none
+        }
+
         let pango = Pango(for: widget)
         let (width, height) = pango.getTextSize(
             text,
-            ellipsize: (widget as! CustomLabel).ellipsize,
+            ellipsize: ellipsize,
             proposedWidth: proposedWidth.map(Double.init),
             proposedHeight: proposedHeight.map(Double.init)
         )
@@ -752,7 +773,7 @@ public final class GtkBackend: AppBackend {
 
             let (_, heightLimit) = pango.getTextSize(
                 multilineString,
-                ellipsize: (widget as! CustomLabel).ellipsize,
+                ellipsize: .none,
                 proposedWidth: nil,
                 proposedHeight: nil
             )

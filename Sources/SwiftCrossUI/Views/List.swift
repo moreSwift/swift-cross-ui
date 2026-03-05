@@ -211,6 +211,7 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         }
 
         backend.setSelectedItem(ofSelectableListView: widget, toItemAt: selectedIndex)
+        backend.updateSelectableListView(widget, environment: environment)
     }
 }
 

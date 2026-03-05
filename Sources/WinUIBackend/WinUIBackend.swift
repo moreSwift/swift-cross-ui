@@ -805,6 +805,14 @@ public final class WinUIBackend: AppBackend {
         return listView
     }
 
+    public func updateSelectableListView(
+        _ selectableListView: Widget,
+        environment: EnvironmentValues
+    ) {
+        let listView = selectableListView as! CustomListView
+        listView.isEnabled = environment.isEnabled
+    }
+
     public func baseItemPadding(ofSelectableListView listView: Widget) -> EdgeInsets {
         EdgeInsets(
             top: 8,
@@ -1026,7 +1034,7 @@ public final class WinUIBackend: AppBackend {
 
             if picker.items.count > options.count {
                 for i in (options.count..<picker.items.count).reversed() {
-                    picker.items.remove(at: i)
+                    _ = picker.items.remove(at: i)
                 }
             } else {
                 for option in options[picker.items.count...] {
