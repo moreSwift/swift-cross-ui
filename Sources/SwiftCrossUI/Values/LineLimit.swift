@@ -1,4 +1,4 @@
-/// Configuration for text height limits, propagated vi ``EnvironmentValues/lineLimitSettings``.
+/// Configuration for text height limits, propagated via ``EnvironmentValues/lineLimitSettings``.
 public struct LineLimit: Sendable, Hashable {
     /// The maximum number of lines text may occupy.
     public var limit: Int
