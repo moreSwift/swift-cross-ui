@@ -82,30 +82,30 @@ Here are a few rules regarding special files;
 
 1. Use 4 space indentation
 2. Keep lines under 80 characters where possible, with a hard limit at 100 characters
-  - You can break long string literals across multiple lines by using a multiline string literal and ending each line (except the last) with a backslash
-    ```swift
-    log.warning(
-        """
-        This is a very long warning with lots of context and detail to aid the developer \
-        in resolving the issue that it's flagging. This message will appear as one line to \
-        the developer but it line-wrapped within the source file, making things easier to \
-        read as a SwiftCrossUI contributor.
-        """
-    )
-    ```
+   - You can break long string literals across multiple lines by using a multiline string literal and ending each line (except the last) with a backslash
+     ```swift
+     log.warning(
+         """
+         This is a very long warning with lots of context and detail to aid the developer \
+         in resolving the issue that it's flagging. This message will appear as one line to \
+         the developer but it line-wrapped within the source file, making things easier to \
+         read as a SwiftCrossUI contributor.
+         """
+     )
+     ```
 3. When breaking function parameters across multiple lines, put each parameter on a separate line, with the closing parenthesis on its own line at ambient indentation level
-  ```swift
-  func myFunctionWithLotsOfParameters(
-      _ parameter1: Int,
-      _ parameter2: Int,
-      _ parameter3: Int,
-      _ parameter4: Int
-  ) async throws
-      -> MyVeryLongReturnType<Int, String, [UInt8], MyErrorType>.Element
-  {
-      // ...
-  }
-  ```
+   ```swift
+   func myFunctionWithLotsOfParameters(
+       _ parameter1: Int,
+       _ parameter2: Int,
+       _ parameter3: Int,
+       _ parameter4: Int
+   ) async throws
+       -> MyVeryLongReturnType<Int, String, [UInt8], MyErrorType>.Element
+   {
+       // ...
+   }
+   ```
 4. Separate functions, types and computed properties with a single blank line. Stored properties may also be separated by blank lines but are allowed to be grouped together by feature, meaning, or some other reasonable system.
 5. Place each top-level type declaration in its own file with a name matching that of the type. We sometimes make an exception for internal/private helper types not used outside of the containing file.
 
@@ -115,10 +115,10 @@ Here are a few rules regarding special files;
 2. Put a single space between the double slash and the comment’s text
 3. Use multiple single line comments instead of a multi-line comment
 4. New todo comments must be tagged with your GitHub username
-  ```swift
-  // TODO(stackotter): Make this more robust once we have a state dependency
-  //   tracking system
-  ```
+   ```swift
+   // TODO(stackotter): Make this more robust once we have a state dependency
+   //   tracking system
+   ```
 5. Add comments to any code you think would need explaining to other contributors
 
 ### Bad comments
@@ -163,16 +163,16 @@ If using Xcode, pressing option+cmd+/ generates a template documentation comment
 3. Leave a space between the triple slash and the documentation text
 4. Use multiple single-line documentation comments instead of a multi-line documentation comment
 5. When referring to another symbol within the same target, use double backticks to generate a symbol link. See DocC's article on [linked to symbols and other content](https://www.swift.org/documentation/docc/linking-to-symbols-and-other-content)
-  ```swift
-  /// This method has been superceded by ``View/emphasized()``.
-  ```
+   ```swift
+   /// This method has been superceded by ``View/emphasized()``.
+   ```
 6. Use type hints to disambiguate otherwise ambiguous symbol links, and avoid using FNV-1 hash based disambiguation as it isn't human readable and can't be easily manipulated with standard text editors. See [DocC's documentation on ambiguous symbol links](https://www.swift.org/documentation/docc/linking-to-symbols-and-other-content#Ambiguous-Symbol-Links) for the specifics of symbol disambiguation.
 7. Use named links to make documentation markdown line wrap at a sensible width.
-  ```swift
-  /// For a detailed explanation, see Wikipedia's [page on parallel curves][wikipedia]. 
-  ///
-  /// [wikipedia]: https://en.wikipedia.org/wiki/Parallel_curve
-  ```
+   ```swift
+   /// For a detailed explanation, see Wikipedia's [page on parallel curves][wikipedia]. 
+   ///
+   /// [wikipedia]: https://en.wikipedia.org/wiki/Parallel_curve
+   ```
 
 The following is an example of documentation that follows all of these rules. It
 has been manufactured to demonstrate all of the rules, so it's longer than our
