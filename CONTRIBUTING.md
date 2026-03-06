@@ -162,7 +162,7 @@ If using Xcode, pressing option+cmd+/ generates a template documentation comment
 2. Use sentence case
 3. Leave a space between the triple slash and the documentation text
 4. Use multiple single-line documentation comments instead of a multi-line documentation comment
-5. When referring to another symbol within the same target, use double backticks to generate a symbol link. See DocC's article on [linked to symbols and other content](https://www.swift.org/documentation/docc/linking-to-symbols-and-other-content)
+5. When referring to another symbol within the same target, use double backticks to generate a symbol link. See DocC's article on [linked to symbols and other content](https://www.swift.org/documentation/docc/linking-to-symbols-and-other-content).
    ```swift
    /// This method has been superceded by ``View/emphasized()``.
    ```
