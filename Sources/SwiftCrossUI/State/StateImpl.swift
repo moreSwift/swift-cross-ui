@@ -60,7 +60,7 @@ struct StateImpl<Storage: StateStorageProtocol> {
     }
 }
 
-protocol StateStorageProtocol: AnyObject {
+public protocol StateStorageProtocol: AnyObject {
     associatedtype Value
     var value: Value { get set }
     var didChange: Publisher { get }

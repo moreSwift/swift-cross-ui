@@ -400,8 +400,21 @@ public protocol AppBackend: Sendable {
     /// May be unnecessary for some backends. Predominantly used by
     /// ``ViewGraphNode`` after propagating updates.
     ///
+    /// Only called once the widget has been added to the widget hierarchy.
+    ///
     /// - Parameter widget: The widget to show.
     func show(widget: Widget)
+    /// Show a widget after it has been updated. This is unnecessary for most
+    /// backends which automatically update the visual appearance of widgets
+    /// when their properties get changed.
+    ///
+    /// The default implementation does nothing.
+    ///
+    /// It's a guarantee that ``ViewGraphNode/show(widget:)`` will get called
+    /// before this method for any given widget.
+    ///
+    /// - Parameter widget: The widget to process.
+    func showUpdate(of widget: Widget)
     /// Adds a short tag to a widget to assist during debugging, if the backend supports
     /// such a feature.
     ///
@@ -524,6 +537,12 @@ public protocol AppBackend: Sendable {
     ///
     /// - Returns: A list with selectable rows.
     func createSelectableListView() -> Widget
+    /// Updates a list with the current environment. Should update list view to
+    /// respect ``EnvironmentValues/isEnabled``.
+    func updateSelectableListView(
+        _ selectableListView: Widget,
+        environment: EnvironmentValues
+    )
     /// Gets the amount of padding introduced by the backend around the content of
     /// each row.
     ///
@@ -1422,6 +1441,12 @@ extension AppBackend {
         // This is only really to assist contributors when debugging backends,
         // so it's safe enough to have a no-op default implementation.
     }
+
+    public func showUpdate(of widget: Widget) {
+        // This only exists for backends such as CursesBackend that need to
+        // explicitly be notified that a widget should display queued changes.
+        // Most can get away with this empty default implementation.
+    }
 }
 
 extension AppBackend {
@@ -1503,6 +1528,13 @@ extension AppBackend {
     }
 
     public func createSelectableListView() -> Widget {
+        todo()
+    }
+
+    public func updateSelectableListView(
+        _ selectableListView: Widget,
+        environment: EnvironmentValues
+    ) {
         todo()
     }
 

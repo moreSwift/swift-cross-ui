@@ -164,7 +164,7 @@ public final class AppKitBackend: AppBackend {
     public func activate(window: Window) {
         window.makeKeyAndOrderFront(nil)
     }
-    
+
     public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
         MenuBar.setUpMenuBar(extraMenus: submenus.map(Self.renderSubmenu(_:)))
     }
@@ -496,9 +496,21 @@ public final class AppKitBackend: AppBackend {
             options: [.usesLineFragmentOrigin, .truncatesLastVisibleLine],
             attributes: Self.attributes(forTextIn: environment)
         )
+
+        var height = rect.size.height
+
+        if let lineLimitSettings = environment.lineLimitSettings {
+            let limitedHeight =
+                Double(max(lineLimitSettings.limit, 1)) * environment.resolvedFont.lineHeight
+
+            if limitedHeight < height || lineLimitSettings.reservesSpace {
+                height = limitedHeight
+            }
+        }
+
         return SIMD2(
             Int(rect.size.width.rounded(.awayFromZero)),
-            Int(rect.size.height.rounded(.awayFromZero))
+            Int(height.rounded(.awayFromZero))
         )
     }
 
@@ -884,6 +896,15 @@ public final class AppKitBackend: AppBackend {
         scrollView.documentView = listView
         listView.enclosingScrollView?.drawsBackground = false
         return scrollView
+    }
+
+    public func updateSelectableListView(
+        _ selectableListView: Widget,
+        environment: EnvironmentValues
+    ) {
+        let scrollView = selectableListView as! NSDisabledScrollView
+        let listView = scrollView.documentView! as! NSCustomTableView
+        listView.isEnabled = environment.isEnabled
     }
 
     public func baseItemPadding(

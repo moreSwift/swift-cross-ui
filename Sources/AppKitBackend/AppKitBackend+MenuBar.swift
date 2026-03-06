@@ -178,7 +178,7 @@ enum MenuBar {
                 // check if the menu titles match. If they do, we move every item from the user's
                 // menu to our own.
                 if let submenu = menu.submenu,
-                   let matchingMenu = defaultMenus.first(where: { $0.title == menu.title })
+                    let matchingMenu = defaultMenus.first(where: { $0.title == menu.title })
                 {
                     let items = submenu.items
                     submenu.removeAllItems()

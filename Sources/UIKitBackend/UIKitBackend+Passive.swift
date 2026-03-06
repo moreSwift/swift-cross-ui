@@ -70,9 +70,21 @@ extension UIKitBackend {
             options: [.usesLineFragmentOrigin, .truncatesLastVisibleLine],
             context: nil
         )
+
+        var height = size.height
+
+        if let lineLimitSettings = environment.lineLimitSettings {
+            let limitedHeight =
+                Double(max(lineLimitSettings.limit, 1)) * environment.resolvedFont.lineHeight
+
+            if limitedHeight < height || lineLimitSettings.reservesSpace {
+                height = limitedHeight
+            }
+        }
+
         return SIMD2(
             Int(size.width.rounded(.awayFromZero)),
-            Int(size.height.rounded(.awayFromZero))
+            Int(height.rounded(.awayFromZero))
         )
     }
 

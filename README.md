@@ -45,7 +45,10 @@ import PackageDescription
 let package = Package(
     name: "YourApp",
     dependencies: [
-        .package(url: "https://github.com/moreSwift/swift-cross-ui", branch: "main")
+        .package(
+            url: "https://github.com/moreSwift/swift-cross-ui",
+            .upToNextMinor(from: "0.2.0")
+        ),
     ],
     targets: [
         .executableTarget(
@@ -54,7 +57,7 @@ let package = Package(
                 .product(name: "SwiftCrossUI", package: "swift-cross-ui"),
                 .product(name: "DefaultBackend", package: "swift-cross-ui"),
             ]
-        )
+        ),
     ]
 )
 ```

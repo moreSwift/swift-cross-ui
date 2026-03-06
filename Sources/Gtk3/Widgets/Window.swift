@@ -16,8 +16,6 @@ open class Window: Bin {
     @GObjectProperty(named: "modal") public var isModal: Bool
     @GObjectProperty(named: "decorated") public var isDecorated: Bool
 
-    public var onCloseRequest: ((Window) -> Void)?
-
     public func setTransient(for other: Window) {
         gtk_window_set_transient_for(castedPointer(), other.castedPointer())
     }
@@ -81,7 +79,7 @@ open class Window: Bin {
         gtk_window_set_position(castedPointer(), position.toGtk())
     }
 
-    public override func registerSignals() {
+    public func registerDeleteEventSignal() {
         let handler:
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
                 { _, value1, data in
@@ -92,6 +90,21 @@ open class Window: Bin {
             [weak self] (_: OpaquePointer) in
             guard let self else { return }
             self.onCloseRequest?(self)
+        }
+    }
+
+    private var hasRegisteredDeleteEventSignal = false
+
+    public var onCloseRequest: ((Window) -> Void)? {
+        didSet {
+            // We delay setting up the delete event so that the Window close button
+            // still works when a close handler hasn't been set yet. Still breaks if
+            // you set and then unset the handler, but SwiftCrossUI doesn't really need
+            // that.
+            if !hasRegisteredDeleteEventSignal && onCloseRequest != nil {
+                hasRegisteredDeleteEventSignal = true
+                registerDeleteEventSignal()
+            }
         }
     }
 }

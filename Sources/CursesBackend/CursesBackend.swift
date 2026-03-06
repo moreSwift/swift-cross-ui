@@ -52,7 +52,7 @@ public final class CursesBackend: AppBackend {
         #endif
     }
 
-    public func show(widget: Widget) {
+    public func showUpdate(widget: Widget) {
         widget.setNeedsDisplay()
     }
 

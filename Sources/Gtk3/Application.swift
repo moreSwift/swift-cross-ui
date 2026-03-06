@@ -85,6 +85,11 @@ public class Application: GObject, GActionMap {
         return Int(status)
     }
 
+    /// Quits the app programmatically.
+    public func quit() {
+        g_application_quit(applicationPointer.cast())
+    }
+
     private func activate() {
         // When set up as a DBusActivatable application on Linux and launched
         // the GNOME app launcher, the activate signal triggers twice, causing

@@ -39,18 +39,18 @@ struct SwiftCrossUITests {
         path.append(1)
         path.append([1, 2, 3])
         path.append(5.0)
-
+        
         let components = path.path(destinationTypes: [
             String.self, Int.self, [Int].self, Double.self,
         ])
-
+        
         let encoded = try JSONEncoder().encode(path)
         let decodedPath = try JSONDecoder().decode(NavigationPath.self, from: encoded)
-
+        
         let decodedComponents = decodedPath.path(destinationTypes: [
             String.self, Int.self, [Int].self, Double.self,
         ])
-
+        
         #expect(Self.compareComponents(ofType: String.self, components[0], decodedComponents[0]))
         #expect(Self.compareComponents(ofType: Int.self, components[1], decodedComponents[1]))
         #expect(Self.compareComponents(ofType: [Int].self, components[2], decodedComponents[2]))

@@ -4,6 +4,21 @@ import CompilerPluginSupport
 import Foundation
 import PackageDescription
 
+// ## Compile-time environment options
+//
+// - SCUI_DEFAULT_BACKEND : Sets the backend used by DefaultBackend
+// - SCUI_LIBRARY_TYPE : Can be set to `static`, `dynamic` or `auto`, and defaults
+//     to `auto`. Use this to control the linking mode of all library products
+//     exposed by this package.
+// - SCUI_HOT_RELOADING/SWIFT_BUNDLER_HOT_RELOADING : Enables hot reloading
+//     support code if `1`. If not present then the output of the #hotReloadable and
+//     @HotReloadable gets compiled out.
+// - SCUI_TEST_GTK3BACKEND : If `1`, enables the Gtk3Backend-specific tests (in the
+//     Tests/Gtk3BackendTests directory). Without this they're entirely skipped
+// - SCUI_BENCHMARK_VIZ : If `1`, LayoutPerformanceBenchmark gets compiled in
+//     visualization mode instead of benchmarking mode. It will use DefaultBackend
+//     to visualize a benchmark layout of your choosing (chosen at runtime via stdin).
+
 // In Gtk 4.10 some breaking changes were made, so the GtkBackend code needs to know
 // which version is in use.
 var gtkSwiftSettings: [SwiftSetting] = []
@@ -11,8 +26,9 @@ if let version = getGtk4MinorVersion(), version >= 10 {
     gtkSwiftSettings.append(.define("GTK_4_10_PLUS"))
 }
 
+let env = ProcessInfo.processInfo.environment
 let defaultBackend: String
-if let backend = ProcessInfo.processInfo.environment["SCUI_DEFAULT_BACKEND"] {
+if let backend = env["SCUI_DEFAULT_BACKEND"] {
     defaultBackend = backend
 } else {
     #if os(macOS)
@@ -29,9 +45,11 @@ let hotReloadingEnabled: Bool
     hotReloadingEnabled = false
 #else
     hotReloadingEnabled =
-        ProcessInfo.processInfo.environment["SWIFT_BUNDLER_HOT_RELOADING"] != nil
-        || ProcessInfo.processInfo.environment["SCUI_HOT_RELOADING"] != nil
+        env["SWIFT_BUNDLER_HOT_RELOADING"] == "1"
+        || env["SCUI_HOT_RELOADING"] == "1"
 #endif
+
+let testGtk3Backend = env["SCUI_TEST_GTK3BACKEND"] == "1"
 
 var swiftSettings: [SwiftSetting] = []
 if hotReloadingEnabled {
@@ -41,7 +59,7 @@ if hotReloadingEnabled {
 }
 
 var libraryType: Product.Library.LibraryType?
-switch ProcessInfo.processInfo.environment["SCUI_LIBRARY_TYPE"] {
+switch env["SCUI_LIBRARY_TYPE"] {
     case "static":
         libraryType = .static
     case "dynamic":
@@ -63,7 +81,7 @@ switch ProcessInfo.processInfo.environment["SCUI_LIBRARY_TYPE"] {
 // viewing of each benchmark test case with an actual backend.
 let additionalLayoutPerformanceBenchmarkDependencies: [Target.Dependency]
 let layoutPerformanceSwiftSettings: [SwiftSetting]
-if ProcessInfo.processInfo.environment["SCUI_BENCHMARK_VIZ"] == "1" {
+if env["SCUI_BENCHMARK_VIZ"] == "1" {
     additionalLayoutPerformanceBenchmarkDependencies = ["DefaultBackend"]
     layoutPerformanceSwiftSettings = [.define("BENCHMARK_VIZ")]
 } else {
@@ -111,16 +129,16 @@ let package = Package(
             .upToNextMinor(from: "0.3.3")
         ),
         .package(
-            url: "https://github.com/stackotter/swift-windowsappsdk",
-            revision: "f1c50892f10c0f7f635d3c7a3d728fd634ad001a"
+            url: "https://github.com/moreSwift/swift-windowsappsdk",
+            .upToNextMinor(from: "0.1.0")
         ),
         .package(
-            url: "https://github.com/stackotter/swift-windowsfoundation",
-            revision: "4ad57d20553514bcb23724bdae9121569b19f172"
+            url: "https://github.com/moreSwift/swift-windowsfoundation",
+            .upToNextMinor(from: "0.1.0")
         ),
         .package(
-            url: "https://github.com/stackotter/swift-winui",
-            revision: "42c47f4e4129c8b5a5d9912f05e1168c924ac180"
+            url: "https://github.com/moreSwift/swift-winui",
+            .upToNextMinor(from: "0.1.0")
         ),
         .package(
             url: "https://github.com/stackotter/swift-benchmark",
@@ -128,7 +146,8 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/apple/swift-log.git",
-            exact: "1.6.4"
+            // swift-log bumped its swift-tools-version in 1.7.0
+            .upToNextMinor(from: "1.6.4")
         ),
         .package(
             url: "https://github.com/swhitty/swift-mutex",
@@ -152,7 +171,7 @@ let package = Package(
             name: "SwiftCrossUI",
             dependencies: [
                 "SwiftCrossUIMacrosPlugin",
-				"SwiftCrossUIMetadataSupport",
+                "SwiftCrossUIMetadataSupport",
                 .product(name: "ImageFormats", package: "swift-image-formats"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Mutex", package: "swift-mutex"),
@@ -314,6 +333,19 @@ let package = Package(
         // ),
     ]
 )
+
+if testGtk3Backend {
+    package.targets.append(
+        .testTarget(
+            name: "Gtk3BackendTests",
+            dependencies: [
+                "SwiftCrossUI",
+                "Gtk3Backend",
+                "CGtk3",
+            ]
+        )
+    )
+}
 
 func getGtk4MinorVersion() -> Int? {
     #if os(Windows)

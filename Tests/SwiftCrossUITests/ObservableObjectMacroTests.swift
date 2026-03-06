@@ -164,4 +164,28 @@ struct ObservableTests {
             }
         )
     }
+    
+    @Test("Namespaced ObservationIgnored blocks application")
+    func namespacedObservationIgnoredBlocksApplication() async throws {
+        assertMacroExpansion(
+            """
+            @ObservableObject
+            class ViewModel {
+                @SwiftCrossUI.ObservationIgnored var skipMe = false
+            }
+            """,
+            expandedSource: """
+            class ViewModel {
+                @SwiftCrossUI.ObservationIgnored var skipMe = false
+            }
+            
+            extension ViewModel: SwiftCrossUI.ObservableObject {
+            }
+            """,
+            macroSpecs: testMacros,
+            failureHandler: { spec in
+                Issue.record(spec.issueComment)
+            }
+        )
+    }
 }

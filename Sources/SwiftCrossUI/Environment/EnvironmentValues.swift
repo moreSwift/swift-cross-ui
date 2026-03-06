@@ -398,6 +398,14 @@ extension EnvironmentValues {
     ///
     /// Set by ``View/disabled(_:)``.
     @Entry public var isEnabled: Bool = true
+
+    /// The number of lines text can occupy and whether to reserve that space.
+    @Entry public var lineLimitSettings: LineLimit?
+
+    /// The maximum number of lines that text can occupy in a view.
+    public var lineLimit: Int? {
+        lineLimitSettings?.limit
+    }
 }
 
 /// A key that can be used to extend the environment with new properties.

@@ -87,7 +87,6 @@ public final class Gtk3Backend: AppBackend {
     public func runMainLoop(_ callback: @escaping @MainActor () -> Void) {
         gtkApp.run { window in
             self.precreatedWindow = window
-            callback()
 
             let provider = CSSProvider()
             provider.loadCss(
@@ -138,6 +137,8 @@ public final class Gtk3Backend: AppBackend {
             #if !os(macOS)
                 Self.mainRunLoopTicklingLoop()
             #endif
+
+            callback()
         }
     }
 
@@ -668,6 +669,14 @@ public final class Gtk3Backend: AppBackend {
         let listView = ListBox()
         listView.selectionMode = .single
         return listView
+    }
+
+    public func updateSelectableListView(
+        _ selectableListView: Widget,
+        environment: EnvironmentValues
+    ) {
+        let listView = selectableListView as! ListBox
+        listView.sensitive = environment.isEnabled
     }
 
     public func baseItemPadding(
