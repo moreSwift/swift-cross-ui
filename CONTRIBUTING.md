@@ -27,7 +27,7 @@
 3. Supply screenshots for each applicable platform if you’ve introduced a UI feature or otherwise changed the appearance of a SwiftCrossUI feature in some way
 4. Add unit tests to cover your changes if your changes would benefit from tests. If it’s not obvious whether a change would benefit from unit tests, omit them and ask for clarification in your pull request description.
 5. If you are adding a new feature, consider adding an example usage of it to the examples
-6. Run `Scripts/format.sh` (requires installing [`swift-format`](https://github.com/swiftlang/swift-format))
+6. Run `Scripts/format.sh` (requires installing [`SwiftFormat`](https://github.com/nicklockwood/SwiftFormat?tab=readme-ov-file#command-line-tool))
 
 ## 3. Finding something to do
 
@@ -79,6 +79,10 @@ Here are a few rules regarding special files;
 4. Use `guard` statements where possible, especially when introducing early returns, as they are easier to skim read than if statements (as long as you understand the condition, you can skip over the body of the guard statement knowing that it will exit the current scope no matter what).
 
 ## 7. Code formatting
+
+As a baseline, we use Nick Lockwood's [SwiftFormat](https://github.com/nicklockwood/SwiftFormat)
+tool with the configuration file at [.swiftformat](./.swiftformat). This tool doesn't cover
+all of our preferences, so here are our main rules;
 
 1. Use 4 space indentation
 2. Keep lines under 80 characters where possible, with a hard limit at 100 characters

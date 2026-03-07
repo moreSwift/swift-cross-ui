@@ -22,7 +22,7 @@ public struct PresentFileSaveDialogAction: Sendable {
     ///   - defaultFileName: The default file name. Defaults to `nil`, which
     ///     uses the backend-specific default.
     /// - Returns: The URL of the user's chosen save destination, or `nil` if
-    ///   the user cancelled the dialog. 
+    ///   the user cancelled the dialog.
     public func callAsFunction(
         title: String = "Save",
         message: String = "",

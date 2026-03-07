@@ -11,17 +11,15 @@ public struct DatePickerComponents: OptionSet, Sendable {
         self.rawValue = 0
     }
 
-    /*
-     * These magic numbers are the same as SwiftUI. It's actually a bitfield:
-     *
-     *                        smhdMy--
-     *                   date 00011100
-     *          hourAndMinute 01100000
-     *    hourMinuteAndSecond 11100000
-     *
-     * Like SwiftUI, not all combinations are valid (SwiftUI fatalErrors if you try to get creative
-     * with your choice of flags), and hourMinuteAndSecond intentionally includes hourAndMinute.
-     */
+    // These magic numbers are the same as SwiftUI. It's actually a bitfield:
+    //
+    //                        smhdMy--
+    //                   date 00011100
+    //          hourAndMinute 01100000
+    //    hourMinuteAndSecond 11100000
+    //
+    // Like SwiftUI, not all combinations are valid (SwiftUI fatalErrors if you try to get creative
+    // with your choice of flags), and hourMinuteAndSecond intentionally includes hourAndMinute.
 
     public static let date = DatePickerComponents(rawValue: 0x1C)
     public static let hourAndMinute = DatePickerComponents(rawValue: 0x60)

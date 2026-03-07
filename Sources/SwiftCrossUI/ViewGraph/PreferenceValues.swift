@@ -54,18 +54,16 @@ extension PreferenceValues {
         }
 
         // For presentation modifiers, take the outer-most value (using child ordering to break ties).
-        presentationDetents = children.compactMap { $0.presentationDetents }.first
-        presentationCornerRadius = children.compactMap { $0.presentationCornerRadius }.first
+        presentationDetents = children.compactMap(\.presentationDetents).first
+        presentationCornerRadius = children.compactMap(\.presentationCornerRadius).first
         presentationDragIndicatorVisibility =
-            children.compactMap {
-                $0.presentationDragIndicatorVisibility
-            }.first
-        presentationBackground = children.compactMap { $0.presentationBackground }.first
-        interactiveDismissDisabled = children.compactMap { $0.interactiveDismissDisabled }.first
+            children.compactMap(\.presentationDragIndicatorVisibility).first
+        presentationBackground = children.compactMap(\.presentationBackground).first
+        interactiveDismissDisabled = children.compactMap(\.interactiveDismissDisabled).first
 
-        windowDismissBehavior = children.compactMap { $0.windowDismissBehavior }.first
+        windowDismissBehavior = children.compactMap(\.windowDismissBehavior).first
         preferredWindowMinimizeBehavior =
-            children.compactMap { $0.preferredWindowMinimizeBehavior }.first
-        windowResizeBehavior = children.compactMap { $0.windowResizeBehavior }.first
+            children.compactMap(\.preferredWindowMinimizeBehavior).first
+        windowResizeBehavior = children.compactMap(\.windowResizeBehavior).first
     }
 }

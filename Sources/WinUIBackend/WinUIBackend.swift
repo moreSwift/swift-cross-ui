@@ -57,7 +57,7 @@ public final class WinUIBackend: AppBackend {
     public typealias Menu = Void
     public typealias Alert = WinUI.ContentDialog
     public typealias Path = GeometryGroupHolder
-    public typealias Sheet = CustomWindow  // Only for protocol conformance. WinUI doesn't currently support it.
+    public typealias Sheet = CustomWindow // Only for protocol conformance. WinUI doesn't currently support it.
 
     public let defaultTableRowContentHeight = 20
     public let defaultTableCellVerticalPadding = 4

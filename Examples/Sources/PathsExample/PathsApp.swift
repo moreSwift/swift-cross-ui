@@ -1,5 +1,5 @@
 import DefaultBackend
-import Foundation  // for sin, cos
+import Foundation // for sin, cos
 import SwiftCrossUI
 
 struct ArcShape: StyledShape {

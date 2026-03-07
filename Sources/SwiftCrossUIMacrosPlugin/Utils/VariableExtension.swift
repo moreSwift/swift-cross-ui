@@ -24,9 +24,7 @@ extension Variable {
         for attribute in _syntax.attributes {
             switch attribute {
                 case .attribute(let attr):
-                    if attr.attributeName.tokens(viewMode: .all).map({
-                        $0.tokenKind
-                    }) == expectation {
+                    if attr.attributeName.tokens(viewMode: .all).map(\.tokenKind) == expectation {
                         return true
                     }
                 default:

@@ -109,7 +109,7 @@ public struct EnvironmentValues {
     let backend: any AppBackend
 
     /// Presents an 'Open file' dialog fit for selecting a single file.
-    /// 
+    ///
     /// Displays as a modal for the current window, or the entire app if
     /// accessed outside of a scene's view graph (in which case the backend
     /// can decide whether to make it an app modal, a standalone window, or a

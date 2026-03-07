@@ -27,7 +27,7 @@ public struct Image: Sendable {
     }
 
     /// Displays an image from raw pixel data.
-    /// 
+    ///
     /// - Parameter image: The image data to display.
     public init(_ image: ImageFormats.Image<RGBA>) {
         source = .image(image)

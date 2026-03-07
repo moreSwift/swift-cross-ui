@@ -1,4 +1,4 @@
-import Foundation  // for sin and cos
+import Foundation // for sin and cos
 
 public enum StrokeCap: Sendable {
     /// The stroke ends square exactly at the last point.
