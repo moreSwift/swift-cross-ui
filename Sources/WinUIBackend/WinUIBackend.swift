@@ -1510,34 +1510,32 @@ public final class WinUIBackend: AppBackend {
         if openDialogOptions.allowMultipleSelections {
             let promise = try! picker.pickMultipleFilesAsync()!
             promise.completed = { operation, status in
-                guard
-                    status == .completed,
-                    let operation,
-                    let result = try? operation.getResults()
-                else {
-                    handleResult(.cancelled)
-                    return
+                let result: DialogResult<[URL]> = Self.handleAsyncOperationCompletion(
+                    operation,
+                    status
+                ) { result in
+                    let files = Array(result).compactMap { $0 }
+                        .map(\.path)
+                        .map(URL.init(fileURLWithPath:))
+                    return .success(files)
+                } onFailure: {
+                    return .cancelled
                 }
-
-                let files = Array(result).compactMap { $0 }
-                    .map(\.path)
-                    .map(URL.init(fileURLWithPath:))
-                handleResult(.success(files))
+                handleResult(result)
             }
         } else {
             let promise = try! picker.pickSingleFileAsync()!
             promise.completed = { operation, status in
-                guard
-                    status == .completed,
-                    let operation,
-                    let result = try? operation.getResults()
-                else {
-                    handleResult(.cancelled)
-                    return
+                let result: DialogResult<[URL]> = Self.handleAsyncOperationCompletion(
+                    operation,
+                    status
+                ) { result in
+                    let file = URL(fileURLWithPath: result.path)
+                    return .success([file])
+                } onFailure: {
+                    return .cancelled
                 }
-
-                let file = URL(fileURLWithPath: result.path)
-                handleResult(.success([file]))
+                handleResult(result)
             }
         }
     }
@@ -1558,18 +1556,63 @@ public final class WinUIBackend: AppBackend {
         _ = picker.fileTypeChoices.insert("Text", [".txt"].toVector())
         let promise = try! picker.pickSaveFileAsync()!
         promise.completed = { operation, status in
-            guard
-                status == .completed,
-                let operation,
-                let result = try? operation.getResults()
-            else {
-                handleResult(.cancelled)
-                return
+            let result: DialogResult<URL> = Self.handleAsyncOperationCompletion(
+                operation,
+                status
+            ) { result in
+                let file = URL(fileURLWithPath: result.path)
+                return .success(file)
+            } onFailure: {
+                return .cancelled
             }
-
-            let file = URL(fileURLWithPath: result.path)
-            handleResult(.success(file))
+            handleResult(result)
         }
+    }
+
+    /// A helper method that abstracts out the common failure case handling code
+    /// from all of our file dialog related async operation completion handlers.
+    private static func handleAsyncOperationCompletion<T, R>(
+        _ operation: AnyIAsyncOperation<T?>?,
+        _ status: AsyncStatus,
+        onSuccess handleSuccess: (T) -> R,
+        onFailure handleFailure: () -> R
+    ) -> R {
+        guard let operation else {
+            logger.warning(
+                "operation parameter unexpectedly nil",
+                metadata: [
+                    "function": #function
+                ]
+            )
+            return handleFailure()
+        }
+
+        guard
+            status == .completed,
+            let result = try? operation.getResults()
+        else {
+            if status == .error {
+                logger.error(
+                    "\(WindowsFoundation.Error(hr: operation.errorCode))",
+                    metadata: [
+                        "function": #function
+                    ]
+                )
+
+                if UInt32(bitPattern: operation.errorCode) == 0x80004005 {
+                    // https://github.com/microsoft/WindowsAppSDK/issues/4625#issuecomment-2281358235
+                    logger.warning(
+                        """
+                        This may indicate that you're attempting to launch a \
+                        file picker from an app launched as administrator
+                        """
+                    )
+                }
+            }
+            return handleFailure()
+        }
+
+        return handleSuccess(result)
     }
 
     public func createTapGestureTarget(wrapping child: Widget, gesture: TapGesture) -> Widget {
