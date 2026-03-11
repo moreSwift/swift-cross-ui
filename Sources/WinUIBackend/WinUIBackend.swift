@@ -54,7 +54,7 @@ public final class WinUIBackend: AppBackend {
 
     public typealias Window = CustomWindow
     public typealias Widget = WinUI.FrameworkElement
-    public typealias Menu = Void
+    public typealias Menu = WinUI.MenuFlyout
     public typealias Alert = WinUI.ContentDialog
     public typealias Path = GeometryGroupHolder
     public typealias Sheet = CustomWindow // Only for protocol conformance. WinUI doesn't currently support it.
@@ -64,7 +64,7 @@ public final class WinUIBackend: AppBackend {
     public let defaultPaddingAmount = 10
     public let requiresToggleSwitchSpacer = false
     public let requiresImageUpdateOnScaleFactorChange = false
-    public let menuImplementationStyle = MenuImplementationStyle.dynamicPopover
+    public let menuImplementationStyle = MenuImplementationStyle.menuButton
     public let canRevealFiles = false
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
@@ -754,6 +754,38 @@ public final class WinUIBackend: AppBackend {
         environment.apply(to: block)
         environment.apply(to: button)
         internalState.buttonClickActions[ObjectIdentifier(button)] = action
+    }
+
+    public func createPopoverMenu() -> Menu {
+        let flyout = MenuFlyout()
+        flyout.placement = .bottomEdgeAlignedLeft
+        return flyout
+    }
+
+    public func updatePopoverMenu(
+        _ menu: Menu,
+        content: ResolvedMenu,
+        environment: EnvironmentValues
+    ) {
+        menu.items.clear()
+        for item in renderItems(content.items) {
+            menu.items.append(item)
+        }
+    }
+
+    public func updateButton(
+        _ button: Widget,
+        label: String,
+        menu: Menu,
+        environment: EnvironmentValues
+    ) {
+        let button = button as! WinUI.Button
+        let block = TextBlock()
+        block.text = label
+        button.content = block
+        environment.apply(to: block)
+        environment.apply(to: button)
+        button.flyout = menu
     }
 
     public func createScrollContainer(for child: Widget) -> Widget {
