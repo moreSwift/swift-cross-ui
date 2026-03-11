@@ -36,18 +36,26 @@ public final class TupleSceneNode${i}<${", ".join("Scene%d: Scene" % j for j in 
         %end
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
                 %for j in range(i):
-                node${j}.update(newScene?.scene${j}, backend: backend, environment: environment),
+                node${j}.updateNode(newScene?.scene${j}, environment: environment),
                 %end
             ]
         )
+    }
+
+    public func update<Backend: AppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        %for j in range(i):
+        node${j}.update(backend: backend, environment: environment)
+        %end
     }
 }
 %end

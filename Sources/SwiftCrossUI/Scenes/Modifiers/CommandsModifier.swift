@@ -41,21 +41,26 @@ final class CommandsModifierNode<Content: Scene>: SceneGraphNode {
         )
     }
 
-    func update<Backend: AppBackend>(
+    func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
+    ) -> SceneNodeUpdateResult {
         if let newScene {
             self.commands = newScene.commands
         }
 
-        var result = contentNode.update(
-            newScene?.content,
+        var result = contentNode.updateNode(newScene?.content, environment: environment)
+        result.preferences.commands = result.preferences.commands.overlayed(with: commands)
+        return result
+    }
+
+    func update<Backend: AppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        contentNode.update(
             backend: backend,
             environment: environment
         )
-        result.preferences.commands = result.preferences.commands.overlayed(with: commands)
-        return result
     }
 }

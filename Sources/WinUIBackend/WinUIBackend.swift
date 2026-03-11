@@ -207,7 +207,7 @@ public final class WinUIBackend: AppBackend {
         let height = Double(size.height) / scaleFactor
         let out = SIMD2(
             Int(width.rounded(.towardZero)),
-            Int(height.rounded(.towardZero)) - CustomWindow.menuBarHeight
+            Int(height.rounded(.towardZero)) - window.contentHeightAdjustment
         )
         return out
     }
@@ -220,7 +220,7 @@ public final class WinUIBackend: AppBackend {
     public func setSize(ofWindow window: Window, to newSize: SIMD2<Int>) {
         let scaleFactor = window.scaleFactor
         let width = scaleFactor * Double(newSize.x)
-        let height = scaleFactor * Double(newSize.y + CustomWindow.menuBarHeight)
+        let height = scaleFactor * Double(newSize.y + window.contentHeightAdjustment)
         let size = UWP.SizeInt32(
             width: Int32(width.rounded(.towardZero)),
             height: Int32(height.rounded(.towardZero))
@@ -243,7 +243,7 @@ public final class WinUIBackend: AppBackend {
         window.sizeChanged.addHandler { _, args in
             let size = SIMD2(
                 Int(args!.size.width.rounded(.awayFromZero)),
-                Int(args!.size.height.rounded(.awayFromZero)) - CustomWindow.menuBarHeight
+                Int(args!.size.height.rounded(.awayFromZero)) - window.contentHeightAdjustment
             )
             action(size)
         }
@@ -360,6 +360,7 @@ public final class WinUIBackend: AppBackend {
             for item in items {
                 window.menuBar.items.append(item)
             }
+            window.setMenuBarVisible(!items.isEmpty)
         }
     }
 
@@ -2140,13 +2141,21 @@ class SwiftIInitializeWithWindow: WindowsFoundation.IUnknown {
 
 public class CustomWindow: WinUI.Window {
     /// Hardcoded menu bar height from MenuBar_themeresources.xaml in the
-    /// microsoft-ui-xaml repository.
-    static let menuBarHeight = 0
+    /// microsoft-ui-xaml repository (the MenuBarHeight property)
+    private static let menuBarHeight = 40
 
     var menuBar = WinUI.MenuBar()
     var child: WinUIBackend.Widget?
     var grid: WinUI.Grid
     var cachedAppWindow: WinAppSDK.AppWindow!
+
+    private(set) var menuBarIsVisible = false
+
+    /// The amount of height to subtract off the window height to obtain the
+    /// window's available content height.
+    var contentHeightAdjustment: Int {
+        menuBarIsVisible ? Self.menuBarHeight : 0
+    }
 
     var scaleFactor: Double {
         // I'm leaving this code here for future travellers. Be warned that this always
@@ -2181,10 +2190,6 @@ public class CustomWindow: WinUI.Window {
         super.init()
 
         let menuBarRowDefinition = WinUI.RowDefinition()
-        menuBarRowDefinition.height = WinUI.GridLength(
-            value: Double(Self.menuBarHeight),
-            gridUnitType: .pixel
-        )
         let contentRowDefinition = WinUI.RowDefinition()
         grid.rowDefinitions.append(menuBarRowDefinition)
         grid.rowDefinitions.append(contentRowDefinition)
@@ -2195,6 +2200,20 @@ public class CustomWindow: WinUI.Window {
         // Caching appWindow is apparently a good idea in terms of performance:
         // https://github.com/thebrowsercompany/swift-winrt/issues/199#issuecomment-2611006020
         cachedAppWindow = appWindow
+
+        // Default to not showing the menu bar; we only want to show it when it's non-empty
+        setMenuBarVisible(menuBarIsVisible)
+    }
+
+    /// Sets whether the menu bar of the current window is visible. The menu bar
+    /// is what holds the in-window app menu, it's not the title bar (the one with
+    /// the window controls).
+    public func setMenuBarVisible(_ visible: Bool) {
+        grid.rowDefinitions[0]!.height = WinUI.GridLength(
+            value: visible ? Double(Self.menuBarHeight) : 0,
+            gridUnitType: .pixel
+        )
+        menuBarIsVisible = visible
     }
 
     public func setChild(_ child: WinUIBackend.Widget) {

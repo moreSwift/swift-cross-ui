@@ -26,20 +26,29 @@ public protocol SceneGraphNode: AnyObject {
         environment: EnvironmentValues
     )
 
+    /// Updates the scene's node without committing anything to screen or
+    /// propagating the update to child views.
+    ///
+    /// - Parameters:
+    ///   - newScene: The recomputed scene if the update is due to it being
+    ///     recomputed.
+    ///   - environment: The current root-level environment.
+    /// - Returns: The result of updating the scene node.
+    func updateNode(
+        _ newScene: NodeScene?,
+        environment: EnvironmentValues
+    ) -> SceneNodeUpdateResult
+
     /// Updates the scene.
     ///
     /// Unlike views (which have state), scenes are only ever updated when
     /// they're recomputed or immediately after they're created.
     ///
     /// - Parameters:
-    ///   - newScene: The recomputed scene if the update is due to it being
-    ///     recomputed.
     ///   - backend: The app's backend.
-    ///   - environment: The current root-level environment.
-    /// - Returns: The result of updating the scene.
+    ///   - environment: The current environment.
     func update<Backend: AppBackend>(
-        _ newScene: NodeScene?,
         backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult
+    )
 }

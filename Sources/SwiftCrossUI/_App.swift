@@ -38,12 +38,12 @@ class _App<AppRoot: App> {
         dynamicPropertyUpdater.update(app, with: environment, previousValue: nil)
 
         if let sceneGraphRoot {
-            let result = sceneGraphRoot.update(
-                app.body,
+            let result = sceneGraphRoot.updateNode(app.body, environment: environment)
+            backend.setApplicationMenu(result.preferences.commands.resolve())
+            sceneGraphRoot.update(
                 backend: backend,
                 environment: environment
             )
-            backend.setApplicationMenu(result.preferences.commands.resolve())
         }
     }
 
@@ -96,17 +96,13 @@ class _App<AppRoot: App> {
                 self.refreshSceneGraph()
             }
 
-            let result = rootNode.update(
-                nil,
-                backend: backend,
-                environment: backend.computeRootEnvironment(
-                    defaultEnvironment: baseEnvironment
-                )
-            )
-            self.sceneGraphRoot = rootNode
+            let result = rootNode.updateNode(nil, environment: environment)
 
             // Update application-wide menu
             backend.setApplicationMenu(result.preferences.commands.resolve())
+
+            rootNode.update(backend: backend, environment: environment)
+            self.sceneGraphRoot = rootNode
         }
     }
 }

@@ -76,7 +76,7 @@ final class WindowReference<SceneType: WindowingScene> {
         _ newScene: SceneType?,
         backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
+    ) {
         guard let window = window as? Backend.Window else {
             fatalError("Scene updated with a backend incompatible with the window it was given")
         }
@@ -94,7 +94,7 @@ final class WindowReference<SceneType: WindowingScene> {
             usedDefaultSize = false
         }
 
-        return update(
+        update(
             newScene,
             proposedWindowSize: proposedWindowSize,
             needsWindowSizeCommit: usedDefaultSize,
@@ -106,7 +106,7 @@ final class WindowReference<SceneType: WindowingScene> {
 
     /// Updates the `WindowReference`.
     /// - Parameters:
-    ///   - newScene: The scene. `nil` if this is the first update.
+    ///   - newScene: The scene. `nil` if reusing previous scene value.
     ///   - proposedWindowSize: The proposed window size.
     ///   - needsWindowSizeCommit: Whether the proposed window size matches the
     ///     windows current size (or imminent size in the case of a window
@@ -127,7 +127,7 @@ final class WindowReference<SceneType: WindowingScene> {
         backend: Backend,
         environment: EnvironmentValues,
         windowSizeIsFinal: Bool = false
-    ) -> SceneUpdateResult {
+    ) {
         guard let window = window as? Backend.Window else {
             fatalError("Scene updated with a backend incompatible with the window it was given")
         }
@@ -245,8 +245,6 @@ final class WindowReference<SceneType: WindowingScene> {
             backend.show(window: window)
             isFirstUpdate = false
         }
-
-        return .leafScene()
     }
 
     func activate<Backend: AppBackend>(backend: Backend) {
