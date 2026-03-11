@@ -753,7 +753,7 @@ public final class GtkBackend: AppBackend {
         let pango = Pango(for: widget)
         let (width, height) = pango.getTextSize(
             text,
-            ellipsize: ellipsize,
+            ellipsize: proposedHeight == nil ? .none : ellipsize,
             proposedWidth: proposedWidth.map(Double.init),
             proposedHeight: proposedHeight.map(Double.init)
         )
