@@ -75,7 +75,7 @@ extension TextBox: TextBoxProtocol {
 
 extension PasswordBox: TextBoxProtocol {
     func addTextChangedHandler(_ handler: @escaping () -> Void) {
-        passwordChanged.addHandler { _ in handler() }
+        passwordChanged.addHandler { _, _ in handler() }
     }
     var text: String {
         get { password }
