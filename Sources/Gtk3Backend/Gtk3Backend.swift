@@ -1004,7 +1004,7 @@ public final class Gtk3Backend: AppBackend {
 
     public func createTextField(secure: Bool) -> Widget {
         let entry = Entry()
-        entry.visibility = secure
+        entry.visibility = !secure
         return entry
     }
 

@@ -628,16 +628,13 @@ public final class WinUIBackend: AppBackend {
                 11 + 11 + 2,
                 5 + 6 + 2
             )
-        } else if let textField = widget as? WinUI.TextBox, textField.padding == noPadding {
+        } else if let textField = widget as? TextBoxProtocol, textField.padding == noPadding {
             // The default padding applied to text boxes can be found here:
             // https://github.com/microsoft/microsoft-ui-xaml/blob/650b2c1bad272393400403ca323b3cb8745f95d0/src/controls/dev/CommonStyles/Common_themeresources.xaml#L12
             // However, text fields return 0x0 before rendering so our adjustment
             // just has to be the entire size of the text field. I've currently just
             // hardcoded a value obtained from one of my example apps.
-            adjustment = SIMD2(
-                64,
-                32
-            )
+            adjustment = SIMD2(64, 32)
         } else if widget is CalendarView {
             // I don't actually know why this is necessary, but without it the abbreviations for the
             // weekdays wrap, making it taller than it says it is. Value was derived by trial and

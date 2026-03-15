@@ -14,7 +14,10 @@ import WindowsFoundation
 
 extension WinUIBackend {
     public func createTextField(secure: Bool) -> Widget {
+        // FIXME: SecureFields don't show up until the first update
+
         let textField: TextBoxProtocol = if secure { PasswordBox() } else { TextBox() }
+        
 
         textField.addTextChangedHandler { [weak internalState] in
             guard let internalState else { return }
