@@ -112,7 +112,7 @@ struct ControlsApp: App {
 
                         VStack {
                             Text("Secure text field")
-                            SecureField("Secure text field", text: secureText)
+                            SecureField("Secure text field", text: $secureText)
                             Text("Value: \(secureText)")
                         }
 
