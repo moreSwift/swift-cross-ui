@@ -87,7 +87,7 @@ public final class WinUIBackend: AppBackend {
         var themeChangeAction: (() -> Void)?
     }
 
-    private var internalState: InternalState
+    var internalState: InternalState
     nonisolated(unsafe) private var dispatcherQueue: WinAppSDK.DispatcherQueue?
     /// WinUI only allows one dialog at a time (subsequent dialogs throw
     /// exceptions), so we limit ourselves.

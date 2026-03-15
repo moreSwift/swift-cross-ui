@@ -37,7 +37,7 @@ extension WinUIBackend {
         onChange: @escaping (String) -> Void,
         onSubmit: @escaping () -> Void
     ) {
-        let textField = (textField as! TextBoxProtocol)
+        let textField = textField as! TextBoxProtocol
         textField.placeholderText = placeholder
         internalState.textFieldChangeActions[ObjectIdentifier(textField)] = onChange
         internalState.textFieldSubmitActions[ObjectIdentifier(textField)] = onSubmit
@@ -56,21 +56,25 @@ extension WinUIBackend {
     }
 }
 
-private protocol TextBoxProtocol: Control {
+// `TextBox` and `PasswordBox` are two separate classes implemented on top of
+// `Control`, and both implement all the textbox-y things independently. So we
+// need a wrapper protocol in order to use them as if they're the same type.
+
+protocol TextBoxProtocol: Control {
     var textChanged: Event<TextChangedEventHandler> { get set }
     var text: String { get set }
     var placeholderText: String { get set }
-    var inputScope: InputScope { get set }
+    var inputScope: InputScope? { get set }
 }
 
 extension TextBox: TextBoxProtocol {}
 extension PasswordBox: TextBoxProtocol {
     var textChanged: Event<TextChangedEventHandler> {
         get { passwordChanged }
-        get { passwordChanged = newValue }
+        set { passwordChanged = newValue }
     }
-    var text: Event<TextChangedEventHandler> {
+    var text: String {
         get { password }
-        get { password = newValue }
+        set { password = newValue }
     }
 }
