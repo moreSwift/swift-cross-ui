@@ -16,7 +16,7 @@ extension WinUIBackend {
     public func createTextField(secure: Bool) -> Widget {
         let textField: TextBoxProtocol = if secure { PasswordBox() } else { TextBox() }
 
-        textField.textChanged.addHandler { [weak internalState] _, _ in
+        textField.addTextChangedHandler { [weak internalState] in
             guard let internalState else { return }
             internalState.textFieldChangeActions[ObjectIdentifier(textField)]?(textField.text)
         }
@@ -61,25 +61,21 @@ extension WinUIBackend {
 // need a wrapper protocol in order to use them as if they're the same type.
 
 protocol TextBoxProtocol: Control {
-    func addTextChangedHandler(_ handler: (String) -> Void)
+    func addTextChangedHandler(_ handler: @escaping () -> Void)
     var text: String { get set }
     var placeholderText: String { get set }
     var inputScope: InputScope! { get set }
 }
 
 extension TextBox: TextBoxProtocol {
-    func addTextChangedHandler(_ handler: @escaping (String) -> Void) {
-        textChanged.addHandler { _, _ in
-            handler()
-        }
+    func addTextChangedHandler(_ handler: @escaping () -> Void) {
+        textChanged.addHandler { _, _ in handler() }
     }
 }
 
 extension PasswordBox: TextBoxProtocol {
-    func addTextChangedHandler(_ handler: @escaping (String) -> Void) {
-        passwordChanged.addHandler { _, _ in
-            handler()
-        }
+    func addTextChangedHandler(_ handler: @escaping () -> Void) {
+        passwordChanged.addHandler { _ in handler() }
     }
     var text: String {
         get { password }
