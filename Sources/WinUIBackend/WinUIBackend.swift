@@ -1171,7 +1171,7 @@ public final class WinUIBackend: AppBackend {
                     }
                 default: nil
             }
-        guard let inputScopeName else { return }
+        guard let inputScope else { return }
 
         let inputScopeName = InputScopeName(inputScope)
 
