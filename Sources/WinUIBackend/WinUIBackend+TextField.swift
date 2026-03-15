@@ -61,17 +61,25 @@ extension WinUIBackend {
 // need a wrapper protocol in order to use them as if they're the same type.
 
 protocol TextBoxProtocol: Control {
-    var textChanged: Event<TextChangedEventHandler> { get set }
+    func addTextChangedHandler(_ handler: (String) -> Void)
     var text: String { get set }
     var placeholderText: String { get set }
     var inputScope: InputScope! { get set }
 }
 
-extension TextBox: TextBoxProtocol {}
+extension TextBox: TextBoxProtocol {
+    func addTextChangedHandler(_ handler: @escaping (String) -> Void) {
+        textChanged.addHandler { _, _ in
+            handler()
+        }
+    }
+}
+
 extension PasswordBox: TextBoxProtocol {
-    var textChanged: Event<TextChangedEventHandler> {
-        get { passwordChanged }
-        set { passwordChanged = newValue }
+    func addTextChangedHandler(_ handler: @escaping (String) -> Void) {
+        passwordChanged.addHandler { _, _ in
+            handler()
+        }
     }
     var text: String {
         get { password }
