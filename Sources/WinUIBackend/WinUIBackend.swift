@@ -57,7 +57,7 @@ public final class WinUIBackend: AppBackend {
     public typealias Menu = WinUI.MenuFlyout
     public typealias Alert = WinUI.ContentDialog
     public typealias Path = GeometryGroupHolder
-    public typealias Sheet = CustomWindow // Only for protocol conformance. WinUI doesn't currently support it.
+    public typealias Sheet = CustomWindow  // Only for protocol conformance. WinUI doesn't currently support it.
 
     public let defaultTableRowContentHeight = 20
     public let defaultTableCellVerticalPadding = 4
@@ -316,31 +316,31 @@ public final class WinUIBackend: AppBackend {
     private func renderItems(_ items: [ResolvedMenu.Item]) -> [MenuFlyoutItemBase] {
         items.map { item in
             switch item {
-                case .button(let label, let action):
-                    let widget = MenuFlyoutItem()
-                    widget.text = label
-                    widget.click.addHandler { _, _ in
-                        action?()
-                    }
-                    return widget
-                case .toggle(let label, let value, let onChange):
-                    let widget = ToggleMenuFlyoutItem()
-                    widget.text = label
-                    widget.isChecked = value
-                    widget.click.addHandler { [weak widget] _, _ in
-                        guard let widget else { return }
-                        onChange(widget.isChecked)
-                    }
-                    return widget
-                case .separator:
-                    return MenuFlyoutSeparator()
-                case .submenu(let submenu):
-                    let widget = MenuFlyoutSubItem()
-                    widget.text = submenu.label
-                    for subitem in renderItems(submenu.content.items) {
-                        widget.items.append(subitem)
-                    }
-                    return widget
+            case .button(let label, let action):
+                let widget = MenuFlyoutItem()
+                widget.text = label
+                widget.click.addHandler { _, _ in
+                    action?()
+                }
+                return widget
+            case .toggle(let label, let value, let onChange):
+                let widget = ToggleMenuFlyoutItem()
+                widget.text = label
+                widget.isChecked = value
+                widget.click.addHandler { [weak widget] _, _ in
+                    guard let widget else { return }
+                    onChange(widget.isChecked)
+                }
+                return widget
+            case .separator:
+                return MenuFlyoutSeparator()
+            case .submenu(let submenu):
+                let widget = MenuFlyoutSubItem()
+                widget.text = submenu.label
+                for subitem in renderItems(submenu.content.items) {
+                    widget.items.append(subitem)
+                }
+                return widget
             }
         }
     }
@@ -682,7 +682,8 @@ public final class WinUIBackend: AppBackend {
 
         if let lineLimitSettings = environment.lineLimitSettings {
             let height = Int(
-                Double(max(lineLimitSettings.limit, 1)) * lineHeight)
+                Double(max(lineLimitSettings.limit, 1)) * lineHeight
+            )
 
             if height < usedHeight || lineLimitSettings.reservesSpace {
                 usedHeight = height
@@ -970,41 +971,41 @@ public final class WinUIBackend: AppBackend {
 
     public func createPicker(style: BackendPickerStyle) -> Widget {
         switch style {
-            case .menu:
-                let picker = CustomComboBox()
-                picker.selectionChanged.addHandler { [weak picker] _, _ in
-                    guard let picker else { return }
-                    picker.onChangeSelection?(Int(picker.selectedIndex))
-                }
+        case .menu:
+            let picker = CustomComboBox()
+            picker.selectionChanged.addHandler { [weak picker] _, _ in
+                guard let picker else { return }
+                picker.onChangeSelection?(Int(picker.selectedIndex))
+            }
 
-                // When hovering over a picker, its foreground changes to black,
-                // when the pointer exits the picker the foreground color remains
-                // black instead of returning to its regular value. I've tried various
-                // variations of the solution below and it seems like the only thing
-                // that works is fully recreating the brush.
-                picker.pointerExited.addHandler { [weak picker] _, _ in
-                    guard let picker else { return }
-                    let brush = SolidColorBrush()
-                    brush.color = picker.actualForegroundColor
-                    picker.foreground = brush
-                }
+            // When hovering over a picker, its foreground changes to black,
+            // when the pointer exits the picker the foreground color remains
+            // black instead of returning to its regular value. I've tried various
+            // variations of the solution below and it seems like the only thing
+            // that works is fully recreating the brush.
+            picker.pointerExited.addHandler { [weak picker] _, _ in
+                guard let picker else { return }
+                let brush = SolidColorBrush()
+                brush.color = picker.actualForegroundColor
+                picker.foreground = brush
+            }
 
-                return picker
-            case .radioGroup:
-                let picker = CustomRadioButtons()
+            return picker
+        case .radioGroup:
+            let picker = CustomRadioButtons()
 
-                picker.selectionChanged.addHandler { [weak picker] _, _ in
-                    guard let picker else { return }
-                    picker.onChangeSelection?(
-                        picker.selectedIndex == -1 ? nil : Int(picker.selectedIndex)
-                    )
-                }
+            picker.selectionChanged.addHandler { [weak picker] _, _ in
+                guard let picker else { return }
+                picker.onChangeSelection?(
+                    picker.selectedIndex == -1 ? nil : Int(picker.selectedIndex)
+                )
+            }
 
-                return picker
-            default:
-                let message = "unsupported picker style \(style)"
-                logger.critical("\(message)")
-                fatalError(message)
+            return picker
+        default:
+            let message = "unsupported picker style \(style)"
+            logger.critical("\(message)")
+            fatalError(message)
         }
     }
 
@@ -1149,23 +1150,28 @@ public final class WinUIBackend: AppBackend {
         of textField: TextBoxProtocol,
         textContentType: TextContentType
     ) {
-        let inputScope: InputScopeNameValue =
-            switch textContentType {
-                case .decimal(_):
-                    .number
-                case .digits(_):
-                    .digits
-                case .emailAddress:
-                    .emailSmtpAddress
-                case .name:
-                    .personalFullName
-                case .phoneNumber:
-                    .telephoneNumber
-                case .text:
-                    .default
-                case .url:
-                    .url
+
+        let inputScope: InputScopeNameValue? =
+            switch textField {
+                case is TextBox:
+                    switch textContentType {
+                        case .decimal(_): .number
+                        case .digits(_): .digits
+                        case .emailAddress: .emailSmtpAddress
+                        case .name: .personalFullName
+                        case .phoneNumber: .telephoneNumber
+                        case .text: .default
+                        case .url: .url
+                    }
+                case is PasswordBox:
+                    switch textContentType {
+                        case .digits(_): .numericPin
+                        case .text: .password
+                        default: nil
+                    }
+                default: nil
             }
+        guard let inputScopeName else { return }
 
         let inputScopeName = InputScopeName(inputScope)
 
@@ -1408,10 +1414,10 @@ public final class WinUIBackend: AppBackend {
         }
 
         switch environment.colorScheme {
-            case .light:
-                alert.requestedTheme = .light
-            case .dark:
-                alert.requestedTheme = .dark
+        case .light:
+            alert.requestedTheme = .light
+        case .dark:
+            alert.requestedTheme = .dark
         }
     }
 
@@ -1441,11 +1447,11 @@ public final class WinUIBackend: AppBackend {
             }
             let index =
                 switch result {
-                    case .primary: 0
-                    case .secondary: 1
-                    case .none: 2
-                    default:
-                        fatalError("WinUIBackend: Invalid dialog response")
+                case .primary: 0
+                case .secondary: 1
+                case .none: 2
+                default:
+                    fatalError("WinUIBackend: Invalid dialog response")
                 }
             handleResponse(index)
         }
@@ -1558,7 +1564,7 @@ public final class WinUIBackend: AppBackend {
                     ]
                 )
 
-                if UInt32(bitPattern: operation.errorCode) == 0x80004005 {
+                if UInt32(bitPattern: operation.errorCode) == 0x8000_4005 {
                     // https://github.com/microsoft/WindowsAppSDK/issues/4625#issuecomment-2281358235
                     logger.warning(
                         """
@@ -1692,10 +1698,10 @@ public final class WinUIBackend: AppBackend {
 
         path.group.fillRule =
             switch source.fillRule {
-                case .evenOdd:
-                    .evenOdd
-                case .winding:
-                    .nonzero
+            case .evenOdd:
+                .evenOdd
+            case .winding:
+                .nonzero
             }
     }
 
@@ -1734,156 +1740,156 @@ public final class WinUIBackend: AppBackend {
 
         for action in actions {
             switch action {
-                case .moveTo(let point):
-                    lastPoint = Point(x: Float(point.x), y: Float(point.y))
+            case .moveTo(let point):
+                lastPoint = Point(x: Float(point.x), y: Float(point.y))
 
-                    if geometry.size > 0,
-                        let pathGeometry = geometry.getAt(geometry.size - 1) as? PathGeometry,
-                        pathGeometry.figures.size > 0
-                    {
-                        let figure = pathGeometry.figures.getAt(pathGeometry.figures.size - 1)!
-                        if figure.segments.size > 0 {
-                            let newFigure = PathFigure()
-                            newFigure.startPoint = lastPoint
-                            pathGeometry.figures.append(newFigure)
-                        } else {
-                            figure.startPoint = lastPoint
-                        }
-                    }
-                case .lineTo(let point):
-                    let wfPoint = Point(x: Float(point.x), y: Float(point.y))
-                    defer { lastPoint = wfPoint }
-
-                    let figure = requirePathFigure(geometry, lastPoint: lastPoint)
-
-                    let segment = LineSegment()
-                    segment.point = wfPoint
-                    figure.segments.append(segment)
-                case .quadCurve(let control, let end):
-                    let wfControl = Point(x: Float(control.x), y: Float(control.y))
-                    let wfEnd = Point(x: Float(end.x), y: Float(end.y))
-                    defer { lastPoint = wfEnd }
-
-                    let figure = requirePathFigure(geometry, lastPoint: lastPoint)
-
-                    let segment = QuadraticBezierSegment()
-                    segment.point1 = wfControl
-                    segment.point2 = wfEnd
-                    figure.segments.append(segment)
-                case .cubicCurve(let control1, let control2, let end):
-                    let wfControl1 = Point(x: Float(control1.x), y: Float(control1.y))
-                    let wfControl2 = Point(x: Float(control2.x), y: Float(control2.y))
-                    let wfEnd = Point(x: Float(end.x), y: Float(end.y))
-                    defer { lastPoint = wfEnd }
-
-                    let figure = requirePathFigure(geometry, lastPoint: lastPoint)
-
-                    let segment = BezierSegment()
-                    segment.point1 = wfControl1
-                    segment.point2 = wfControl2
-                    segment.point3 = wfEnd
-                    figure.segments.append(segment)
-                case .rectangle(let rect):
-                    let rectGeo = RectangleGeometry()
-                    rectGeo.rect = Rect(
-                        x: Float(rect.x),
-                        y: Float(rect.y),
-                        width: Float(rect.width),
-                        height: Float(rect.height)
-                    )
-                    geometry.append(rectGeo)
-                case .circle(let center, let radius):
-                    let ellipse = EllipseGeometry()
-                    ellipse.radiusX = radius
-                    ellipse.radiusY = radius
-                    ellipse.center = Point(x: Float(center.x), y: Float(center.y))
-                    geometry.append(ellipse)
-                case .arc(
-                    let center,
-                    let radius,
-                    let startAngle,
-                    let endAngle,
-                    let clockwise
-                ):
-                    let startPoint = Point(
-                        x: Float(center.x + radius * cos(startAngle)),
-                        y: Float(center.y + radius * sin(startAngle))
-                    )
-                    let endPoint = Point(
-                        x: Float(center.x + radius * cos(endAngle)),
-                        y: Float(center.y + radius * sin(endAngle))
-                    )
-                    defer { lastPoint = endPoint }
-
-                    let figure = requirePathFigure(geometry, lastPoint: lastPoint)
-
-                    if startPoint != lastPoint {
-                        if figure.segments.size > 0 {
-                            let connector = LineSegment()
-                            connector.point = startPoint
-                            figure.segments.append(connector)
-                        } else {
-                            figure.startPoint = startPoint
-                        }
-                    }
-
-                    let segment = ArcSegment()
-
-                    if clockwise {
-                        if startAngle < endAngle {
-                            segment.isLargeArc = (endAngle - startAngle > .pi)
-                        } else {
-                            segment.isLargeArc = (startAngle - endAngle < .pi)
-                        }
-                        segment.sweepDirection = .clockwise
+                if geometry.size > 0,
+                    let pathGeometry = geometry.getAt(geometry.size - 1) as? PathGeometry,
+                    pathGeometry.figures.size > 0
+                {
+                    let figure = pathGeometry.figures.getAt(pathGeometry.figures.size - 1)!
+                    if figure.segments.size > 0 {
+                        let newFigure = PathFigure()
+                        newFigure.startPoint = lastPoint
+                        pathGeometry.figures.append(newFigure)
                     } else {
-                        if startAngle < endAngle {
-                            segment.isLargeArc = (endAngle - startAngle < .pi)
-                        } else {
-                            segment.isLargeArc = (startAngle - endAngle > .pi)
-                        }
-                        segment.sweepDirection = .counterclockwise
+                        figure.startPoint = lastPoint
                     }
+                }
+            case .lineTo(let point):
+                let wfPoint = Point(x: Float(point.x), y: Float(point.y))
+                defer { lastPoint = wfPoint }
 
-                    segment.point = endPoint
-                    segment.size = Size(width: Float(radius), height: Float(radius))
+                let figure = requirePathFigure(geometry, lastPoint: lastPoint)
 
-                    figure.segments.append(segment)
-                case .transform(let transform):
-                    let matrixTransform = MatrixTransform()
-                    matrixTransform.matrix = Matrix(
-                        m11: transform.linearTransform.x,
-                        m12: transform.linearTransform.z,
-                        m21: transform.linearTransform.y,
-                        m22: transform.linearTransform.w,
-                        offsetX: transform.translation.x,
-                        offsetY: transform.translation.y
-                    )
+                let segment = LineSegment()
+                segment.point = wfPoint
+                figure.segments.append(segment)
+            case .quadCurve(let control, let end):
+                let wfControl = Point(x: Float(control.x), y: Float(control.y))
+                let wfEnd = Point(x: Float(end.x), y: Float(end.y))
+                defer { lastPoint = wfEnd }
 
-                    for case let geo? in geometry {
-                        if geo.transform == nil {
-                            geo.transform = matrixTransform
-                        } else if let group = geo.transform as? TransformGroup {
-                            group.children.append(matrixTransform)
-                        } else {
-                            let group = TransformGroup()
-                            group.children.append(geo.transform)
-                            group.children.append(matrixTransform)
-                            geo.transform = group
-                        }
+                let figure = requirePathFigure(geometry, lastPoint: lastPoint)
+
+                let segment = QuadraticBezierSegment()
+                segment.point1 = wfControl
+                segment.point2 = wfEnd
+                figure.segments.append(segment)
+            case .cubicCurve(let control1, let control2, let end):
+                let wfControl1 = Point(x: Float(control1.x), y: Float(control1.y))
+                let wfControl2 = Point(x: Float(control2.x), y: Float(control2.y))
+                let wfEnd = Point(x: Float(end.x), y: Float(end.y))
+                defer { lastPoint = wfEnd }
+
+                let figure = requirePathFigure(geometry, lastPoint: lastPoint)
+
+                let segment = BezierSegment()
+                segment.point1 = wfControl1
+                segment.point2 = wfControl2
+                segment.point3 = wfEnd
+                figure.segments.append(segment)
+            case .rectangle(let rect):
+                let rectGeo = RectangleGeometry()
+                rectGeo.rect = Rect(
+                    x: Float(rect.x),
+                    y: Float(rect.y),
+                    width: Float(rect.width),
+                    height: Float(rect.height)
+                )
+                geometry.append(rectGeo)
+            case .circle(let center, let radius):
+                let ellipse = EllipseGeometry()
+                ellipse.radiusX = radius
+                ellipse.radiusY = radius
+                ellipse.center = Point(x: Float(center.x), y: Float(center.y))
+                geometry.append(ellipse)
+            case .arc(
+                let center,
+                let radius,
+                let startAngle,
+                let endAngle,
+                let clockwise
+            ):
+                let startPoint = Point(
+                    x: Float(center.x + radius * cos(startAngle)),
+                    y: Float(center.y + radius * sin(startAngle))
+                )
+                let endPoint = Point(
+                    x: Float(center.x + radius * cos(endAngle)),
+                    y: Float(center.y + radius * sin(endAngle))
+                )
+                defer { lastPoint = endPoint }
+
+                let figure = requirePathFigure(geometry, lastPoint: lastPoint)
+
+                if startPoint != lastPoint {
+                    if figure.segments.size > 0 {
+                        let connector = LineSegment()
+                        connector.point = startPoint
+                        figure.segments.append(connector)
+                    } else {
+                        figure.startPoint = startPoint
                     }
+                }
 
-                    if geometry.size > 0,
-                        let pathGeometry = geometry.getAt(geometry.size - 1) as? PathGeometry,
-                        pathGeometry.figures.contains(where: { ($0?.segments.size ?? 0) > 0 })
-                    {
-                        // Start a new PathGeometry so that transforms don't apply going forward
-                        geometry.append(PathGeometry())
+                let segment = ArcSegment()
+
+                if clockwise {
+                    if startAngle < endAngle {
+                        segment.isLargeArc = (endAngle - startAngle > .pi)
+                    } else {
+                        segment.isLargeArc = (startAngle - endAngle < .pi)
                     }
-                case .subpath(let actions):
-                    let subGeo = GeometryGroup()
-                    applyActions(actions, to: subGeo.children)
-                    geometry.append(subGeo)
+                    segment.sweepDirection = .clockwise
+                } else {
+                    if startAngle < endAngle {
+                        segment.isLargeArc = (endAngle - startAngle < .pi)
+                    } else {
+                        segment.isLargeArc = (startAngle - endAngle > .pi)
+                    }
+                    segment.sweepDirection = .counterclockwise
+                }
+
+                segment.point = endPoint
+                segment.size = Size(width: Float(radius), height: Float(radius))
+
+                figure.segments.append(segment)
+            case .transform(let transform):
+                let matrixTransform = MatrixTransform()
+                matrixTransform.matrix = Matrix(
+                    m11: transform.linearTransform.x,
+                    m12: transform.linearTransform.z,
+                    m21: transform.linearTransform.y,
+                    m22: transform.linearTransform.w,
+                    offsetX: transform.translation.x,
+                    offsetY: transform.translation.y
+                )
+
+                for case let geo? in geometry {
+                    if geo.transform == nil {
+                        geo.transform = matrixTransform
+                    } else if let group = geo.transform as? TransformGroup {
+                        group.children.append(matrixTransform)
+                    } else {
+                        let group = TransformGroup()
+                        group.children.append(geo.transform)
+                        group.children.append(matrixTransform)
+                        geo.transform = group
+                    }
+                }
+
+                if geometry.size > 0,
+                    let pathGeometry = geometry.getAt(geometry.size - 1) as? PathGeometry,
+                    pathGeometry.figures.contains(where: { ($0?.segments.size ?? 0) > 0 })
+                {
+                    // Start a new PathGeometry so that transforms don't apply going forward
+                    geometry.append(PathGeometry())
+                }
+            case .subpath(let actions):
+                let subGeo = GeometryGroup()
+                applyActions(actions, to: subGeo.children)
+                geometry.append(subGeo)
             }
         }
 
@@ -1913,25 +1919,25 @@ public final class WinUIBackend: AppBackend {
         winUiPath.strokeThickness = strokeStyle.width
 
         switch strokeStyle.cap {
-            case .butt:
-                winUiPath.strokeStartLineCap = .flat
-                winUiPath.strokeEndLineCap = .flat
-            case .round:
-                winUiPath.strokeStartLineCap = .round
-                winUiPath.strokeEndLineCap = .round
-            case .square:
-                winUiPath.strokeStartLineCap = .square
-                winUiPath.strokeEndLineCap = .square
+        case .butt:
+            winUiPath.strokeStartLineCap = .flat
+            winUiPath.strokeEndLineCap = .flat
+        case .round:
+            winUiPath.strokeStartLineCap = .round
+            winUiPath.strokeEndLineCap = .round
+        case .square:
+            winUiPath.strokeStartLineCap = .square
+            winUiPath.strokeEndLineCap = .square
         }
 
         switch strokeStyle.join {
-            case .miter(let limit):
-                winUiPath.strokeMiterLimit = limit
-                winUiPath.strokeLineJoin = .miter
-            case .round:
-                winUiPath.strokeLineJoin = .round
-            case .bevel:
-                winUiPath.strokeLineJoin = .bevel
+        case .miter(let limit):
+            winUiPath.strokeMiterLimit = limit
+            winUiPath.strokeLineJoin = .miter
+        case .round:
+            winUiPath.strokeLineJoin = .round
+        case .bevel:
+            winUiPath.strokeLineJoin = .bevel
         }
 
         winUiPath.data = path.group
@@ -1966,12 +1972,12 @@ public final class WinUIBackend: AppBackend {
         let dateViewType: CustomDatePicker.DateViewType.Discriminator? =
             if components.contains(.date) {
                 switch environment.datePickerStyle {
-                    case .automatic, .wheel:
-                        .datePicker
-                    case .compact:
-                        .calendarDatePicker
-                    case .graphical:
-                        .calendarView
+                case .automatic, .wheel:
+                    .datePicker
+                case .compact:
+                    .calendarDatePicker
+                case .graphical:
+                    .calendarView
                 }
             } else {
                 nil
@@ -2053,10 +2059,10 @@ extension EnvironmentValues {
             control.fontStyle = .italic
         }
         switch colorScheme {
-            case .light:
-                control.requestedTheme = .light
-            case .dark:
-                control.requestedTheme = .dark
+        case .light:
+            control.requestedTheme = .light
+        case .dark:
+            control.requestedTheme = .dark
         }
     }
 
@@ -2077,24 +2083,24 @@ extension EnvironmentValues {
 extension Font.Resolved {
     var winUIFontWeight: UInt16 {
         switch weight {
-            case .ultraLight:
-                100
-            case .thin:
-                200
-            case .light:
-                300
-            case .regular:
-                400
-            case .medium:
-                500
-            case .semibold:
-                600
-            case .bold:
-                700
-            case .heavy:
-                800
-            case .black:
-                900
+        case .ultraLight:
+            100
+        case .thin:
+            200
+        case .light:
+            300
+        case .regular:
+            400
+        case .medium:
+            500
+        case .semibold:
+            600
+        case .bold:
+            700
+        case .heavy:
+            800
+        case .black:
+            900
         }
     }
 }
@@ -2249,9 +2255,9 @@ final class CustomDatePicker: StackPanel {
 
         var asControl: Control {
             switch self {
-                case .calendarView(let calendarView): calendarView
-                case .calendarDatePicker(let calendarDatePicker): calendarDatePicker
-                case .datePicker(let datePicker): datePicker
+            case .calendarView(let calendarView): calendarView
+            case .calendarDatePicker(let calendarDatePicker): calendarDatePicker
+            case .datePicker(let datePicker): datePicker
             }
         }
 
@@ -2261,9 +2267,9 @@ final class CustomDatePicker: StackPanel {
 
         var discriminator: Discriminator {
             switch self {
-                case .calendarView(_): .calendarView
-                case .calendarDatePicker(_): .calendarDatePicker
-                case .datePicker(_): .datePicker
+            case .calendarView(_): .calendarView
+            case .calendarDatePicker(_): .calendarDatePicker
+            case .datePicker(_): .datePicker
             }
         }
     }
@@ -2314,62 +2320,66 @@ final class CustomDatePicker: StackPanel {
         }
 
         switch newDiscriminator {
-            case .calendarView:
-                let calendarView = CalendarView()
-                dateView = .calendarView(calendarView)
-                children.insertAt(0, calendarView)
-                orientation = .vertical
-                dateChangedEvent = calendarView.selectedDatesChanged.addHandler {
-                    [unowned self] _, _ in
+        case .calendarView:
+            let calendarView = CalendarView()
+            dateView = .calendarView(calendarView)
+            children.insertAt(0, calendarView)
+            orientation = .vertical
+            dateChangedEvent = calendarView.selectedDatesChanged.addHandler {
+                [unowned self] _, _ in
 
-                    guard calendarView.selectedDates.size > 0 else {
-                        let (dateTime, _) = foundationDateToComponents(self.date)
-                        calendarView.selectedDates.append(dateTime)
-                        return
-                    }
-
-                    self.date = componentsToFoundationDate(
-                        dateTime: calendarView.selectedDates.getAt(0),
-                        timeSpan: timeView?.selectedTime
-                    )
-
-                    if calendarView.selectedDates.size > 1 {
-                        self.needsUpdate = true
-                    }
-
-                    self.onChange?(self.date)
+                guard calendarView.selectedDates.size > 0 else {
+                    let (dateTime, _) = foundationDateToComponents(self.date)
+                    calendarView.selectedDates.append(dateTime)
+                    return
                 }
-                needsUpdate = true
-            case .calendarDatePicker:
-                let calendarDatePicker = CalendarDatePicker()
-                dateView = .calendarDatePicker(calendarDatePicker)
-                children.insertAt(0, calendarDatePicker)
-                orientation = .horizontal
-                dateChangedEvent = calendarDatePicker.dateChanged.addHandler {
-                    [unowned self] _, change in
 
-                    guard let newDate = change?.newDate else { return }
-                    self.date = componentsToFoundationDate(
-                        dateTime: newDate, timeSpan: timeView?.selectedTime)
-                    self.onChange?(self.date)
-                }
-                needsUpdate = true
-            case .datePicker:
-                let datePicker = WinUI.DatePicker()
-                dateView = .datePicker(datePicker)
-                children.insertAt(0, datePicker)
-                orientation = .horizontal
-                dateChangedEvent = datePicker.selectedDateChanged.addHandler {
-                    [unowned self] _, _ in
+                self.date = componentsToFoundationDate(
+                    dateTime: calendarView.selectedDates.getAt(0),
+                    timeSpan: timeView?.selectedTime
+                )
 
-                    guard let selectedDate = datePicker.selectedDate else { return }
-                    self.date = componentsToFoundationDate(
-                        dateTime: selectedDate, timeSpan: timeView?.selectedTime)
-                    self.onChange?(self.date)
+                if calendarView.selectedDates.size > 1 {
+                    self.needsUpdate = true
                 }
-                needsUpdate = true
-            case nil:
-                break
+
+                self.onChange?(self.date)
+            }
+            needsUpdate = true
+        case .calendarDatePicker:
+            let calendarDatePicker = CalendarDatePicker()
+            dateView = .calendarDatePicker(calendarDatePicker)
+            children.insertAt(0, calendarDatePicker)
+            orientation = .horizontal
+            dateChangedEvent = calendarDatePicker.dateChanged.addHandler {
+                [unowned self] _, change in
+
+                guard let newDate = change?.newDate else { return }
+                self.date = componentsToFoundationDate(
+                    dateTime: newDate,
+                    timeSpan: timeView?.selectedTime
+                )
+                self.onChange?(self.date)
+            }
+            needsUpdate = true
+        case .datePicker:
+            let datePicker = WinUI.DatePicker()
+            dateView = .datePicker(datePicker)
+            children.insertAt(0, datePicker)
+            orientation = .horizontal
+            dateChangedEvent = datePicker.selectedDateChanged.addHandler {
+                [unowned self] _, _ in
+
+                guard let selectedDate = datePicker.selectedDate else { return }
+                self.date = componentsToFoundationDate(
+                    dateTime: selectedDate,
+                    timeSpan: timeView?.selectedTime
+                )
+                self.onChange?(self.date)
+            }
+            needsUpdate = true
+        case nil:
+            break
         }
     }
 
@@ -2380,15 +2390,15 @@ final class CustomDatePicker: StackPanel {
         let (endDate, _) = foundationDateToComponents(range.upperBound)
 
         switch dateView {
-            case .calendarView(let calendarView):
-                calendarView.minDate = startDate
-                calendarView.maxDate = endDate
-            case .calendarDatePicker(let calendarDatePicker):
-                calendarDatePicker.minDate = startDate
-                calendarDatePicker.maxDate = endDate
-            case .datePicker(let datePicker):
-                datePicker.minYear = startDate
-                datePicker.maxYear = endDate
+        case .calendarView(let calendarView):
+            calendarView.minDate = startDate
+            calendarView.maxDate = endDate
+        case .calendarDatePicker(let calendarDatePicker):
+            calendarDatePicker.minDate = startDate
+            calendarDatePicker.maxDate = endDate
+        case .datePicker(let datePicker):
+            datePicker.minYear = startDate
+            datePicker.maxYear = endDate
         }
     }
 
@@ -2402,24 +2412,24 @@ final class CustomDatePicker: StackPanel {
         let (dateTime, timeSpan) = foundationDateToComponents(date)
 
         switch dateView {
-            case .calendarView(let calendarView):
-                calendarView.calendarIdentifier = identifier(for: calendar)
-                switch calendarView.selectedDates.size {
-                    case 0:
-                        calendarView.selectedDates.append(dateTime)
-                    case 1:
-                        calendarView.selectedDates.setAt(0, dateTime)
-                    default:
-                        calendarView.selectedDates.clear()
-                        calendarView.selectedDates.setAt(0, dateTime)
-                }
-            case .calendarDatePicker(let calendarDatePicker):
-                calendarDatePicker.calendarIdentifier = identifier(for: calendar)
-                calendarDatePicker.date = dateTime
-            case .datePicker(let datePicker):
-                datePicker.selectedDate = dateTime
-            case nil:
-                break
+        case .calendarView(let calendarView):
+            calendarView.calendarIdentifier = identifier(for: calendar)
+            switch calendarView.selectedDates.size {
+            case 0:
+                calendarView.selectedDates.append(dateTime)
+            case 1:
+                calendarView.selectedDates.setAt(0, dateTime)
+            default:
+                calendarView.selectedDates.clear()
+                calendarView.selectedDates.setAt(0, dateTime)
+            }
+        case .calendarDatePicker(let calendarDatePicker):
+            calendarDatePicker.calendarIdentifier = identifier(for: calendar)
+            calendarDatePicker.date = dateTime
+        case .datePicker(let datePicker):
+            datePicker.selectedDate = dateTime
+        case nil:
+            break
         }
 
         if let timeView {
@@ -2429,20 +2439,20 @@ final class CustomDatePicker: StackPanel {
 
     private func identifier(for calendar: Calendar) -> String {
         switch calendar.identifier {
-            case .chinese: return "ChineseLunarCalendar"
-            case .gregorian, .iso8601: return "GregorianCalendar"
-            case .hebrew: return "HebrewCalendar"
-            case .islamicTabular: return "HijriCalendar"
-            case .islamicUmmAlQura: return "UmAlQuraCalendar"
-            case .japanese: return "JapaneseCalendar"
-            case .persian: return "PersianCalendar"
-            case .republicOfChina: return "TaiwanCalendar"
-            #if compiler(>=6.2)
-                case .vietnamese: return "VietnameseLunarCalendar"
-            #endif
-            case let id:
-                print("Unsupported calendar identifier '\(id)'. Falling back to Gregorian.")
-                return "GregorianCalendar"
+        case .chinese: return "ChineseLunarCalendar"
+        case .gregorian, .iso8601: return "GregorianCalendar"
+        case .hebrew: return "HebrewCalendar"
+        case .islamicTabular: return "HijriCalendar"
+        case .islamicUmmAlQura: return "UmAlQuraCalendar"
+        case .japanese: return "JapaneseCalendar"
+        case .persian: return "PersianCalendar"
+        case .republicOfChina: return "TaiwanCalendar"
+        #if compiler(>=6.2)
+            case .vietnamese: return "VietnameseLunarCalendar"
+        #endif
+        case let id:
+            print("Unsupported calendar identifier '\(id)'. Falling back to Gregorian.")
+            return "GregorianCalendar"
         }
     }
 
