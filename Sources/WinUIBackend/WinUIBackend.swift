@@ -77,7 +77,7 @@ public final class WinUIBackend: AppBackend {
         12
     }
 
-    private class InternalState {
+    class InternalState {
         var buttonClickActions: [ObjectIdentifier: () -> Void] = [:]
         var toggleClickActions: [ObjectIdentifier: (Bool) -> Void] = [:]
         var switchClickActions: [ObjectIdentifier: (Bool) -> Void] = [:]

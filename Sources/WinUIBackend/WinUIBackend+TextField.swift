@@ -64,7 +64,7 @@ protocol TextBoxProtocol: Control {
     var textChanged: Event<TextChangedEventHandler> { get set }
     var text: String { get set }
     var placeholderText: String { get set }
-    var inputScope: InputScope? { get set }
+    var inputScope: InputScope! { get set }
 }
 
 extension TextBox: TextBoxProtocol {}
