@@ -1731,7 +1731,7 @@ extension AppBackend {
         todo()
     }
 
-    public func createTextField() -> Widget {
+    public func createTextField(secure: Bool) -> Widget {
         todo()
     }
     public func updateTextField(

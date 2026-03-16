@@ -108,11 +108,16 @@ public final class DummyBackend: AppBackend {
     }
 
     public class TextField: Widget {
+        public var isSecure: Bool
         public var value = ""
         public var placeholder = ""
         public var font: Font.Resolved?
         public var changeHandler: ((String) -> Void)?
         public var submitHandler: (() -> Void)?
+
+        init(isSecure: Bool) {
+            self.isSecure = isSecure
+        }
     }
 
     public class TextView: Widget {
@@ -667,8 +672,8 @@ public final class DummyBackend: AppBackend {
         (slider as! Slider).value = value
     }
 
-    public func createTextField() -> Widget {
-        TextField()
+    public func createTextField(secure: Bool) -> Widget {
+        TextField(isSecure: secure)
     }
 
     public func updateTextField(
