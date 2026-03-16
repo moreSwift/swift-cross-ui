@@ -2,17 +2,13 @@ import AppKit
 import SwiftCrossUI
 
 extension AppKitBackend {
-    public func createTextField(secure: Bool) -> Widget {
+    // MARK: TextField
+
+    public func createTextField() -> Widget {
         // Using the `(string:)` initializer ensures that the TextField scrolls
         // smoothly on horizontal overflow instead of jumping a full width at a
         // time.
-        let field = if secure {
-            NSObservableSecureTextField(string: "")
-        } else {
-            NSObservableTextField(string: "")
-        }
-        
-        return field
+        NSObservableTextField(string: "")
     }
 
     public func updateTextField(
@@ -22,7 +18,7 @@ extension AppKitBackend {
         onChange: @escaping (String) -> Void,
         onSubmit: @escaping () -> Void
     ) {
-        let textField = textField as! NSTextField
+        let textField = textField as! NSObservableTextField
         textField.isEnabled = environment.isEnabled
         textField.placeholderString = placeholder
         textField.appearance = environment.colorScheme.nsAppearance
@@ -31,17 +27,10 @@ extension AppKitBackend {
             textField.font = Self.font(for: resolvedFont)
         }
 
-        if let observableTextField = textField as? NSObservableTextField {
-            observableTextField.onEdit = { textField in
-                onChange(textField.stringValue)
-            }
-            observableTextField.onSubmit = onSubmit
-        } else if let observableTextField = textField as? NSObservableSecureTextField {
-            observableTextField.onEdit = { textField in
-                onChange(textField.stringValue)
-            }
-            observableTextField.onSubmit = onSubmit
+        textField.onEdit = { textField in
+            onChange(textField.stringValue)
         }
+        textField.onSubmit = onSubmit
 
         if #available(macOS 14, *) {
             textField.contentType =
@@ -69,6 +58,65 @@ extension AppKitBackend {
         let textField = textField as! NSTextField
         textField.stringValue = content
     }
+
+    // MARK: SecureField
+
+    public func createSecureField() -> Widget {
+        // Using the `(string:)` initializer ensures that the SecureField scrolls
+        // smoothly on horizontal overflow instead of jumping a full width at a
+        // time.
+        NSObservableSecureTextField(string: "")
+    }
+
+    public func updateSecureField(
+        _ secureField: Widget,
+        placeholder: String,
+        environment: EnvironmentValues,
+        onChange: @escaping (String) -> Void,
+        onSubmit: @escaping () -> Void
+    ) {
+        let secureField = secureField as! NSObservableSecureTextField
+        secureField.isEnabled = environment.isEnabled
+        secureField.placeholderString = placeholder
+        secureField.appearance = environment.colorScheme.nsAppearance
+        let resolvedFont = environment.resolvedFont
+        if secureField.font != Self.font(for: resolvedFont) {
+            secureField.font = Self.font(for: resolvedFont)
+        }
+
+        secureField.onEdit = { textField in
+            onChange(secureField.stringValue)
+        }
+        secureField.onSubmit = onSubmit
+
+        if #available(macOS 14, *) {
+            secureField.contentType =
+                switch environment.textContentType {
+                    case .url:
+                        .URL
+                    case .phoneNumber:
+                        .telephoneNumber
+                    case .name:
+                        .name
+                    case .emailAddress:
+                        .emailAddress
+                    case .text, .digits(_), .decimal(_):
+                        nil
+                }
+        }
+    }
+
+    public func getContent(ofSecureField secureField: Widget) -> String {
+        let secureField = secureField as! NSTextField
+        return secureField.stringValue
+    }
+
+    public func setContent(ofSecureField secureField: Widget, to content: String) {
+        let secureField = secureField as! NSTextField
+        secureField.stringValue = content
+    }
+
+    // MARK: TextEditor
 
     public func createTextEditor() -> Widget {
         let textEditor = NSObservableTextView()
@@ -115,15 +163,15 @@ extension AppKitBackend {
     }
 
     public func setContent(ofTextEditor textEditor: Widget, to content: String) {
-        let textEditor = textEditor as! NSObservableTextView
-        textEditor.string = content
+        (textEditor as! NSObservableTextView).string = content
     }
 
     public func getContent(ofTextEditor textEditor: Widget) -> String {
-        let textEditor = textEditor as! NSObservableTextView
-        return textEditor.string
+        (textEditor as! NSObservableTextView).string
     }
 }
+
+// MARK: Custom views
 
 private class NSObservableTextField: NSTextField {
     override func textDidChange(_ notification: Notification) {

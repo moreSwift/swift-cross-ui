@@ -1144,12 +1144,12 @@ public final class WinUIBackend: AppBackend {
     }
 
     func updateInputScope(
-        of textField: TextBoxProtocol,
+        of control: some Control,
         textContentType: TextContentType
     ) {
 
         let inputScope: InputScopeNameValue? =
-            switch textField {
+            switch control {
                 case is TextBox:
                     switch textContentType {
                         case .decimal(_): .number
@@ -1172,14 +1172,14 @@ public final class WinUIBackend: AppBackend {
 
         let inputScopeName = InputScopeName(inputScope)
 
-        if let inputScope = textField.inputScope,
+        if let inputScope = control.inputScope,
             inputScope.names.count == 1
         {
             inputScope.names[0] = inputScopeName
         } else {
             let inputScope = InputScope()
             inputScope.names.append(inputScopeName)
-            textField.inputScope = inputScope
+            control.inputScope = inputScope
         }
     }
 
