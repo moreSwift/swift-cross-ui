@@ -218,6 +218,20 @@ struct WindowingApp: App {
     @State var closable = true
     @State var minimizable = true
 
+    var bannerImage: URL {
+        // TODO(stackotter): Update SwiftBundlerRuntime to support fetching
+        //   resources in a cross platform manner.
+        #if os(macOS)
+            return Bundle.main.bundleURL.appendingPathComponent(
+                "Contents/Resources/Banner.png"
+            )
+        #elseif os(Linux) || os(Windows)
+            return Bundle.main.bundleURL.appendingPathComponent(
+                "Examples_WindowingExample.bundle/Banner.png"
+            )
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup(title) {
             #hotReloadable {
@@ -234,7 +248,7 @@ struct WindowingApp: App {
                     Toggle("Enable minimizing", isOn: $minimizable)
                         .preferredWindowMinimizeBehavior(minimizable ? .enabled : .disabled)
 
-                    Image(Bundle.module.bundleURL.appendingPathComponent("Banner.png"))
+                    Image(bannerImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
 
