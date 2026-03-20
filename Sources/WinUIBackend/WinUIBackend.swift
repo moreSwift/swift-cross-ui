@@ -2249,8 +2249,13 @@ public class CustomWindow: WinUI.Window {
         WinUI.Grid.setRow(menuBar, 0)
         self.content = grid
 
+        // NB: This event fires when the window is activated _or_ deactivated.
         self.activated.addHandler { [weak self] _, args in
-            self?.isActive = args.windowActivationState != .deactivated
+            switch args?.windowActivationState {
+                case .activated: self?.isActive = true
+                case .deactivated: self?.isActive = false
+                default: break
+            }
         }
 
         // Caching appWindow is apparently a good idea in terms of performance:
