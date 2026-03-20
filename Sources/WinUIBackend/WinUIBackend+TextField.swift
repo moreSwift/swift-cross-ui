@@ -103,7 +103,7 @@ extension WinUIBackend {
 // MARK: TextBoxProtocol
 
 protocol TextBoxProtocol: Control {
-    var inputScope: InputScope { get set }
+    var inputScope: InputScope! { get set }
 }
 
 extension TextBox: TextBoxProtocol {}
