@@ -99,3 +99,12 @@ extension WinUIBackend {
         (secureField as! PasswordBox).password
     }
 }
+
+// MARK: TextBoxProtocol
+
+protocol TextBoxProtocol: Control {
+    var inputScope: InputScope { get set }
+}
+
+extension TextBox: TextBoxProtocol {}
+extension PasswordBox: TextBoxProtocol {}

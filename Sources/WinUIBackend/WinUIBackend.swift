@@ -1144,7 +1144,7 @@ public final class WinUIBackend: AppBackend {
     }
 
     func updateInputScope(
-        of control: some Control,
+        of control: some TextBoxProtocol,
         textContentType: TextContentType
     ) {
 
