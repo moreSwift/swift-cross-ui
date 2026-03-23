@@ -108,6 +108,7 @@ extension ForEach: TypeSafeView, View where Child: View {
             var oldIdentifierMap = children.identifierMap
             var oldNodes = children.nodes
             var seenIdentifiers = Set<ID>()
+            var oldNodesReused = 0
             children.nodes = []
             children.identifierMap = [:]
             children.identifiers = []
@@ -139,6 +140,7 @@ extension ForEach: TypeSafeView, View where Child: View {
                 if let oldIndex = oldIdentifierMap.removeValue(forKey: identifier) {
                     // If the identifier already has a corresponding node, reuse it.
                     node = oldNodes[oldIndex]
+                    oldNodesReused += 1
 
                     // If the node's corresponding widget isn't already at the correct
                     // position (accounting for insertions), then swap it with the widget
@@ -180,7 +182,7 @@ extension ForEach: TypeSafeView, View where Child: View {
             // TODO: We should be able to reuse unused widgets in newly created nodes.
             // Remove unused widgets, starting from the end of the container for
             // cheaper removals.
-            let removalCount = oldIdentifierMap.count + duplicateCount
+            let removalCount = oldNodes.count - oldNodesReused
             if removalCount > 0 {
                 for i in (0..<removalCount).reversed() {
                     removeChild(atIndex: children.nodes.count + i)

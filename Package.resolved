@@ -1,5 +1,5 @@
 {
-  "originHash" : "a62bd5cd463009d726ba5a154d22c3d4473e5fa523518523114f6cd226081cac",
+  "originHash" : "1d58ac2817cae5dbb039424c40f97e741a051c236ce9c0d2a25e5d717addb475",
   "pins" : [
     {
       "identity" : "jpeg",
@@ -141,8 +141,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/moreSwift/swift-windowsappsdk",
       "state" : {
-        "revision" : "c93d4a59889f0c0cfad8e42a977614485a2f4bc0",
-        "version" : "0.1.0"
+        "revision" : "3c06cb36da9711e24a76c35861e0b97702448015",
+        "version" : "0.1.1"
       }
     },
     {
