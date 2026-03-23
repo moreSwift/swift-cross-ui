@@ -163,12 +163,14 @@ public struct ScrollView<Content: View>: TypeSafeView, View {
         backend.setSize(of: widget, to: scrollViewSize.vector)
         backend.setSize(of: children.innerContainer.into(), to: finalContentSize.vector)
         backend.setPosition(ofChildAt: 0, in: children.innerContainer.into(), to: .zero)
-        backend.setScrollBarPresence(
-            ofScrollContainer: widget,
-            hasVerticalScrollBar: children.hasVerticalScrollBar,
-            hasHorizontalScrollBar: children.hasHorizontalScrollBar
+        backend.updateScrollContainer(
+            widget,
+            environment: environment,
+            bounceHorizontally: axes.contains(.horizontal),
+            bounceVertically: axes.contains(.vertical),
+            hasHorizontalScrollBar: children.hasHorizontalScrollBar,
+            hasVerticalScrollBar: children.hasVerticalScrollBar
         )
-        backend.updateScrollContainer(widget, environment: environment)
     }
 }
 

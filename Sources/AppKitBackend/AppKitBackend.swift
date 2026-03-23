@@ -850,7 +850,7 @@ public final class AppKitBackend: AppBackend {
         let clipView = scrollView.contentView
         let documentView = NSStackView()
         documentView.orientation = .vertical
-        documentView.alignment = .centerX
+        documentView.alignment = .leading
         documentView.translatesAutoresizingMaskIntoConstraints = false
         documentView.addView(child, in: .top)
         scrollView.documentView = documentView
@@ -867,16 +867,19 @@ public final class AppKitBackend: AppBackend {
         return scrollView
     }
 
-    public func updateScrollContainer(_ scrollView: Widget, environment: EnvironmentValues) {}
-
-    public func setScrollBarPresence(
-        ofScrollContainer scrollView: Widget,
-        hasVerticalScrollBar: Bool,
-        hasHorizontalScrollBar: Bool
+    public func updateScrollContainer(
+        _ scrollView: Widget,
+        environment: EnvironmentValues,
+        bounceHorizontally: Bool,
+        bounceVertically: Bool,
+        hasHorizontalScrollBar: Bool,
+        hasVerticalScrollBar: Bool
     ) {
         let scrollView = scrollView as! NSScrollView
         scrollView.hasVerticalScroller = hasVerticalScrollBar
         scrollView.hasHorizontalScroller = hasHorizontalScrollBar
+        scrollView.verticalScrollElasticity = bounceVertically ? .allowed : .none
+        scrollView.horizontalScrollElasticity = bounceHorizontally ? .allowed : .none
     }
 
     public func createSelectableListView() -> Widget {

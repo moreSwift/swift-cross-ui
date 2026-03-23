@@ -515,22 +515,21 @@ public protocol AppBackend: Sendable {
     ///   - scrollView: The scroll container widget previously created by
     ///     ``createScrollContainer(for:)``.
     ///   - environment: The current ``EnvironmentValues`` to apply.
-    func updateScrollContainer(
-        _ scrollView: Widget,
-        environment: EnvironmentValues
-    )
-    /// Sets the presence of scroll bars along each axis of a scroll container.
-    ///
-    /// - Parameters:
-    ///   - scrollView: The scroll view.
-    ///   - hasVerticalScrollBar: Whether the scroll view has a vertical scroll
-    ///     bar.
+    ///   - bounceHorizontally: Whether the scroll view should 'bounce' horizontally.
+    ///     Some backends ignore this, as it's not a universal concept.
+    ///   - bounceVertically: Whether the scroll view should 'bounce' vertically.
+    ///     Some backends ignore this, as it's not a universal concept.
     ///   - hasHorizontalScrollBar: Whether the scroll view has a horizontal
     ///     scroll bar.
-    func setScrollBarPresence(
-        ofScrollContainer scrollView: Widget,
-        hasVerticalScrollBar: Bool,
-        hasHorizontalScrollBar: Bool
+    ///   - hasVerticalScrollBar: Whether the scroll view has a vertical scroll
+    ///     bar.
+    func updateScrollContainer(
+        _ scrollView: Widget,
+        environment: EnvironmentValues,
+        bounceHorizontally: Bool,
+        bounceVertically: Bool,
+        hasHorizontalScrollBar: Bool,
+        hasVerticalScrollBar: Bool
     )
 
     /// Creates a list with selectable rows.
@@ -1531,14 +1530,13 @@ extension AppBackend {
         todo()
     }
 
-    public func updateScrollContainer(_ scrollView: Widget, environment: EnvironmentValues) {
-        todo()
-    }
-
-    public func setScrollBarPresence(
-        ofScrollContainer scrollView: Widget,
-        hasVerticalScrollBar: Bool,
-        hasHorizontalScrollBar: Bool
+    public func updateScrollContainer(
+        _ scrollView: Widget,
+        environment: EnvironmentValues,
+        bounceHorizontally: Bool,
+        bounceVertically: Bool,
+        hasHorizontalScrollBar: Bool,
+        hasVerticalScrollBar: Bool
     ) {
         todo()
     }

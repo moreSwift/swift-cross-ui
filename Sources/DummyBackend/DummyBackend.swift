@@ -150,6 +150,8 @@ public final class DummyBackend: AppBackend {
         public var child: Widget
         public var hasVerticalScrollBar = false
         public var hasHorizontalScrollBar = false
+        public var bouncesVertically = false
+        public var bouncesHorizontally = false
 
         public init(child: Widget) {
             self.child = child
@@ -405,15 +407,19 @@ public final class DummyBackend: AppBackend {
         ScrollContainer(child: child)
     }
 
-    public func updateScrollContainer(_ scrollView: Widget, environment: EnvironmentValues) {}
-
-    public func setScrollBarPresence(
-        ofScrollContainer scrollView: Widget, hasVerticalScrollBar: Bool,
-        hasHorizontalScrollBar: Bool
+    public func updateScrollContainer(
+        _ scrollView: Widget,
+        environment: EnvironmentValues,
+        bounceHorizontally: Bool,
+        bounceVertically: Bool,
+        hasHorizontalScrollBar: Bool,
+        hasVerticalScrollBar: Bool
     ) {
         let scrollContainer = scrollView as! ScrollContainer
         scrollContainer.hasVerticalScrollBar = hasVerticalScrollBar
         scrollContainer.hasHorizontalScrollBar = hasHorizontalScrollBar
+        scrollContainer.bouncesHorizontally = bounceHorizontally
+        scrollContainer.bouncesVertically = bounceVertically
     }
 
     public func createSelectableListView() -> Widget {
