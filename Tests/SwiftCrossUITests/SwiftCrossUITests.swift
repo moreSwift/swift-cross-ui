@@ -109,7 +109,11 @@ struct SwiftCrossUITests {
             proposedSize.width - Double(backend.scrollBarWidth),
             blueRectangleHeight
         )
-        #expect(scrollView.child.size == expectedSize.vector)
+
+        // Direct child of ScrollView is container used to position actual child
+        // (for alignment purposes)
+        let child = scrollView.child.getChildren()[0]
+        #expect(child.size == expectedSize.vector)
     }
 
     #if canImport(AppKitBackend)

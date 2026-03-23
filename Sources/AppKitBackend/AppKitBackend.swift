@@ -850,7 +850,7 @@ public final class AppKitBackend: AppBackend {
         let clipView = scrollView.contentView
         let documentView = NSStackView()
         documentView.orientation = .vertical
-        documentView.alignment = .leading
+        documentView.alignment = .centerX
         documentView.translatesAutoresizingMaskIntoConstraints = false
         documentView.addView(child, in: .top)
         scrollView.documentView = documentView

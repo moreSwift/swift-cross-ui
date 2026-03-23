@@ -161,8 +161,47 @@ public struct ScrollView<Content: View>: TypeSafeView, View {
         let finalContentSize = children.child.commit().size
 
         backend.setSize(of: widget, to: scrollViewSize.vector)
-        backend.setSize(of: children.innerContainer.into(), to: finalContentSize.vector)
-        backend.setPosition(ofChildAt: 0, in: children.innerContainer.into(), to: .zero)
+        backend.setSize(
+            of: children.innerContainer.into(),
+            to: SIMD2(
+                max(finalContentSize.vector.x, scrollViewSize.vector.x),
+                max(finalContentSize.vector.y, scrollViewSize.vector.y)
+            )
+        )
+
+        let contentX: Double
+        if finalContentSize.width < scrollViewSize.width {
+            let alignment = axes.contains(.vertical)
+                ? HorizontalAlignment.center : HorizontalAlignment.leading
+            contentX = alignment.position(
+                ofChild: finalContentSize.width,
+                in: scrollViewSize.width
+            )
+        } else {
+            contentX = 0
+        }
+
+        let contentY: Double
+        if finalContentSize.height < scrollViewSize.height {
+            let alignment = axes.contains(.horizontal)
+                ? VerticalAlignment.center : VerticalAlignment.top
+            contentY = alignment.position(
+                ofChild: finalContentSize.height,
+                in: scrollViewSize.height
+            )
+        } else {
+            contentY = 0
+        }
+        
+        backend.setPosition(
+            ofChildAt: 0,
+            in: children.innerContainer.into(),
+            to: SIMD2(
+                LayoutSystem.roundSize(contentX),
+                LayoutSystem.roundSize(contentY)
+            )
+        )
+
         backend.updateScrollContainer(
             widget,
             environment: environment,
