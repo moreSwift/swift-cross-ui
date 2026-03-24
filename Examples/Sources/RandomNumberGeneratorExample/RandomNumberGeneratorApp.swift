@@ -47,7 +47,8 @@ struct ContentView: View {
             Text("Random Number: \(viewModel.randomNumber)")
             Button("Generate") {
                 viewModel.randomNumber = Int.random(
-                    in: Int(viewModel.minNum)...Int(viewModel.maxNum))
+                    in: Int(viewModel.minNum)...Int(viewModel.maxNum)
+                )
             }
 
             Text("Minimum: \(viewModel.minNum)")
@@ -59,6 +60,7 @@ struct ContentView: View {
                 },
                 in: 0...100
             )
+            .help("Sets the minimum value that can be generated.")
 
             Text("Maximum: \(viewModel.maxNum)")
             Slider(
@@ -69,6 +71,7 @@ struct ContentView: View {
                 },
                 in: 0...100
             )
+            .help("Sets the maximum value that can be generated.")
 
             HStack {
                 Text("Choose a color:")

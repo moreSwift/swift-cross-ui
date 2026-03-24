@@ -519,6 +519,14 @@ public final class AppKitBackend: AppBackend {
             widget.heightAnchor.constraint(equalToConstant: proposedHeight).isActive = true
         }
     }
+    
+    public func createTooltipContainer(wrapping child: NSView) -> NSView {
+        child
+    }
+    
+    public func updateTooltipContainer(_ widget: NSView, tooltip: String) {
+        widget.toolTip = tooltip
+    }
 
     public func size(
         of text: String,

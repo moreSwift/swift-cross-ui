@@ -655,7 +655,7 @@ public final class WinUIBackend: AppBackend {
             // weekdays wrap, making it taller than it says it is. Value was derived by trial and
             // error.
             adjustment = SIMD2(20, 0)
-        } else if computedSize.width == 0 && computedSize.width == 0 && widget is CalendarDatePicker
+        } else if computedSize.width == 0 && computedSize.height == 0 && widget is CalendarDatePicker
         {
             // I can't find any source on what the size of CalendarDatePicker is, but it reports 0x0
             // in at least some cases before initial render. In these cases, use a size derived
@@ -670,6 +670,16 @@ public final class WinUIBackend: AppBackend {
     public func setSize(of widget: Widget, to size: SIMD2<Int>) {
         widget.width = Double(size.x)
         widget.height = Double(size.y)
+    }
+    
+    public func createTooltipContainer(wrapping child: Widget) -> Widget {
+        // TODO(bbrk24): Look into removing the container, like on AppKit
+        TooltipContainer(child: child)
+    }
+
+    public func updateTooltipContainer(_ widget: Widget, tooltip: String) {
+        let widget = widget as! TooltipContainer
+        widget.tooltip.content = tooltip
     }
 
     public func size(
@@ -2175,6 +2185,21 @@ final class HoverGestureTarget: WinUI.Canvas {
     var enterHandler: (() -> Void)?
     var exitHandler: (() -> Void)?
     var child: WinUI.FrameworkElement?
+}
+
+final class TooltipContainer: WinUI.Canvas {
+    var child: WinUI.FrameworkElement
+    var tooltip: ToolTip
+
+    init(child: WinUI.FrameworkElement) {
+        self.child = child
+        self.tooltip = ToolTip()
+        
+        super.init()
+
+        children.append(child)
+        ToolTipService.setToolTip(self, tooltip)
+    }
 }
 
 class SwiftIInitializeWithWindow: WindowsFoundation.IUnknown {

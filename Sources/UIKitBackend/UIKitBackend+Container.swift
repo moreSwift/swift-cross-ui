@@ -74,6 +74,73 @@ final class ScrollWidget: ContainerWidget {
     }
 }
 
+#if os(visionOS)
+// UIToolTipInteractionDelegate isn't available on visionOS for some reason.
+// Thankfully, UIToolTipInteraction is available since visionOS 1.0, so it can
+// be a stored property.
+final class TooltipWidget: ContainerWidget {
+    private let interaction = UIToolTipInteraction()
+    
+    var text = "" {
+        didSet {
+            child.accessibilityHint = text
+            interaction.defaultToolTip = text
+        }
+    }
+
+    override init(child: some WidgetProtocol) {
+        super.init(child: child)
+        child.view.addInteraction(interaction)
+    }
+}
+#elseif os(tvOS)
+// tvOS gives linker errors for even attempting to reference
+// UIToolTipInteraction or UIToolTipInteractionDelegate, regardless of the
+// #available/@available guards.
+final class TooltipWidget: ContainerWidget {
+    var text = "" {
+        didSet {
+            child.accessibilityHint = text
+        }
+    }
+}
+#else
+// Because stored properties cannot be conditionally available, there's no good
+// way to update interaction.defaultToolTip after initialization, so this has to
+// implement UIToolTipInteractionDelegate instead.
+final class TooltipWidget: ContainerWidget {
+    var text = "" {
+        didSet {
+            child.accessibilityHint = text
+        }
+    }
+
+    override init(child: some WidgetProtocol) {
+        super.init(child: child)
+
+        if #available(iOS 15, macCatalyst 15, *) {
+            let interaction = UIToolTipInteraction()
+            child.view.addInteraction(interaction)
+            interaction.delegate = self
+        }
+    }
+}
+
+@available(iOS 15, macCatalyst 15, *)
+extension TooltipWidget: UIToolTipInteractionDelegate {
+    func toolTipInteraction(
+        _ interaction: UIToolTipInteraction,
+        configurationAt point: CGPoint
+    ) -> UIToolTipConfiguration? {
+        let rect = view.bounds
+        if rect.contains(point) {
+            return UIToolTipConfiguration(toolTip: text, in: rect)
+        }
+        return nil
+    }
+}
+#endif
+
 extension UIKitBackend {
     public func createContainer() -> Widget {
         BaseViewWidget()
@@ -155,5 +222,14 @@ extension UIKitBackend {
         scrollWidget.setScrollBars(
             hasVerticalScrollBar: hasVerticalScrollBar,
             hasHorizontalScrollBar: hasHorizontalScrollBar)
+    }
+    
+    public func createTooltipContainer(wrapping child: Widget) -> Widget {
+        TooltipWidget(child: child)
+    }
+    
+    public func updateTooltipContainer(_ widget: Widget, tooltip: String) {
+        let widget = widget as! TooltipWidget
+        widget.text = tooltip
     }
 }
