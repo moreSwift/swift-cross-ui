@@ -1,12 +1,5 @@
-import CWinRT
-import Foundation
 import SwiftCrossUI
-import UWP
-import WinAppSDK
-import WinSDK
 import WinUI
-import WinUIInterop
-import WindowsFoundation
 
 // Many force tries are required for the WinUI backend but we don't really want them
 // anywhere else so just disable the lint rule at a file level.
