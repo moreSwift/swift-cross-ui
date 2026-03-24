@@ -5,6 +5,21 @@ extension View {
     public func background<Background: View>(_ background: Background) -> some View {
         BackgroundModifier(background: background, foreground: self)
     }
+
+    /// Layers views that you specify behind this view.
+    ///
+    /// - Parameter alignment: The alignment used to align the implicit ``ZStack``
+    ///   the stacks the background views.
+    /// - Parameter content: A builder which declares views to display behind this
+    ///   view. The builder is implicitly the body of a ``ZStack``, leading to the
+    ///   views in the builder stacking in the Z direction.
+    public func background<V: View>(
+        alignment: Alignment = .center,
+        @ViewBuilder content: () -> V
+    ) -> some View {
+        let zstack = ZStack(alignment: alignment, content: content)
+        return BackgroundModifier(background: zstack, foreground: self)
+    }
 }
 
 struct BackgroundModifier<Background: View, Foreground: View>: TypeSafeView {
