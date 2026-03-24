@@ -188,7 +188,7 @@ extension UIKitBackend {
             if let maximumSize {
                 CGSize(width: maximumSize.x, height: maximumSize.y)
             } else {
-                CGSize(width: Double.infinity, height: .infinity)
+                CGSize(width: Double.greatestFiniteMagnitude, height: .greatestFiniteMagnitude)
             }
     }
 }
