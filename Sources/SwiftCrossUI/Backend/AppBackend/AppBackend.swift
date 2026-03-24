@@ -134,8 +134,7 @@ public protocol AppBackend:
     AppBackend_FileDialogs,
     AppBackend_Paths,
     AppBackend_WebView,
-    AppBackend_Gestures,
-    AppBackend_ExternalURLs
+    AppBackend_Gestures
 {}
 
 extension AppBackend {
@@ -151,16 +150,6 @@ extension AppBackend {
                 "\(type(of: self)): \(function) is being ignored; consult the documentation for further information"
             )
         #endif
-    }
-
-    // MARK: System
-
-    public func openExternalURL(_ url: URL) throws {
-        todo()
-    }
-
-    public func revealFile(_ url: URL) throws {
-        todo()
     }
 
     // MARK: Windows
@@ -179,10 +168,6 @@ extension AppBackend {
     // MARK: Application
 
     public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
-        todo()
-    }
-
-    public func setIncomingURLHandler(to action: @escaping (URL) -> Void) {
         todo()
     }
 

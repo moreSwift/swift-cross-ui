@@ -30,7 +30,7 @@ public class ViewGraph<Root: View> {
     private var parentEnvironment: EnvironmentValues
 
     private var isFirstUpdate = true
-    private var setIncomingURLHandler: (@escaping (URL) -> Void) -> Void
+    private var setIncomingURLHandler: ((@escaping (URL) -> Void) -> Void)?
 
     /// Creates a view graph for a root view with a specific backend.
     ///
@@ -50,7 +50,8 @@ public class ViewGraph<Root: View> {
         committedProposal = .zero
         parentEnvironment = environment
         currentRootViewResult = ViewLayoutResult.leafView(size: .zero)
-        setIncomingURLHandler = backend.setIncomingURLHandler(to:)
+        setIncomingURLHandler =
+            (backend as? AppBackend_IncomingURLs)?.setIncomingURLHandler(to:)
     }
 
     /// Recomputes the entire UI (e.g. due to the root view's state updating).
@@ -83,7 +84,7 @@ public class ViewGraph<Root: View> {
         committedProposal = latestProposal
         self.currentRootViewResult = rootNode.commit()
         if isFirstUpdate {
-            setIncomingURLHandler { url in
+            setIncomingURLHandler? { url in
                 self.currentRootViewResult.preferences.onOpenURL?(url)
             }
             isFirstUpdate = false

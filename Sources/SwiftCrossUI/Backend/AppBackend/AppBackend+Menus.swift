@@ -4,7 +4,13 @@ import Foundation
 public protocol AppBackend_Menus:
     AppBackend_ButtonMenu,
     AppBackend_PopoverMenu
-{
+{}
+
+@MainActor
+public protocol AppBackend_MenuBase: AppBackend_Widgets {
+    /// The underlying menu type. Can be a wrapper or subclass.
+    associatedtype Menu
+
     /// How the backend handles rendering of menu buttons.
     ///
     /// This affects which menu-related methods are called.
@@ -12,10 +18,7 @@ public protocol AppBackend_Menus:
 }
 
 @MainActor
-public protocol AppBackend_ButtonMenu: AppBackend_Widgets {
-    /// The underlying menu type. Can be a wrapper or subclass.
-    associatedtype Menu
-
+public protocol AppBackend_ButtonMenu: AppBackend_MenuBase {
     /// Sets a button's label and menu.
     ///
     /// Only used when ``menuImplementationStyle`` is
@@ -35,7 +38,7 @@ public protocol AppBackend_ButtonMenu: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_PopoverMenu: AppBackend_Widgets {
+public protocol AppBackend_PopoverMenu: AppBackend_MenuBase {
     /// The underlying menu type. Can be a wrapper or subclass.
     associatedtype Menu
 

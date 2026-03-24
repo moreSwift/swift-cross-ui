@@ -1,14 +1,16 @@
 import Foundation
 
 @MainActor
-public protocol AppBackend_ExternalURLs: AppBackend_Base {
+public protocol AppBackend_IncomingURLs: AppBackend_Base {
     /// Sets the handler for URLs directed to the application (e.g. URLs
     /// associated with a custom URL scheme).
     ///
     /// - Parameter action: The incoming URL handler.
     func setIncomingURLHandler(to action: @escaping (URL) -> Void)
-    
+}
 
+@MainActor
+public protocol AppBackend_ExternalURLs: AppBackend_Base {
     /// Opens an external URL in the system browser or app registered for the
     /// URL's protocol.
     ///
