@@ -1,0 +1,240 @@
+import Foundation
+
+@MainActor
+public protocol AppBackend_Containers:
+    AppBackend_GenericContainer,
+    AppBackend_ScrollContainer,
+    AppBackend_SelectableListView,
+    AppBackend_SplitView,
+    AppBackend_Tooltips
+{}
+
+@MainActor
+public protocol AppBackend_GenericContainer: AppBackend_Widgets {
+    /// Creates a container in which children can be laid out by SwiftCrossUI
+    /// using exact pixel positions.
+    ///
+    /// - Returns: A container widget.
+    func createContainer() -> Widget
+
+    /// Removes all children of the given container.
+    ///
+    /// - Parameter container: The container to remove the children of.
+    func removeAllChildren(of container: Widget)
+
+    /// Inserts a child into a given container at a given index.
+    ///
+    /// - Parameters:
+    ///   - child: The child to insert.
+    ///   - container: The container to insert the child into.
+    ///   - index: The index to insert the child at.
+    func insert(_ child: Widget, into container: Widget, at index: Int)
+
+    /// Swaps the child at firstIndex with the child at secondIndex.
+    ///
+    /// May crash if either index is out of bounds.
+    ///
+    /// - Parameters:
+    ///   - firstIndex: The index of the first child to swap.
+    ///   - secondIndex: The index of the second child to swap.
+    ///   - container: The container holding the children.
+    func swap(childAt firstIndex: Int, withChildAt secondIndex: Int, in container: Widget)
+
+    /// Sets the position of the specified child in a container.
+    ///
+    /// - Parameters:
+    ///   - index: The index of the child to set the position of.
+    ///   - container: The container holding the child.
+    ///   - position: The new position.
+    func setPosition(ofChildAt index: Int, in container: Widget, to position: SIMD2<Int>)
+    
+    /// Removes the child at the given index from the given container.
+    ///
+    /// - Parameters:
+    ///   - index: The index of the child to remove.
+    ///   - container: The container to remove the child from.
+    func remove(childAt index: Int, from container: Widget)
+}
+
+@MainActor
+public protocol AppBackend_ScrollContainer: AppBackend_Widgets {
+    /// Gets the layout width of a backend's scroll bars.
+    ///
+    /// Assumes that the width is the same for both vertical and horizontal
+    /// scroll bars (where the width of a horizontal scroll bar is what pedants
+    /// may call its height). If the backend uses overlay scroll bars then this
+    /// width should be 0.
+    ///
+    /// This value may make sense to have as a computed property for some backends
+    /// such as `AppKitBackend` where plugging in a mouse can cause the default
+    /// scroll bar style to change. If something does cause this value to change,
+    /// ensure that the configured root environment change handler gets called so
+    /// that SwiftCrossUI can update the app's layout accordingly.
+    var scrollBarWidth: Int { get }
+    
+    /// Creates a scrollable single-child container wrapping the given widget.
+    ///
+    /// - Parameter child: The widget to wrap in a scroll container.
+    /// - Returns: A scroll container wrapping `child`.
+    func createScrollContainer(for child: Widget) -> Widget
+    
+    /// Updates a scroll container with environment-specific values.
+    ///
+    /// This method is primarily used on iOS to apply environment changes
+    /// that affect the scroll view’s behavior, such as keyboard dismissal mode.
+    ///
+    /// - Parameters:
+    ///   - scrollView: The scroll container widget previously created by
+    ///     ``createScrollContainer(for:)``.
+    ///   - environment: The current ``EnvironmentValues`` to apply.
+    ///   - bounceHorizontally: Whether the scroll view should 'bounce' horizontally.
+    ///     Some backends ignore this, as it's not a universal concept.
+    ///   - bounceVertically: Whether the scroll view should 'bounce' vertically.
+    ///     Some backends ignore this, as it's not a universal concept.
+    ///   - hasHorizontalScrollBar: Whether the scroll view has a horizontal
+    ///     scroll bar.
+    ///   - hasVerticalScrollBar: Whether the scroll view has a vertical scroll
+    ///     bar.
+    func updateScrollContainer(
+        _ scrollView: Widget,
+        environment: EnvironmentValues,
+        bounceHorizontally: Bool,
+        bounceVertically: Bool,
+        hasHorizontalScrollBar: Bool,
+        hasVerticalScrollBar: Bool
+    )
+}
+
+@MainActor
+public protocol AppBackend_SelectableListView: AppBackend_Widgets {
+    /// Creates a list with selectable rows.
+    ///
+    /// - Returns: A list with selectable rows.
+    func createSelectableListView() -> Widget
+
+    /// Updates a list with the current environment. Should update list view to
+    /// respect ``EnvironmentValues/isEnabled``.
+    func updateSelectableListView(
+        _ selectableListView: Widget,
+        environment: EnvironmentValues
+    )
+
+    /// Gets the amount of padding introduced by the backend around the content of
+    /// each row.
+    ///
+    /// Ideally backends should get rid of base padding so that SwiftCrossUI can
+    /// give developers more freedom, but this isn't always possible.
+    ///
+    /// - Parameter listView: The list view.
+    /// - Returns: An `EdgeInsets` instance describing the amount of base
+    ///   padding around `listView`'s items.
+    func baseItemPadding(ofSelectableListView listView: Widget) -> EdgeInsets
+
+    /// Gets the minimum size for rows in the list view.
+    ///
+    /// This doesn't necessarily have to be just for hard requirements enforced
+    /// by the backend, it can also just be an idiomatic minimum size for the
+    /// platform.
+    ///
+    /// - Parameter listView: The list view.
+    /// - Returns: The minimum size for rows in the list view.
+    func minimumRowSize(ofSelectableListView listView: Widget) -> SIMD2<Int>
+
+    /// Sets the items of a selectable list along with their heights.
+    ///
+    /// Row heights should include base item padding (i.e. they should be the
+    /// external height of the row rather than the internal height).
+    ///
+    /// - Parameters:
+    ///   - listView: The list view.
+    ///   - items: An array of widgets to add to `listView`.
+    ///   - rowHeights: The row heights of `items`.
+    func setItems(
+        ofSelectableListView listView: Widget,
+        to items: [Widget],
+        withRowHeights rowHeights: [Int]
+    )
+
+    /// Sets the action to perform when a user selects an item in the list.
+    ///
+    /// - Parameters:
+    ///   - listView: The list view.
+    ///   - action: The selection handler. Receives the selected item's index.
+    func setSelectionHandler(
+        forSelectableListView listView: Widget,
+        to action: @escaping (_ selectedIndex: Int) -> Void
+    )
+    
+    /// Sets the list's selected item by index.
+    ///
+    /// - Parameters:
+    ///   - listView: The list view.
+    ///   - index: The index of the item to select.
+    func setSelectedItem(
+        ofSelectableListView listView: Widget,
+        toItemAt index: Int?
+    )
+}
+
+@MainActor
+public protocol AppBackend_SplitView: AppBackend_Widgets {
+    /// Creates a split view containing two children visible side by side.
+    ///
+    /// If you need to modify the leading and trailing children after creation,
+    /// nest them inside another container such as a ``VStack`` (avoiding update
+    /// methods makes maintaining a multitude of backends a bit easier).
+    ///
+    /// - Parameters:
+    ///   - leadingChild: The widget to show in the sidebar.
+    ///   - trailingChild: The widget to show in the detail section.
+    func createSplitView(leadingChild: Widget, trailingChild: Widget) -> Widget
+
+    /// Sets the function to be called when the split view's panes get resized.
+    ///
+    /// - Parameters:
+    ///   - splitView: The split view.
+    ///   - action: The action to perform when the split view's panes are
+    ///     resized.
+    func setResizeHandler(
+        ofSplitView splitView: Widget,
+        to action: @escaping () -> Void
+    )
+
+    /// Gets the width of a split view's sidebar.
+    ///
+    /// - Parameter splitView: The split view.
+    /// - Returns: The split view's sidebar width.
+    func sidebarWidth(ofSplitView splitView: Widget) -> Int
+    
+    /// Sets the minimum and maximum width of a split view's sidebar.
+    ///
+    /// - Parameters:
+    ///   - splitView: The split view.
+    ///   - minimumWidth: The minimum width of the split view's sidebar.
+    ///   - maximumWidth: The maximum width of the split view's sidebar.
+    func setSidebarWidthBounds(
+        ofSplitView splitView: Widget,
+        minimum minimumWidth: Int,
+        maximum maximumWidth: Int
+    )
+}
+
+@MainActor
+public protocol AppBackend_Tooltips: AppBackend_Widgets {
+    /// Create a container capable of showing a textual tooltip.
+    ///
+    /// If no container is necessary, this method is allowed to return `child`
+    /// unmodified.
+    ///
+    /// - Parameters:
+    ///   - child: The widget being wrapped to show a tooltip over.
+    func createTooltipContainer(wrapping child: Widget) -> Widget
+
+    /// Update the tooltip shown by a widget.
+    ///
+    /// - Parameters:
+    ///   - widget: The widget to update the tooltip for. Will always have been
+    ///     created by ``createTooltipContainer(wrapping:)``.
+    ///   - tooltip: The text to be shown on hover.
+    func updateTooltipContainer(_ widget: Widget, tooltip: String)
+}
