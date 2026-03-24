@@ -42,10 +42,6 @@ public protocol AppBackend_Button: AppBackend_Widgets {
 
 @MainActor
 public protocol AppBackend_Toggle: AppBackend_Widgets {
-    /// If `true`, a toggle in the ``ToggleStyle/switch`` style grows to fill
-    /// its parent container.
-    var requiresToggleSwitchSpacer: Bool { get }
-    
     /// Creates a labelled toggle that is either on or off.
     ///
     /// - Returns: A toggle.
@@ -76,6 +72,10 @@ public protocol AppBackend_Toggle: AppBackend_Widgets {
 
 @MainActor
 public protocol AppBackend_Switch: AppBackend_Widgets {
+    /// If `true`, a toggle in the ``ToggleStyle/switch`` style grows to fill
+    /// its parent container.
+    var requiresToggleSwitchSpacer: Bool { get }
+    
     /// Creates a switch that is either on or off.
     ///
     /// - Returns: A switch.
@@ -324,7 +324,7 @@ public protocol AppBackend_ProgressSpinner: AppBackend_Widgets {
     ///
     /// This method exists because AppKitBackend requires special handling to resize progress spinners.
     ///
-    /// The default implementation forwards to ``AppBackend/setSize(of:to:)``.
+    /// The default implementation forwards to ``AppBackend_Widgets/setSize(of:to:)``.
     func setSize(
         ofProgressSpinner widget: Widget,
         to size: SIMD2<Int>

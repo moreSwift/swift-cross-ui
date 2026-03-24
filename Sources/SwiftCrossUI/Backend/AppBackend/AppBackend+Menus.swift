@@ -15,32 +15,6 @@ public protocol AppBackend_MenuBase: AppBackend_Widgets {
     ///
     /// This affects which menu-related methods are called.
     var menuImplementationStyle: MenuImplementationStyle { get }
-}
-
-@MainActor
-public protocol AppBackend_ButtonMenu: AppBackend_MenuBase {
-    /// Sets a button's label and menu.
-    ///
-    /// Only used when ``menuImplementationStyle`` is
-    /// ``MenuImplementationStyle/menuButton``.
-    ///
-    /// - Parameters:
-    ///   - button: The button to update.
-    ///   - label: The button's label.
-    ///   - menu: The menu to show when the button is clicked/tapped.
-    ///   - environment: The current environment.
-    func updateButton(
-        _ button: Widget,
-        label: String,
-        menu: Menu,
-        environment: EnvironmentValues
-    )
-}
-
-@MainActor
-public protocol AppBackend_PopoverMenu: AppBackend_MenuBase {
-    /// The underlying menu type. Can be a wrapper or subclass.
-    associatedtype Menu
 
     /// Creates a popover menu (the sort you often see when right clicking on
     /// apps).
@@ -61,10 +35,33 @@ public protocol AppBackend_PopoverMenu: AppBackend_MenuBase {
         content: ResolvedMenu,
         environment: EnvironmentValues
     )
+}
 
+@MainActor
+public protocol AppBackend_ButtonMenu: AppBackend_MenuBase {
+    /// Sets a button's label and menu.
+    ///
+    /// Only used when ``AppBackend_MenuBase/menuImplementationStyle`` is
+    /// ``MenuImplementationStyle/menuButton``.
+    ///
+    /// - Parameters:
+    ///   - button: The button to update.
+    ///   - label: The button's label.
+    ///   - menu: The menu to show when the button is clicked/tapped.
+    ///   - environment: The current environment.
+    func updateButton(
+        _ button: Widget,
+        label: String,
+        menu: Menu,
+        environment: EnvironmentValues
+    )
+}
+
+@MainActor
+public protocol AppBackend_PopoverMenu: AppBackend_MenuBase {
     /// Shows the popover menu at a position relative to the given widget.
     ///
-    /// Only used when ``menuImplementationStyle`` is
+    /// Only used when ``AppBackend_MenuBase/menuImplementationStyle`` is
     /// ``MenuImplementationStyle/dynamicPopover``.
     ///
     /// - Parameters:

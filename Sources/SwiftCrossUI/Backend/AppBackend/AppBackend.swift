@@ -87,13 +87,13 @@ public protocol AppBackend_Base: Sendable {
 /// and are simply intended to allow incremental implementation of backends,
 /// not a production-ready fallback for views that cannot be represented by a
 /// given backend. The methods you need to implemented up-front (which don't
-/// have default implementations) are: ``AppBackend/createWindow(withDefaultSize:)``,
-/// ``AppBackend/setTitle(ofWindow:to:)``,
-/// ``AppBackend/setBehaviors(ofWindow:closable:minimizable:resizable:)``,
-/// ``AppBackend/setChild(ofWindow:to:)``, ``AppBackend/show(window:)``,
-/// ``AppBackend/runMainLoop(_:)``, ``AppBackend/runInMainThread(action:)``,
-/// ``AppBackend/isWindowProgrammaticallyResizable(_:)``,
-/// ``AppBackend/show(widget:)``.
+/// have default implementations) are: ``AppBackend_Windows/createWindow(withDefaultSize:)``,
+/// ``AppBackend_Windows/setTitle(ofWindow:to:)``,
+/// ``AppBackend_Windows/setBehaviors(ofWindow:closable:minimizable:resizable:)``,
+/// ``AppBackend_Windows/setChild(ofWindow:to:)``, ``AppBackend_Windows/show(window:)``,
+/// ``AppBackend_Base/runMainLoop(_:)``, ``AppBackend_Base/runInMainThread(action:)``,
+/// ``AppBackend_Windows/isWindowProgrammaticallyResizable(_:)``,
+/// ``AppBackend_Widgets/show(widget:)``.
 /// Many of these can simply be given dummy implementations until you're ready
 /// to implement them properly.
 ///
@@ -281,7 +281,7 @@ extension AppBackend {
         todo()
     }
 
-    public func createTextView(content: String, shouldWrap: Bool) -> Widget {
+    public func createTextView() -> Widget {
         todo()
     }
     public func updateTextView(
