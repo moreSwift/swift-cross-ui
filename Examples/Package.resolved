@@ -1,5 +1,5 @@
 {
-  "originHash" : "a08a9f8fa605b398fb9aab328241d921fb80573bad58541c4591be860a67eb5a",
+  "originHash" : "7da0e69413af5876ec55104e5d404991c3e61577f3a1dc7df944eabe83dd5705",
   "pins" : [
     {
       "identity" : "aexml",
@@ -85,7 +85,7 @@
     {
       "identity" : "pathkit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/kylef/PathKit.git",
+      "location" : "https://github.com/kylef/PathKit",
       "state" : {
         "revision" : "3bfd2737b700b9a36565a8c94f4ad2b050a5e574",
         "version" : "1.0.1"
@@ -201,7 +201,7 @@
     {
       "identity" : "swift-filestreamer",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sersoft-gmbh/swift-filestreamer",
+      "location" : "https://github.com/sersoft-gmbh/swift-filestreamer.git",
       "state" : {
         "revision" : "b01ff214cc629718a8729f33d2a8b88e47532dbd",
         "version" : "0.6.0"
@@ -320,8 +320,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/moreSwift/swift-windowsappsdk",
       "state" : {
-        "revision" : "c93d4a59889f0c0cfad8e42a977614485a2f4bc0",
-        "version" : "0.1.0"
+        "revision" : "3c06cb36da9711e24a76c35861e0b97702448015",
+        "version" : "0.1.1"
       }
     },
     {

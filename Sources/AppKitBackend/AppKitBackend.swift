@@ -36,12 +36,16 @@ public final class AppKitBackend: AppBackend {
         // We assume that all scrollers have their controlSize set to `.regular` by default.
         // The internet seems to indicate that this is true regardless of any system wide
         // preferences etc.
-        return Int(
-            NSScroller.scrollerWidth(
-                for: .regular,
-                scrollerStyle: NSScroller.preferredScrollerStyle
-            ).rounded(.awayFromZero)
-        )
+        if NSScroller.preferredScrollerStyle == .overlay {
+            0
+        } else {
+            Int(
+                NSScroller.scrollerWidth(
+                    for: .regular,
+                    scrollerStyle: NSScroller.preferredScrollerStyle
+                ).rounded(.awayFromZero)
+            )
+        }
     }
 
     private let appDelegate = NSCustomApplicationDelegate()
@@ -260,7 +264,7 @@ public final class AppKitBackend: AppBackend {
             forName: .AppleInterfaceThemeChangedNotification,
             object: nil,
             queue: OperationQueue.main
-        ) { notification in
+        ) { _ in
             action()
         }
 
@@ -271,7 +275,7 @@ public final class AppKitBackend: AppBackend {
             forName: NSScroller.preferredScrollerStyleDidChangeNotification,
             object: nil,
             queue: OperationQueue.main
-        ) { notification in
+        ) { _ in
             // Self.scrollBarWidth has changed
             action()
         }
@@ -850,7 +854,7 @@ public final class AppKitBackend: AppBackend {
         let clipView = scrollView.contentView
         let documentView = NSStackView()
         documentView.orientation = .vertical
-        documentView.alignment = .centerX
+        documentView.alignment = .leading
         documentView.translatesAutoresizingMaskIntoConstraints = false
         documentView.addView(child, in: .top)
         scrollView.documentView = documentView
