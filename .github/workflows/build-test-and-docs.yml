@@ -61,6 +61,7 @@ jobs:
         swift build --target NotesExample && \
         swift build --target PathsExample && \
         swift build --target WebViewExample && \
+        swift build --target HoverExample && \
         swift build --target AdvancedCustomizationExample
 
   uikit:
@@ -113,6 +114,7 @@ jobs:
             buildtarget NotesExample
             buildtarget PathsExample
             buildtarget WebViewExample
+            buildtarget HoverExample
             buildtarget AdvancedCustomizationExample
 
             if [ $device_type != TV ]; then
@@ -178,6 +180,7 @@ jobs:
         buildtarget ControlsExample
         buildtarget RandomNumberGeneratorExample
         buildtarget WebViewExample
+        buildtarget HoverExample
         buildtarget AdvancedCustomizationExample
         # TODO test whether this works on Catalyst
         # buildtarget SplitExample
@@ -330,6 +333,7 @@ jobs:
         swift build --target SpreadsheetExample && \
         swift build --target NotesExample && \
         swift build --target PathsExample && \
+        swift build --target HoverExample && \
         swift build --target AdvancedCustomizationExample
 
   update-docs:
