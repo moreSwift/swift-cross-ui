@@ -126,6 +126,16 @@ public enum LayoutSystem {
             count: children.count
         )
 
+        // When the perpendicular axis is unspecified (nil), we need
+        // to re-run the space distribution algorithm with our final size during
+        // the commit phase. This opens the door to certain edge cases, but SwiftUI
+        // has them too, and there's not a good general solution to these edge
+        // cases, even if you assume that you have unlimited compute. The reason for
+        // this distribution is so that flexible children get a chance to use up any
+        // unused space within the final perpendicular size of the stack.
+        cache.redistributeSpaceOnCommit =
+            proposedSize[component: perpendicularOrientation] == nil
+
         let stackLength = proposedSize[component: orientation]
         if stackLength == 0 || stackLength == .infinity || stackLength == nil || children.count == 1
         {
@@ -155,7 +165,6 @@ public enum LayoutSystem {
             // nil to signal to commitStackLayout that it can ignore flexibility.
             cache.lastFlexibilityOrdering = nil
             cache.lastHiddenChildren = results.map(\.participatesInStackLayouts).map(!)
-            cache.redistributeSpaceOnCommit = false
 
             return ViewLayoutResult(
                 size: size,
@@ -253,16 +262,6 @@ public enum LayoutSystem {
         cache.lastFlexibilityOrdering = sortedChildren.map(\.offset)
         cache.lastHiddenChildren = isHidden
 
-        // When the length along the stacking axis is concrete (i.e. flexibility
-        // matters) and the perpendicular axis is unspecified (nil), then we need
-        // to re-run the space distribution algorithm with our final size during
-        // the commit phase. This opens the door to certain edge cases, but SwiftUI
-        // has them too, and there's not a good general solution to these edge
-        // cases, even if you assume that you have unlimited compute.
-        cache.redistributeSpaceOnCommit =
-            proposedSize[component: orientation] != nil
-            && proposedSize[component: perpendicularOrientation] == nil
-
         return ViewLayoutResult(
             size: size,
             childResults: renderedChildren,
@@ -289,9 +288,13 @@ public enum LayoutSystem {
         let perpendicularOrientation = orientation.perpendicular
 
         if cache.redistributeSpaceOnCommit {
-            guard let ordering = cache.lastFlexibilityOrdering else {
-                fatalError(
-                    "Expected flexibility ordering in order to redistribute space during commit")
+            let ordering: [Int]
+            if let flexibilityOrdering = cache.lastFlexibilityOrdering {
+                ordering = flexibilityOrdering
+            } else {
+                // The stacking axis was given an unspecified proposal,
+                // rendering flexibility sorting unnecessary.
+                ordering = Array(children.indices)
             }
 
             var spaceUsedAlongStackAxis: Double = 0

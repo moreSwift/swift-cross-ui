@@ -28,7 +28,7 @@ var hotReloadingDependencies: [Package.Dependency] = []
 
 let package = Package(
     name: "Examples",
-    platforms: [.macOS(.v11), .iOS(.v13), .tvOS(.v13), .macCatalyst(.v13), .visionOS(.v1)],
+    platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .macCatalyst(.v13), .visionOS(.v1)],
     dependencies: [
         .package(name: "swift-cross-ui", path: ".."),
     ] + hotReloadingDependencies,
