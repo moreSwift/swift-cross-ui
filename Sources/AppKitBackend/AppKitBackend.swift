@@ -166,11 +166,11 @@ public final class AppKitBackend: AppBackend {
     }
 
     public func isWindowActive(_ window: Window) -> Bool {
-        return window.isKeyWindow
+        window.isKeyWindow
     }
 
-    public func isApplicationActive() -> Bool {
-        return NSApplication.shared.isActive
+    public func applicationLifecyclePhase() -> AppPhase {
+        if NSApplication.shared.isActive { .active } else { .inactive }
     }
 
     public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {

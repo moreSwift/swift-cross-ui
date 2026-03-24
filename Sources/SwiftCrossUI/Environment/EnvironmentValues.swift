@@ -184,20 +184,33 @@ public struct EnvironmentValues {
         RevealFileAction(backend: backend)
     }
 
-    /// The active state of the current scene (or, if accessed outside of a scene,
-    /// the app as a whole).
+    /// The current scene's lifecycle phase.
     @MainActor
     public var scenePhase: ScenePhase {
         func scenePhase<Backend: AppBackend>(backend: Backend) -> ScenePhase {
-            let isActive = if let window {
-                backend.isWindowActive(window as! Backend.Window)
-            } else {
-                backend.isApplicationActive()
+            guard let window else {
+                fatalError(
+                    """
+                    'scenePhase' accessed from outside a scene; you probably \
+                    meant to use 'appPhase' instead
+                    """
+                )
             }
-            return if isActive { .active } else { .inactive }
+
+            return if backend.isWindowActive(window as! Backend.Window) {
+                .active
+            } else {
+                .inactive
+            }
         }
 
         return scenePhase(backend: backend)
+    }
+
+    /// The app's lifecycle phase.
+    @MainActor
+    public var appPhase: AppPhase {
+        backend.applicationLifecyclePhase()
     }
 
     /// Whether the backend can have multiple windows open at once. Mobile

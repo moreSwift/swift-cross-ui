@@ -221,7 +221,7 @@ struct WindowingApp: App {
     @State var closable = true
     @State var minimizable = true
 
-    @Environment(\.scenePhase) var scenePhase
+    @Environment(\.appPhase) var appPhase
 
     var body: some Scene {
         WindowGroup(title) {
@@ -232,7 +232,7 @@ struct WindowingApp: App {
                         TextField("My window", text: $title)
                     }
 
-                    Text("App scene phase: \(scenePhase)")
+                    Text("App phase: \(appPhase)")
 
                     Toggle("Enable resizing", isOn: $resizable)
                         .windowResizeBehavior(resizable ? .enabled : .disabled)

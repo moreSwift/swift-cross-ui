@@ -257,7 +257,7 @@ public final class DummyBackend: AppBackend {
     public var supportedPickerStyles: [BackendPickerStyle] = []
 
     public var incomingURLHandler: ((URL) -> Void)?
-    public var isAppActive = true
+    public var appPhase = AppPhase.active
 
     public init() {}
 
@@ -326,8 +326,8 @@ public final class DummyBackend: AppBackend {
         window.isActive
     }
 
-    public func isApplicationActive() -> Bool {
-        isAppActive
+    public func applicationLifecyclePhase() -> AppPhase {
+        appPhase
     }
 
     public func close(window: Window) {

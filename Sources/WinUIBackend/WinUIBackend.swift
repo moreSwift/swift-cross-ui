@@ -292,8 +292,12 @@ public final class WinUIBackend: AppBackend {
         window.isActive
     }
 
-    public func isApplicationActive() -> Bool {
-        windows.contains(where: \.isActive)
+    public func applicationLifecyclePhase() -> AppPhase {
+        if windows.contains(where: \.isActive) {
+            .active
+        } else {
+            .inactive
+        }
     }
 
     public func close(window: Window) {

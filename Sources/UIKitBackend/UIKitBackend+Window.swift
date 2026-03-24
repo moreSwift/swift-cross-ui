@@ -132,8 +132,12 @@ extension UIKitBackend {
         window.isKeyWindow
     }
 
-    public func isApplicationActive() -> Bool {
-        UIApplication.shared.applicationState == .active
+    public func applicationLifecyclePhase() -> AppPhase {
+        switch UIApplication.shared.applicationState {
+            case .active: .active
+            case .inactive: .inactive
+            case .background: .background
+        }
     }
 
     public func close(window: Window) {

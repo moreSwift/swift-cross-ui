@@ -286,12 +286,16 @@ public protocol AppBackend: Sendable {
     /// Returns whether the given window is currently active.
     func isWindowActive(_ window: Window) -> Bool
 
-    /// Returns whether the application is currently active.
+    /// Returns the application's current lifecycle phase.
     ///
-    /// Usually this returns `true` if and only if any of the app's windows are
-    /// active, but on platforms such as macOS it can also return `true` if the
-    /// app doesn't have any open windows but still appears in the menu bar.
-    func isApplicationActive() -> Bool
+    /// Usually this returns ``AppPhase/active`` if and only if any of the app's
+    /// windows are active, but on platforms such as macOS it can also return
+    /// `active` if the app doesn't have any open windows but still appears in
+    /// the menu bar.
+    ///
+    /// See the documentation for ``AppPhase`` for tips on the behavior this
+    /// function should implement.
+    func applicationLifecyclePhase() -> AppPhase
 
     /// Sets the application's global menu.
     ///
@@ -1497,7 +1501,15 @@ extension AppBackend {
         todo()
     }
 
+    public func isWindowActive(_ window: Window) -> Bool {
+        todo()
+    }
+
     // MARK: Application
+
+    public func applicationLifecyclePhase() -> AppPhase {
+        todo()
+    }
 
     public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
         todo()
