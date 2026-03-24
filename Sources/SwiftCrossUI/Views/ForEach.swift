@@ -378,7 +378,7 @@ class ForEachViewChildren<
         nodes.map(ErasedViewGraphNode.init(wrapping:))
     }
 
-    var stackLayoutCache = StackLayoutCache()
+    var stackLayoutCache = StackLayoutCache.initial
 
     init<Backend: AppBackend>(
         from view: ForEach<Items, ID, Child>,

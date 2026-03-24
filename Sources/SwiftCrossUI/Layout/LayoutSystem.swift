@@ -102,6 +102,17 @@ public enum LayoutSystem {
         }
     }
 
+    /// The subset of a group's children with a particular layout priority.
+    struct LayoutPriorityGroup {
+        /// The view's children, referenced by index, using the index of the
+        /// child based on the visual order of the stack's children (rather
+        /// than the flexibility-based layout order). The children are in
+        /// order of increasing flexibility.
+        var children: ArraySlice<Int>
+        /// The layout priority of all children within this subset.
+        var priority: Double
+    }
+
     /// - Parameter inheritStackLayoutParticipation: If `true`, the stack layout
     ///   will have ``ViewSize/participateInStackLayoutsWhenEmpty`` set to `true`
     ///   if all of its children have it set to true. This allows views such as
@@ -120,21 +131,6 @@ public enum LayoutSystem {
         let spacing = environment.layoutSpacing
         let orientation = environment.layoutOrientation
         let perpendicularOrientation = orientation.perpendicular
-
-        var renderedChildren: [ViewLayoutResult] = Array(
-            repeating: ViewLayoutResult.leafView(size: .zero),
-            count: children.count
-        )
-
-        // When the perpendicular axis is unspecified (nil), we need
-        // to re-run the space distribution algorithm with our final size during
-        // the commit phase. This opens the door to certain edge cases, but SwiftUI
-        // has them too, and there's not a good general solution to these edge
-        // cases, even if you assume that you have unlimited compute. The reason for
-        // this distribution is so that flexible children get a chance to use up any
-        // unused space within the final perpendicular size of the stack.
-        cache.redistributeSpaceOnCommit =
-            proposedSize[component: perpendicularOrientation] == nil
 
         let stackLength = proposedSize[component: orientation]
         if stackLength == 0 || stackLength == .infinity || stackLength == nil || children.count == 1
@@ -161,10 +157,30 @@ public enum LayoutSystem {
             size[component: orientation] = resultLength + totalSpacing
             size[component: perpendicularOrientation] = resultWidth
 
-            // In this case, flexibility doesn't matter. We set the ordering to
-            // nil to signal to commitStackLayout that it can ignore flexibility.
-            cache.lastFlexibilityOrdering = nil
-            cache.lastHiddenChildren = results.map(\.participatesInStackLayouts).map(!)
+            // In this case, flexibility and layout priority don't matter. We set
+            // the grouping to the trivial grouping so that commitStackLayout
+            // effectively ignores flexibility.
+            let group = LayoutPriorityGroup(
+                children: Array(children.indices)[...],
+                priority: 0
+            )
+            cache = StackLayoutCache(
+                priorityGroups: [group],
+                isHidden: results.map(\.participatesInStackLayouts).map(!),
+                // TODO(stackotter): How does SwiftUI handle space reservation during
+                //   relayouts? I feel like it probably doesn't use minimum lengths if
+                //   it didn't already have to during the initial layout pass because
+                //   the alternative would be expensive, but that approach would also
+                //   be a bit inconsistent
+                totalSpacing: totalSpacing,
+                totalReservedSpace: totalSpacing,
+                minimumLengths: [Double](repeating: 0, count: children.count),
+                redistributeSpaceOnCommit:
+                    shouldRedistributeSpaceOnCommit(
+                        proposedSize: proposedSize,
+                        orientation: orientation
+                    )
+            )
 
             return ViewLayoutResult(
                 size: size,
@@ -179,14 +195,74 @@ public enum LayoutSystem {
             fatalError("unreachable")
         }
 
+        cache = recomputeCache(
+            children: children,
+            proposedSize: proposedSize,
+            environment: environment
+        )
+
+        let renderedChildren = computeLayouts(
+            of: children,
+            proposedLength: stackLength,
+            proposedPerpendicular: proposedSize[component: perpendicularOrientation],
+            cache: cache,
+            environment: environment,
+            ignoreHiddenChildrenEntirely: false
+        )
+
+        var size = ViewSize.zero
+        size[component: orientation] =
+            renderedChildren.map(\.size[component: orientation]).reduce(0, +) + cache.totalSpacing
+        size[component: perpendicularOrientation] =
+            renderedChildren.map(\.size[component: perpendicularOrientation]).max() ?? 0
+
+        return ViewLayoutResult(
+            size: size,
+            childResults: renderedChildren,
+            participateInStackLayoutsWhenEmpty:
+                renderedChildren.contains(where: \.participateInStackLayoutsWhenEmpty)
+        )
+    }
+
+    /// Computes whether or not we have to redistribute space on commit. Returns true
+    /// if and only if the perpendicular component of the proposed size is nil.
+    static func shouldRedistributeSpaceOnCommit(
+        proposedSize: ProposedViewSize,
+        orientation: Orientation
+    ) -> Bool {
+        // When the perpendicular axis is unspecified (nil), we need
+        // to re-run the space distribution algorithm with our final size during
+        // the commit phase. This opens the door to certain edge cases, but SwiftUI
+        // has them too, and there's not a good general solution to these edge
+        // cases, even if you assume that you have unlimited compute. The reason for
+        // this distribution is so that flexible children get a chance to use up any
+        // unused space within the final perpendicular size of the stack.
+        proposedSize[component: orientation.perpendicular] == nil
+    }
+
+    /// Computes the cache from scratch for the slow path (this is our last
+    /// resort if shortcuts can't be made), preparing it for subsequent layout
+    /// operations.
+    @MainActor
+    static func recomputeCache(
+        children: [LayoutableChild],
+        proposedSize: ProposedViewSize,
+        environment: EnvironmentValues
+    ) -> StackLayoutCache {
+        let orientation = environment.layoutOrientation
+        let spacing = environment.layoutSpacing
+
         // My thanks go to this great article for investigating and explaining
         // how SwiftUI determines child view 'flexibility':
         // https://www.objc.io/blog/2020/11/10/hstacks-child-ordering/
-        var isHidden = [Bool](repeating: false, count: children.count)
         var minimumProposedSize = proposedSize
         minimumProposedSize[component: orientation] = 0
         var maximumProposedSize = proposedSize
         maximumProposedSize[component: orientation] = .infinity
+        var isHidden = [Bool](repeating: false, count: children.count)
+        var priorities = [Double](repeating: 0, count: children.count)
+        var minimums = [Double](repeating: 0, count: children.count)
+        var totalReservedSpace = 0.0
         let flexibilities = children.enumerated().map { i, child in
             let minimumResult = child.computeLayout(
                 proposedSize: minimumProposedSize,
@@ -197,76 +273,64 @@ public enum LayoutSystem {
                 environment: environment.with(\.allowLayoutCaching, true)
             )
             isHidden[i] = !minimumResult.participatesInStackLayouts
+            priorities[i] = minimumResult.preferences.layoutPriority
             let maximum = maximumResult.size[component: orientation]
             let minimum = minimumResult.size[component: orientation]
+            totalReservedSpace += minimum
+            minimums[i] = minimum
             return maximum - minimum
         }
         let visibleChildrenCount = isHidden.filter { hidden in
             !hidden
         }.count
         let totalSpacing = Double(max(visibleChildrenCount - 1, 0) * spacing)
-        let sortedChildren = zip(children.enumerated(), flexibilities)
+        totalReservedSpace += totalSpacing
+
+        let sortedChildren = zip(children.indices, zip(priorities.map(-), flexibilities))
             .sorted { first, second in
+                // Sort by descending priority and then by ascending flexibility
                 first.1 <= second.1
             }
-            .map(\.0)
-
-        var spaceUsedAlongStackAxis: Double = 0
-        var childrenRemaining = visibleChildrenCount
-        for (index, child) in sortedChildren {
-            // No need to render visible children.
-            if isHidden[index] {
-                // Update child in case it has just changed from visible to hidden,
-                // and to make sure that the view is still hidden (if it's not then
-                // it's a bug with either the view or the layout system).
-                let result = child.computeLayout(
-                    proposedSize: .zero,
-                    environment: environment
-                )
-                if result.participatesInStackLayouts {
-                    logger.warning(
-                        "hidden view became visible on second update; layout may break",
-                        metadata: [
-                            "view": "\(child.tag ?? "<unknown type>")"
-                        ]
-                    )
-                }
-                renderedChildren[index] = result
-                renderedChildren[index].participateInStackLayoutsWhenEmpty = false
-                renderedChildren[index].size = .zero
-                continue
+            .map { index, _ in
+                index
             }
 
-            var proposedChildSize = proposedSize
-            proposedChildSize[component: orientation] =
-                max(stackLength - spaceUsedAlongStackAxis - totalSpacing, 0)
-                / Double(childrenRemaining)
-
-            let childResult = child.computeLayout(
-                proposedSize: proposedChildSize,
-                environment: environment
-            )
-
-            renderedChildren[index] = childResult
-            childrenRemaining -= 1
-
-            spaceUsedAlongStackAxis += childResult.size[component: orientation]
+        var priorityGroups: [LayoutPriorityGroup] = []
+        var previousPriority: Double? = nil
+        var startIndex: Int?
+        for (sortedIndex, originalIndex) in sortedChildren.enumerated() {
+            let priority = priorities[originalIndex]
+            if priority != previousPriority {
+                if let startIndex, let previousPriority {
+                    let group = LayoutPriorityGroup(
+                        children: sortedChildren[startIndex..<sortedIndex],
+                        priority: previousPriority
+                    )
+                    priorityGroups.append(group)
+                }
+                startIndex = sortedIndex
+                previousPriority = priority
+            }
         }
 
-        var size = ViewSize.zero
-        size[component: orientation] =
-            renderedChildren.map(\.size[component: orientation]).reduce(0, +) + totalSpacing
-        size[component: perpendicularOrientation] =
-            renderedChildren.map(\.size[component: perpendicularOrientation]).max() ?? 0
+        if let startIndex, let previousPriority {
+            let group = LayoutPriorityGroup(
+                children: sortedChildren[startIndex..<sortedChildren.endIndex],
+                priority: previousPriority
+            )
+            priorityGroups.append(group)
+        }
 
-        cache.lastFlexibilityOrdering = sortedChildren.map(\.offset)
-        cache.lastHiddenChildren = isHidden
-
-        return ViewLayoutResult(
-            size: size,
-            childResults: renderedChildren,
-            participateInStackLayoutsWhenEmpty:
-                renderedChildren.contains(where: \.participateInStackLayoutsWhenEmpty)
+        return StackLayoutCache(
+            priorityGroups: priorityGroups,
+            isHidden: isHidden,
+            totalSpacing: totalSpacing,
+            totalReservedSpace: totalReservedSpace,
+            minimumLengths: minimums,
+            redistributeSpaceOnCommit: shouldRedistributeSpaceOnCommit(
+                proposedSize: proposedSize,
+                orientation: orientation
+            )
         )
     }
 
@@ -288,41 +352,14 @@ public enum LayoutSystem {
         let perpendicularOrientation = orientation.perpendicular
 
         if cache.redistributeSpaceOnCommit {
-            let ordering: [Int]
-            if let flexibilityOrdering = cache.lastFlexibilityOrdering {
-                ordering = flexibilityOrdering
-            } else {
-                // The stacking axis was given an unspecified proposal,
-                // rendering flexibility sorting unnecessary.
-                ordering = Array(children.indices)
-            }
-
-            var spaceUsedAlongStackAxis: Double = 0
-            // Avoid a trailing closure here because Swift 5.10 gets confused
-            let visibleChildrenCount = cache.lastHiddenChildren.count { isHidden in
-                !isHidden
-            }
-            let totalSpacing = Double(max(visibleChildrenCount - 1, 0) * spacing)
-            var childrenRemaining = visibleChildrenCount
-
-            // TODO: Reuse the corresponding loop from computeStackLayout if
-            //   possible to avoid the possibility for a behaviour mismatch.
-            for index in ordering {
-                if cache.lastHiddenChildren[index] {
-                    continue
-                }
-
-                var proposedChildSize = layout.size
-                proposedChildSize[component: orientation] -= spaceUsedAlongStackAxis + totalSpacing
-                proposedChildSize[component: orientation] /= Double(childrenRemaining)
-                let result = children[index].computeLayout(
-                    proposedSize: ProposedViewSize(proposedChildSize),
-                    environment: environment
-                )
-
-                spaceUsedAlongStackAxis += result.size[component: orientation]
-                childrenRemaining -= 1
-            }
+            _ = computeLayouts(
+                of: children,
+                proposedLength: layout.size[component: orientation],
+                proposedPerpendicular: layout.size[component: perpendicularOrientation],
+                cache: cache,
+                environment: environment,
+                ignoreHiddenChildrenEntirely: true
+            )
         }
 
         let renderedChildren = children.map { $0.commit() }
@@ -354,5 +391,85 @@ public enum LayoutSystem {
 
             position[component: orientation] += child.size[component: orientation] + Double(spacing)
         }
+    }
+
+    /// The main stack layout space allocation algorithm. Used during
+    /// computeLayout, and sometimes during commit when we have to redistribute
+    /// space (due to an unspecified perpendicular size proposal).
+    @MainActor
+    static func computeLayouts(
+        of children: [LayoutableChild],
+        proposedLength: Double,
+        proposedPerpendicular: Double?,
+        cache: StackLayoutCache,
+        environment: EnvironmentValues,
+        ignoreHiddenChildrenEntirely: Bool
+    ) -> [ViewLayoutResult] {
+        var renderedChildren = [ViewLayoutResult](
+            repeating: .leafView(size: .zero),
+            count: children.count
+        )
+
+        let orientation = environment.layoutOrientation
+        let perpendicularOrientation = orientation.perpendicular
+        var spaceUsedAlongStackAxis = 0.0
+        var reservedSpace = cache.totalReservedSpace
+        for group in cache.priorityGroups {
+            var childrenRemaining = group.children.count { index in
+                !cache.isHidden[index]
+            }
+
+            for index in group.children {
+                let child = children[index]
+
+                // No need to render visible children.
+                if cache.isHidden[index] {
+                    if ignoreHiddenChildrenEntirely {
+                        continue
+                    }
+
+                    // Update child in case it has just changed from visible to hidden,
+                    // and to make sure that the view is still hidden (if it's not then
+                    // it's a bug with either the view or the layout system).
+                    let result = child.computeLayout(
+                        proposedSize: .zero,
+                        environment: environment
+                    )
+                    if result.participatesInStackLayouts {
+                        logger.warning(
+                            "hidden view became visible on second update; layout may break",
+                            metadata: [
+                                "view": "\(child.tag ?? "<unknown type>")"
+                            ]
+                        )
+                    }
+                    renderedChildren[index] = result
+                    renderedChildren[index].participateInStackLayoutsWhenEmpty = false
+                    renderedChildren[index].size = .zero
+                    continue
+                }
+
+                reservedSpace -= cache.minimumLengths[index]
+
+                var proposedChildSize = ProposedViewSize.unspecified
+                proposedChildSize[component: orientation] = max(
+                    proposedLength - spaceUsedAlongStackAxis - reservedSpace,
+                    0
+                ) / Double(childrenRemaining)
+                proposedChildSize[component: perpendicularOrientation] = proposedPerpendicular
+
+                let childResult = child.computeLayout(
+                    proposedSize: proposedChildSize,
+                    environment: environment
+                )
+
+                renderedChildren[index] = childResult
+                childrenRemaining -= 1
+
+                spaceUsedAlongStackAxis += childResult.size[component: orientation]
+            }
+        }
+
+        return renderedChildren
     }
 }

@@ -71,7 +71,7 @@ public struct VStack<Content: View>: View {
                 ]
             )
         }
-        var cache = (children as? TupleViewChildren)?.stackLayoutCache ?? StackLayoutCache()
+        var cache = (children as? TupleViewChildren)?.stackLayoutCache ?? StackLayoutCache.initial
         let result = LayoutSystem.computeStackLayout(
             container: widget,
             children: layoutableChildren(backend: backend, children: children),
@@ -95,7 +95,7 @@ public struct VStack<Content: View>: View {
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        var cache = (children as? TupleViewChildren)?.stackLayoutCache ?? StackLayoutCache()
+        var cache = (children as? TupleViewChildren)?.stackLayoutCache ?? StackLayoutCache.initial
         LayoutSystem.commitStackLayout(
             container: widget,
             children: layoutableChildren(backend: backend, children: children),

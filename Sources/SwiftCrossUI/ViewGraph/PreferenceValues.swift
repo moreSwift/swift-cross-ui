@@ -11,8 +11,11 @@ public struct PreferenceValues: Sendable {
         interactiveDismissDisabled: nil,
         windowDismissBehavior: nil,
         preferredWindowMinimizeBehavior: nil,
-        windowResizeBehavior: nil
+        windowResizeBehavior: nil,
+        layoutPriority: defaultLayoutPriority
     )
+
+    static let defaultLayoutPriority = 0.0
 
     public var onOpenURL: (@Sendable @MainActor (URL) -> Void)?
 
@@ -39,6 +42,23 @@ public struct PreferenceValues: Sendable {
 
     /// Controls whether the user can resize the enclosing window.
     public var windowResizeBehavior: WindowInteractionBehavior?
+
+    /// The layout priority of the view.
+    var layoutPriority: Double
+
+    /// Returns a copy of the preferences with the specified property set to the
+    /// provided new value.
+    ///
+    /// - Parameters:
+    ///   - keyPath: A key path to the property to set.
+    ///   - newValue: The new value of the property.
+    /// - Returns: A copy of the preferences with the specified property set to
+    ///   `newValue`.
+    public func with<T>(_ keyPath: WritableKeyPath<Self, T>, _ newValue: T) -> Self {
+        var preferences = self
+        preferences[keyPath: keyPath] = newValue
+        return preferences
+    }
 }
 
 extension PreferenceValues {
@@ -65,5 +85,11 @@ extension PreferenceValues {
         preferredWindowMinimizeBehavior =
             children.compactMap(\.preferredWindowMinimizeBehavior).first
         windowResizeBehavior = children.compactMap(\.windowResizeBehavior).first
+
+        if let firstChild = children.first, children.count == 1 {
+            layoutPriority = firstChild.layoutPriority
+        } else {
+            layoutPriority = Self.defaultLayoutPriority
+        }
     }
 }
