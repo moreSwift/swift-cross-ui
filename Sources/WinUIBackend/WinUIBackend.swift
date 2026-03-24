@@ -2281,7 +2281,7 @@ public class CustomWindow: WinUI.Window {
         // NB: This event fires when the window is activated _or_ deactivated.
         self.activated.addHandler { [weak self] _, args in
             switch args?.windowActivationState {
-                case .activated: self?.isActive = true
+                case .codeActivated, .pointerActivated: self?.isActive = true
                 case .deactivated: self?.isActive = false
                 default: break
             }
