@@ -30,7 +30,7 @@ struct PreferenceModifier<Child: View>: View {
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
-        var result = defaultComputeLayout(
+        var result = body.computeLayout(
             widget,
             children: children,
             proposedSize: proposedSize,
@@ -39,5 +39,21 @@ struct PreferenceModifier<Child: View>: View {
         )
         result.preferences = modification(result.preferences, environment)
         return result
+    }
+
+    func commit<Backend: AppBackend>(
+        _ widget: Backend.Widget,
+        children: any ViewGraphNodeChildren,
+        layout: ViewLayoutResult,
+        environment: EnvironmentValues,
+        backend: Backend
+    ) {
+        body.commit(
+            widget,
+            children: children,
+            layout: layout,
+            environment: environment,
+            backend: backend
+        )
     }
 }
