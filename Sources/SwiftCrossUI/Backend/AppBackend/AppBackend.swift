@@ -129,13 +129,13 @@ public protocol AppBackend:
     AppBackend_Alert,
     AppBackend_Sheet,
     AppBackend_Menus,
+    AppBackend_Color,
     AppBackend_CornerRadius,
     AppBackend_FileDialogs,
     AppBackend_Paths,
     AppBackend_WebView,
     AppBackend_Gestures,
-    AppBackend_ExternalURLs,
-    AppBackend_RevealFile
+    AppBackend_ExternalURLs
 {}
 
 extension AppBackend {

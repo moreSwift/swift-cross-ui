@@ -18,10 +18,6 @@ public protocol AppBackend_ExternalURLs: AppBackend_Base {
 
 @MainActor
 public protocol AppBackend_RevealFile: AppBackend_Base {
-    /// Whether the backend can reveal files in the system file manager or not.
-    /// Mobile backends generally can't.
-    var canRevealFiles: Bool { get }
-
     /// Reveals a file in the system's file manager.
     ///
     /// This typically opens the file's enclosing directory and highlights the

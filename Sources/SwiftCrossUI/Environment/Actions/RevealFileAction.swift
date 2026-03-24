@@ -6,7 +6,7 @@ public struct RevealFileAction {
     let action: (URL) -> Void
 
     init?<Backend: AppBackend>(backend: Backend) {
-        guard backend.canRevealFiles else {
+        guard let backend = backend as? AppBackend_RevealFile else {
             return nil
         }
 

@@ -11,7 +11,7 @@ extension App {
     }
 }
 
-public final class GtkBackend: AppBackend {
+public final class GtkBackend: AppBackend, AppBackend_RevealFile {
     public typealias Window = Gtk.ApplicationWindow
     public typealias Widget = Gtk.Widget
     public typealias Menu = Gtk.PopoverMenu
@@ -34,7 +34,6 @@ public final class GtkBackend: AppBackend {
     public let requiresToggleSwitchSpacer = false
     public let requiresImageUpdateOnScaleFactorChange = false
     public let menuImplementationStyle = MenuImplementationStyle.dynamicPopover
-    public let canRevealFiles = true
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
     public let defaultSheetCornerRadius = 10

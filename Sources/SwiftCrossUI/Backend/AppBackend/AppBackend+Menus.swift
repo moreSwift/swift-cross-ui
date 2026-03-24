@@ -5,9 +5,6 @@ public protocol AppBackend_Menus:
     AppBackend_ButtonMenu,
     AppBackend_PopoverMenu
 {
-    /// The underlying menu type. Can be a wrapper or subclass.
-    associatedtype Menu
-
     /// How the backend handles rendering of menu buttons.
     ///
     /// This affects which menu-related methods are called.
@@ -16,6 +13,9 @@ public protocol AppBackend_Menus:
 
 @MainActor
 public protocol AppBackend_ButtonMenu: AppBackend_Widgets {
+    /// The underlying menu type. Can be a wrapper or subclass.
+    associatedtype Menu
+
     /// Sets a button's label and menu.
     ///
     /// Only used when ``menuImplementationStyle`` is
@@ -36,6 +36,9 @@ public protocol AppBackend_ButtonMenu: AppBackend_Widgets {
 
 @MainActor
 public protocol AppBackend_PopoverMenu: AppBackend_Widgets {
+    /// The underlying menu type. Can be a wrapper or subclass.
+    associatedtype Menu
+
     /// Creates a popover menu (the sort you often see when right clicking on
     /// apps).
     ///

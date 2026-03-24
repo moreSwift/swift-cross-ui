@@ -11,7 +11,7 @@ extension App {
     }
 }
 
-public final class Gtk3Backend: AppBackend {
+public final class Gtk3Backend: AppBackend, AppBackend_RevealFile {
     public typealias Window = Gtk3.ApplicationWindow
     public typealias Widget = Gtk3.Widget
     public typealias Menu = Gtk3.Menu
@@ -30,7 +30,6 @@ public final class Gtk3Backend: AppBackend {
     public let scrollBarWidth = 0
     public let requiresImageUpdateOnScaleFactorChange = true
     public let menuImplementationStyle = MenuImplementationStyle.dynamicPopover
-    public let canRevealFiles = true
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
     public let supportedDatePickerStyles: [DatePickerStyle] = []

@@ -10,7 +10,7 @@ extension App {
     }
 }
 
-public final class AppKitBackend: AppBackend {
+public final class AppKitBackend: AppBackend, AppBackend_RevealFile {
     public typealias Window = NSCustomWindow
     public typealias Widget = NSView
     public typealias Menu = NSMenu
@@ -24,7 +24,6 @@ public final class AppKitBackend: AppBackend {
     public let requiresToggleSwitchSpacer = false
     public let requiresImageUpdateOnScaleFactorChange = false
     public let menuImplementationStyle = MenuImplementationStyle.dynamicPopover
-    public let canRevealFiles = true
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
     public let supportedDatePickerStyles: [DatePickerStyle] = [.automatic, .graphical, .compact]

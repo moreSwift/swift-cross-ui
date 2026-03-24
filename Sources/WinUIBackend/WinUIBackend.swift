@@ -65,7 +65,6 @@ public final class WinUIBackend: AppBackend {
     public let requiresToggleSwitchSpacer = false
     public let requiresImageUpdateOnScaleFactorChange = false
     public let menuImplementationStyle = MenuImplementationStyle.menuButton
-    public let canRevealFiles = false
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
     public let supportedDatePickerStyles: [DatePickerStyle] = [
