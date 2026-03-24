@@ -13,9 +13,9 @@ struct HoverExample: App {
         WindowGroup("Hover Example") {
             #hotReloadable {
                 VStack(spacing: 0) {
-                    ForEach(1...18) { _ in
+                    ForEach(1...18, id: \.self) { _ in
                         HStack(spacing: 0) {
-                            ForEach(1...30) { _ in
+                            ForEach(1...30, id: \.self) { _ in
                                 CellView()
                             }
                         }
@@ -30,7 +30,7 @@ struct HoverExample: App {
 
 struct CellView: View {
     @State var timer: Timer?
-    @State var opacity: Float = 0.0
+    @State var opacity: Double = 0.0
 
     var body: some View {
         Rectangle()
