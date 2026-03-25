@@ -1,7 +1,7 @@
 import Foundation
 
 @MainActor
-public protocol AppBackend_Windows: AppBackend_Widgets {
+public protocol AppBackend_Windows<Window>: AppBackend_Widgets {
     /// The underlying window type. Can be a wrapper or subclass.
     associatedtype Window
 

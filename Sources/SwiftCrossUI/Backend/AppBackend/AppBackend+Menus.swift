@@ -6,7 +6,7 @@ public typealias AppBackend_Menus =
     AppBackend_ButtonMenu & AppBackend_PopoverMenu
 
 @MainActor
-public protocol AppBackend_MenuBase: AppBackend_Widgets {
+public protocol AppBackend_MenuBase<Menu>: AppBackend_Widgets {
     /// The underlying menu type. Can be a wrapper or subclass.
     associatedtype Menu
 

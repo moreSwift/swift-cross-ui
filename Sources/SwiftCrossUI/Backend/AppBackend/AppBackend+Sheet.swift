@@ -1,7 +1,7 @@
 import Foundation
 
 @MainActor
-public protocol AppBackend_Sheet: AppBackend_Windows {
+public protocol AppBackend_Sheet<Sheet>: AppBackend_Windows {
     /// The underlying sheet type. Can be a wrapper or subclass.
     associatedtype Sheet
 

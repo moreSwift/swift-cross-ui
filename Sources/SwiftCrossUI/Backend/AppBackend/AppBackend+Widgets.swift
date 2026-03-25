@@ -1,7 +1,7 @@
 import Foundation
 
 @MainActor
-public protocol AppBackend_Widgets: AppBackend_Base {
+public protocol AppBackend_Widgets<Widget>: AppBackend_Base {
     /// The underlying widget type.
     associatedtype Widget
     

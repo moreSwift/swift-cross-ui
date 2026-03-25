@@ -1,7 +1,7 @@
 import Foundation
 
 @MainActor
-public protocol AppBackend_Alert: AppBackend_Windows {
+public protocol AppBackend_Alert<Alert>: AppBackend_Windows {
     /// The underlying alert type. Can be a wrapper or subclass.
     associatedtype Alert
 

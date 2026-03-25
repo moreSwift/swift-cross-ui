@@ -1,7 +1,7 @@
 import AppKit
 import SwiftCrossUI
 
-extension AppKitBackend: AppBackend_Gestures {
+extension AppKitBackend {
     public func createTapGestureTarget(wrapping child: Widget, gesture _: TapGesture) -> Widget {
         let container = NSView()
 
