@@ -1,19 +1,17 @@
 import Foundation
 
-@MainActor
-public protocol AppBackend_Controls:
-    AppBackend_Button,
-    AppBackend_Toggle,
-    AppBackend_Switch,
-    AppBackend_Checkbox,
-    AppBackend_Slider,
-    AppBackend_TextField,
-    AppBackend_TextEditor,
-    AppBackend_Picker,
-    AppBackend_DatePicker,
-    AppBackend_ProgressSpinner,
-    AppBackend_ProgressBar
-{}
+public typealias AppBackend_Controls =
+    AppBackend_Button
+    & AppBackend_Toggle
+    & AppBackend_Switch
+    & AppBackend_Checkbox
+    & AppBackend_Slider
+    & AppBackend_TextField
+    & AppBackend_TextEditor
+    & AppBackend_Picker
+    & AppBackend_DatePicker
+    & AppBackend_ProgressSpinner
+    & AppBackend_ProgressBar
 
 @MainActor
 public protocol AppBackend_Button: AppBackend_Widgets {

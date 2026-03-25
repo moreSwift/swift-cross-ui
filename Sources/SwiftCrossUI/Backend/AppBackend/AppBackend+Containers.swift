@@ -1,13 +1,11 @@
 import Foundation
 
-@MainActor
-public protocol AppBackend_Containers:
-    AppBackend_GenericContainer,
-    AppBackend_ScrollContainer,
-    AppBackend_SelectableListView,
-    AppBackend_SplitView,
-    AppBackend_Tooltips
-{}
+public typealias AppBackend_Containers =
+    AppBackend_GenericContainer
+    & AppBackend_ScrollContainer
+    & AppBackend_SelectableListView
+    & AppBackend_SplitView
+    & AppBackend_Tooltips
 
 @MainActor
 public protocol AppBackend_GenericContainer: AppBackend_Widgets {

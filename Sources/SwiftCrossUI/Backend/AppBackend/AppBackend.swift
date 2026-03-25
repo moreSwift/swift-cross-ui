@@ -120,75 +120,56 @@ public protocol AppBackend_Base: Sendable {
 /// code between the `create` and `update` methods of the various widgets
 /// (since the `update` method is always called between calling `create`
 /// and actually displaying the widget anyway).
-@MainActor
-public protocol AppBackend:
-    AppBackend_Base,
-    AppBackend_Containers,
-    AppBackend_PassiveViews,
-    AppBackend_Controls,
-    AppBackend_Alert,
-    AppBackend_Sheet,
-    AppBackend_Menus,
-    AppBackend_Color,
-    AppBackend_CornerRadius,
-    AppBackend_FileDialogs,
-    AppBackend_Paths,
-    AppBackend_WebView,
-    AppBackend_Gestures
-{}
+public typealias AppBackend =
+    AppBackend_Base
+    & AppBackend_Containers
+    & AppBackend_PassiveViews
+    & AppBackend_Controls
+    & AppBackend_Alert
+    & AppBackend_Sheet
+    & AppBackend_Menus
+    & AppBackend_Color
+    & AppBackend_CornerRadius
+    & AppBackend_FileDialogs
+    & AppBackend_Path
+    & AppBackend_WebView
+    & AppBackend_Gestures
 
-extension AppBackend {
-    /// Used by placeholder implementations of backend methods.
-    private func todo(_ function: String = #function) -> Never {
-        logger.critical("\(type(of: self)): \(function) not implemented")
-        Foundation.exit(1)
-    }
+// MARK: Default implementations
 
-    private func ignored(_ function: String = #function) {
-        #if DEBUG
-            logger.warning(
-                "\(type(of: self)): \(function) is being ignored; consult the documentation for further information"
-            )
-        #endif
-    }
+/// Used by placeholder implementations of backend methods.
+private func todo<T>(in type: T.Type, _ function: String = #function) -> Never {
+    logger.critical("\(type): \(function) not implemented")
+    Foundation.exit(1)
+}
 
-    // MARK: Windows
-
-    public func setCloseHandler(
-        ofWindow window: Window,
-        to action: @escaping () -> Void
-    ) {
-        todo()
-    }
-
-    public func close(window: Window) {
-        todo()
-    }
-
-    // MARK: Application
-
+extension AppBackend_Base {
     public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
-        todo()
+        todo(in: Self.self)
     }
+}
 
-    // MARK: Containers
-
+extension AppBackend_Color {
     public func createColorableRectangle() -> Widget {
-        todo()
+        todo(in: Self.self)
     }
 
     public func setColor(ofColorableRectangle widget: Widget, to color: Color.Resolved) {
-        todo()
+        todo(in: Self.self)
     }
+}
 
+extension AppBackend_CornerRadius {
     public func setCornerRadius(of widget: Widget, to radius: Int) {
-        todo()
+        todo(in: Self.self)
     }
+}
 
+extension AppBackend_ScrollContainer {
     public func createScrollContainer(for child: Widget) -> Widget {
-        todo()
+        todo(in: Self.self)
     }
-
+    
     public func updateScrollContainer(
         _ scrollView: Widget,
         environment: EnvironmentValues,
@@ -197,26 +178,28 @@ extension AppBackend {
         hasHorizontalScrollBar: Bool,
         hasVerticalScrollBar: Bool
     ) {
-        todo()
+        todo(in: Self.self)
     }
+}
 
+extension AppBackend_SelectableListView {
     public func createSelectableListView() -> Widget {
-        todo()
+        todo(in: Self.self)
     }
 
     public func updateSelectableListView(
         _ selectableListView: Widget,
         environment: EnvironmentValues
     ) {
-        todo()
+        todo(in: Self.self)
     }
 
     public func baseItemPadding(ofSelectableListView listView: Widget) -> EdgeInsets {
-        todo()
+        todo(in: Self.self)
     }
 
     public func minimumRowSize(ofSelectableListView listView: Widget) -> SIMD2<Int> {
-        todo()
+        todo(in: Self.self)
     }
 
     public func setItems(
@@ -224,33 +207,35 @@ extension AppBackend {
         to items: [Widget],
         withRowHeights rowHeights: [Int]
     ) {
-        todo()
+        todo(in: Self.self)
     }
 
     public func setSelectionHandler(
         forSelectableListView listView: Widget,
         to action: @escaping (_ selectedIndex: Int) -> Void
     ) {
-        todo()
+        todo(in: Self.self)
     }
 
     public func setSelectedItem(ofSelectableListView listView: Widget, toItemAt index: Int?) {
-        todo()
+        todo(in: Self.self)
     }
+}
 
+extension AppBackend_SplitView {
     public func createSplitView(leadingChild: Widget, trailingChild: Widget) -> Widget {
-        todo()
+        todo(in: Self.self)
     }
 
     public func setResizeHandler(
         ofSplitView splitView: Widget,
         to action: @escaping () -> Void
     ) {
-        todo()
+        todo(in: Self.self)
     }
 
     public func sidebarWidth(ofSplitView splitView: Widget) -> Int {
-        todo()
+        todo(in: Self.self)
     }
 
     public func setSidebarWidthBounds(
@@ -258,19 +243,21 @@ extension AppBackend {
         minimum minimumWidth: Int,
         maximum maximumWidth: Int
     ) {
-        todo()
+        todo(in: Self.self)
     }
+}
 
+extension AppBackend_Tooltips {
     public func createTooltipContainer(wrapping child: Widget) -> Widget {
-        todo()
+        todo(in: Self.self)
     }
 
     public func updateTooltipContainer(_ widget: Widget, tooltip: String) {
-        todo()
+        todo(in: Self.self)
     }
+}
 
-    // MARK: Passive views
-
+extension AppBackend_Text {
     public func size(
         of text: String,
         whenDisplayedIn widget: Widget,
@@ -278,22 +265,25 @@ extension AppBackend {
         proposedHeight: Int?,
         environment: EnvironmentValues
     ) -> SIMD2<Int> {
-        todo()
+        todo(in: Self.self)
     }
 
     public func createTextView() -> Widget {
-        todo()
+        todo(in: Self.self)
     }
+
     public func updateTextView(
         _ textView: Widget,
         content: String,
         environment: EnvironmentValues
     ) {
-        todo()
+        todo(in: Self.self)
     }
+}
 
+extension AppBackend_Image {
     public func createImageView() -> Widget {
-        todo()
+        todo(in: Self.self)
     }
 
     public func updateImageView(
@@ -306,34 +296,40 @@ extension AppBackend {
         dataHasChanged: Bool,
         environment: EnvironmentValues
     ) {
-        todo()
+        todo(in: Self.self)
+    }
+}
+
+extension AppBackend_Table {
+    public func createTable() -> Widget {
+        todo(in: Self.self)
     }
 
-    public func createTable() -> Widget {
-        todo()
-    }
     public func setRowCount(ofTable table: Widget, to rows: Int) {
-        todo()
+        todo(in: Self.self)
     }
+
     public func setColumnLabels(
         ofTable table: Widget,
         to labels: [String],
         environment: EnvironmentValues
     ) {
-        todo()
+        todo(in: Self.self)
     }
+
     public func setCells(
         ofTable table: Widget,
         to cells: [Widget],
         withRowHeights rowHeights: [Int]
     ) {
-        todo()
+        todo(in: Self.self)
     }
+}
 
-    // MARK: Controls
 
+extension AppBackend_Button {
     public func createButton() -> Widget {
-        todo()
+        todo(in: Self.self)
     }
     public func updateButton(
         _ button: Widget,
@@ -341,63 +337,81 @@ extension AppBackend {
         environment: EnvironmentValues,
         action: @escaping () -> Void
     ) {
-        todo()
+        todo(in: Self.self)
     }
+}
+
+extension AppBackend_ButtonMenu {
     public func updateButton(
         _ button: Widget,
         label: String,
         menu: Menu,
         environment: EnvironmentValues
     ) {
-        todo()
+        todo(in: Self.self)
+    }
+}
+
+extension AppBackend_Toggle {
+    public func createToggle() -> Widget {
+        todo(in: Self.self)
     }
 
-    public func createToggle() -> Widget {
-        todo()
-    }
     public func updateToggle(
         _ toggle: Widget,
         label: String,
         environment: EnvironmentValues,
         onChange: @escaping (Bool) -> Void
     ) {
-        todo()
-    }
-    public func setState(ofToggle toggle: Widget, to state: Bool) {
-        todo()
+        todo(in: Self.self)
     }
 
-    public func createSwitch() -> Widget {
-        todo()
+    public func setState(ofToggle toggle: Widget, to state: Bool) {
+        todo(in: Self.self)
     }
+}
+
+extension AppBackend_Switch {
+    public func createSwitch() -> Widget {
+        todo(in: Self.self)
+    }
+
     public func updateSwitch(
         _ switchWidget: Widget,
         environment: EnvironmentValues,
         onChange: @escaping (Bool) -> Void
     ) {
-        todo()
-    }
-    public func setState(ofSwitch switchWidget: Widget, to state: Bool) {
-        todo()
+        todo(in: Self.self)
     }
 
-    public func createCheckbox() -> Widget {
-        todo()
+    public func setState(ofSwitch switchWidget: Widget, to state: Bool) {
+        todo(in: Self.self)
     }
+}
+
+extension AppBackend_Checkbox {
+    public func createCheckbox() -> Widget {
+        todo(in: Self.self)
+    }
+
     public func updateCheckbox(
         _ checkboxWidget: Widget,
         environment: EnvironmentValues,
         onChange: @escaping (Bool) -> Void
     ) {
-        todo()
-    }
-    public func setState(ofCheckbox checkboxWidget: Widget, to state: Bool) {
-        todo()
+        todo(in: Self.self)
     }
 
-    public func createSlider() -> Widget {
-        todo()
+    public func setState(ofCheckbox checkboxWidget: Widget, to state: Bool) {
+        todo(in: Self.self)
     }
+}
+
+extension AppBackend_Slider {
+    public func createSlider() -> Widget {
+        todo(in: Self.self)
+    }
+
     public func updateSlider(
         _ slider: Widget,
         minimum: Double,
@@ -406,15 +420,19 @@ extension AppBackend {
         environment: EnvironmentValues,
         onChange: @escaping (Double) -> Void
     ) {
-        todo()
-    }
-    public func setValue(ofSlider slider: Widget, to value: Double) {
-        todo()
+        todo(in: Self.self)
     }
 
-    public func createTextField() -> Widget {
-        todo()
+    public func setValue(ofSlider slider: Widget, to value: Double) {
+        todo(in: Self.self)
     }
+}
+
+extension AppBackend_TextField {
+    public func createTextField() -> Widget {
+        todo(in: Self.self)
+    }
+
     public func updateTextField(
         _ textField: Widget,
         placeholder: String,
@@ -422,139 +440,189 @@ extension AppBackend {
         onChange: @escaping (String) -> Void,
         onSubmit: @escaping () -> Void
     ) {
-        todo()
-    }
-    public func setContent(ofTextField textField: Widget, to content: String) {
-        todo()
-    }
-    public func getContent(ofTextField textField: Widget) -> String {
-        todo()
+        todo(in: Self.self)
     }
 
-    public func createTextEditor() -> Widget {
-        todo()
+    public func setContent(ofTextField textField: Widget, to content: String) {
+        todo(in: Self.self)
     }
+
+    public func getContent(ofTextField textField: Widget) -> String {
+        todo(in: Self.self)
+    }
+}
+
+extension AppBackend_TextEditor {
+    public func createTextEditor() -> Widget {
+        todo(in: Self.self)
+    }
+
     public func updateTextEditor(
         _ textEditor: Widget,
         environment: EnvironmentValues,
         onChange: @escaping (String) -> Void
     ) {
-        todo()
-    }
-    public func setContent(ofTextEditor textEditor: Widget, to content: String) {
-        todo()
-    }
-    public func getContent(ofTextEditor textEditor: Widget) -> String {
-        todo()
+        todo(in: Self.self)
     }
 
-    public func createPicker(style: BackendPickerStyle) -> Widget {
-        todo()
+    public func setContent(ofTextEditor textEditor: Widget, to content: String) {
+        todo(in: Self.self)
     }
+
+    public func getContent(ofTextEditor textEditor: Widget) -> String {
+        todo(in: Self.self)
+    }
+}
+
+extension AppBackend_Picker {
+    public func createPicker(style: BackendPickerStyle) -> Widget {
+        todo(in: Self.self)
+    }
+
     public func updatePicker(
         _ picker: Widget,
         options: [String],
         environment: EnvironmentValues,
         onChange: @escaping (Int?) -> Void
     ) {
-        todo()
+        todo(in: Self.self)
     }
+
     public func setSelectedOption(ofPicker picker: Widget, to selectedOption: Int?) {
-        todo()
+        todo(in: Self.self)
     }
+}
 
+extension AppBackend_ProgressSpinner {
     public func createProgressSpinner() -> Widget {
-        todo()
+        todo(in: Self.self)
+    }
+}
+
+extension AppBackend_ProgressBar {
+    public func createProgressBar() -> Widget {
+        todo(in: Self.self)
     }
 
-    public func createProgressBar() -> Widget {
-        todo()
-    }
     public func updateProgressBar(
         _ widget: Widget,
         progressFraction: Double?,
         environment: EnvironmentValues
     ) {
-        todo()
+        todo(in: Self.self)
+    }
+}
+
+extension AppBackend_MenuBase {
+    public func createPopoverMenu() -> Menu {
+        todo(in: Self.self)
     }
 
-    public func createPopoverMenu() -> Menu {
-        todo()
-    }
     public func updatePopoverMenu(
         _ menu: Menu,
         content: ResolvedMenu,
         environment: EnvironmentValues
     ) {
-        todo()
+        todo(in: Self.self)
     }
+}
+
+extension AppBackend_PopoverMenu {
     public func showPopoverMenu(
         _ menu: Menu,
         at position: SIMD2<Int>,
         relativeTo widget: Widget,
         closeHandler handleClose: @escaping () -> Void
     ) {
-        todo()
+        todo(in: Self.self)
+    }
+}
+
+extension AppBackend_Alert {
+    public func createAlert() -> Alert {
+        todo(in: Self.self)
     }
 
-    public func createAlert() -> Alert {
-        todo()
-    }
     public func updateAlert(
         _ alert: Alert,
         title: String,
         actionLabels: [String],
         environment: EnvironmentValues
     ) {
-        todo()
+        todo(in: Self.self)
     }
+
     public func showAlert(
         _ alert: Alert,
         window: Window?,
         responseHandler handleResponse: @escaping (Int) -> Void
     ) {
-        todo()
-    }
-    public func dismissAlert(_ alert: Alert, window: Window?) {
-        todo()
+        todo(in: Self.self)
     }
 
+    public func dismissAlert(_ alert: Alert, window: Window?) {
+        todo(in: Self.self)
+    }
+}
+
+extension AppBackend_FileDialogs {
     public func showOpenDialog(
         fileDialogOptions: FileDialogOptions,
         openDialogOptions: OpenDialogOptions,
         window: Window?,
         resultHandler handleResult: @escaping (DialogResult<[URL]>) -> Void
     ) {
-        todo()
+        todo(in: Self.self)
     }
+
     public func showSaveDialog(
         fileDialogOptions: FileDialogOptions,
         saveDialogOptions: SaveDialogOptions,
         window: Window?,
         resultHandler handleResult: @escaping (DialogResult<URL>) -> Void
     ) {
-        todo()
+        todo(in: Self.self)
+    }
+}
+
+extension AppBackend_TapGesture {
+    public func createTapGestureTarget(wrapping child: Widget, gesture: TapGesture) -> Widget {
+        todo(in: Self.self)
     }
 
-    public func createTapGestureTarget(wrapping child: Widget, gesture: TapGesture) -> Widget {
-        todo()
-    }
     public func updateTapGestureTarget(
         _ clickTarget: Widget,
         gesture: TapGesture,
         environment: EnvironmentValues,
         action: @escaping () -> Void
     ) {
-        todo()
+        todo(in: Self.self)
+    }
+}
+
+extension AppBackend_HoverGesture {
+    public func createHoverTarget(wrapping child: Widget) -> Widget {
+        todo(in: Self.self)
     }
 
-    // MARK: Paths
+    public func updateHoverTarget(
+        _ container: Widget,
+        environment: EnvironmentValues,
+        action: @escaping (Bool) -> Void
+    ) {
+        todo(in: Self.self)
+    }
+}
+
+extension AppBackend_Path {
     public func createPathWidget() -> Widget {
-        todo()
+        todo(in: Self.self)
     }
+
     public func createPath() -> Path {
-        todo()
+        todo(in: Self.self)
     }
+
     public func updatePath(
         _ path: Path,
         _ source: SwiftCrossUI.Path,
@@ -562,8 +630,9 @@ extension AppBackend {
         pointsChanged: Bool,
         environment: EnvironmentValues
     ) {
-        todo()
+        todo(in: Self.self)
     }
+
     public func renderPath(
         _ path: Path,
         container: Widget,
@@ -571,39 +640,34 @@ extension AppBackend {
         fillColor: Color.Resolved,
         overrideStrokeStyle: StrokeStyle?
     ) {
-        todo()
+        todo(in: Self.self)
+    }
+}
+
+extension AppBackend_WebView {
+    public func createWebView() -> Widget {
+        todo(in: Self.self)
     }
 
-    public func createWebView() -> Widget {
-        todo()
-    }
     public func updateWebView(
         _ webView: Widget,
         environment: EnvironmentValues,
         onNavigate: @escaping (URL) -> Void
     ) {
-        todo()
+        todo(in: Self.self)
     }
+
     public func navigateWebView(
         _ webView: Widget,
         to url: URL
     ) {
-        todo()
+        todo(in: Self.self)
     }
+}
 
-    public func createHoverTarget(wrapping child: Widget) -> Widget {
-        todo()
-    }
-    public func updateHoverTarget(
-        _ container: Widget,
-        environment: EnvironmentValues,
-        action: @escaping (Bool) -> Void
-    ) {
-        todo()
-    }
-
+extension AppBackend_Sheet {
     public func createSheet(content: Widget) -> Sheet {
-        todo()
+        todo(in: Self.self)
     }
 
     public func updateSheet(
@@ -618,13 +682,13 @@ extension AppBackend {
         backgroundColor: Color.Resolved?,
         interactiveDismissDisabled: Bool
     ) {
-        todo()
+        todo(in: Self.self)
     }
 
     public func size(
         ofSheet sheet: Sheet
     ) -> SIMD2<Int> {
-        todo()
+        todo(in: Self.self)
     }
 
     public func presentSheet(
@@ -632,7 +696,7 @@ extension AppBackend {
         window: Window,
         parentSheet: Sheet?
     ) {
-        todo()
+        todo(in: Self.self)
     }
 
     public func dismissSheet(
@@ -640,10 +704,14 @@ extension AppBackend {
         window: Window,
         parentSheet: Sheet?
     ) {
-        todo()
+        todo(in: Self.self)
     }
+}
 
-    public func createDatePicker() -> Widget { todo() }
+extension AppBackend_DatePicker {
+    public func createDatePicker() -> Widget {
+        todo(in: Self.self)
+    }
 
     public func updateDatePicker(
         _ datePicker: Widget,
@@ -652,5 +720,7 @@ extension AppBackend {
         range: ClosedRange<Date>,
         components: DatePickerComponents,
         onChange: @escaping (Date) -> Void
-    ) { todo() }
+    ) {
+        todo(in: Self.self)
+    }
 }

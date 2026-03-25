@@ -1,10 +1,7 @@
 import Foundation
 
-@MainActor
-public protocol AppBackend_Gestures:
-    AppBackend_TapGesture,
-    AppBackend_HoverGesture
-{}
+public typealias AppBackend_Gestures =
+    AppBackend_TapGesture & AppBackend_HoverGesture
 
 @MainActor
 public protocol AppBackend_TapGesture: AppBackend_Widgets {

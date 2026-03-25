@@ -1,11 +1,7 @@
 import Foundation
 
-@MainActor
-public protocol AppBackend_PassiveViews:
-    AppBackend_Text,
-    AppBackend_Image,
-    AppBackend_Table
-{}
+public typealias AppBackend_PassiveViews =
+    AppBackend_Text & AppBackend_Image & AppBackend_Table
 
 @MainActor
 public protocol AppBackend_Text: AppBackend_Widgets {

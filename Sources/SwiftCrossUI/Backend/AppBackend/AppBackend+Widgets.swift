@@ -59,16 +59,6 @@ public protocol AppBackend_Widgets: AppBackend_Base {
     func setSize(of widget: Widget, to size: SIMD2<Int>)
 }
 
-public protocol AppBackend_CornerRadius: AppBackend_Widgets {
-    /// Sets the corner radius of a widget (any widget). Should affect the view's border radius
-    /// as well.
-    ///
-    /// - Parameters:
-    ///   - widget: The widget to set the corner radius of.
-    ///   - radius: The corner radius.
-    func setCornerRadius(of widget: Widget, to radius: Int)
-}
-
 // MARK: Default Implementations
 
 extension AppBackend_Widgets {

@@ -1,10 +1,9 @@
 import Foundation
 
-@MainActor
-public protocol AppBackend_Menus:
-    AppBackend_ButtonMenu,
-    AppBackend_PopoverMenu
-{}
+// TODO: Factor out `menuImplementationStyle` and rely on conformances instead
+
+public typealias AppBackend_Menus =
+    AppBackend_ButtonMenu & AppBackend_PopoverMenu
 
 @MainActor
 public protocol AppBackend_MenuBase: AppBackend_Widgets {
