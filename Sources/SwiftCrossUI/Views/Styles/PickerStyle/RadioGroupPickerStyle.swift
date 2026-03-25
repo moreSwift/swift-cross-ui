@@ -4,7 +4,7 @@
 public struct RadioGroupPickerStyle: PickerStyle, _BuiltinPickerStyle {
     public nonisolated init() {}
 
-    public func _asBackendPickerStyle<Backend: AppBackend>(backend: Backend) -> BackendPickerStyle {
+    public func _asBackendPickerStyle<Backend: AppBackend_Base>(backend: Backend) -> BackendPickerStyle {
         .radioGroup
     }
 }

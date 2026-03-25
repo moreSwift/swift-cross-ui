@@ -14,7 +14,7 @@ public typealias AppBackend_Controls =
     & AppBackend_ProgressBar
 
 @MainActor
-public protocol AppBackend_Button: AppBackend_Widgets {
+public protocol AppBackend_Button: AppBackend_Base {
     /// Creates a labelled button with an action triggered on click/tap.
     ///
     /// Predominantly used by ``Button``.
@@ -39,7 +39,7 @@ public protocol AppBackend_Button: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_Toggle: AppBackend_Widgets {
+public protocol AppBackend_Toggle: AppBackend_Base {
     /// Creates a labelled toggle that is either on or off.
     ///
     /// - Returns: A toggle.
@@ -69,7 +69,7 @@ public protocol AppBackend_Toggle: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_Switch: AppBackend_Widgets {
+public protocol AppBackend_Switch: AppBackend_Base {
     /// If `true`, a toggle in the ``ToggleStyle/switch`` style grows to fill
     /// its parent container.
     var requiresToggleSwitchSpacer: Bool { get }
@@ -101,7 +101,7 @@ public protocol AppBackend_Switch: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_Checkbox: AppBackend_Widgets {
+public protocol AppBackend_Checkbox: AppBackend_Base {
     /// Creates a checkbox that is either on or off.
     ///
     /// - Returns: A checkbox.
@@ -129,7 +129,7 @@ public protocol AppBackend_Checkbox: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_Slider: AppBackend_Widgets {
+public protocol AppBackend_Slider: AppBackend_Base {
     /// Creates a slider for choosing a numerical value from a range. Predominantly used
     /// by ``Slider``.
     func createSlider() -> Widget
@@ -163,7 +163,7 @@ public protocol AppBackend_Slider: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_TextField: AppBackend_Widgets {
+public protocol AppBackend_TextField: AppBackend_Base {
     /// Creates an editable text field with a placeholder label and change
     /// handler.
     ///
@@ -206,7 +206,7 @@ public protocol AppBackend_TextField: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_TextEditor: AppBackend_Widgets {
+public protocol AppBackend_TextEditor: AppBackend_Text {
     /// Creates an editable multi-line text editor.
     ///
     /// Predominantly used by ``TextEditor``.
@@ -247,7 +247,7 @@ public protocol AppBackend_TextEditor: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_Picker: AppBackend_Widgets {
+public protocol AppBackend_Picker: AppBackend_Base {
     /// The supported picker styles.
     var supportedPickerStyles: [BackendPickerStyle] { get }
 
@@ -293,7 +293,7 @@ public protocol AppBackend_Picker: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_DatePicker: AppBackend_Widgets {
+public protocol AppBackend_DatePicker: AppBackend_Base {
     /// The supported date picker styles.
     ///
     /// Must include ``DatePickerStyle/automatic`` if date pickers are supported at all.
@@ -312,7 +312,7 @@ public protocol AppBackend_DatePicker: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_ProgressSpinner: AppBackend_Widgets {
+public protocol AppBackend_ProgressSpinner: AppBackend_Base {
     /// Creates an indeterminate progress spinner.
     ///
     /// - Returns: A progress spinner.
@@ -330,7 +330,7 @@ public protocol AppBackend_ProgressSpinner: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_ProgressBar: AppBackend_Widgets {
+public protocol AppBackend_ProgressBar: AppBackend_Base {
     /// Creates a progress bar.
     ///
     /// - Returns: A progress bar.

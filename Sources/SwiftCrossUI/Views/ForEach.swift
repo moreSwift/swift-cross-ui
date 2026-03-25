@@ -52,7 +52,7 @@ extension ForEach: TypeSafeView, View where Child: View {
         )
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: AppBackend_Base>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
@@ -279,7 +279,7 @@ extension ForEach: TypeSafeView, View where Child: View {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: AppBackend_Base>(
         _ widget: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,

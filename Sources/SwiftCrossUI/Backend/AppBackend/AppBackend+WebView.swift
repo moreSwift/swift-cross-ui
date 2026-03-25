@@ -1,7 +1,7 @@
 import Foundation
 
 @MainActor
-public protocol AppBackend_WebView: AppBackend_Widgets {
+public protocol AppBackend_WebView: AppBackend_Base {
     /// Create a web view.
     ///
     /// - Returns: A web view.

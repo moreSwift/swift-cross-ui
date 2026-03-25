@@ -25,7 +25,7 @@ public struct ZStack<Content: View>: View {
         body = content
     }
 
-    public func asWidget<Backend: AppBackend>(
+    public func asWidget<Backend: AppBackend_Base>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {

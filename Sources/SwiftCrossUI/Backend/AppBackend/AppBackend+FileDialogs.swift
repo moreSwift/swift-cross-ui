@@ -1,7 +1,7 @@
 import Foundation
 
 @MainActor
-public protocol AppBackend_FileDialogs: AppBackend_Windows {
+public protocol AppBackend_FileDialogs: AppBackend_Base {
     /// Presents an 'Open file' dialog to the user for selecting files or
     /// folders.
     ///

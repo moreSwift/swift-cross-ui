@@ -12,11 +12,11 @@ struct Checkbox: ElementaryView, View {
         self.active = active
     }
 
-    public func asWidget<Backend: AppBackend>(backend: Backend) -> Backend.Widget {
+    public func asWidget<Backend: AppBackend_Checkbox>(backend: Backend) -> Backend.Widget {
         return backend.createCheckbox()
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: AppBackend_Base>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -27,7 +27,7 @@ struct Checkbox: ElementaryView, View {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: AppBackend_Checkbox>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

@@ -1,7 +1,7 @@
 import Foundation
 
 @MainActor
-public protocol AppBackend_Path<Path>: AppBackend_Widgets {
+public protocol AppBackend_Path<Path>: AppBackend_Base {
     /// The underlying path type. Can be a wrapper or subclass.
     associatedtype Path
 

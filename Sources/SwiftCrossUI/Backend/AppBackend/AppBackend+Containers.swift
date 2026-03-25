@@ -1,61 +1,13 @@
 import Foundation
 
 public typealias AppBackend_Containers =
-    AppBackend_GenericContainer
-    & AppBackend_ScrollContainer
+    AppBackend_ScrollContainer
     & AppBackend_SelectableListView
     & AppBackend_SplitView
     & AppBackend_Tooltips
 
 @MainActor
-public protocol AppBackend_GenericContainer: AppBackend_Widgets {
-    /// Creates a container in which children can be laid out by SwiftCrossUI
-    /// using exact pixel positions.
-    ///
-    /// - Returns: A container widget.
-    func createContainer() -> Widget
-
-    /// Removes all children of the given container.
-    ///
-    /// - Parameter container: The container to remove the children of.
-    func removeAllChildren(of container: Widget)
-
-    /// Inserts a child into a given container at a given index.
-    ///
-    /// - Parameters:
-    ///   - child: The child to insert.
-    ///   - container: The container to insert the child into.
-    ///   - index: The index to insert the child at.
-    func insert(_ child: Widget, into container: Widget, at index: Int)
-
-    /// Swaps the child at firstIndex with the child at secondIndex.
-    ///
-    /// May crash if either index is out of bounds.
-    ///
-    /// - Parameters:
-    ///   - firstIndex: The index of the first child to swap.
-    ///   - secondIndex: The index of the second child to swap.
-    ///   - container: The container holding the children.
-    func swap(childAt firstIndex: Int, withChildAt secondIndex: Int, in container: Widget)
-
-    /// Sets the position of the specified child in a container.
-    ///
-    /// - Parameters:
-    ///   - index: The index of the child to set the position of.
-    ///   - container: The container holding the child.
-    ///   - position: The new position.
-    func setPosition(ofChildAt index: Int, in container: Widget, to position: SIMD2<Int>)
-    
-    /// Removes the child at the given index from the given container.
-    ///
-    /// - Parameters:
-    ///   - index: The index of the child to remove.
-    ///   - container: The container to remove the child from.
-    func remove(childAt index: Int, from container: Widget)
-}
-
-@MainActor
-public protocol AppBackend_ScrollContainer: AppBackend_Widgets {
+public protocol AppBackend_ScrollContainer: AppBackend_Base {
     /// Gets the layout width of a backend's scroll bars.
     ///
     /// Assumes that the width is the same for both vertical and horizontal
@@ -104,7 +56,7 @@ public protocol AppBackend_ScrollContainer: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_SelectableListView: AppBackend_Widgets {
+public protocol AppBackend_SelectableListView: AppBackend_Base {
     /// Creates a list with selectable rows.
     ///
     /// - Returns: A list with selectable rows.
@@ -175,7 +127,7 @@ public protocol AppBackend_SelectableListView: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_SplitView: AppBackend_Widgets {
+public protocol AppBackend_SplitView: AppBackend_Base {
     /// Creates a split view containing two children visible side by side.
     ///
     /// If you need to modify the leading and trailing children after creation,
@@ -218,7 +170,7 @@ public protocol AppBackend_SplitView: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_Tooltips: AppBackend_Widgets {
+public protocol AppBackend_Tooltips: AppBackend_Base {
     /// Create a container capable of showing a textual tooltip.
     ///
     /// If no container is necessary, this method is allowed to return `child`

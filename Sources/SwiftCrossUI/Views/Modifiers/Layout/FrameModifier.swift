@@ -87,7 +87,7 @@ struct StrictFrameView<Child: View>: TypeSafeView {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: AppBackend_Base>(
         _ children: TupleViewChildren1<Child>,
         backend: Backend
     ) -> Backend.Widget {
@@ -96,7 +96,7 @@ struct StrictFrameView<Child: View>: TypeSafeView {
         return container
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: AppBackend_Base>(
         _ widget: Backend.Widget,
         children: TupleViewChildren1<Child>,
         proposedSize: ProposedViewSize,
@@ -127,7 +127,7 @@ struct StrictFrameView<Child: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: AppBackend_Base>(
         _ widget: Backend.Widget,
         children: TupleViewChildren1<Child>,
         layout: ViewLayoutResult,
@@ -188,7 +188,7 @@ struct FlexibleFrameView<Child: View>: TypeSafeView {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: AppBackend_Base>(
         _ children: TupleViewChildren1<Child>,
         backend: Backend
     ) -> Backend.Widget {
@@ -220,7 +220,7 @@ struct FlexibleFrameView<Child: View>: TypeSafeView {
         )
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: AppBackend_Base>(
         _ widget: Backend.Widget,
         children: TupleViewChildren1<Child>,
         proposedSize: ProposedViewSize,
@@ -267,7 +267,7 @@ struct FlexibleFrameView<Child: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: AppBackend_Base>(
         _ widget: Backend.Widget,
         children: TupleViewChildren1<Child>,
         layout: ViewLayoutResult,

@@ -21,7 +21,7 @@ public struct PresentAlertAction {
     ) async -> Int {
         let actions = actions()
 
-        func presentAlert<Backend: AppBackend>(backend: Backend) async -> Int {
+        func presentAlert<Backend: AppBackend_Alert>(backend: Backend) async -> Int {
             await withCheckedContinuation { continuation in
                 backend.runInMainThread {
                     let alert = backend.createAlert()

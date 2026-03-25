@@ -4,7 +4,7 @@ public typealias AppBackend_Gestures =
     AppBackend_TapGesture & AppBackend_HoverGesture
 
 @MainActor
-public protocol AppBackend_TapGesture: AppBackend_Widgets {
+public protocol AppBackend_TapGesture: AppBackend_Base {
     /// Wraps a view in a container that can receive tap gesture events.
     ///
     /// Some backends may not have to wrap the child, in which case they may
@@ -34,7 +34,7 @@ public protocol AppBackend_TapGesture: AppBackend_Widgets {
 }
 
 @MainActor
-public protocol AppBackend_HoverGesture: AppBackend_Widgets {
+public protocol AppBackend_HoverGesture: AppBackend_Base {
     /// Wraps a view in a container that can receive mouse hover events.
     ///
     /// Some backends may not have to wrap the child, in which case they may

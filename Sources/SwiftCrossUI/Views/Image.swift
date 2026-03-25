@@ -51,14 +51,14 @@ extension Image: View {
 }
 
 extension Image: TypeSafeView {
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: AppBackend_Base>(
         backend: Backend,
         children: ImageChildren
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    func children<Backend: AppBackend>(
+    func children<Backend: AppBackend_Image>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -66,14 +66,14 @@ extension Image: TypeSafeView {
         ImageChildren(backend: backend)
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: AppBackend_Base>(
         _ children: ImageChildren,
         backend: Backend
     ) -> Backend.Widget {
         children.container.into()
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: AppBackend_Base>(
         _ widget: Backend.Widget,
         children: ImageChildren,
         proposedSize: ProposedViewSize,
@@ -123,7 +123,7 @@ extension Image: TypeSafeView {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: AppBackend_Image>(
         _ widget: Backend.Widget,
         children: ImageChildren,
         layout: ViewLayoutResult,
@@ -182,7 +182,7 @@ package class ImageChildren: ViewGraphNodeChildren {
     var isContainerEmpty = true
     var lastScaleFactor: Double = 1
 
-    init<Backend: AppBackend>(backend: Backend) {
+    init<Backend: AppBackend_Image>(backend: Backend) {
         container = AnyWidget(backend.createContainer())
         imageWidget = AnyWidget(backend.createImageView())
     }

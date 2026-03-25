@@ -30,7 +30,7 @@ public protocol AppBackend_RevealFile: AppBackend_Base {
 }
 
 @MainActor
-public protocol AppBackend_CornerRadius: AppBackend_Widgets {
+public protocol AppBackend_CornerRadius: AppBackend_Base {
     /// Sets the corner radius of a widget (any widget). Should affect the view's border radius
     /// as well.
     ///

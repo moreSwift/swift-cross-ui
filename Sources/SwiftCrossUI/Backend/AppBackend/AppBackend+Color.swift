@@ -1,7 +1,7 @@
 import Foundation
 
 @MainActor
-public protocol AppBackend_Color: AppBackend_Widgets {
+public protocol AppBackend_Color: AppBackend_Base {
     /// Creates a rectangular widget with configurable color.
     ///
     /// - Returns: A colorable rectangle.

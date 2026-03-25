@@ -33,7 +33,7 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
         )
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: AppBackend_SplitView>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
@@ -43,7 +43,7 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
         )
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: AppBackend_SplitView>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -114,7 +114,7 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: AppBackend_SplitView>(
         _ widget: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,
@@ -168,7 +168,7 @@ class SplitViewChildren<Sidebar: View, Detail: View>: ViewGraphNodeChildren {
     var minimumLeadingWidth: Double
     var minimumTrailingWidth: Double
 
-    init<Backend: AppBackend>(
+    init<Backend: AppBackend_Base>(
         wrapping children: TupleView2<Sidebar, Detail>.Children,
         backend: Backend
     ) {
