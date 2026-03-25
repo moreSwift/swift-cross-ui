@@ -30,6 +30,18 @@ public protocol AppBackend_RevealFile: AppBackend_Base {
 }
 
 @MainActor
+public protocol AppBackend_ApplicationMenu: AppBackend_Base {
+    /// Sets the application's global menu.
+    ///
+    /// Some backends may make use of the host platform's global menu bar
+    /// (such as macOS's menu bar), and others may render their own menu bar
+    /// within the application.
+    ///
+    /// - Parameter submenus: The submenus of the global menu.
+    func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu])
+}
+
+@MainActor
 public protocol AppBackend_CornerRadius: AppBackend_Base {
     /// Sets the corner radius of a widget (any widget). Should affect the view's border radius
     /// as well.

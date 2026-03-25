@@ -1,8 +1,12 @@
 import Foundation
 
+/// Backend methods for gesture handling.
 public typealias AppBackend_Gestures =
     AppBackend_TapGesture & AppBackend_HoverGesture
 
+/// Backend methods for tap gesture handling.
+///
+/// These are used by ``View/onTapGesture(gesture:perform:)``.
 @MainActor
 public protocol AppBackend_TapGesture: AppBackend_Base {
     /// Wraps a view in a container that can receive tap gesture events.
@@ -33,6 +37,9 @@ public protocol AppBackend_TapGesture: AppBackend_Base {
     )
 }
 
+/// Backend methods for hover gesture handling.
+///
+/// These are used by ``View/onHover(perform:)``.
 @MainActor
 public protocol AppBackend_HoverGesture: AppBackend_Base {
     /// Wraps a view in a container that can receive mouse hover events.

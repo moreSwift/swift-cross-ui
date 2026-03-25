@@ -3,6 +3,9 @@ import Foundation
 public typealias AppBackend_PassiveViews =
     AppBackend_Text & AppBackend_Image & AppBackend_Table
 
+/// Backend methods for text rendering.
+///
+/// These are used by ``Text``, and occasionally other features as well.
 @MainActor
 public protocol AppBackend_Text: AppBackend_Base {
     /// Resolves the given text style to concrete font properties.
@@ -79,6 +82,9 @@ public protocol AppBackend_Text: AppBackend_Base {
     )
 }
 
+/// Backend methods for image rendering.
+///
+/// These are used by ``Image``.
 @MainActor
 public protocol AppBackend_Image: AppBackend_Base {
     /// If `true`, all images in a window will get updated when the window's
@@ -132,6 +138,9 @@ public protocol AppBackend_Image: AppBackend_Base {
     )
 }
 
+/// Backend methods for tables.
+///
+/// These are used by ``Table``.
 @MainActor
 public protocol AppBackend_Table: AppBackend_Base {
     /// The default height of a table row excluding cell padding. This is a

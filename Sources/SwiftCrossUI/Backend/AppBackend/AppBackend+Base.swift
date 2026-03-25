@@ -1,5 +1,7 @@
 import Foundation
 
+/// Core backend methods for widget handling. These are required for a
+/// functional backend.
 @MainActor
 public protocol AppBackend_Widgets<Widget>: Sendable {
     /// The underlying widget type.
@@ -59,6 +61,8 @@ public protocol AppBackend_Widgets<Widget>: Sendable {
     func setSize(of widget: Widget, to size: SIMD2<Int>)
 }
 
+/// Core backend methods for window handling. These are required for a
+/// functional backend.
 @MainActor
 public protocol AppBackend_Windows<Window>: AppBackend_Widgets {
     /// The underlying window type. Can be a wrapper or subclass.
@@ -238,6 +242,8 @@ public protocol AppBackend_Windows<Window>: AppBackend_Widgets {
     )
 }
 
+/// Core backend methods for generic widget containers. These are required for a
+/// functional backend.
 @MainActor
 public protocol AppBackend_GenericContainer: AppBackend_Widgets {
     /// Creates a container in which children can be laid out by SwiftCrossUI
@@ -285,6 +291,8 @@ public protocol AppBackend_GenericContainer: AppBackend_Widgets {
     func remove(childAt index: Int, from container: Widget)
 }
 
+/// Core backend methods for application lifecycle handling. These are required
+/// for a functional backend.
 @MainActor
 public protocol AppBackend_Base:
     AppBackend_Windows,
@@ -329,15 +337,6 @@ public protocol AppBackend_Base:
     func runMainLoop(
         _ callback: @escaping @MainActor () -> Void
     )
-
-    /// Sets the application's global menu.
-    ///
-    /// Some backends may make use of the host platform's global menu bar
-    /// (such as macOS's menu bar), and others may render their own menu bar
-    /// within the application.
-    ///
-    /// - Parameter submenus: The submenus of the global menu.
-    func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu])
 
     /// Runs an action in the app's main thread if required to perform UI updates
     /// by the backend.

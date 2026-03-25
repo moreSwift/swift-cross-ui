@@ -1,5 +1,9 @@
 import Foundation
 
+/// Backend methods for file open/save dialogs.
+///
+/// These are used by ``EnvironmentValues/chooseFile`` and
+/// ``EnvironmentValues/chooseFileSaveDestination``.
 @MainActor
 public protocol AppBackend_FileDialogs: AppBackend_Base {
     /// Presents an 'Open file' dialog to the user for selecting files or

@@ -1,5 +1,6 @@
 import Foundation
 
+/// Backend methods for built-in controls.
 public typealias AppBackend_Controls =
     AppBackend_Button
     & AppBackend_Toggle
@@ -13,6 +14,9 @@ public typealias AppBackend_Controls =
     & AppBackend_ProgressSpinner
     & AppBackend_ProgressBar
 
+/// Backend methods for buttons.
+///
+/// These are used by ``Button`` and ``Menu``.
 @MainActor
 public protocol AppBackend_Button: AppBackend_Base {
     /// Creates a labelled button with an action triggered on click/tap.
@@ -38,6 +42,10 @@ public protocol AppBackend_Button: AppBackend_Base {
     )
 }
 
+/// Backend methods for toggle buttons.
+///
+/// These are used by ``Toggle`` when ``EnvironmentValues/toggleStyle`` is
+/// ``ToggleStyle/button``.
 @MainActor
 public protocol AppBackend_Toggle: AppBackend_Base {
     /// Creates a labelled toggle that is either on or off.
@@ -68,6 +76,10 @@ public protocol AppBackend_Toggle: AppBackend_Base {
     func setState(ofToggle toggle: Widget, to state: Bool)
 }
 
+/// Backend methods for toggle switches.
+///
+/// These are used by ``Toggle`` when ``EnvironmentValues/toggleStyle`` is
+/// ``ToggleStyle/switch``.
 @MainActor
 public protocol AppBackend_Switch: AppBackend_Base {
     /// If `true`, a toggle in the ``ToggleStyle/switch`` style grows to fill
@@ -100,6 +112,10 @@ public protocol AppBackend_Switch: AppBackend_Base {
     func setState(ofSwitch switchWidget: Widget, to state: Bool)
 }
 
+/// Backend methods for checkboxes.
+///
+/// These are used by ``Toggle`` when ``EnvironmentValues/toggleStyle`` is
+/// ``ToggleStyle/checkbox``.
 @MainActor
 public protocol AppBackend_Checkbox: AppBackend_Base {
     /// Creates a checkbox that is either on or off.
@@ -128,6 +144,9 @@ public protocol AppBackend_Checkbox: AppBackend_Base {
     func setState(ofCheckbox checkboxWidget: Widget, to state: Bool)
 }
 
+/// Backend methods for sliders.
+///
+/// These are used by ``Slider``.
 @MainActor
 public protocol AppBackend_Slider: AppBackend_Base {
     /// Creates a slider for choosing a numerical value from a range. Predominantly used
@@ -162,6 +181,9 @@ public protocol AppBackend_Slider: AppBackend_Base {
     func setValue(ofSlider slider: Widget, to value: Double)
 }
 
+/// Backend methods for text fields.
+///
+/// These are used by ``TextField``.
 @MainActor
 public protocol AppBackend_TextField: AppBackend_Base {
     /// Creates an editable text field with a placeholder label and change
@@ -205,6 +227,10 @@ public protocol AppBackend_TextField: AppBackend_Base {
     func getContent(ofTextField textField: Widget) -> String
 }
 
+/// Backend methods for text editors.
+///
+/// These are used by ``TextEditor``.
+
 @MainActor
 public protocol AppBackend_TextEditor: AppBackend_Text {
     /// Creates an editable multi-line text editor.
@@ -246,6 +272,9 @@ public protocol AppBackend_TextEditor: AppBackend_Text {
     func getContent(ofTextEditor textEditor: Widget) -> String
 }
 
+/// Backend methods for pickers.
+///
+/// These are used by ``Picker``.
 @MainActor
 public protocol AppBackend_Picker: AppBackend_Base {
     /// The supported picker styles.
@@ -292,6 +321,9 @@ public protocol AppBackend_Picker: AppBackend_Base {
     func setSelectedOption(ofPicker picker: Widget, to selectedOption: Int?)
 }
 
+/// Backend methods for date pickers.
+///
+/// These are used by ``DatePicker``.
 @MainActor
 public protocol AppBackend_DatePicker: AppBackend_Base {
     /// The supported date picker styles.
@@ -311,6 +343,10 @@ public protocol AppBackend_DatePicker: AppBackend_Base {
     )
 }
 
+/// Backend methods for progress spinners.
+///
+/// These are used by ``ProgressView`` when initialized without a `Progress`
+/// instance.
 @MainActor
 public protocol AppBackend_ProgressSpinner: AppBackend_Base {
     /// Creates an indeterminate progress spinner.
@@ -329,6 +365,10 @@ public protocol AppBackend_ProgressSpinner: AppBackend_Base {
     )
 }
 
+/// Backend methods for progress bars.
+///
+/// These are used by ``ProgressView`` when initialized with a `Progress`
+/// instance.
 @MainActor
 public protocol AppBackend_ProgressBar: AppBackend_Base {
     /// Creates a progress bar.

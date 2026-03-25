@@ -1,5 +1,8 @@
 import Foundation
 
+/// Backend methods for sheets.
+///
+/// These are used by ``View/sheet(isPresented:onDismiss:content:)``.
 @MainActor
 public protocol AppBackend_Sheet<Sheet>: AppBackend_Base {
     /// The underlying sheet type. Can be a wrapper or subclass.

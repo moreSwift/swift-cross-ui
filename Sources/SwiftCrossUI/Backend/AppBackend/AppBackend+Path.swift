@@ -1,5 +1,8 @@
 import Foundation
 
+/// Backend methods for path rendering.
+///
+/// These are used by ``Shape`` and related types and modifiers.
 @MainActor
 public protocol AppBackend_Path<Path>: AppBackend_Base {
     /// The underlying path type. Can be a wrapper or subclass.

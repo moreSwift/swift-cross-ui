@@ -1,5 +1,8 @@
 import Foundation
 
+/// Backend methods for web views.
+///
+/// These are used by ``WebView``.
 @MainActor
 public protocol AppBackend_WebView: AppBackend_Base {
     /// Create a web view.

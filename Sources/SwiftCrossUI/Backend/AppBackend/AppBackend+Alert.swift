@@ -1,5 +1,10 @@
 import Foundation
 
+/// Backend methods for alerts.
+///
+/// These are used by ``View/alert(_:actions:)``,
+/// ``View/alert(_:isPresented:actions:)``, ``EnvironmentValues/presentAlert``,
+/// and ``AlertScene``.
 @MainActor
 public protocol AppBackend_Alert<Alert>: AppBackend_Base {
     /// The underlying alert type. Can be a wrapper or subclass.

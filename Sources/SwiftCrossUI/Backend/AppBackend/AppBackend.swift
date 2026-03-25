@@ -55,6 +55,7 @@ public typealias AppBackend =
     & AppBackend_Path
     & AppBackend_WebView
     & AppBackend_Gestures
+    & AppBackend_ApplicationMenu
 
 // MARK: Default implementations
 

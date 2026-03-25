@@ -1,5 +1,8 @@
 import Foundation
 
+/// Backend methods for color-related operations.
+///
+/// These are used by the ``Color`` type.
 @MainActor
 public protocol AppBackend_Color: AppBackend_Base {
     /// Creates a rectangular widget with configurable color.
