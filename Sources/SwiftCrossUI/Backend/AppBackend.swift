@@ -283,8 +283,11 @@ public protocol AppBackend: Sendable {
         to action: @escaping () -> Void
     )
 
-    /// Returns whether the given window is currently active.
-    func isWindowActive(_ window: Window) -> Bool
+    /// Returns the given window's current lifecycle phase.
+    ///
+    /// See the documentation for ``ScenePhase`` for tips on the behavior this
+    /// function should implement.
+    func windowLifecyclePhase(_ window: Window) -> ScenePhase
 
     /// Returns the application's current lifecycle phase.
     ///
@@ -294,7 +297,9 @@ public protocol AppBackend: Sendable {
     /// the menu bar.
     ///
     /// See the documentation for ``AppPhase`` for tips on the behavior this
-    /// function should implement.
+    /// function should implement. Generally speaking, if the app is in the
+    /// ``AppPhase/inactive`` or ``AppPhase/background`` phases, all of its
+    /// windows should be in the ``ScenePhase/inactive`` phase.
     func applicationLifecyclePhase() -> AppPhase
 
     /// Sets the application's global menu.
@@ -1517,7 +1522,7 @@ extension AppBackend {
         todo()
     }
 
-    public func isWindowActive(_ window: Window) -> Bool {
+    public func windowLifecyclePhase(_ window: Window) -> ScenePhase {
         todo()
     }
 

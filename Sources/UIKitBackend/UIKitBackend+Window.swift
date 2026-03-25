@@ -128,8 +128,8 @@ extension UIKitBackend {
         window.makeKeyAndVisible()
     }
 
-    public func isWindowActive(_ window: Window) -> Bool {
-        window.isKeyWindow
+    public func windowLifecyclePhase(_ window: Window) -> ScenePhase {
+        if window.isKeyWindow { .active } else { .inactive }
     }
 
     public func applicationLifecyclePhase() -> AppPhase {

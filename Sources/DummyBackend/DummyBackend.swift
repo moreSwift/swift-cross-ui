@@ -15,7 +15,7 @@ public final class DummyBackend: AppBackend {
         public var content: Widget?
         public var resizeHandler: ((SIMD2<Int>) -> Void)?
         public var closeHandler: (() -> Void)?
-        public var isActive = false
+        public var phase = ScenePhase.inactive
 
         public init(defaultSize: SIMD2<Int>?) {
             size = defaultSize ?? Self.defaultSize
@@ -315,15 +315,15 @@ public final class DummyBackend: AppBackend {
     }
 
     public func show(window: Window) {
-        window.isActive = true
+        window.phase = .active
     }
 
     public func activate(window: Window) {
-        window.isActive = true
+        window.phase = .active
     }
 
-    public func isWindowActive(_ window: Window) -> Bool {
-        window.isActive
+    public func windowLifecyclePhase(_ window: Window) -> ScenePhase {
+        window.phase
     }
 
     public func applicationLifecyclePhase() -> AppPhase {

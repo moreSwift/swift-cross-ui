@@ -197,11 +197,7 @@ public struct EnvironmentValues {
                 )
             }
 
-            return if backend.isWindowActive(window as! Backend.Window) {
-                .active
-            } else {
-                .inactive
-            }
+            return backend.windowLifecyclePhase(window as! Backend.Window)
         }
 
         return scenePhase(backend: backend)

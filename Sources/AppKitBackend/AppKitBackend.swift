@@ -165,12 +165,18 @@ public final class AppKitBackend: AppBackend {
         window.makeKeyAndOrderFront(nil)
     }
 
-    public func isWindowActive(_ window: Window) -> Bool {
-        window.isKeyWindow
+    public func windowLifecyclePhase(_ window: Window) -> ScenePhase {
+        if window.isKeyWindow { .active } else { .inactive }
     }
 
     public func applicationLifecyclePhase() -> AppPhase {
-        if NSApplication.shared.isActive { .active } else { .inactive }
+        if NSApplication.shared.isHidden {
+            .background
+        } else if NSApplication.shared.isActive {
+            .active
+        } else {
+            .inactive
+        }
     }
 
     public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {

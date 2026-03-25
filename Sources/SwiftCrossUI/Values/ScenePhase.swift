@@ -7,6 +7,6 @@ public enum ScenePhase: Hashable, Sendable {
     /// The scene is currently inactive.
     ///
     /// This indicates that the scene does not have focus and does not recieve
-    /// input events.
+    /// input events. The scene may or may not still be visible to the user.
     case inactive
 }

@@ -288,8 +288,8 @@ public final class WinUIBackend: AppBackend {
         try! window.activate()
     }
 
-    public func isWindowActive(_ window: Window) -> Bool {
-        window.isActive
+    public func windowLifecyclePhase(_ window: Window) -> ScenePhase {
+        if window.isActive { .active } else { .inactive }
     }
 
     public func applicationLifecyclePhase() -> AppPhase {
