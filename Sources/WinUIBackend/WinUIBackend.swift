@@ -394,6 +394,10 @@ public final class WinUIBackend: AppBackend {
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
         internalState.themeChangeAction = action
+
+        for window in windows {
+            window.activated.addHandler { _, _ in action() }
+        }
     }
 
     public func computeWindowEnvironment(
@@ -410,6 +414,9 @@ public final class WinUIBackend: AppBackend {
         to action: @escaping () -> Void
     ) {
         // TODO: Notify when window scale factor changes
+
+        // NB: This event fires when the window is activated _or_ deactivated.
+        window.activated.addHandler { _, _ in action() }
     }
 
     public func setIncomingURLHandler(to action: @escaping (URL) -> Void) {
