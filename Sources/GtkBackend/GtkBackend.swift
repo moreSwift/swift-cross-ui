@@ -483,7 +483,12 @@ public final class GtkBackend: AppBackend {
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
         // TODO: React to theme changes
-        // TODO: Notify when app focus changes
+        
+        for window in windows {
+            window.notifyIsActive = { _ in
+                action()
+            }
+        }
     }
 
     public func computeWindowEnvironment(
