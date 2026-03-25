@@ -9,7 +9,7 @@ extension App {
     }
 }
 
-public final class AppKitBackend: AppBackend, AppBackend_RevealFile {
+public final class AppKitBackend: AppBackend.Full {
     public typealias Window = NSCustomWindow
     public typealias Widget = NSView
     public typealias Menu = NSMenu

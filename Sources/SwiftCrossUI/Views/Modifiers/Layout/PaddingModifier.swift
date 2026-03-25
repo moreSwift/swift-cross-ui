@@ -101,7 +101,7 @@ struct PaddingModifierView<Child: View>: TypeSafeView {
     /// The insets for each edge.
     var insets: EdgeInsets.Internal
 
-    func children<Backend: AppBackend>(
+    func children<Backend: AppBackend.Base>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -109,7 +109,7 @@ struct PaddingModifierView<Child: View>: TypeSafeView {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: AppBackend.Base>(
         _ children: TupleViewChildren1<Child>,
         backend: Backend
     ) -> Backend.Widget {
@@ -118,7 +118,7 @@ struct PaddingModifierView<Child: View>: TypeSafeView {
         return container
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: AppBackend.Base>(
         _ container: Backend.Widget,
         children: TupleViewChildren1<Child>,
         proposedSize: ProposedViewSize,
@@ -155,7 +155,7 @@ struct PaddingModifierView<Child: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: AppBackend.Base>(
         _ container: Backend.Widget,
         children: TupleViewChildren1<Child>,
         layout: ViewLayoutResult,

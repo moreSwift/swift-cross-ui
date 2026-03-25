@@ -24,7 +24,7 @@ package var logger: Logger {
 @MainActor
 public protocol App {
     /// The backend used to render the app.
-    associatedtype Backend: AppBackend
+    associatedtype Backend: AppBackend.Base
     /// The app storage provider used to persist state annotated with ``AppStorage``.
     associatedtype StorageProvider: AppStorageProvider
     /// The type of scene representing the content of the app.

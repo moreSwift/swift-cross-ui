@@ -47,7 +47,7 @@ struct AspectRatioView<Child: View>: TypeSafeView {
         self.contentMode = contentMode
     }
 
-    func children<Backend: AppBackend>(
+    func children<Backend: AppBackend.Base>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -55,14 +55,14 @@ struct AspectRatioView<Child: View>: TypeSafeView {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    func asWidget<Backend: AppBackend_Core>(
+    func asWidget<Backend: AppBackend.Core>(
         _ children: TupleViewChildren1<Child>,
         backend: Backend
     ) -> Backend.Widget {
         children.child0.widget.into()
     }
 
-    func computeLayout<Backend: AppBackend_Core>(
+    func computeLayout<Backend: AppBackend.Core>(
         _ widget: Backend.Widget,
         children: TupleViewChildren1<Child>,
         proposedSize: ProposedViewSize,
@@ -129,7 +129,7 @@ struct AspectRatioView<Child: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend_Core>(
+    func commit<Backend: AppBackend.Core>(
         _ widget: Backend.Widget,
         children: TupleViewChildren1<Child>,
         layout: ViewLayoutResult,

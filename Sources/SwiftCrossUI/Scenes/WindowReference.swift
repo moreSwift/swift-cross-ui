@@ -17,7 +17,7 @@ final class WindowReference<SceneType: WindowingScene> {
     /// - Parameters:
     ///   - closeHandler: The action to perform when the window is closed. Should
     ///     dispose of the scene's reference to this `WindowReference`.
-    init<Backend: AppBackend>(
+    init<Backend: AppBackend.Base>(
         scene: SceneType,
         backend: Backend,
         environment: EnvironmentValues,
@@ -72,7 +72,7 @@ final class WindowReference<SceneType: WindowingScene> {
         }
     }
 
-    func update<Backend: AppBackend>(
+    func update<Backend: AppBackend.Base>(
         _ newScene: SceneType?,
         backend: Backend,
         environment: EnvironmentValues
@@ -120,7 +120,7 @@ final class WindowReference<SceneType: WindowingScene> {
     ///   - windowSizeIsFinal: If true, no further resizes can/will be made. This
     ///     is true on platforms that don't support programmatic window resizing,
     ///     and when a window is full screen.
-    private func update<Backend: AppBackend>(
+    private func update<Backend: AppBackend.Base>(
         _ newScene: SceneType?,
         proposedWindowSize: SIMD2<Int>,
         needsWindowSizeCommit: Bool,
@@ -247,7 +247,7 @@ final class WindowReference<SceneType: WindowingScene> {
         }
     }
 
-    func activate<Backend: AppBackend>(backend: Backend) {
+    func activate<Backend: AppBackend.Base>(backend: Backend) {
         guard let window = window as? Backend.Window else {
             fatalError("Scene updated with a backend incompatible with the window it was given")
         }

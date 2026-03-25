@@ -1,7 +1,7 @@
 import Foundation
 import SwiftCrossUI
 
-public final class DummyBackend: AppBackend {
+public final class DummyBackend: AppBackend.Base, AppBackend.ApplicationMenus, AppBackend.IncomingURLs {
     public class Window {
         static let defaultSize = SIMD2<Int>(400, 200)
 

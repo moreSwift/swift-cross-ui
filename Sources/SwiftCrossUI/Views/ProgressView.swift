@@ -152,11 +152,11 @@ struct ProgressSpinnerView: ElementaryView {
         self.isResizable = isResizable
     }
 
-    func asWidget<Backend: AppBackend_ProgressSpinner>(backend: Backend) -> Backend.Widget {
+    func asWidget<Backend: AppBackend.ProgressSpinners>(backend: Backend) -> Backend.Widget {
         backend.createProgressSpinner()
     }
 
-    func computeLayout<Backend: AppBackend_Core>(
+    func computeLayout<Backend: AppBackend.Core>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -185,7 +185,7 @@ struct ProgressSpinnerView: ElementaryView {
         )
     }
 
-    func commit<Backend: AppBackend_ProgressSpinner>(
+    func commit<Backend: AppBackend.ProgressSpinners>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,
@@ -208,11 +208,11 @@ struct ProgressBarView: ElementaryView {
         self.value = value
     }
 
-    func asWidget<Backend: AppBackend_ProgressBar>(backend: Backend) -> Backend.Widget {
+    func asWidget<Backend: AppBackend.ProgressBars>(backend: Backend) -> Backend.Widget {
         backend.createProgressBar()
     }
 
-    func computeLayout<Backend: AppBackend_Core>(
+    func computeLayout<Backend: AppBackend.Core>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -227,7 +227,7 @@ struct ProgressBarView: ElementaryView {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    func commit<Backend: AppBackend_ProgressBar>(
+    func commit<Backend: AppBackend.ProgressBars>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

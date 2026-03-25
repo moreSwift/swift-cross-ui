@@ -31,11 +31,11 @@ public struct TextField: ElementaryView, View {
         self._text = value ?? Binding(get: { dummy }, set: { dummy = $0 })
     }
 
-    func asWidget<Backend: AppBackend_TextField>(backend: Backend) -> Backend.Widget {
+    func asWidget<Backend: AppBackend.TextFields>(backend: Backend) -> Backend.Widget {
         return backend.createTextField()
     }
 
-    func computeLayout<Backend: AppBackend_Core>(
+    func computeLayout<Backend: AppBackend.Core>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -51,7 +51,7 @@ public struct TextField: ElementaryView, View {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    func commit<Backend: AppBackend_TextField>(
+    func commit<Backend: AppBackend.TextFields>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

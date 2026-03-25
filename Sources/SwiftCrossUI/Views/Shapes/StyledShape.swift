@@ -57,7 +57,7 @@ extension Shape {
 
 extension StyledShape {
     @MainActor
-    public func computeLayout<Backend: AppBackend_Core>(
+    public func computeLayout<Backend: AppBackend.Core>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -69,7 +69,7 @@ extension StyledShape {
     }
 
     @MainActor
-    public func commit<Backend: AppBackend_Path>(
+    public func commit<Backend: AppBackend.Paths>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,

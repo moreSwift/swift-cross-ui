@@ -12,11 +12,11 @@ struct ToggleSwitch: ElementaryView, View {
         self.active = active
     }
 
-    func asWidget<Backend: AppBackend_Switch>(backend: Backend) -> Backend.Widget {
+    func asWidget<Backend: AppBackend.Switches>(backend: Backend) -> Backend.Widget {
         return backend.createSwitch()
     }
 
-    func computeLayout<Backend: AppBackend_Core>(
+    func computeLayout<Backend: AppBackend.Core>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -26,7 +26,7 @@ struct ToggleSwitch: ElementaryView, View {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    func commit<Backend: AppBackend_Switch>(
+    func commit<Backend: AppBackend.Switches>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

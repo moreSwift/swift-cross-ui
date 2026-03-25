@@ -23,7 +23,7 @@ struct PreferenceModifier<Child: View>: View {
         self.modification = modification
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,

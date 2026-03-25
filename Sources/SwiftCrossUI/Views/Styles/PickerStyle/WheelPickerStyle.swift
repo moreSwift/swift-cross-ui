@@ -5,7 +5,7 @@
 public struct WheelPickerStyle: PickerStyle, _BuiltinPickerStyle {
     public nonisolated init() {}
 
-    public func _asBackendPickerStyle<Backend: AppBackend_Core>(backend: Backend) -> BackendPickerStyle {
+    public func _asBackendPickerStyle<Backend: AppBackend.Core>(backend: Backend) -> BackendPickerStyle {
         .wheel
     }
 }

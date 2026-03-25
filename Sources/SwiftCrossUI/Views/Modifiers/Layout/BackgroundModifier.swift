@@ -31,7 +31,7 @@ struct BackgroundModifier<Background: View, Foreground: View>: TypeSafeView {
         body = TupleView2(background, foreground)
     }
 
-    func children<Backend: AppBackend>(
+    func children<Backend: AppBackend.Base>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -39,20 +39,20 @@ struct BackgroundModifier<Background: View, Foreground: View>: TypeSafeView {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    func layoutableChildren<Backend: AppBackend_Core>(
+    func layoutableChildren<Backend: AppBackend.Core>(
         backend: Backend,
         children: TupleView2<Background, Foreground>.Children
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: AppBackend.Base>(
         _ children: TupleView2<Background, Foreground>.Children, backend: Backend
     ) -> Backend.Widget {
         body.asWidget(children, backend: backend)
     }
 
-    func computeLayout<Backend: AppBackend_Core>(
+    func computeLayout<Backend: AppBackend.Core>(
         _ widget: Backend.Widget,
         children: TupleView2<Background, Foreground>.Children,
         proposedSize: ProposedViewSize,
@@ -85,7 +85,7 @@ struct BackgroundModifier<Background: View, Foreground: View>: TypeSafeView {
         )
     }
 
-    public func commit<Backend: AppBackend_Core>(
+    public func commit<Backend: AppBackend.Core>(
         _ widget: Backend.Widget,
         children: TupleView2<Background, Foreground>.Children,
         layout: ViewLayoutResult,

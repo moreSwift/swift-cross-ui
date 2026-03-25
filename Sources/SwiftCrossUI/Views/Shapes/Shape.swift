@@ -56,7 +56,7 @@ extension Shape {
     }
 
     @MainActor
-    public func children<Backend: AppBackend_Core>(
+    public func children<Backend: AppBackend.Core>(
         backend _: Backend,
         snapshots _: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment _: EnvironmentValues
@@ -65,7 +65,7 @@ extension Shape {
     }
 
     @MainActor
-    public func asWidget<Backend: AppBackend_Path>(
+    public func asWidget<Backend: AppBackend.Paths>(
         _ children: any ViewGraphNodeChildren, backend: Backend
     ) -> Backend.Widget {
         let container = backend.createPathWidget()
@@ -76,7 +76,7 @@ extension Shape {
     }
 
     @MainActor
-    public func computeLayout<Backend: AppBackend_Core>(
+    public func computeLayout<Backend: AppBackend.Core>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -88,7 +88,7 @@ extension Shape {
     }
 
     @MainActor
-    public func commit<Backend: AppBackend_Path>(
+    public func commit<Backend: AppBackend.Paths>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,

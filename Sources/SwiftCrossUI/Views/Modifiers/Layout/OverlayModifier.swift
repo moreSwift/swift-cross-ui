@@ -16,7 +16,7 @@ struct OverlayModifier<Content: View, Overlay: View>: TypeSafeView {
         body = TupleView2(content, overlay)
     }
 
-    func children<Backend: AppBackend>(
+    func children<Backend: AppBackend.Base>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -28,20 +28,20 @@ struct OverlayModifier<Content: View, Overlay: View>: TypeSafeView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend_Core>(
+    func layoutableChildren<Backend: AppBackend.Core>(
         backend: Backend,
         children: TupleView2<Content, Overlay>.Children
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: AppBackend.Base>(
         _ children: TupleView2<Content, Overlay>.Children, backend: Backend
     ) -> Backend.Widget {
         body.asWidget(children, backend: backend)
     }
 
-    func computeLayout<Backend: AppBackend_Core>(
+    func computeLayout<Backend: AppBackend.Core>(
         _ widget: Backend.Widget,
         children: TupleView2<Content, Overlay>.Children,
         proposedSize: ProposedViewSize,
@@ -72,7 +72,7 @@ struct OverlayModifier<Content: View, Overlay: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend_Core>(
+    func commit<Backend: AppBackend.Core>(
         _ widget: Backend.Widget,
         children: TupleView2<Content, Overlay>.Children,
         layout: ViewLayoutResult,

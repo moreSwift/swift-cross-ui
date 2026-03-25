@@ -16,11 +16,11 @@ public struct Spacer: ElementaryView, View {
         self.minLength = minLength
     }
 
-    func asWidget<Backend: AppBackend_Core>(backend: Backend) -> Backend.Widget {
+    func asWidget<Backend: AppBackend.Core>(backend: Backend) -> Backend.Widget {
         return backend.createContainer()
     }
 
-    func computeLayout<Backend: AppBackend_Core>(
+    func computeLayout<Backend: AppBackend.Core>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -36,7 +36,7 @@ public struct Spacer: ElementaryView, View {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    func commit<Backend: AppBackend_Core>(
+    func commit<Backend: AppBackend.Core>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

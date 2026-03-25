@@ -11,7 +11,7 @@ extension App {
     }
 }
 
-public final class GtkBackend: AppBackend, AppBackend_RevealFile {
+public final class GtkBackend: AppBackend.Full {
     public typealias Window = Gtk.ApplicationWindow
     public typealias Widget = Gtk.Widget
     public typealias Menu = Gtk.PopoverMenu
