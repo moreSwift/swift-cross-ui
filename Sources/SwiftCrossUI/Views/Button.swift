@@ -63,7 +63,7 @@ extension Button: ElementaryView {
         return ViewLayoutResult.leafView(size: ViewSize(size))
     }
 
-    public func commit<Backend: AppBackend_Base>(
+    public func commit<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

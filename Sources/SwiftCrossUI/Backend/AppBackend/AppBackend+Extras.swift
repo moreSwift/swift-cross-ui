@@ -1,7 +1,7 @@
 import Foundation
 
 @MainActor
-public protocol AppBackend_IncomingURLs: AppBackend_Base {
+public protocol AppBackend_IncomingURLs: AppBackend_Core {
     /// Sets the handler for URLs directed to the application (e.g. URLs
     /// associated with a custom URL scheme).
     ///
@@ -10,7 +10,7 @@ public protocol AppBackend_IncomingURLs: AppBackend_Base {
 }
 
 @MainActor
-public protocol AppBackend_ExternalURLs: AppBackend_Base {
+public protocol AppBackend_ExternalURLs: AppBackend_Core {
     /// Opens an external URL in the system browser or app registered for the
     /// URL's protocol.
     ///
@@ -19,7 +19,7 @@ public protocol AppBackend_ExternalURLs: AppBackend_Base {
 }
 
 @MainActor
-public protocol AppBackend_RevealFile: AppBackend_Base {
+public protocol AppBackend_RevealFile: AppBackend_Core {
     /// Reveals a file in the system's file manager.
     ///
     /// This typically opens the file's enclosing directory and highlights the
@@ -30,7 +30,7 @@ public protocol AppBackend_RevealFile: AppBackend_Base {
 }
 
 @MainActor
-public protocol AppBackend_ApplicationMenu: AppBackend_Base {
+public protocol AppBackend_ApplicationMenu: AppBackend_Core {
     /// Sets the application's global menu.
     ///
     /// Some backends may make use of the host platform's global menu bar
@@ -42,7 +42,7 @@ public protocol AppBackend_ApplicationMenu: AppBackend_Base {
 }
 
 @MainActor
-public protocol AppBackend_CornerRadius: AppBackend_Base {
+public protocol AppBackend_CornerRadius: AppBackend_Core {
     /// Sets the corner radius of a widget (any widget). Should affect the view's border radius
     /// as well.
     ///

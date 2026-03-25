@@ -36,7 +36,7 @@ public struct ScrollView<Content: View>: TypeSafeView, View {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend_Base>(
+    func layoutableChildren<Backend: AppBackend_Core>(
         backend: Backend,
         children: TupleViewChildren1<VStack<Content>>
     ) -> [LayoutSystem.LayoutableChild] {
@@ -234,7 +234,7 @@ class ScrollViewChildren<Content: View>: ViewGraphNodeChildren {
         children.erasedNodes
     }
 
-    init<Backend: AppBackend_Base>(
+    init<Backend: AppBackend_Core>(
         wrapping children: TupleView1<VStack<Content>>.Children,
         backend: Backend
     ) {

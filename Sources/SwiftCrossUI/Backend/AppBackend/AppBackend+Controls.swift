@@ -18,7 +18,7 @@ public typealias AppBackend_Controls =
 ///
 /// These are used by ``Button`` and ``Menu``.
 @MainActor
-public protocol AppBackend_Button: AppBackend_Base {
+public protocol AppBackend_Button: AppBackend_Core {
     /// Creates a labelled button with an action triggered on click/tap.
     ///
     /// Predominantly used by ``Button``.
@@ -47,7 +47,7 @@ public protocol AppBackend_Button: AppBackend_Base {
 /// These are used by ``Toggle`` when ``EnvironmentValues/toggleStyle`` is
 /// ``ToggleStyle/button``.
 @MainActor
-public protocol AppBackend_Toggle: AppBackend_Base {
+public protocol AppBackend_Toggle: AppBackend_Core {
     /// Creates a labelled toggle that is either on or off.
     ///
     /// - Returns: A toggle.
@@ -81,7 +81,7 @@ public protocol AppBackend_Toggle: AppBackend_Base {
 /// These are used by ``Toggle`` when ``EnvironmentValues/toggleStyle`` is
 /// ``ToggleStyle/switch``.
 @MainActor
-public protocol AppBackend_Switch: AppBackend_Base {
+public protocol AppBackend_Switch: AppBackend_Core {
     /// If `true`, a toggle in the ``ToggleStyle/switch`` style grows to fill
     /// its parent container.
     var requiresToggleSwitchSpacer: Bool { get }
@@ -117,7 +117,7 @@ public protocol AppBackend_Switch: AppBackend_Base {
 /// These are used by ``Toggle`` when ``EnvironmentValues/toggleStyle`` is
 /// ``ToggleStyle/checkbox``.
 @MainActor
-public protocol AppBackend_Checkbox: AppBackend_Base {
+public protocol AppBackend_Checkbox: AppBackend_Core {
     /// Creates a checkbox that is either on or off.
     ///
     /// - Returns: A checkbox.
@@ -148,7 +148,7 @@ public protocol AppBackend_Checkbox: AppBackend_Base {
 ///
 /// These are used by ``Slider``.
 @MainActor
-public protocol AppBackend_Slider: AppBackend_Base {
+public protocol AppBackend_Slider: AppBackend_Core {
     /// Creates a slider for choosing a numerical value from a range. Predominantly used
     /// by ``Slider``.
     func createSlider() -> Widget
@@ -185,7 +185,7 @@ public protocol AppBackend_Slider: AppBackend_Base {
 ///
 /// These are used by ``TextField``.
 @MainActor
-public protocol AppBackend_TextField: AppBackend_Base {
+public protocol AppBackend_TextField: AppBackend_Core {
     /// Creates an editable text field with a placeholder label and change
     /// handler.
     ///
@@ -276,7 +276,7 @@ public protocol AppBackend_TextEditor: AppBackend_Text {
 ///
 /// These are used by ``Picker``.
 @MainActor
-public protocol AppBackend_Picker: AppBackend_Base {
+public protocol AppBackend_Picker: AppBackend_Core {
     /// The supported picker styles.
     var supportedPickerStyles: [BackendPickerStyle] { get }
 
@@ -325,7 +325,7 @@ public protocol AppBackend_Picker: AppBackend_Base {
 ///
 /// These are used by ``DatePicker``.
 @MainActor
-public protocol AppBackend_DatePicker: AppBackend_Base {
+public protocol AppBackend_DatePicker: AppBackend_Core {
     /// The supported date picker styles.
     ///
     /// Must include ``DatePickerStyle/automatic`` if date pickers are supported at all.
@@ -348,7 +348,7 @@ public protocol AppBackend_DatePicker: AppBackend_Base {
 /// These are used by ``ProgressView`` when initialized without a `Progress`
 /// instance.
 @MainActor
-public protocol AppBackend_ProgressSpinner: AppBackend_Base {
+public protocol AppBackend_ProgressSpinner: AppBackend_Core {
     /// Creates an indeterminate progress spinner.
     ///
     /// - Returns: A progress spinner.
@@ -370,7 +370,7 @@ public protocol AppBackend_ProgressSpinner: AppBackend_Base {
 /// These are used by ``ProgressView`` when initialized with a `Progress`
 /// instance.
 @MainActor
-public protocol AppBackend_ProgressBar: AppBackend_Base {
+public protocol AppBackend_ProgressBar: AppBackend_Core {
     /// Creates a progress bar.
     ///
     /// - Returns: A progress bar.

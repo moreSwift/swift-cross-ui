@@ -168,7 +168,7 @@ class SplitViewChildren<Sidebar: View, Detail: View>: ViewGraphNodeChildren {
     var minimumLeadingWidth: Double
     var minimumTrailingWidth: Double
 
-    init<Backend: AppBackend_Base>(
+    init<Backend: AppBackend_Core>(
         wrapping children: TupleView2<Sidebar, Detail>.Children,
         backend: Backend
     ) {

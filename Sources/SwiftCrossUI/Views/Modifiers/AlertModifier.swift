@@ -58,14 +58,14 @@ struct AlertModifierView<Child: View>: TypeSafeView {
         )
     }
 
-    func asWidget<Backend: AppBackend_Base>(
+    func asWidget<Backend: AppBackend_Core>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
         children.childNode.widget.into()
     }
 
-    func computeLayout<Backend: AppBackend_Base>(
+    func computeLayout<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,

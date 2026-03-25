@@ -5,8 +5,8 @@ import Foundation
 public struct RevealFileAction {
     let action: (URL) -> Void
 
-    init?<Backend: AppBackend_Base>(backend: Backend) {
-        guard let backend = backend as? AppBackend_RevealFile else {
+    init?<Backend: AppBackend_Core>(backend: Backend) {
+        guard let backend = backend as? any AppBackend_RevealFile else {
             return nil
         }
 

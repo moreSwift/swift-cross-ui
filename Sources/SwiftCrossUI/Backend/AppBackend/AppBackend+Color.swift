@@ -4,7 +4,7 @@ import Foundation
 ///
 /// These are used by the ``Color`` type.
 @MainActor
-public protocol AppBackend_Color: AppBackend_Base {
+public protocol AppBackend_Color: AppBackend_Core {
     /// Creates a rectangular widget with configurable color.
     ///
     /// - Returns: A colorable rectangle.

@@ -16,7 +16,7 @@ struct Checkbox: ElementaryView, View {
         return backend.createCheckbox()
     }
 
-    func computeLayout<Backend: AppBackend_Base>(
+    func computeLayout<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,

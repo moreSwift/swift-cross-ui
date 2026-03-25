@@ -27,7 +27,7 @@ public struct GeometryReader<Content: View>: TypeSafeView, View {
         self.content = content
     }
 
-    func children<Backend: AppBackend_Base>(
+    func children<Backend: AppBackend_Core>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -35,14 +35,14 @@ public struct GeometryReader<Content: View>: TypeSafeView, View {
         GeometryReaderChildren()
     }
 
-    func layoutableChildren<Backend: AppBackend_Base>(
+    func layoutableChildren<Backend: AppBackend_Core>(
         backend: Backend,
         children: GeometryReaderChildren<Content>
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    func asWidget<Backend: AppBackend_Base>(
+    func asWidget<Backend: AppBackend_Core>(
         _ children: GeometryReaderChildren<Content>,
         backend: Backend
     ) -> Backend.Widget {
@@ -90,7 +90,7 @@ public struct GeometryReader<Content: View>: TypeSafeView, View {
         )
     }
 
-    func commit<Backend: AppBackend_Base>(
+    func commit<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         children: GeometryReaderChildren<Content>,
         layout: ViewLayoutResult,

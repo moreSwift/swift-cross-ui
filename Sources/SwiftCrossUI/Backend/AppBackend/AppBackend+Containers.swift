@@ -10,7 +10,7 @@ public typealias AppBackend_Containers =
 ///
 /// These are used by ``ScrollView`` and other views that require scrolling.
 @MainActor
-public protocol AppBackend_ScrollContainer: AppBackend_Base {
+public protocol AppBackend_ScrollContainer: AppBackend_Core {
     /// Gets the layout width of a backend's scroll bars.
     ///
     /// Assumes that the width is the same for both vertical and horizontal
@@ -62,7 +62,7 @@ public protocol AppBackend_ScrollContainer: AppBackend_Base {
 ///
 /// These are used by ``List``.
 @MainActor
-public protocol AppBackend_SelectableListView: AppBackend_Base {
+public protocol AppBackend_SelectableListView: AppBackend_Core {
     /// Creates a list with selectable rows.
     ///
     /// - Returns: A list with selectable rows.
@@ -136,7 +136,7 @@ public protocol AppBackend_SelectableListView: AppBackend_Base {
 ///
 /// These are used by ``NavigationSplitView`` and sidebar-style ``List``s.
 @MainActor
-public protocol AppBackend_SplitView: AppBackend_Base {
+public protocol AppBackend_SplitView: AppBackend_Core {
     /// Creates a split view containing two children visible side by side.
     ///
     /// If you need to modify the leading and trailing children after creation,
@@ -182,7 +182,7 @@ public protocol AppBackend_SplitView: AppBackend_Base {
 ///
 /// These are used by ``View/help(_:)``.
 @MainActor
-public protocol AppBackend_Tooltips: AppBackend_Base {
+public protocol AppBackend_Tooltips: AppBackend_Core {
     /// Create a container capable of showing a textual tooltip.
     ///
     /// If no container is necessary, this method is allowed to return `child`

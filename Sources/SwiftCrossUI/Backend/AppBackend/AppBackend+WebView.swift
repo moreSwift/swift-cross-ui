@@ -4,7 +4,7 @@ import Foundation
 ///
 /// These are used by ``WebView``.
 @MainActor
-public protocol AppBackend_WebView: AppBackend_Base {
+public protocol AppBackend_WebView: AppBackend_Core {
     /// Create a web view.
     ///
     /// - Returns: A web view.

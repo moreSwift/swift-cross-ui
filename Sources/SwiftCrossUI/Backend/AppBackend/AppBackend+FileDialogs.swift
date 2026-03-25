@@ -5,7 +5,7 @@ import Foundation
 /// These are used by ``EnvironmentValues/chooseFile`` and
 /// ``EnvironmentValues/chooseFileSaveDestination``.
 @MainActor
-public protocol AppBackend_FileDialogs: AppBackend_Base {
+public protocol AppBackend_FileDialogs: AppBackend_Core {
     /// Presents an 'Open file' dialog to the user for selecting files or
     /// folders.
     ///

@@ -56,7 +56,7 @@ extension Shape {
     }
 
     @MainActor
-    public func children<Backend: AppBackend_Base>(
+    public func children<Backend: AppBackend_Core>(
         backend _: Backend,
         snapshots _: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment _: EnvironmentValues
@@ -76,7 +76,7 @@ extension Shape {
     }
 
     @MainActor
-    public func computeLayout<Backend: AppBackend_Base>(
+    public func computeLayout<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,

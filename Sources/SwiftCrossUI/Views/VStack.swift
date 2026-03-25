@@ -41,7 +41,7 @@ public struct VStack<Content: View>: View {
         self.alignment = alignment
     }
 
-    public func asWidget<Backend: AppBackend_Base>(
+    public func asWidget<Backend: AppBackend_Core>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {

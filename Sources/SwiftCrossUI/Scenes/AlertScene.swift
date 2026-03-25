@@ -39,7 +39,7 @@ public final class AlertSceneNode: SceneGraphNode {
     private var scene: AlertScene
     private var alert: Any?
 
-    public init<Backend: AppBackend_Base>(
+    public init<Backend: AppBackend_Core>(
         from scene: AlertScene,
         backend: Backend,
         environment: EnvironmentValues

@@ -20,7 +20,7 @@ public struct WebView: ElementaryView {
         backend.createWebView()
     }
 
-    func computeLayout<Backend: AppBackend_Base>(
+    func computeLayout<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,

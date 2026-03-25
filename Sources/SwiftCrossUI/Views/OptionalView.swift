@@ -32,7 +32,7 @@ extension OptionalView: TypeSafeView {
         )
     }
 
-    func asWidget<Backend: AppBackend_Base>(
+    func asWidget<Backend: AppBackend_Core>(
         _ children: OptionalViewChildren<V>,
         backend: Backend
     ) -> Backend.Widget {
@@ -80,7 +80,7 @@ extension OptionalView: TypeSafeView {
         return result
     }
 
-    func commit<Backend: AppBackend_Base>(
+    func commit<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         children: OptionalViewChildren<V>,
         layout: ViewLayoutResult,

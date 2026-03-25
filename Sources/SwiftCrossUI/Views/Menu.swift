@@ -59,7 +59,7 @@ public struct Menu: Sendable {
 extension Menu: TypeSafeView {
     public var body: EmptyView { return EmptyView() }
 
-    func children<Backend: AppBackend_Base>(
+    func children<Backend: AppBackend_Core>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -74,7 +74,7 @@ extension Menu: TypeSafeView {
         return backend.createButton()
     }
 
-    func layoutableChildren<Backend: AppBackend_Base>(
+    func layoutableChildren<Backend: AppBackend_Core>(
         backend: Backend,
         children: MenuStorage
     ) -> [LayoutSystem.LayoutableChild] {

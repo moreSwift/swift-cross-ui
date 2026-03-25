@@ -69,7 +69,7 @@ struct OnTapGestureModifier<Content: View>: TypeSafeView {
         backend.createTapGestureTarget(wrapping: children.child0.widget.into(), gesture: gesture)
     }
 
-    func computeLayout<Backend: AppBackend_Base>(
+    func computeLayout<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,

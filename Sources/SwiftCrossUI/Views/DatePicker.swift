@@ -148,7 +148,7 @@ internal struct DatePickerImplementation: ElementaryView {
         return ViewLayoutResult.leafView(size: ViewSize(naturalSize))
     }
 
-    func commit<Backend: AppBackend_Base>(
+    func commit<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

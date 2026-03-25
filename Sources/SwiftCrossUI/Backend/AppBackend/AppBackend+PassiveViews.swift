@@ -7,7 +7,7 @@ public typealias AppBackend_PassiveViews =
 ///
 /// These are used by ``Text``, and occasionally other features as well.
 @MainActor
-public protocol AppBackend_Text: AppBackend_Base {
+public protocol AppBackend_Text: AppBackend_Core {
     /// Resolves the given text style to concrete font properties.
     ///
     /// This method doesn't take ``EnvironmentValues`` because its result
@@ -86,7 +86,7 @@ public protocol AppBackend_Text: AppBackend_Base {
 ///
 /// These are used by ``Image``.
 @MainActor
-public protocol AppBackend_Image: AppBackend_Base {
+public protocol AppBackend_Image: AppBackend_Core {
     /// If `true`, all images in a window will get updated when the window's
     /// scale factor changes (``EnvironmentValues/windowScaleFactor``).
     ///
@@ -142,7 +142,7 @@ public protocol AppBackend_Image: AppBackend_Base {
 ///
 /// These are used by ``Table``.
 @MainActor
-public protocol AppBackend_Table: AppBackend_Base {
+public protocol AppBackend_Table: AppBackend_Core {
     /// The default height of a table row excluding cell padding. This is a
     /// recommendation by the backend that SwiftCrossUI won't necessarily
     /// follow in all cases.

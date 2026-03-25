@@ -8,12 +8,12 @@ import Foundation
 /// and are simply intended to allow incremental implementation of backends,
 /// not a production-ready fallback for views that cannot be represented by a
 /// given backend. The methods you need to implemented up-front (which don't
-/// have default implementations) are: ``AppBackend_Windows/createWindow(withDefaultSize:)``,
-/// ``AppBackend_Windows/setTitle(ofWindow:to:)``,
-/// ``AppBackend_Windows/setBehaviors(ofWindow:closable:minimizable:resizable:)``,
-/// ``AppBackend_Windows/setChild(ofWindow:to:)``, ``AppBackend_Windows/show(window:)``,
+/// have default implementations) are: ``AppBackend_Windowing/createWindow(withDefaultSize:)``,
+/// ``AppBackend_Windowing/setTitle(ofWindow:to:)``,
+/// ``AppBackend_Windowing/setBehaviors(ofWindow:closable:minimizable:resizable:)``,
+/// ``AppBackend_Windowing/setChild(ofWindow:to:)``, ``AppBackend_Windowing/show(window:)``,
 /// ``AppBackend_Base/runMainLoop(_:)``, ``AppBackend_Base/runInMainThread(action:)``,
-/// ``AppBackend_Windows/isWindowProgrammaticallyResizable(_:)``,
+/// ``AppBackend_Windowing/isWindowProgrammaticallyResizable(_:)``,
 /// ``AppBackend_Widgets/show(widget:)``.
 /// Many of these can simply be given dummy implementations until you're ready
 /// to implement them properly.
@@ -42,7 +42,7 @@ import Foundation
 /// (since the `update` method is always called between calling `create`
 /// and actually displaying the widget anyway).
 public typealias AppBackend =
-    AppBackend_Base
+    AppBackend_Core
     & AppBackend_Containers
     & AppBackend_PassiveViews
     & AppBackend_Controls
@@ -65,7 +65,7 @@ private func todo<T>(in type: T.Type, _ function: String = #function) -> Never {
     Foundation.exit(1)
 }
 
-extension AppBackend_Base {
+extension AppBackend_Core {
     public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
         todo(in: Self.self)
     }

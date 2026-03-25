@@ -16,7 +16,7 @@ struct ToggleSwitch: ElementaryView, View {
         return backend.createSwitch()
     }
 
-    func computeLayout<Backend: AppBackend_Base>(
+    func computeLayout<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,

@@ -156,7 +156,7 @@ struct ProgressSpinnerView: ElementaryView {
         backend.createProgressSpinner()
     }
 
-    func computeLayout<Backend: AppBackend_Base>(
+    func computeLayout<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -212,7 +212,7 @@ struct ProgressBarView: ElementaryView {
         backend.createProgressBar()
     }
 
-    func computeLayout<Backend: AppBackend_Base>(
+    func computeLayout<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,

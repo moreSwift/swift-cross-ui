@@ -39,7 +39,7 @@ struct BackgroundModifier<Background: View, Foreground: View>: TypeSafeView {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    func layoutableChildren<Backend: AppBackend_Base>(
+    func layoutableChildren<Backend: AppBackend_Core>(
         backend: Backend,
         children: TupleView2<Background, Foreground>.Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -52,7 +52,7 @@ struct BackgroundModifier<Background: View, Foreground: View>: TypeSafeView {
         body.asWidget(children, backend: backend)
     }
 
-    func computeLayout<Backend: AppBackend_Base>(
+    func computeLayout<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         children: TupleView2<Background, Foreground>.Children,
         proposedSize: ProposedViewSize,
@@ -85,7 +85,7 @@ struct BackgroundModifier<Background: View, Foreground: View>: TypeSafeView {
         )
     }
 
-    public func commit<Backend: AppBackend_Base>(
+    public func commit<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         children: TupleView2<Background, Foreground>.Children,
         layout: ViewLayoutResult,

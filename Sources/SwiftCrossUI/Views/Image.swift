@@ -51,7 +51,7 @@ extension Image: View {
 }
 
 extension Image: TypeSafeView {
-    func layoutableChildren<Backend: AppBackend_Base>(
+    func layoutableChildren<Backend: AppBackend_Core>(
         backend: Backend,
         children: ImageChildren
     ) -> [LayoutSystem.LayoutableChild] {
@@ -66,14 +66,14 @@ extension Image: TypeSafeView {
         ImageChildren(backend: backend)
     }
 
-    func asWidget<Backend: AppBackend_Base>(
+    func asWidget<Backend: AppBackend_Core>(
         _ children: ImageChildren,
         backend: Backend
     ) -> Backend.Widget {
         children.container.into()
     }
 
-    func computeLayout<Backend: AppBackend_Base>(
+    func computeLayout<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         children: ImageChildren,
         proposedSize: ProposedViewSize,

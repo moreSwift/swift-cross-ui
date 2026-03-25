@@ -37,7 +37,7 @@ struct OnHoverModifier<Content: View>: TypeSafeView {
         backend.createHoverTarget(wrapping: children.child0.widget.into())
     }
 
-    func computeLayout<Backend: AppBackend_Base>(
+    func computeLayout<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,

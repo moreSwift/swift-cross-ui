@@ -64,7 +64,7 @@ public protocol AppBackend_Widgets<Widget>: Sendable {
 /// Core backend methods for window handling. These are required for a
 /// functional backend.
 @MainActor
-public protocol AppBackend_Windows<Window>: AppBackend_Widgets {
+public protocol AppBackend_Windowing<Window>: AppBackend_Widgets {
     /// The underlying window type. Can be a wrapper or subclass.
     associatedtype Window
 
@@ -291,12 +291,12 @@ public protocol AppBackend_GenericContainer: AppBackend_Widgets {
     func remove(childAt index: Int, from container: Widget)
 }
 
-/// Core backend methods for application lifecycle handling. These are required
-/// for a functional backend.
+/// Core backend methods for application lifecycle handling, window management,
+/// and widget manipulation. These are required for a functional backend.
 @MainActor
-public protocol AppBackend_Base:
-    AppBackend_Windows,
+public protocol AppBackend_Core:
     AppBackend_Widgets,
+    AppBackend_Windowing,
     AppBackend_GenericContainer
 {
     /// Creates an instance of the backend.

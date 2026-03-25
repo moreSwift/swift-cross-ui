@@ -17,7 +17,7 @@ public struct EmptyView: View, Sendable {
     /// widget creation code; it's not intended for regular use.
     public nonisolated init() {}
 
-    public func children<Backend: AppBackend_Base>(
+    public func children<Backend: AppBackend_Core>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -25,26 +25,26 @@ public struct EmptyView: View, Sendable {
         return EmptyViewChildren()
     }
 
-    public func layoutableChildren<Backend: AppBackend_Base>(
+    public func layoutableChildren<Backend: AppBackend_Core>(
         backend: Backend,
         children: ViewGraphNodeChildren
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    public func updateChildren<Backend: AppBackend_Base>(
+    public func updateChildren<Backend: AppBackend_Core>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) {}
 
-    public func asWidget<Backend: AppBackend_Base>(
+    public func asWidget<Backend: AppBackend_Core>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {
         backend.createContainer()
     }
 
-    public func computeLayout<Backend: AppBackend_Base>(
+    public func computeLayout<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -54,7 +54,7 @@ public struct EmptyView: View, Sendable {
         ViewLayoutResult.leafView(size: .zero)
     }
 
-    public func commit<Backend: AppBackend_Base>(
+    public func commit<Backend: AppBackend_Core>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,

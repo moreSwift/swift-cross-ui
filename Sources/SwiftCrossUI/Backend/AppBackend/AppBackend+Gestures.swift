@@ -8,7 +8,7 @@ public typealias AppBackend_Gestures =
 ///
 /// These are used by ``View/onTapGesture(gesture:perform:)``.
 @MainActor
-public protocol AppBackend_TapGesture: AppBackend_Base {
+public protocol AppBackend_TapGesture: AppBackend_Core {
     /// Wraps a view in a container that can receive tap gesture events.
     ///
     /// Some backends may not have to wrap the child, in which case they may
@@ -41,7 +41,7 @@ public protocol AppBackend_TapGesture: AppBackend_Base {
 ///
 /// These are used by ``View/onHover(perform:)``.
 @MainActor
-public protocol AppBackend_HoverGesture: AppBackend_Base {
+public protocol AppBackend_HoverGesture: AppBackend_Core {
     /// Wraps a view in a container that can receive mouse hover events.
     ///
     /// Some backends may not have to wrap the child, in which case they may

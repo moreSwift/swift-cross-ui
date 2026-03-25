@@ -6,7 +6,7 @@ import Foundation
 /// ``View/alert(_:isPresented:actions:)``, ``EnvironmentValues/presentAlert``,
 /// and ``AlertScene``.
 @MainActor
-public protocol AppBackend_Alert<Alert>: AppBackend_Base {
+public protocol AppBackend_Alert<Alert>: AppBackend_Core {
     /// The underlying alert type. Can be a wrapper or subclass.
     associatedtype Alert
 
