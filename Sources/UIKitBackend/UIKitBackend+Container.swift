@@ -208,20 +208,20 @@ extension UIKitBackend {
         ScrollWidget(child: child)
     }
 
-    public func updateScrollContainer(_ scrollView: Widget, environment: EnvironmentValues) {
+    public func updateScrollContainer(
+        _ scrollView: Widget,
+        environment: EnvironmentValues,
+        bounceHorizontally: Bool,
+        bounceVertically: Bool,
+        hasHorizontalScrollBar: Bool,
+        hasVerticalScrollBar: Bool
+    ) {
         let scrollViewWidget = scrollView as! ScrollWidget
         scrollViewWidget.updateScrollContainer(environment: environment)
-    }
-
-    public func setScrollBarPresence(
-        ofScrollContainer scrollView: Widget,
-        hasVerticalScrollBar: Bool,
-        hasHorizontalScrollBar: Bool
-    ) {
-        let scrollWidget = scrollView as! ScrollWidget
-        scrollWidget.setScrollBars(
+        scrollViewWidget.setScrollBars(
             hasVerticalScrollBar: hasVerticalScrollBar,
-            hasHorizontalScrollBar: hasHorizontalScrollBar)
+            hasHorizontalScrollBar: hasHorizontalScrollBar
+        )
     }
     
     public func createTooltipContainer(wrapping child: Widget) -> Widget {

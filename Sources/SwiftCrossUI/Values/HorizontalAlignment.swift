@@ -18,4 +18,17 @@ public enum HorizontalAlignment: Sendable {
                 .trailing
         }
     }
+
+    /// Gets the position of a child of a given width in a frame of a given
+    /// width using the alignment.
+    /// - Parameter childWidth: The width of the child.
+    /// - Parameter frameWidth: The width of the frame.
+    /// - Returns: The position of the child.
+    func position(ofChild childWidth: Double, in frameWidth: Double) -> Double {
+        switch self {
+            case .leading: 0
+            case .center: (frameWidth - childWidth) / 2
+            case .trailing: frameWidth - childWidth
+        }
+    }
 }

@@ -30,6 +30,7 @@ struct ControlsApp: App {
     @State var exampleCheckboxState = false
     @State var sliderValue = 5.0
     @State var text = ""
+    @State var secureText = ""
     @State var flavor: String? = nil
     @State var enabled = true
     @State var date = Date()
@@ -107,6 +108,12 @@ struct ControlsApp: App {
                             Text("Text field")
                             TextField("Text field", text: $text)
                             Text("Value: \(text)")
+                        }
+
+                        VStack {
+                            Text("Secure text field")
+                            SecureField("Secure text field", text: $secureText)
+                            Text("Value: \(secureText)")
                         }
 
                         #if !os(tvOS)

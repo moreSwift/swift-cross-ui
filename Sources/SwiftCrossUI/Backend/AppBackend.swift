@@ -534,22 +534,21 @@ public protocol AppBackend: Sendable {
     ///   - scrollView: The scroll container widget previously created by
     ///     ``createScrollContainer(for:)``.
     ///   - environment: The current ``EnvironmentValues`` to apply.
-    func updateScrollContainer(
-        _ scrollView: Widget,
-        environment: EnvironmentValues
-    )
-    /// Sets the presence of scroll bars along each axis of a scroll container.
-    ///
-    /// - Parameters:
-    ///   - scrollView: The scroll view.
-    ///   - hasVerticalScrollBar: Whether the scroll view has a vertical scroll
-    ///     bar.
+    ///   - bounceHorizontally: Whether the scroll view should 'bounce' horizontally.
+    ///     Some backends ignore this, as it's not a universal concept.
+    ///   - bounceVertically: Whether the scroll view should 'bounce' vertically.
+    ///     Some backends ignore this, as it's not a universal concept.
     ///   - hasHorizontalScrollBar: Whether the scroll view has a horizontal
     ///     scroll bar.
-    func setScrollBarPresence(
-        ofScrollContainer scrollView: Widget,
-        hasVerticalScrollBar: Bool,
-        hasHorizontalScrollBar: Bool
+    ///   - hasVerticalScrollBar: Whether the scroll view has a vertical scroll
+    ///     bar.
+    func updateScrollContainer(
+        _ scrollView: Widget,
+        environment: EnvironmentValues,
+        bounceHorizontally: Bool,
+        bounceVertically: Bool,
+        hasHorizontalScrollBar: Bool,
+        hasVerticalScrollBar: Bool
     )
 
     /// Creates a list with selectable rows.
@@ -979,6 +978,44 @@ public protocol AppBackend: Sendable {
     /// - Parameter textField: The text field to get the content of.
     /// - Returns: `textField`'s content.
     func getContent(ofTextField textField: Widget) -> String
+
+    /// Creates an editable secure text field with a placeholder label and
+    /// change handler.
+    ///
+    /// Predominantly used by ``SecureField``.
+    ///
+    /// - Returns: A secure text field.
+    func createSecureField() -> Widget
+    /// Sets the placeholder label and change handler of an editable secure
+    /// text field.
+    ///
+    /// - Parameters:
+    ///   - secureField: The secure text field to update.
+    ///   - placeholder: The secure text field's placeholder label.
+    ///   - environment: The current environment.
+    ///   - onChange: The action to perform when the secure text field's content
+    ///     changes. This replaces any existing change handlers, and is called
+    ///     whenever the displayed value changes.
+    ///   - onSubmit: The action to perform when the user hits Enter/Return,
+    ///     or whatever the backend decides counts as submission of the field.
+    func updateSecureField(
+        _ secureField: Widget,
+        placeholder: String,
+        environment: EnvironmentValues,
+        onChange: @escaping (String) -> Void,
+        onSubmit: @escaping () -> Void
+    )
+    /// Sets the value of an editable secure text field.
+    ///
+    /// - Parameters:
+    ///   - secureField: The secure text field to set the content of.
+    ///   - content: The new content.
+    func setContent(ofSecureField secureField: Widget, to content: String)
+    /// Gets the value of an editable secure text field.
+    ///
+    /// - Parameter secureField: The secure text field to get the content of.
+    /// - Returns: `secureField`'s content.
+    func getContent(ofSecureField secureField: Widget) -> String
 
     /// Creates an editable multi-line text editor.
     ///
@@ -1558,14 +1595,13 @@ extension AppBackend {
         todo()
     }
 
-    public func updateScrollContainer(_ scrollView: Widget, environment: EnvironmentValues) {
-        todo()
-    }
-
-    public func setScrollBarPresence(
-        ofScrollContainer scrollView: Widget,
-        hasVerticalScrollBar: Bool,
-        hasHorizontalScrollBar: Bool
+    public func updateScrollContainer(
+        _ scrollView: Widget,
+        environment: EnvironmentValues,
+        bounceHorizontally: Bool,
+        bounceVertically: Bool,
+        hasHorizontalScrollBar: Bool,
+        hasVerticalScrollBar: Bool
     ) {
         todo()
     }
@@ -1798,6 +1834,25 @@ extension AppBackend {
         todo()
     }
     public func getContent(ofTextField textField: Widget) -> String {
+        todo()
+    }
+
+    public func createSecureField() -> Widget {
+        todo()
+    }
+    public func updateSecureField(
+        _ secureField: Widget,
+        placeholder: String,
+        environment: EnvironmentValues,
+        onChange: @escaping (String) -> Void,
+        onSubmit: @escaping () -> Void
+    ) {
+        todo()
+    }
+    public func setContent(ofSecureField secureField: Widget, to content: String) {
+        todo()
+    }
+    public func getContent(ofSecureField secureField: Widget) -> String {
         todo()
     }
 

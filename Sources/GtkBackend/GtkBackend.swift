@@ -637,12 +637,13 @@ public final class GtkBackend: AppBackend {
         return scrollView
     }
 
-    public func updateScrollContainer(_ scrollView: Widget, environment: EnvironmentValues) {}
-
-    public func setScrollBarPresence(
-        ofScrollContainer scrollView: Widget,
-        hasVerticalScrollBar: Bool,
-        hasHorizontalScrollBar: Bool
+    public func updateScrollContainer(
+        _ scrollView: Widget,
+        environment: EnvironmentValues,
+        bounceHorizontally: Bool,
+        bounceVertically: Bool,
+        hasHorizontalScrollBar: Bool,
+        hasVerticalScrollBar: Bool
     ) {
         let scrollView = scrollView as! ScrolledWindow
         scrollView.setScrollBarPresence(
@@ -1061,7 +1062,7 @@ public final class GtkBackend: AppBackend {
     }
 
     public func createTextField() -> Widget {
-        return Entry()
+        Entry()
     }
 
     public func updateTextField(
@@ -1087,14 +1088,43 @@ public final class GtkBackend: AppBackend {
 
     public func setContent(ofTextField textField: Widget, to content: String) {
         let textField = textField as! Entry
-
         textField.withBlockedSignal(named: "changed") {
             textField.text = content
         }
     }
 
     public func getContent(ofTextField textField: Widget) -> String {
-        return (textField as! Entry).text
+        (textField as! Entry).text
+    }
+
+    public func createSecureField() -> Widget {
+        let entry = Entry()
+        entry.visibility = false
+        return entry
+    }
+
+    public func updateSecureField(
+        _ secureField: Widget,
+        placeholder: String,
+        environment: EnvironmentValues,
+        onChange: @escaping (String) -> Void,
+        onSubmit: @escaping () -> Void
+    ) {
+        updateTextField(
+            secureField,
+            placeholder: placeholder,
+            environment: environment,
+            onChange: onChange,
+            onSubmit: onSubmit
+        )
+    }
+
+    public func setContent(ofSecureField secureField: Widget, to content: String) {
+        setContent(ofTextField: secureField, to: content)
+    }
+
+    public func getContent(ofSecureField secureField: Widget) -> String {
+        getContent(ofTextField: secureField)
     }
 
     public func createTextEditor() -> Widget {

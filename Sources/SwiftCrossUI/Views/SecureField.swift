@@ -1,6 +1,7 @@
-/// A control that displays an editable text interface.
-public struct TextField: ElementaryView, View {
-    /// The ideal width of a `TextField`.
+/// A control that displays an editable text interface, hiding characters
+/// as they're typed.
+public struct SecureField: ElementaryView, View {
+    /// The ideal width of a `SecureField`.
     private static let idealWidth: Double = 100
 
     /// The label to show when the field is empty.
@@ -8,7 +9,7 @@ public struct TextField: ElementaryView, View {
     /// The field's content.
     @Binding private var text: String
 
-    /// Creates an editable text field with a given placeholder.
+    /// Creates an editable secure text field with a given placeholder.
     ///
     /// - Parameters:
     ///   - placeholder: The label to show when the field is empty.
@@ -18,16 +19,8 @@ public struct TextField: ElementaryView, View {
         self._text = text
     }
 
-    /// Creates an editable text field with a given placeholder.
-    @available(*, deprecated, renamed: "init(_:text:)")
-    public init(_ placeholder: String = "", _ value: Binding<String>? = nil) {
-        self.placeholder = placeholder
-        var dummy = ""
-        self._text = value ?? Binding(get: { dummy }, set: { dummy = $0 })
-    }
-
     func asWidget<Backend: AppBackend>(backend: Backend) -> Backend.Widget {
-        return backend.createTextField()
+        return backend.createSecureField()
     }
 
     func computeLayout<Backend: AppBackend>(
@@ -52,7 +45,7 @@ public struct TextField: ElementaryView, View {
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        backend.updateTextField(
+        backend.updateSecureField(
             widget,
             placeholder: placeholder,
             environment: environment,
@@ -67,7 +60,7 @@ public struct TextField: ElementaryView, View {
                     if self.text == newValue {
                         logger.warning(
                             """
-                            Unnecessary write to text Binding of TextField detected, \
+                            Unnecessary write to text Binding of SecureField detected, \
                             please open an issue at \(Meta.issueReportingURL) \
                             so we can fix it for \(type(of: backend)).
                             """
@@ -81,8 +74,8 @@ public struct TextField: ElementaryView, View {
         )
 
         let text = text
-        if text != backend.getContent(ofTextField: widget) {
-            backend.setContent(ofTextField: widget, to: text)
+        if text != backend.getContent(ofSecureField: widget) {
+            backend.setContent(ofSecureField: widget, to: text)
         }
 
         backend.setSize(of: widget, to: layout.size.vector)

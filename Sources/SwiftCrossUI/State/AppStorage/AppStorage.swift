@@ -40,6 +40,7 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
                             // property on initialization, we're returning the default value instead.
                             return defaultValue
                         }
+                        print("Reading AppStorage value")
                         return provider.getValue(key: key, defaultValue: defaultValue)
                     case .path(let keyPath):
                         return AppStorageValues(provider: provider)[keyPath: keyPath]
@@ -58,12 +59,12 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
                 }
                 switch mode {
                     case .key(let key, _):
+                        print("Writing AppStorage value")
                         provider.setValue(key: key, newValue: newValue)
                     case .path(let keyPath):
                         var values = AppStorageValues(provider: provider)
                         values[keyPath: keyPath] = newValue
                 }
-
             }
         }
     }

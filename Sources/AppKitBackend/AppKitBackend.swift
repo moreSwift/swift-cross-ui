@@ -36,12 +36,16 @@ public final class AppKitBackend: AppBackend {
         // We assume that all scrollers have their controlSize set to `.regular` by default.
         // The internet seems to indicate that this is true regardless of any system wide
         // preferences etc.
-        return Int(
-            NSScroller.scrollerWidth(
-                for: .regular,
-                scrollerStyle: NSScroller.preferredScrollerStyle
-            ).rounded(.awayFromZero)
-        )
+        if NSScroller.preferredScrollerStyle == .overlay {
+            0
+        } else {
+            Int(
+                NSScroller.scrollerWidth(
+                    for: .regular,
+                    scrollerStyle: NSScroller.preferredScrollerStyle
+                ).rounded(.awayFromZero)
+            )
+        }
     }
 
     private let appDelegate = NSCustomApplicationDelegate()
@@ -274,7 +278,7 @@ public final class AppKitBackend: AppBackend {
             forName: .AppleInterfaceThemeChangedNotification,
             object: nil,
             queue: OperationQueue.main
-        ) { notification in
+        ) { _ in
             action()
         }
 
@@ -285,7 +289,7 @@ public final class AppKitBackend: AppBackend {
             forName: NSScroller.preferredScrollerStyleDidChangeNotification,
             object: nil,
             queue: OperationQueue.main
-        ) { notification in
+        ) { _ in
             // Self.scrollBarWidth has changed
             action()
         }
@@ -781,122 +785,13 @@ public final class AppKitBackend: AppBackend {
         }
     }
 
-    public func createTextField() -> Widget {
-        // Using the `(string:)` initializer ensures that the TextField scrolls
-        // smoothly on horizontal overflow instead of jumping a full width at a
-        // time.
-        let field = NSObservableTextField(string: "")
-        return field
-    }
-
-    public func updateTextField(
-        _ textField: Widget,
-        placeholder: String,
-        environment: EnvironmentValues,
-        onChange: @escaping (String) -> Void,
-        onSubmit: @escaping () -> Void
-    ) {
-        let textField = textField as! NSObservableTextField
-        textField.isEnabled = environment.isEnabled
-        textField.placeholderString = placeholder
-        textField.appearance = environment.colorScheme.nsAppearance
-        let resolvedFont = environment.resolvedFont
-        if textField.font != Self.font(for: resolvedFont) {
-            textField.font = Self.font(for: resolvedFont)
-        }
-        textField.onEdit = { textField in
-            onChange(textField.stringValue)
-        }
-        textField.onSubmit = onSubmit
-
-        if #available(macOS 14, *) {
-            textField.contentType =
-                switch environment.textContentType {
-                    case .url:
-                        .URL
-                    case .phoneNumber:
-                        .telephoneNumber
-                    case .name:
-                        .name
-                    case .emailAddress:
-                        .emailAddress
-                    case .text, .digits(_), .decimal(_):
-                        nil
-                }
-        }
-    }
-
-    public func getContent(ofTextField textField: Widget) -> String {
-        let textField = textField as! NSTextField
-        return textField.stringValue
-    }
-
-    public func setContent(ofTextField textField: Widget, to content: String) {
-        let textField = textField as! NSTextField
-        textField.stringValue = content
-    }
-
-    public func createTextEditor() -> Widget {
-        let textEditor = NSObservableTextView()
-        textEditor.drawsBackground = false
-        textEditor.delegate = textEditor
-        textEditor.allowsUndo = true
-        textEditor.isRichText = false
-        textEditor.textContainerInset = .zero
-        textEditor.textContainer?.lineFragmentPadding = 0
-        return textEditor
-    }
-
-    public func updateTextEditor(
-        _ textEditor: Widget,
-        environment: EnvironmentValues,
-        onChange: @escaping (String) -> Void
-    ) {
-        let textEditor = textEditor as! NSObservableTextView
-        textEditor.onEdit = { textView in
-            onChange(self.getContent(ofTextEditor: textView))
-        }
-        let resolvedFont = environment.resolvedFont
-        if textEditor.font != Self.font(for: resolvedFont) {
-            textEditor.font = Self.font(for: resolvedFont)
-        }
-        textEditor.appearance = environment.colorScheme.nsAppearance
-        textEditor.isEditable = environment.isEnabled
-
-        if #available(macOS 14, *) {
-            textEditor.contentType =
-                switch environment.textContentType {
-                    case .url:
-                        .URL
-                    case .phoneNumber:
-                        .telephoneNumber
-                    case .name:
-                        .name
-                    case .emailAddress:
-                        .emailAddress
-                    case .text, .digits(_), .decimal(_):
-                        nil
-                }
-        }
-    }
-
-    public func setContent(ofTextEditor textEditor: Widget, to content: String) {
-        let textEditor = textEditor as! NSObservableTextView
-        textEditor.string = content
-    }
-
-    public func getContent(ofTextEditor textEditor: Widget) -> String {
-        let textEditor = textEditor as! NSObservableTextView
-        return textEditor.string
-    }
-
     public func createScrollContainer(for child: Widget) -> Widget {
         let scrollView = NSScrollView()
 
         let clipView = scrollView.contentView
         let documentView = NSStackView()
         documentView.orientation = .vertical
-        documentView.alignment = .centerX
+        documentView.alignment = .leading
         documentView.translatesAutoresizingMaskIntoConstraints = false
         documentView.addView(child, in: .top)
         scrollView.documentView = documentView
@@ -913,16 +808,19 @@ public final class AppKitBackend: AppBackend {
         return scrollView
     }
 
-    public func updateScrollContainer(_ scrollView: Widget, environment: EnvironmentValues) {}
-
-    public func setScrollBarPresence(
-        ofScrollContainer scrollView: Widget,
-        hasVerticalScrollBar: Bool,
-        hasHorizontalScrollBar: Bool
+    public func updateScrollContainer(
+        _ scrollView: Widget,
+        environment: EnvironmentValues,
+        bounceHorizontally: Bool,
+        bounceVertically: Bool,
+        hasHorizontalScrollBar: Bool,
+        hasVerticalScrollBar: Bool
     ) {
         let scrollView = scrollView as! NSScrollView
         scrollView.hasVerticalScroller = hasVerticalScrollBar
         scrollView.hasHorizontalScroller = hasHorizontalScrollBar
+        scrollView.verticalScrollElasticity = bounceVertically ? .allowed : .none
+        scrollView.horizontalScrollElasticity = bounceHorizontally ? .allowed : .none
     }
 
     public func createSelectableListView() -> Widget {
@@ -1189,7 +1087,7 @@ public final class AppKitBackend: AppBackend {
         ]
     }
 
-    private static func font(for font: Font.Resolved) -> NSFont {
+    static func font(for font: Font.Resolved) -> NSFont {
         let size = CGFloat(font.pointSize)
         let weight = weight(for: font.weight)
 
@@ -2207,33 +2105,6 @@ final class ObjectAssociation<T: Any> {
                 index, Unmanaged.passUnretained(self).toOpaque(), newValue, policy.rawValue)
         }
     }
-}
-
-class NSObservableTextField: NSTextField {
-    override func textDidChange(_ notification: Notification) {
-        onEdit?(self)
-    }
-
-    var onEdit: ((NSTextField) -> Void)?
-    var _onSubmitAction = Action({})
-    var onSubmit: () -> Void {
-        get {
-            _onSubmitAction.action
-        }
-        set {
-            _onSubmitAction.action = newValue
-            action = #selector(_onSubmitAction.run)
-            target = _onSubmitAction
-        }
-    }
-}
-
-class NSObservableTextView: NSTextView, NSTextViewDelegate {
-    func textDidChange(_ notification: Notification) {
-        onEdit?(self)
-    }
-
-    var onEdit: ((NSTextView) -> Void)?
 }
 
 // Source: https://gist.github.com/sindresorhus/3580ce9426fff8fafb1677341fca4815

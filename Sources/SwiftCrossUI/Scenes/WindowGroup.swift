@@ -98,7 +98,7 @@ public final class WindowGroupNode<Content: View>: SceneGraphNode {
                 )
                 windowReferences[windowID] = reference
 
-                _ = reference.update(
+                reference.update(
                     nil,
                     backend: backend,
                     environment: environment

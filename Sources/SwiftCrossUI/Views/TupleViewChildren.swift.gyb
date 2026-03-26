@@ -4,12 +4,6 @@
 maximum_child_count = 20
 }%
 
-struct StackLayoutCache {
-    var lastFlexibilityOrdering: [Int]?
-    var lastHiddenChildren: [Bool] = []
-    var redistributeSpaceOnCommit = false
-}
-
 protocol TupleViewChildren: ViewGraphNodeChildren {
     @MainActor
     var stackLayoutCache: StackLayoutCache { get nonmutating set }
@@ -58,7 +52,7 @@ public class TupleViewChildren${i + 1}<${struct_type_parameters}>: TupleViewChil
         ]
     }
 
-    var stackLayoutCache = StackLayoutCache()
+    var stackLayoutCache = StackLayoutCache.initial
 
     % for child in children:
     /// ``AnyViewGraphNode`` is used instead of ``ViewGraphNode`` because otherwise the backend leaks into views.

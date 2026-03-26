@@ -33,7 +33,12 @@ public struct Spacer: ElementaryView, View {
             proposedLength ?? Self.idealLength
         )
 
-        return ViewLayoutResult.leafView(size: size)
+        return ViewLayoutResult(
+            size: size,
+            participateInStackLayoutsWhenEmpty: true,
+            preferences: PreferenceValues.default
+                .with(\.layoutPriority, -Double.infinity)
+        )
     }
 
     func commit<Backend: AppBackend>(
