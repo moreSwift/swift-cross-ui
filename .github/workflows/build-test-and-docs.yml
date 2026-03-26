@@ -336,13 +336,10 @@ jobs:
         swift build --target HoverExample && \
         swift build --target AdvancedCustomizationExample
 
-  update-docs:
+  assemble-docs:
     runs-on: macos-15
     needs: [macos, uikit, windows, linux]
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
-
-    permissions:
-      contents: write
 
     steps:
     - name: Setup Xcode version
@@ -393,18 +390,9 @@ jobs:
         target: WinUIBackend
         use-symbol-graph-artifact: true
 
-    - name: Clone gh-pages branch
-      run: |
-        set -eux
-        git config user.email "stackotter@stackotter.dev"
-        git config user.name "stackotter"
-
-        git fetch
-        git worktree add --checkout gh-pages origin/gh-pages
-
     - name: Merge DocC archives
       run: |
-        rm -rf gh-pages/docs
+        mkdir DocsBuild
         xcrun docc merge \
           SwiftCrossUI.doccarchive \
           AppKitBackend.doccarchive \
@@ -412,24 +400,34 @@ jobs:
           GtkBackend.doccarchive \
           Gtk3Backend.doccarchive \
           WinUIBackend.doccarchive \
-          --output-path gh-pages/docs
+          --output-path DocsBuild
 
-    - name: Update docs if changed
+    - name: Assemble GitHub Pages artifact
       run: |
         set -eux
 
-        CURRENT_COMMIT_HASH=`git rev-parse --short HEAD`
+        cp Pages/google5d79e0866e2627dd.html DocsBuild/google5d79e0866e2627dd.html
+        cp Pages/CNAME DocsBuild/CNAME
+        cp Pages/index.html DocsBuild/index.html
 
-        cd gh-pages
-        cp google5d79e0866e2627dd.html docs/google5d79e0866e2627dd.html
-        cp CNAME docs/CNAME
-        cp index.html docs/index.html
-        git add docs
+    - name: Upload GitHub Pages artifact
+      id: deployment
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: DocsBuild/
 
-        if [ -n "$(git status --porcelain)" ]; then
-            echo "Documentation changes found."
-            git commit -m "Update GitHub Pages documentation site to '$CURRENT_COMMIT_HASH'."
-            git push origin HEAD:gh-pages
-        else
-          echo "No documentation changes found."
-        fi
+  deploy-docs:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
+    needs: assemble-docs
+
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
