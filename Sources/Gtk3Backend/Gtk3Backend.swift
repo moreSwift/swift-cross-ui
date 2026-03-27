@@ -1,4 +1,5 @@
 import CGtk3
+import Gtk3CHelpers
 import Foundation
 import Gtk3
 import SwiftCrossUI
@@ -79,7 +80,7 @@ public final class Gtk3Backend: AppBackend {
     public init(appIdentifier: String?) {
         gtkApp = Application(
             applicationId: appIdentifier ?? "com.example.SwiftCrossUIApp",
-            flags: G_APPLICATION_HANDLES_OPEN
+            flags: SHIM_G_APPLICATION_HANDLES_OPEN
         )
         gtkApp.registerSession = true
     }

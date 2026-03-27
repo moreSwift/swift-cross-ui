@@ -2,6 +2,7 @@ import CGtk
 import Foundation
 import Gtk
 import SwiftCrossUI
+import GtkCHelpers
 
 extension App {
     public typealias Backend = GtkBackend
@@ -86,7 +87,7 @@ public final class GtkBackend: AppBackend {
     public init(appIdentifier: String?) {
         gtkApp = Application(
             applicationId: appIdentifier ?? "com.example.SwiftCrossUIApp",
-            flags: G_APPLICATION_HANDLES_OPEN
+            flags: SHIM_G_APPLICATION_HANDLES_OPEN
         )
         gtkApp.registerSession = true
     }

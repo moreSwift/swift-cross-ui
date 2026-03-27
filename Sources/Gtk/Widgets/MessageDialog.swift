@@ -1,5 +1,5 @@
 import CGtk
-import GtkCustomWidgets
+import GtkCHelpers
 
 /// `GtkMessageDialog` presents a dialog with some message text.
 ///
