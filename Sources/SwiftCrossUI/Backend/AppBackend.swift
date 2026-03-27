@@ -124,6 +124,11 @@ public protocol AppBackend: Sendable {
     /// The picker style used by ``PickerStyle/automatic``.
     var defaultPickerStyle: BackendPickerStyle { get }
 
+    /// Whether the backend supports overriding window color schemes (as you may
+    /// do with the 'preferredColorScheme(_:)' modifier). If false, then SwiftCrossUI
+    /// will ignore the preferredColorScheme(_:) modifier as a nicer failure mode.
+    var canOverrideWindowColorScheme: Bool { get }
+
     /// Runs the backend's main run loop.
     ///
     /// The app will exit when this method returns. This will always be the
@@ -168,6 +173,11 @@ public protocol AppBackend: Sendable {
     ///   preferred window size from a previous session.
     /// - Returns: The created window.
     func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window
+    /// Updates a window, generally to react to the current color scheme from the
+    /// environment.
+    ///
+    /// - Parameter environment: the current environment.
+    func updateWindow(_ window: Window, environment: EnvironmentValues)
     /// Sets the title of a window.
     ///
     /// - Parameters:

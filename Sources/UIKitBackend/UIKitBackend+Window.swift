@@ -89,6 +89,14 @@ extension UIKitBackend {
         return window
     }
 
+    public func updateWindow(_ window: Window, environment: EnvironmentValues) {
+        // TODO(stackotter): Support preferredColorScheme
+        window.backgroundColor = switch environment.colorScheme {
+            case .light: .white
+            case .dark: .black
+        }
+    }
+
     public func setTitle(ofWindow window: Window, to title: String) {
         // I don't think this achieves much of anything but might as well
         window.rootViewController!.title = title

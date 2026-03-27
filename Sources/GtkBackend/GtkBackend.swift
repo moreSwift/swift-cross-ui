@@ -41,6 +41,7 @@ public final class GtkBackend: AppBackend {
     public let defaultSheetCornerRadius = 10
     public let supportedDatePickerStyles: [DatePickerStyle] = [.automatic, .graphical]
     public let supportedPickerStyles: [BackendPickerStyle] = [.menu]
+    public let canOverrideWindowColorScheme = false
 
     var gtkApp: Application
 
@@ -166,6 +167,10 @@ public final class GtkBackend: AppBackend {
         window.setChild(Gtk.Box())
 
         return window
+    }
+
+    public func updateWindow(_ window: Window, environment: EnvironmentValues) {
+        // TODO(stackotter): Support preferredColorScheme
     }
 
     public func setTitle(ofWindow window: Window, to title: String) {

@@ -31,6 +31,9 @@ public struct PreferenceValues: Sendable {
     /// The background color for enclosing sheets.
     public var presentationBackground: Color?
 
+    /// Sets the preferred color scheme for the nearest enclosing presentation.
+    public var preferredColorScheme: ColorScheme?
+
     /// Controls whether the user can interactively dismiss enclosing sheets.
     public var interactiveDismissDisabled: Bool?
 
@@ -79,6 +82,7 @@ extension PreferenceValues {
         presentationDragIndicatorVisibility =
             children.compactMap(\.presentationDragIndicatorVisibility).first
         presentationBackground = children.compactMap(\.presentationBackground).first
+        preferredColorScheme = children.compactMap(\.preferredColorScheme).first
         interactiveDismissDisabled = children.compactMap(\.interactiveDismissDisabled).first
 
         windowDismissBehavior = children.compactMap(\.windowDismissBehavior).first

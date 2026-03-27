@@ -36,6 +36,7 @@ public final class Gtk3Backend: AppBackend {
     public let deviceClass = DeviceClass.desktop
     public let supportedDatePickerStyles: [DatePickerStyle] = []
     public let supportedPickerStyles: [BackendPickerStyle] = []
+    public let canOverrideWindowColorScheme = false
 
     var gtkApp: Application
 
@@ -175,6 +176,10 @@ public final class Gtk3Backend: AppBackend {
         }
 
         return window
+    }
+
+    public func updateWindow(_ window: Window, environment: EnvironmentValues) {
+        // TODO(stackotter): Support preferredColorScheme
     }
 
     public func setTitle(ofWindow window: Window, to title: String) {

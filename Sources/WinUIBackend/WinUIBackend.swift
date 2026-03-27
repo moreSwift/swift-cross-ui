@@ -72,6 +72,7 @@ public final class WinUIBackend: AppBackend {
         .automatic, .graphical, .compact, .wheel,
     ]
     public let supportedPickerStyles: [BackendPickerStyle] = [.menu, .radioGroup]
+    public let canOverrideWindowColorScheme = true
 
     public var scrollBarWidth: Int {
         12
@@ -198,6 +199,21 @@ public final class WinUIBackend: AppBackend {
             setSize(ofWindow: window, to: size)
         }
         return window
+    }
+
+    public func updateWindow(_ window: Window, environment: EnvironmentValues) {
+        window.menuBar.requestedTheme = switch environment.colorScheme {
+            case .light: .light
+            case .dark: .dark
+        }
+
+        let backgroundColor: SwiftCrossUI.Color = switch environment.colorScheme {
+            case .light: .white
+            case .dark: .black
+        }
+        let brush = WinUI.SolidColorBrush()
+        brush.color = backgroundColor.resolve(in: environment).uwpColor
+        window.grid.background = brush
     }
 
     public func size(ofWindow window: Window) -> SIMD2<Int> {
@@ -361,6 +377,7 @@ public final class WinUIBackend: AppBackend {
                 window.menuBar.items.append(item)
             }
             window.setMenuBarVisible(!items.isEmpty)
+            window.menuBar.requestedTheme = .dark
         }
     }
 
