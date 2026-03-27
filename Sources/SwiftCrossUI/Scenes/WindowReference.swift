@@ -219,8 +219,6 @@ final class WindowReference<SceneType: WindowingScene> {
             environment: environment
         )
 
-        viewGraph.commit()
-
         backend.setPosition(
             ofChildAt: 0,
             in: containerWidget.into(),
@@ -240,6 +238,10 @@ final class WindowReference<SceneType: WindowingScene> {
             resizable:
                 finalContentResult.preferences.windowResizeBehavior?.isEnabled ?? true
         )
+
+        // Delay committing the view graph so that the View.inspectWindow(_:)
+        // modifiers can be used to overwrite certain SwiftCrossUI behaviors
+        viewGraph.commit()
 
         if isFirstUpdate {
             backend.show(window: window)

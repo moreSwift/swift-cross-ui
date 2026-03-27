@@ -16,7 +16,7 @@ public struct InspectionPoints: OptionSet, RawRepresentable, Hashable, Sendable 
 /// need to inspect a widget. This type simply supports the implementation of
 /// those backend-specific modifiers.
 package struct InspectView<Child: View> {
-    var child: Child
+    var child: TupleView1<Child>
     var inspectionPoints: InspectionPoints
     var action: @MainActor (_ widget: AnyWidget, _ children: any ViewGraphNodeChildren) -> Void
 
@@ -25,7 +25,7 @@ package struct InspectView<Child: View> {
         inspectionPoints: InspectionPoints,
         action: @escaping @MainActor @Sendable (WidgetType) -> Void
     ) {
-        self.child = child
+        self.child = TupleView1(child)
         self.inspectionPoints = inspectionPoints
         self.action = { widget, _ in
             action(widget.into())
@@ -37,7 +37,7 @@ package struct InspectView<Child: View> {
         inspectionPoints: InspectionPoints,
         action: @escaping @MainActor @Sendable (WidgetType, Children) -> Void
     ) {
-        self.child = child
+        self.child = TupleView1(child)
         self.inspectionPoints = inspectionPoints
         self.action = { widget, children in
             action(widget.into(), children as! Children)
@@ -53,8 +53,9 @@ extension InspectView: View {
         backend: Backend
     ) -> Backend.Widget {
         let widget = child.asWidget(children, backend: backend)
+        let children = children as! TupleView1<Child>.Children
         if inspectionPoints.contains(.onCreate) {
-            action(AnyWidget(widget), children)
+            action(children.child0.widget, children.child0.getChildren())
         }
         return widget
     }
@@ -81,8 +82,9 @@ extension InspectView: View {
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
+        let children = children as! TupleView1<Child>.Children
         if inspectionPoints.contains(.beforeUpdate) {
-            action(AnyWidget(widget), children)
+            action(children.child0.widget, children.child0.getChildren())
         }
         let result = child.computeLayout(
             widget,
@@ -108,8 +110,38 @@ extension InspectView: View {
             environment: environment,
             backend: backend
         )
+        let children = children as! TupleView1<Child>.Children
         if inspectionPoints.contains(.afterUpdate) {
-            action(AnyWidget(widget), children)
+            action(children.child0.widget, children.child0.getChildren())
+        }
+    }
+}
+
+/// The `View.inspectWindow(_:)` modifier is implemented within each backend.
+/// Make sure to import your chosen backend in any files where you need to
+/// inspect a native window. This type simply supports the implementation of
+/// those backend-specified modifiers.
+package struct InspectWindowView<Child: View> {
+    @Environment(\.window) var window
+
+    var child: Child
+    var action: @MainActor (_ window: Any) -> Void
+
+    package init<WindowType>(
+        child: Child,
+        action: @escaping @MainActor @Sendable (WindowType) -> Void
+    ) {
+        self.child = child
+        self.action = { window in
+            action(window as! WindowType)
+        }
+    }
+}
+
+extension InspectWindowView: View {
+    package var body: some View {
+        child.onCommit {
+            action(window!)
         }
     }
 }

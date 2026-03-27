@@ -4,6 +4,7 @@ import SwiftCrossUI
 
 #if canImport(WinUIBackend)
     import WinUI
+    import UWP
 #endif
 
 #if canImport(SwiftBundlerRuntime)
@@ -88,29 +89,31 @@ struct CounterApp: App {
                             }
                     #endif
 
-                    #if !canImport(Gtk3Backend)
-                        Picker(of: ["Red", "Green", "Blue"], selection: $color)
-                            .inspect(.afterUpdate) { picker in
-                                #if canImport(AppKitBackend)
-                                    picker.preferredEdge = .maxX
-                                #elseif canImport(UIKitBackend) && os(iOS)
-                                    // Can't think of something to do to the
-                                    // UIPickerView, but the point is that you
-                                    // could do something if you needed to!
-                                    // This would be a UITableView on tvOS.
-                                    // And could be either a UITableView or a
-                                    // UIPickerView on Mac Catalyst depending
-                                    // on Mac Catalyst version and interface
-                                    // idiom.
-                                #elseif canImport(WinUIBackend)
-                                    let brush = WinUI.SolidColorBrush()
-                                    brush.color = .init(a: 255, r: 255, g: 0, b: 0)
-                                    picker.background = brush
-                                #elseif canImport(GtkBackend)
-                                    picker.enableSearch = true
-                                #endif
-                            }
-                    #endif
+                    // TODO(stackotter): Repair Picker.inspect implementations post
+                    //   PickerStyle refactor
+                    // #if !canImport(Gtk3Backend)
+                    //     Picker(of: ["Red", "Green", "Blue"], selection: $color)
+                    //         .inspect(.afterUpdate) { picker in
+                    //             #if canImport(AppKitBackend)
+                    //                 picker.preferredEdge = .maxX
+                    //             #elseif canImport(UIKitBackend) && os(iOS)
+                    //                 // Can't think of something to do to the
+                    //                 // UIPickerView, but the point is that you
+                    //                 // could do something if you needed to!
+                    //                 // This would be a UITableView on tvOS.
+                    //                 // And could be either a UITableView or a
+                    //                 // UIPickerView on Mac Catalyst depending
+                    //                 // on Mac Catalyst version and interface
+                    //                 // idiom.
+                    //             #elseif canImport(WinUIBackend)
+                    //                 let brush = WinUI.SolidColorBrush()
+                    //                 brush.color = .init(a: 255, r: 255, g: 0, b: 0)
+                    //                 picker.background = brush
+                    //             #elseif canImport(GtkBackend)
+                    //                 picker.enableSearch = true
+                    //             #endif
+                    //         }
+                    // #endif
 
                     TextField("Name", text: $name)
                         .inspect(.afterUpdate) { textField in
@@ -196,7 +199,20 @@ struct CounterApp: App {
                             #endif
                         }
                         .aspectRatio(contentMode: .fit)
-                }.padding()
+                }
+                .padding()
+                .inspectWindow { window in
+                    #if canImport(AppKitBackend)
+                        window.backgroundColor = .black
+                    #elseif canImport(GtkBackend) || canImport(Gtk3Backend)
+                        window.title = "Overridden title"
+                    #elseif canImport(WinUIBackend)
+                        // Only works on Windows 11+
+                        window.appWindow.titleBar.backgroundColor = UWP.Color(a: 255, r: 0, g: 255, b: 255)
+                    #elseif canImport(UIKitBackend)
+                        window.backgroundColor = .darkGray
+                    #endif
+                }
             }
         }
         .defaultSize(width: 400, height: 200)
