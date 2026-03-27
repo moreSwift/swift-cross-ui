@@ -1,5 +1,6 @@
 extension Scene {
-    /// Sets the resizability of windows controlled by this scene.
+    /// Controls how each window's resizing bounds relate to the resizability of the
+    /// window's content.
     ///
     /// This modifier controls how SwiftCrossUI determines the bounds within which
     /// windows can be resized, whereas ``View/windowResizeBehavior(_:)`` controls

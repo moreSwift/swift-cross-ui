@@ -1,13 +1,17 @@
-/// The level of resizability of a window.
+/// Controls how a window's resizing bounds relate to the resizability of the
+/// window's content.
+///
+/// If you want to disable window resizing entirely, use ``View/windowResizeBehaviour(_:)``
+/// which controls whether the enclosing window is user resizable.
 public enum WindowResizability: Sendable {
     /// SwiftCrossUI decides whether to use `contentSize` or `contentMinSize` depending
     /// on the type of scene. This currently means it'll just default to `contentMinSize`.
     case automatic
-    /// The window is not resizable and its size is tied to the size of its content.
-    ///
-    /// This is not supported on GTK; it behaves identically to ``contentMinSize`` on
-    /// GtkBackend and Gtk3Backend.
+    /// The window cannot be resized smaller than its content's minimum size or larger
+    /// than its content's maximum size.
     case contentSize
-    /// The window is resizable but must be at least as big as its content.
+    /// The window cannot be resized smaller than its content's minimum size, but can
+    /// be resized larger than its content's maximum size. If the window is bigger than
+    /// its content, then its content remains centered within the window.
     case contentMinSize
 }
