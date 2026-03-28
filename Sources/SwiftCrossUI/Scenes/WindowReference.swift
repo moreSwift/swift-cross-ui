@@ -6,7 +6,7 @@ final class WindowReference<SceneType: WindowingScene> {
     /// The view graph of the window's root view.
     private let viewGraph: ViewGraph<SceneType.Content>
     /// The window being rendered in.
-    private let window: Any
+    let window: Any
     /// `false` after the first scene update.
     private var isFirstUpdate = true
     /// The environment most recently provided by this node's parent scene.

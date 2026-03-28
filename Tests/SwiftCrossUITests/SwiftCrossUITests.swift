@@ -116,6 +116,45 @@ struct SwiftCrossUITests {
         #expect(child.size == expectedSize.vector)
     }
 
+    @Test("Ensure that preferredColorScheme modifier works")
+    @MainActor
+    func testPreferredColorScheme() async throws {
+        let backend = DummyBackend()
+        let environment = EnvironmentValues(backend: backend)
+            .with(\.defaultLaunchBehavior, .presented)
+
+        #expect(environment.colorScheme == .light)
+
+        let ambientColorScheme = Box<ColorScheme?>(nil)
+
+        struct TestView: View {
+            @Environment(\.colorScheme) var colorScheme
+            var ambientColorScheme: Box<ColorScheme?>
+
+            var body: some View {
+                VStack {
+                    Text("Button")
+                    Button("Button") {}
+                        .preferredColorScheme(.dark)
+                }
+                .onChange(of: colorScheme) {
+                    ambientColorScheme.value = colorScheme
+                }
+            }
+        }
+
+        let scene = Window("Test", id: "test") {
+            TestView(ambientColorScheme: ambientColorScheme)
+        }
+
+        let node = type(of: scene).Node(from: scene, backend: backend, environment: environment)
+        node.update(backend: backend, environment: environment)
+
+        let window = node.windowReference!.window as! DummyBackend.Window
+        #expect(window.colorScheme == .dark)
+        #expect(ambientColorScheme.value == .dark)
+    }
+
     #if canImport(AppKitBackend)
         @Test("Ensure that a basic view has the expected dimensions under AppKitBackend")
         @MainActor
