@@ -35,7 +35,7 @@ public final class WindowNode<Content: View>: SceneGraphNode {
     /// the window's view graph.
     ///
     /// `nil` if the window is closed.
-    private var windowReference: WindowReference<Window<Content>>? = nil
+    var windowReference: WindowReference<Window<Content>>? = nil
 
     /// The underlying scene.
     private var scene: Window<Content>

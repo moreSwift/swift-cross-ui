@@ -1,4 +1,5 @@
 import CGtk3
+import Gtk3CHelpers
 import Foundation
 import Gtk3
 import SwiftCrossUI
@@ -35,6 +36,7 @@ public final class Gtk3Backend: AppBackend {
     public let deviceClass = DeviceClass.desktop
     public let supportedDatePickerStyles: [DatePickerStyle] = []
     public let supportedPickerStyles: [BackendPickerStyle] = []
+    public let canOverrideWindowColorScheme = false
 
     var gtkApp: Application
 
@@ -79,7 +81,7 @@ public final class Gtk3Backend: AppBackend {
     public init(appIdentifier: String?) {
         gtkApp = Application(
             applicationId: appIdentifier ?? "com.example.SwiftCrossUIApp",
-            flags: G_APPLICATION_HANDLES_OPEN
+            flags: SHIM_G_APPLICATION_HANDLES_OPEN
         )
         gtkApp.registerSession = true
     }
@@ -174,6 +176,10 @@ public final class Gtk3Backend: AppBackend {
         }
 
         return window
+    }
+
+    public func updateWindow(_ window: Window, environment: EnvironmentValues) {
+        // TODO(stackotter): Support preferredColorScheme
     }
 
     public func setTitle(ofWindow window: Window, to title: String) {

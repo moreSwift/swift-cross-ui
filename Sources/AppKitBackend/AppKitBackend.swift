@@ -31,6 +31,7 @@ public final class AppKitBackend: AppBackend {
     public let supportedPickerStyles: [BackendPickerStyle] = [
         .menu, .segmented, .radioGroup,
     ]
+    public let canOverrideWindowColorScheme = true
 
     public var scrollBarWidth: Int {
         // We assume that all scrollers have their controlSize set to `.regular` by default.
@@ -89,6 +90,10 @@ public final class AppKitBackend: AppBackend {
         window.isReleasedWhenClosed = false
 
         return window
+    }
+
+    public func updateWindow(_ window: Window, environment: EnvironmentValues) {
+        window.appearance = environment.colorScheme.nsAppearance
     }
 
     public func size(ofWindow window: Window) -> SIMD2<Int> {

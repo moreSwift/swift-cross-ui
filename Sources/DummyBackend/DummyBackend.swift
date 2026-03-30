@@ -16,6 +16,7 @@ public final class DummyBackend: AppBackend {
         public var resizeHandler: ((SIMD2<Int>) -> Void)?
         public var closeHandler: (() -> Void)?
         public var phase = ScenePhase.inactive
+        public var colorScheme = ColorScheme.light
 
         public init(defaultSize: SIMD2<Int>?) {
             size = defaultSize ?? Self.defaultSize
@@ -262,6 +263,7 @@ public final class DummyBackend: AppBackend {
     public var supportsMultipleWindows = true
     public var supportedDatePickerStyles: [DatePickerStyle] = []
     public var supportedPickerStyles: [BackendPickerStyle] = []
+    public let canOverrideWindowColorScheme = true
 
     public var incomingURLHandler: ((URL) -> Void)?
     public var appPhase = AppPhase.active
@@ -274,6 +276,10 @@ public final class DummyBackend: AppBackend {
 
     public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
         Window(defaultSize: defaultSize)
+    }
+
+    public func updateWindow(_ window: Window, environment: EnvironmentValues) {
+        window.colorScheme = environment.colorScheme
     }
 
     public func setTitle(ofWindow window: Window, to title: String) {

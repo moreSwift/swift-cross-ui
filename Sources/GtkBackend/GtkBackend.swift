@@ -2,6 +2,7 @@ import CGtk
 import Foundation
 import Gtk
 import SwiftCrossUI
+import GtkCHelpers
 
 extension App {
     public typealias Backend = GtkBackend
@@ -40,6 +41,7 @@ public final class GtkBackend: AppBackend {
     public let defaultSheetCornerRadius = 10
     public let supportedDatePickerStyles: [DatePickerStyle] = [.automatic, .graphical]
     public let supportedPickerStyles: [BackendPickerStyle] = [.menu]
+    public let canOverrideWindowColorScheme = false
 
     var gtkApp: Application
 
@@ -86,7 +88,7 @@ public final class GtkBackend: AppBackend {
     public init(appIdentifier: String?) {
         gtkApp = Application(
             applicationId: appIdentifier ?? "com.example.SwiftCrossUIApp",
-            flags: G_APPLICATION_HANDLES_OPEN
+            flags: SHIM_G_APPLICATION_HANDLES_OPEN
         )
         gtkApp.registerSession = true
     }
@@ -165,6 +167,10 @@ public final class GtkBackend: AppBackend {
         window.setChild(Gtk.Box())
 
         return window
+    }
+
+    public func updateWindow(_ window: Window, environment: EnvironmentValues) {
+        // TODO(stackotter): Support preferredColorScheme
     }
 
     public func setTitle(ofWindow window: Window, to title: String) {

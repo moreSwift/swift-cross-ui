@@ -1,4 +1,5 @@
 import CGtk
+import GtkCHelpers
 
 public class GSimpleAction: GAction, GObjectRepresentable {
     public var actionPointer: OpaquePointer
@@ -65,7 +66,7 @@ public class GSimpleAction: GAction, GObjectRepresentable {
             { data, _ in
                 Unmanaged<AnyObject>.fromOpaque(data!).release()
             },
-            G_CONNECT_AFTER
+            SHIM_G_CONNECT_AFTER
         )
     }
 }

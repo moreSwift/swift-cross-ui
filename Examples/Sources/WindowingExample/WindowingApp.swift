@@ -230,7 +230,7 @@ struct WindowingApp: App {
             return Bundle.main.bundleURL.appendingPathComponent(
                 "Contents/Resources/Banner.png"
             )
-        #elseif os(Linux) || os(Windows)
+        #elseif os(iOS) || os(Linux) || os(Windows)
             return Bundle.main.bundleURL.appendingPathComponent(
                 "Examples_WindowingExample.bundle/Banner.png"
             )
@@ -288,7 +288,7 @@ struct WindowingApp: App {
         .commands {
             CommandMenu("Demo menu") {
                 Button("Menu item") {}
-                Toggle("Toggle", active: $toggle)
+                Toggle("Toggle", isOn: $toggle)
 
                 Divider()
 
