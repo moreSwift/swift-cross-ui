@@ -9,10 +9,10 @@ public struct ScenePhase: Hashable, Sendable {
     /// The scene is currently active.
     ///
     /// This indicates that the scene has focus and can recieve input events.
-    static let active = Self(phase: .active)
+    public static let active = Self(phase: .active)
     /// The scene is currently inactive.
     ///
     /// This indicates that the scene does not have focus and does not recieve
     /// input events. The scene may or may not still be visible to the user.
-    static let inactive = Self(phase: .inactive)
+    public static let inactive = Self(phase: .inactive)
 }

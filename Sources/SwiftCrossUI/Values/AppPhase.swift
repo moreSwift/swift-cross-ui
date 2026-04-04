@@ -28,7 +28,7 @@ public struct AppPhase: Hashable, Sendable {
     ///
     /// The `active` phase requires no special handling, as it is the "default"
     /// phase where normal interaction occurs.
-    static let active = Self(phase: .active)
+    public static let active = Self(phase: .active)
     /// The app is currently inactive, but is still in the foreground.
     ///
     /// On desktop backends, this indicates that another app currently has
@@ -41,7 +41,7 @@ public struct AppPhase: Hashable, Sendable {
     /// but is still considered "in the foreground" by the system. The exact
     /// details can vary between backends; we recommend against special
     /// treatment of the `inactive` phase on mobile for this reason.
-    static let inactive = Self(phase: .inactive)
+    public static let inactive = Self(phase: .inactive)
     /// The app is in the background.
     ///
     /// On mobile backends, apps reach the `background` phase when the user or
@@ -53,5 +53,5 @@ public struct AppPhase: Hashable, Sendable {
     ///   phase due to memory pressure or other reasons.
     ///
     /// This phase is currently never reached on desktop backends.
-    static let background = Self(phase: .background)
+    public static let background = Self(phase: .background)
 }
