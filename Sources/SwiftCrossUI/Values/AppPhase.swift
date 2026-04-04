@@ -11,11 +11,15 @@
 /// function should implement. Generally speaking, if the app is in the
 /// ``AppPhase/inactive`` or ``AppPhase/background`` phases, all of its
 /// windows should be in the ``ScenePhase/inactive`` phase.
-#if compiler(>=6.2.3)
-    @nonexhaustive
-#endif
-public enum AppPhase: Hashable, Sendable {
+public struct AppPhase: Hashable, Sendable {
     // TODO: Figure out how .background could work on desktops
+
+    private enum Phase: Hashable, Sendable {
+        case active
+        case inactive
+        case background
+    }
+    private var phase: Phase
 
     /// The app is currently active.
     ///
@@ -24,7 +28,7 @@ public enum AppPhase: Hashable, Sendable {
     ///
     /// The `active` phase requires no special handling, as it is the "default"
     /// phase where normal interaction occurs.
-    case active
+    static let active = Self(phase: .active)
     /// The app is currently inactive, but is still in the foreground.
     ///
     /// On desktop backends, this indicates that another app currently has
@@ -37,7 +41,7 @@ public enum AppPhase: Hashable, Sendable {
     /// but is still considered "in the foreground" by the system. The exact
     /// details can vary between backends; we recommend against special
     /// treatment of the `inactive` phase on mobile for this reason.
-    case inactive
+    static let inactive = Self(phase: .inactive)
     /// The app is in the background.
     ///
     /// On mobile backends, apps reach the `background` phase when the user or
@@ -49,5 +53,5 @@ public enum AppPhase: Hashable, Sendable {
     ///   phase due to memory pressure or other reasons.
     ///
     /// This phase is currently never reached on desktop backends.
-    case background
+    static let background = Self(phase: .background)
 }
