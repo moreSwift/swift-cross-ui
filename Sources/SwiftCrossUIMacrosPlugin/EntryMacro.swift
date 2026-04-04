@@ -122,7 +122,13 @@ public struct EntryMacro: AccessorMacro, PeerMacro {
 
         let typeDeclaration: String
         if let typeName = patternBinding.type?.normalizedDescription {
-            typeDeclaration = ": \(typeName)"
+            // NB: Swift won't automatically infer the `Value` type if it's an
+            // implicitly unwrapped optional.
+            typeDeclaration = if typeName.hasSuffix("!") {
+                ": \(typeName.dropLast())?"
+            } else {
+                ": \(typeName)"
+            }
         } else {
             typeDeclaration = ""
         }
@@ -130,7 +136,8 @@ public struct EntryMacro: AccessorMacro, PeerMacro {
         // Verify defaultValue
         let defaultValueDeclaration: String
         if patternBinding.initialValue == nil,
-            patternBinding.type?.isOptional == true
+            let type = patternBinding.type,
+            type.isOptional || type._syntax.trimmedDescription.hasSuffix("!")
         {
             defaultValueDeclaration = "static let defaultValue\(typeDeclaration) = nil"
         } else if let initialValue = patternBinding.initialValue?._syntax.trimmedDescription {
