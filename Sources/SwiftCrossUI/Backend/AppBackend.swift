@@ -292,26 +292,7 @@ public protocol AppBackend: Sendable {
         ofWindow window: Window,
         to action: @escaping () -> Void
     )
-
-    /// Returns the given window's current lifecycle phase.
-    ///
-    /// See the documentation for ``ScenePhase`` for tips on the behavior this
-    /// function should implement.
-    func windowLifecyclePhase(_ window: Window) -> ScenePhase
-
-    /// Returns the application's current lifecycle phase.
-    ///
-    /// Usually this returns ``AppPhase/active`` if and only if any of the app's
-    /// windows are active, but on platforms such as macOS it can also return
-    /// `active` if the app doesn't have any open windows but still appears in
-    /// the menu bar.
-    ///
-    /// See the documentation for ``AppPhase`` for tips on the behavior this
-    /// function should implement. Generally speaking, if the app is in the
-    /// ``AppPhase/inactive`` or ``AppPhase/background`` phases, all of its
-    /// windows should be in the ``ScenePhase/inactive`` phase.
-    func applicationLifecyclePhase() -> AppPhase
-
+    
     /// Sets the application's global menu.
     ///
     /// Some backends may make use of the host platform's global menu bar
@@ -1569,15 +1550,7 @@ extension AppBackend {
         todo()
     }
 
-    public func windowLifecyclePhase(_ window: Window) -> ScenePhase {
-        todo()
-    }
-
     // MARK: Application
-
-    public func applicationLifecyclePhase() -> AppPhase {
-        todo()
-    }
 
     public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
         todo()

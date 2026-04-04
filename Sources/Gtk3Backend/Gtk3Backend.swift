@@ -373,18 +373,6 @@ public final class Gtk3Backend: AppBackend {
         window.present()
     }
 
-    public func windowLifecyclePhase(_ window: Window) -> ScenePhase {
-        if window.isActive { .active } else { .inactive }
-    }
-
-    public func applicationLifecyclePhase() -> AppPhase {
-        if windows.contains(where: \.isActive) {
-            .active
-        } else {
-            .inactive
-        }
-    }
-
     public func close(window: Window) {
         window.close()
 
@@ -519,6 +507,7 @@ public final class Gtk3Backend: AppBackend {
 
     public func computeRootEnvironment(defaultEnvironment: EnvironmentValues) -> EnvironmentValues {
         defaultEnvironment
+            .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
@@ -537,7 +526,9 @@ public final class Gtk3Backend: AppBackend {
         rootEnvironment: EnvironmentValues
     ) -> EnvironmentValues {
         let windowScaleFactor = Int(gtk_widget_get_scale_factor(window.widgetPointer))
-        return rootEnvironment.with(\.windowScaleFactor, Double(windowScaleFactor))
+        return rootEnvironment
+            .with(\.windowScaleFactor, Double(windowScaleFactor))
+            .with(\.scenePhase, window.isActive ? .active : .inactive)
     }
 
     public func setWindowEnvironmentChangeHandler(

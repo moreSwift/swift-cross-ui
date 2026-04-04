@@ -304,18 +304,6 @@ public final class WinUIBackend: AppBackend {
         try! window.activate()
     }
 
-    public func windowLifecyclePhase(_ window: Window) -> ScenePhase {
-        if window.isActive { .active } else { .inactive }
-    }
-
-    public func applicationLifecyclePhase() -> AppPhase {
-        if windows.contains(where: \.isActive) {
-            .active
-        } else {
-            .inactive
-        }
-    }
-
     public func close(window: Window) {
         try! window.close()
     }
@@ -407,6 +395,7 @@ public final class WinUIBackend: AppBackend {
         return
             defaultEnvironment
             .with(\.colorScheme, isLight ? .light : .dark)
+            .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
@@ -423,6 +412,7 @@ public final class WinUIBackend: AppBackend {
         // TODO: Compute window scale factor (easy enough, but we would also have to keep
         //   it up-to-date then, which is kinda annoying for now)
         rootEnvironment
+            .with(\.scenePhase, window.isActive ? .active : .inactive)
     }
 
     public func setWindowEnvironmentChangeHandler(

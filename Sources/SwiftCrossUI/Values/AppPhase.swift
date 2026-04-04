@@ -1,4 +1,16 @@
 /// A phase of an app's lifecycle.
+///
+/// # Backend Developer Notes
+///
+/// Usually ``EnvironmentValues/appPhase`` returns ``AppPhase/active`` if
+/// and only if any of the app's windows are active, but on platforms such
+/// as macOS it can also return `active` if the app doesn't have any open
+/// windows but still appears in the menu bar.
+///
+/// See the documentation for ``AppPhase`` for tips on the behavior this
+/// function should implement. Generally speaking, if the app is in the
+/// ``AppPhase/inactive`` or ``AppPhase/background`` phases, all of its
+/// windows should be in the ``ScenePhase/inactive`` phase.
 #if compiler(>=6.2.3)
     @nonexhaustive
 #endif

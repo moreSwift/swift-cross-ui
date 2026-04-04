@@ -136,27 +136,6 @@ extension UIKitBackend {
         window.makeKeyAndVisible()
     }
 
-    public func windowLifecyclePhase(_ window: Window) -> ScenePhase {
-        if window.isKeyWindow { .active } else { .inactive }
-    }
-
-    public func applicationLifecyclePhase() -> AppPhase {
-        switch UIApplication.shared.applicationState {
-            case .active: return .active
-            case .inactive: return .inactive
-            case .background: return .background
-            @unknown default:
-                logger.warning(
-                    """
-                    UIApplication.applicationState returned unknown state
-                    '\(UIApplication.shared.applicationState)'; ignoring and returning
-                    'active' instead
-                    """
-                )
-                return .active
-        }
-    }
-
     public func close(window: Window) {
         logger.notice("UIKitBackend: ignoring \(#function) call")
     }

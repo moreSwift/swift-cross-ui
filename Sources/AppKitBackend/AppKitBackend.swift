@@ -174,24 +174,6 @@ public final class AppKitBackend: AppBackend {
         window.makeKeyAndOrderFront(nil)
     }
 
-    public func windowLifecyclePhase(_ window: Window) -> ScenePhase {
-        if window.isKeyWindow {
-            .active
-        } else {
-            .inactive
-        }
-    }
-
-    public func applicationLifecyclePhase() -> AppPhase {
-        if NSApplication.shared.isHidden {
-            .background
-        } else if NSApplication.shared.isActive {
-            .active
-        } else {
-            .inactive
-        }
-    }
-
     public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
         MenuBar.setUpMenuBar(extraMenus: submenus.map(Self.renderSubmenu(_:)))
     }
@@ -280,6 +262,7 @@ public final class AppKitBackend: AppBackend {
         return
             defaultEnvironment
             .with(\.colorScheme, isDark ? .dark : .light)
+            .with(\.appPhase, NSApplication.shared.isActive ? .active : .inactive)
     }
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
@@ -334,7 +317,9 @@ public final class AppKitBackend: AppBackend {
     ) -> EnvironmentValues {
         window.lastBackingScaleFactor = window.backingScaleFactor
 
-        return rootEnvironment.with(\.windowScaleFactor, window.backingScaleFactor)
+        return rootEnvironment
+            .with(\.windowScaleFactor, window.backingScaleFactor)
+            .with(\.scenePhase, window.isKeyWindow ? .active : .inactive)
     }
 
     public func setWindowEnvironmentChangeHandler(

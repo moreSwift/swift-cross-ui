@@ -176,6 +176,21 @@ public final class UIKitBackend: AppBackend {
                 break
         }
 
+        switch UIApplication.shared.applicationState {
+            case .active: environment.appPhase = .active
+            case .inactive: environment.appPhase = .inactive
+            case .background: environment.appPhase = .background
+            @unknown default:
+                logger.warning(
+                    """
+                    UIApplication.applicationState returned unknown state
+                    '\(UIApplication.shared.applicationState)'; ignoring and returning
+                    'active' instead
+                    """
+                )
+                environment.appPhase = .active
+        }
+
         return environment
     }
 
@@ -216,6 +231,7 @@ public final class UIKitBackend: AppBackend {
     ) -> EnvironmentValues {
         // TODO: Record window scale factor in here
         rootEnvironment
+            .with(\.scenePhase, window.isKeyWindow ? .active : .inactive)
     }
 
     public func setWindowEnvironmentChangeHandler(

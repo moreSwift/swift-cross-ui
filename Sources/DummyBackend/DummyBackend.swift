@@ -334,15 +334,7 @@ public final class DummyBackend: AppBackend {
     public func activate(window: Window) {
         window.phase = .active
     }
-
-    public func windowLifecyclePhase(_ window: Window) -> ScenePhase {
-        window.phase
-    }
-
-    public func applicationLifecyclePhase() -> AppPhase {
-        appPhase
-    }
-
+    
     public func close(window: Window) {
         window.closeHandler?()
     }
@@ -359,6 +351,7 @@ public final class DummyBackend: AppBackend {
 
     public func computeRootEnvironment(defaultEnvironment: EnvironmentValues) -> EnvironmentValues {
         defaultEnvironment
+            .with(\.appPhase, appPhase)
     }
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {}
@@ -367,6 +360,7 @@ public final class DummyBackend: AppBackend {
         -> EnvironmentValues
     {
         rootEnvironment
+            .with(\.scenePhase, window.phase)
     }
 
     public func setWindowEnvironmentChangeHandler(

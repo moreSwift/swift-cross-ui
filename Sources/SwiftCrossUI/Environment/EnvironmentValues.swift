@@ -184,31 +184,6 @@ public struct EnvironmentValues {
         RevealFileAction(backend: backend)
     }
 
-    /// The current scene's lifecycle phase.
-    @MainActor
-    public var scenePhase: ScenePhase {
-        func scenePhase<Backend: AppBackend>(backend: Backend) -> ScenePhase {
-            guard let window else {
-                fatalError(
-                    """
-                    'scenePhase' accessed from outside a scene; you probably \
-                    meant to use 'appPhase' instead
-                    """
-                )
-            }
-
-            return backend.windowLifecyclePhase(window as! Backend.Window)
-        }
-
-        return scenePhase(backend: backend)
-    }
-
-    /// The app's lifecycle phase.
-    @MainActor
-    public var appPhase: AppPhase {
-        backend.applicationLifecyclePhase()
-    }
-
     /// Whether the backend can have multiple windows open at once. Mobile
     /// backends generally can't.
     @MainActor
@@ -371,6 +346,27 @@ extension EnvironmentValues {
         set {
             openWindowFunctionsByIDStore.wrappedValue = newValue
         }
+    }
+
+    /// The app's lifecycle phase.
+    ///
+    /// Unlike in SwiftUI, where the app's lifecycle phase can only be accessed
+    /// by using `@Environment(\.scenePhase)` directly on the ``App`` struct, this
+    /// environment value can be accessed from anywhere within the application.
+    @Entry public package(set) var appPhase: AppPhase = .active
+
+    /// The current scene's lifecycle phase.
+    ///
+    /// - Important: Unlike SwiftUI, this environment value cannot be accessed from
+    ///   outside a scene. If you need to access the phase of the entire application,
+    ///   use ``appPhase`` instead.
+    public package(set) var scenePhase: ScenePhase! {
+        // NB: Waiting on PR #511 to let us use `Entry` for implicitly unwrapped optionals
+        get { self[__Key_scenePhase.self] }
+        set { self[__Key_scenePhase.self] = newValue }
+    }
+    private struct __Key_scenePhase: EnvironmentKey {
+        static let defaultValue: ScenePhase? = nil
     }
 
     /// Backing store for ``EnvironmentValues/window``.

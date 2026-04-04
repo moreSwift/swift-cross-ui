@@ -267,18 +267,6 @@ public final class GtkBackend: AppBackend {
         window.present()
     }
 
-    public func windowLifecyclePhase(_ window: Window) -> ScenePhase {
-        if window.isActive { .active } else { .inactive }
-    }
-
-    public func applicationLifecyclePhase() -> AppPhase {
-        if windows.contains(where: \.isActive) {
-            .active
-        } else {
-            .inactive
-        }
-    }
-
     public func close(window: Window) {
         window.close()
     }
@@ -487,6 +475,7 @@ public final class GtkBackend: AppBackend {
 
     public func computeRootEnvironment(defaultEnvironment: EnvironmentValues) -> EnvironmentValues {
         defaultEnvironment
+            .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
@@ -506,6 +495,7 @@ public final class GtkBackend: AppBackend {
     ) -> EnvironmentValues {
         // TODO: Record window scale factor in here
         rootEnvironment
+            .with(\.scenePhase, window.isActive ? .active : .inactive)
     }
 
     public func setWindowEnvironmentChangeHandler(
