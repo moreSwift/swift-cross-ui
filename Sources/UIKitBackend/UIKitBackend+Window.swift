@@ -142,9 +142,18 @@ extension UIKitBackend {
 
     public func applicationLifecyclePhase() -> AppPhase {
         switch UIApplication.shared.applicationState {
-            case .active: .active
-            case .inactive: .inactive
-            case .background: .background
+            case .active: return .active
+            case .inactive: return .inactive
+            case .background: return .background
+            @unknown default:
+                logger.warning(
+                    """
+                    UIApplication.applicationState returned unknown state
+                    '\(UIApplication.shared.applicationState)'; ignoring and returning
+                    'active' instead
+                    """
+                )
+                return .active
         }
     }
 

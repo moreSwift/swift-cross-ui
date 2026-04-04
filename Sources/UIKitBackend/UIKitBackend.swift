@@ -204,7 +204,7 @@ public final class UIKitBackend: AppBackend {
                 forName: notification,
                 object: nil,
                 queue: .main
-            ) { [unowned self] _ in
+            ) { _ in
                 action()
             }
         }
@@ -445,7 +445,7 @@ open class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         UIKitBackend.onWindowEnvironmentChange?()
     }
 
-    open func sceneWillEnterBackground(_ scene: UIScene) {
+    open func sceneDidEnterBackground(_ scene: UIScene) {
         UIKitBackend.onWindowEnvironmentChange?()
     }
 }

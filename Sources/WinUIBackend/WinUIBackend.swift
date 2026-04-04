@@ -85,8 +85,8 @@ public final class WinUIBackend: AppBackend {
         var sliderChangeActions: [ObjectIdentifier: (Double) -> Void] = [:]
         var textFieldChangeActions: [ObjectIdentifier: (String) -> Void] = [:]
         var textFieldSubmitActions: [ObjectIdentifier: () -> Void] = [:]
-        var themeChangeAction: (() -> Void)?
     }
+    private var rootEnvironmentChangeHandler: (() -> Void)?
 
     var internalState: InternalState
     nonisolated(unsafe) private var dispatcherQueue: WinAppSDK.DispatcherQueue?
@@ -137,7 +137,7 @@ public final class WinUIBackend: AppBackend {
 
             // Handle theme changes
             UWP.UISettings().colorValuesChanged.addHandler { _, _ in
-                self.internalState.themeChangeAction?()
+                self.rootEnvironmentChangeHandler?()
             }
 
             // TODO: Read in previously hardcoded values from the application's
@@ -292,7 +292,7 @@ public final class WinUIBackend: AppBackend {
         window.setChild(widget)
         try! widget.updateLayout()
         widget.actualThemeChanged.addHandler { _, _ in
-            self.internalState.themeChangeAction?()
+            self.rootEnvironmentChangeHandler?()
         }
     }
 
@@ -410,8 +410,7 @@ public final class WinUIBackend: AppBackend {
     }
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
-        internalState.themeChangeAction = action
-
+        self.rootEnvironmentChangeHandler = action
         for window in windows {
             window.activated.addHandler { _, _ in action() }
         }
@@ -433,7 +432,10 @@ public final class WinUIBackend: AppBackend {
         // TODO: Notify when window scale factor changes
 
         // NB: This event fires when the window is activated _or_ deactivated.
-        window.activated.addHandler { _, _ in action() }
+        window.activated.addHandler { _, _ in
+            self?.rootEnvironmentChangeHandler()
+            action()
+        }
     }
 
     public func setIncomingURLHandler(to action: @escaping (URL) -> Void) {
@@ -2270,7 +2272,7 @@ public class CustomWindow: WinUI.Window {
             switch args?.windowActivationState {
                 case .codeActivated, .pointerActivated: self?.isActive = true
                 case .deactivated: self?.isActive = false
-                default: break
+                case nil: break
             }
         }
 

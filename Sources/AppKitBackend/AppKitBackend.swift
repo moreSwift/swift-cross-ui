@@ -175,7 +175,11 @@ public final class AppKitBackend: AppBackend {
     }
 
     public func windowLifecyclePhase(_ window: Window) -> ScenePhase {
-        if window.isKeyWindow { .active } else { .inactive }
+        if window.isKeyWindow {
+            .active
+        } else {
+            .inactive
+        }
     }
 
     public func applicationLifecyclePhase() -> AppPhase {
@@ -307,7 +311,7 @@ public final class AppKitBackend: AppBackend {
             action()
         }
 
-        // For updating views that rely on `scenePhase`
+        // For updating views that rely on `appPhase`
         NotificationCenter.default.addObserver(
             forName: NSApplication.didBecomeActiveNotification,
             object: nil,

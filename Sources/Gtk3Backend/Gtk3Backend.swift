@@ -49,6 +49,8 @@ public final class Gtk3Backend: AppBackend {
     /// precreated window until it gets 'created' via `createWindow`.
     var windows: [Window] = []
 
+    private var rootEnvironmentChangeHandler: (() -> Void)?
+
     private struct LogLocation: Hashable, Equatable {
         let file: String
         let line: Int
@@ -521,7 +523,8 @@ public final class Gtk3Backend: AppBackend {
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
         // TODO: React to theme changes
-
+        
+        self.rootEnvironmentChangeHandler = action
         for window in windows {
             window.notifyIsActive = { _ in
                 action()
@@ -540,12 +543,13 @@ public final class Gtk3Backend: AppBackend {
     public func setWindowEnvironmentChangeHandler(
         of window: Window,
         to action: @escaping () -> Void
-    ) {        
+    ) {
         window.notifyScaleFactor = { _ in
             action()
         }
-        window.notifyIsActive = { _ in
+        window.notifyIsActive = { [rootEnvironmentChangeHandler] _ in
             action()
+            rootEnvironmentChangeHandler?()
         }
     }
 

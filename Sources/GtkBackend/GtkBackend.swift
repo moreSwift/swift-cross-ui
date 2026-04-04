@@ -54,6 +54,8 @@ public final class GtkBackend: AppBackend {
     /// precreated window until it gets 'created' via `createWindow`.
     var windows: [Window] = []
 
+    private var rootEnvironmentChangeHandler: (() -> Void)?
+
     private var measurementCustomLabel: CustomLabel!
 
     private struct LogLocation: Hashable, Equatable {
@@ -489,7 +491,8 @@ public final class GtkBackend: AppBackend {
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
         // TODO: React to theme changes
-        
+
+        self.rootEnvironmentChangeHandler = action
         for window in windows {
             window.notifyIsActive = { _ in
                 action()
@@ -510,9 +513,10 @@ public final class GtkBackend: AppBackend {
         to action: @escaping () -> Void
     ) {
         // TODO: Notify when window scale factor changes
-
-        window.notifyIsActive = { _ in
+        
+        window.notifyIsActive = { [rootEnvironmentChangeHandler] _ in
             action()
+            rootEnvironmentChangeHandler?()
         }
     }
 
