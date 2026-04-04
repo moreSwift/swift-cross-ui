@@ -433,7 +433,7 @@ public final class WinUIBackend: AppBackend {
 
         // NB: This event fires when the window is activated _or_ deactivated.
         window.activated.addHandler { _, _ in
-            self?.rootEnvironmentChangeHandler()
+            self.rootEnvironmentChangeHandler?()
             action()
         }
     }
@@ -2272,7 +2272,11 @@ public class CustomWindow: WinUI.Window {
             switch args?.windowActivationState {
                 case .codeActivated, .pointerActivated: self?.isActive = true
                 case .deactivated: self?.isActive = false
-                case nil: break
+
+                // NB: The compiler apparently thinks we didn't exhaustively switch
+                // over this enum without this `default` (even after adding a `case nil`).
+                // Might be because it doesn't treat the underlying C enum as a Swift enum?
+                default: break
             }
         }
 
