@@ -75,11 +75,14 @@ extension Text: ElementaryView {
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
+        let transformedString = environment.applyingTextTransforms(to: string)
+
         // TODO: Avoid this. Move it to commit once we figure out a solution for Gtk.
         // Even in dry runs we must update the underlying text view widget
         // because GtkBackend currently relies on querying the widget for text
         // properties and such (via Pango).
-        backend.updateTextView(widget, content: string, environment: environment)
+        backend
+            .updateTextView(widget, content: transformedString, environment: environment)
 
         // UI frameworks often handle the zero proposal specially. We want to
         // have standard text sizing behaviour so it's better for us to never
@@ -96,7 +99,7 @@ extension Text: ElementaryView {
         // A zero height proposal should result in the text using at least one
         // line of height (if non-empty).
         var size = backend.size(
-            of: string,
+            of: transformedString,
             whenDisplayedIn: widget,
             proposedWidth: proposedSize.width.flatMap {
                 // For text, an infinite proposal is the same as an unspecified
