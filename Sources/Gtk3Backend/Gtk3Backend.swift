@@ -11,12 +11,19 @@ extension App {
     }
 }
 
-public final class Gtk3Backend: AppBackend.Full {
+public final class Gtk3Backend:
+    AppBackend.Base,
+    AppBackend.IncomingURLs,
+    AppBackend.ExternalURLs,
+    AppBackend.RevealFile,
+    AppBackend.ApplicationMenus,
+    AppBackend.FileDialogs,
+    AppBackend.Alerts
+{
     public typealias Window = Gtk3.ApplicationWindow
     public typealias Widget = Gtk3.Widget
     public typealias Menu = Gtk3.Menu
     public typealias Alert = Gtk3.MessageDialog
-    public typealias Sheet = Gtk3.Window
 
     public final class Path {
         var path: SwiftCrossUI.Path?

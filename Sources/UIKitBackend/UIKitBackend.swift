@@ -8,7 +8,8 @@ public final class UIKitBackend:
     AppBackend.ExternalURLs,
     AppBackend.IncomingURLs,
     AppBackend.FileDialogs,
-    AppBackend.Alerts
+    AppBackend.Alerts,
+    AppBackend.Sheets
 {
     static var onBecomeActive: (() -> Void)?
     static var onReceiveURL: ((URL) -> Void)?

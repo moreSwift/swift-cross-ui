@@ -1,7 +1,7 @@
 import Foundation
 import SwiftCrossUI
 
-public final class DummyBackend: AppBackend.Base, AppBackend.ApplicationMenus, AppBackend.IncomingURLs {
+public final class DummyBackend: AppBackend.Base, AppBackend.IncomingURLs {
     public class Window {
         static let defaultSize = SIMD2<Int>(400, 200)
 
@@ -238,11 +238,7 @@ public final class DummyBackend: AppBackend.Base, AppBackend.ApplicationMenus, A
 
     public class Menu {}
 
-    public class Alert {}
-
     public class Path {}
-
-    public class Sheet {}
 
     public var defaultTableRowContentHeight = 10
     public var defaultTableCellVerticalPadding = 10
