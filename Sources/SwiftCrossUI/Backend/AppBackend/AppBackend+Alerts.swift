@@ -69,32 +69,3 @@ extension AppBackend {
         func dismissAlert(_ alert: Alert, window: Window?)
     }
 }
-
-// MARK: Default Implementations
-
-extension AppBackend.Alerts {
-    public func createAlert() -> Alert {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updateAlert(
-        _ alert: Alert,
-        title: String,
-        actionLabels: [String],
-        environment: EnvironmentValues
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func showAlert(
-        _ alert: Alert,
-        window: Window?,
-        responseHandler handleResponse: @escaping (Int) -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func dismissAlert(_ alert: Alert, window: Window?) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-}

@@ -21,7 +21,7 @@ public struct PresentAlertAction {
     ) async -> Int {
         let actions = actions()
 
-        func presentAlert<Backend: AppBackend.Base>(backend: Backend) async -> Int {
+        func presentAlert<Backend: AppBackend.Alerts>(backend: Backend) async -> Int {
             await withCheckedContinuation { continuation in
                 backend.runInMainThread {
                     let alert = backend.createAlert()
@@ -40,6 +40,9 @@ public struct PresentAlertAction {
             }
         }
 
-        return await presentAlert(backend: environment.backend)
+        guard let backend = environment.backend as? any AppBackend.Alerts else {
+            fatalError("\(type(of: environment.backend)) does not support alerts")
+        }
+        return await presentAlert(backend: backend)
     }
 }

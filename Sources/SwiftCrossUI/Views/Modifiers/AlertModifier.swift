@@ -88,29 +88,36 @@ struct AlertModifierView<Child: View>: TypeSafeView {
     ) {
         _ = children.childNode.commit()
 
-        if isPresented.wrappedValue && children.alert == nil {
-            let alert = backend.createAlert()
-            backend.updateAlert(
-                alert,
-                title: title,
-                actionLabels: actions.map(\.label),
-                environment: environment
-            )
-            backend.showAlert(
-                alert,
-                window: .some(environment.window! as! Backend.Window)
-            ) { responseId in
+        guard let backend = backend as? any AppBackend.Alerts else {
+            fatalError("\(Backend.self) does not support alerts")
+        }
+        commit(backend: backend)
+
+        func commit<Backend2: AppBackend.Alerts>(backend: Backend2) {
+            if isPresented.wrappedValue && children.alert == nil {
+                let alert = backend.createAlert()
+                backend.updateAlert(
+                    alert,
+                    title: title,
+                    actionLabels: actions.map(\.label),
+                    environment: environment
+                )
+                backend.showAlert(
+                    alert,
+                    window: .some(environment.window! as! Backend2.Window)
+                ) { responseId in
+                    children.alert = nil
+                    isPresented.wrappedValue = false
+                    actions[responseId].action()
+                }
+                children.alert = alert
+            } else if isPresented.wrappedValue == false && children.alert != nil {
+                backend.dismissAlert(
+                    children.alert as! Backend2.Alert,
+                    window: .some(environment.window! as! Backend2.Window)
+                )
                 children.alert = nil
-                isPresented.wrappedValue = false
-                actions[responseId].action()
             }
-            children.alert = alert
-        } else if isPresented.wrappedValue == false && children.alert != nil {
-            backend.dismissAlert(
-                children.alert as! Backend.Alert,
-                window: .some(environment.window! as! Backend.Window)
-            )
-            children.alert = nil
         }
     }
 }

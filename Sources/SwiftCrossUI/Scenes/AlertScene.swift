@@ -62,24 +62,31 @@ public final class AlertSceneNode: SceneGraphNode {
         backend: Backend,
         environment: EnvironmentValues
     ) {
-        if scene.isPresented, alert == nil {
-            let alert = backend.createAlert()
-            backend.updateAlert(
-                alert,
-                title: scene.title,
-                actionLabels: scene.actions.map(\.label),
-                environment: environment
-            )
-            backend.showAlert(alert, window: nil) { responseId in
-                self.alert = nil
-                self.scene.isPresented = false
-                self.scene.actions[responseId].action()
-            }
+        guard let backend = backend as? any AppBackend.Alerts else {
+            fatalError("\(Backend.self) does not support alerts")
+        }
+        update(backend: backend)
 
-            self.alert = alert
-        } else if !scene.isPresented, let alert {
-            backend.dismissAlert(alert as! Backend.Alert, window: nil)
-            self.alert = nil
+        func update<Backend2: AppBackend.Alerts>(backend: Backend2) {
+            if scene.isPresented, alert == nil {
+                let alert = backend.createAlert()
+                backend.updateAlert(
+                    alert,
+                    title: scene.title,
+                    actionLabels: scene.actions.map(\.label),
+                    environment: environment
+                )
+                backend.showAlert(alert, window: nil) { responseId in
+                    self.alert = nil
+                    self.scene.isPresented = false
+                    self.scene.actions[responseId].action()
+                }
+
+                self.alert = alert
+            } else if !scene.isPresented, let alert {
+                backend.dismissAlert(alert as! Backend2.Alert, window: nil)
+                self.alert = nil
+            }
         }
     }
 }

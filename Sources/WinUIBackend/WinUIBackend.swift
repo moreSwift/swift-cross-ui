@@ -33,7 +33,8 @@ public final class WinUIBackend:
     AppBackend.ApplicationMenus,
     AppBackend.ExternalURLs,
     AppBackend.IncomingURLs,
-    AppBackend.FileDialogs
+    AppBackend.FileDialogs,
+    AppBackend.Alerts
 {
     // Logging
     private struct LogLocation: Hashable, Equatable {
