@@ -17,11 +17,11 @@ struct ToggleButton: ElementaryView, View {
         self.active = active
     }
 
-    func asWidget<Backend: AppBackend.Toggles>(backend: Backend) -> Backend.Widget {
+    func asWidget<Backend: AppBackend.Base>(backend: Backend) -> Backend.Widget {
         return backend.createToggle()
     }
 
-    func computeLayout<Backend: AppBackend.Toggles>(
+    func computeLayout<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -39,7 +39,7 @@ struct ToggleButton: ElementaryView, View {
         )
     }
 
-    func commit<Backend: AppBackend.Toggles>(
+    func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

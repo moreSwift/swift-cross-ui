@@ -14,7 +14,7 @@ public struct Group<Content: View>: View {
         body = content
     }
 
-    public func asWidget<Backend: AppBackend.Core>(
+    public func asWidget<Backend: AppBackend.Base>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {

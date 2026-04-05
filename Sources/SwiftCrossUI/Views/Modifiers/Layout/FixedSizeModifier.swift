@@ -48,7 +48,7 @@ struct FixedSizeModifier<Child: View>: TypeSafeView {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    func asWidget<Backend: AppBackend.Core>(
+    func asWidget<Backend: AppBackend.Base>(
         _ children: TupleViewChildren1<Child>,
         backend: Backend
     ) -> Backend.Widget {
@@ -57,7 +57,7 @@ struct FixedSizeModifier<Child: View>: TypeSafeView {
         return container
     }
 
-    func computeLayout<Backend: AppBackend.Core>(
+    func computeLayout<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: TupleViewChildren1<Child>,
         proposedSize: ProposedViewSize,
@@ -83,7 +83,7 @@ struct FixedSizeModifier<Child: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend.Core>(
+    func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: TupleViewChildren1<Child>,
         layout: ViewLayoutResult,

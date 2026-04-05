@@ -96,7 +96,7 @@ public struct EnvironmentValues {
     /// to focus stealing prevention).
     @MainActor
     func bringWindowForward() {
-        func activate<Backend: AppBackend.Core>(with backend: Backend) {
+        func activate<Backend: AppBackend.Base>(with backend: Backend) {
             backend.activate(window: window as! Backend.Window)
         }
         activate(with: backend)

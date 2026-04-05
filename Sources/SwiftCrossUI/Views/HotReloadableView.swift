@@ -37,7 +37,7 @@ public struct HotReloadableView: TypeSafeView {
         )
     }
 
-    func asWidget<Backend: AppBackend.Core>(
+    func asWidget<Backend: AppBackend.Base>(
         _ children: HotReloadableViewChildren,
         backend: Backend
     ) -> Backend.Widget {
@@ -88,7 +88,7 @@ public struct HotReloadableView: TypeSafeView {
         return result
     }
 
-    func commit<Backend: AppBackend.Core>(
+    func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: HotReloadableViewChildren,
         layout: ViewLayoutResult,

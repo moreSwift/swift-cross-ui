@@ -24,7 +24,7 @@ public struct HStack<Content: View>: View {
         self.alignment = alignment
     }
 
-    public func asWidget<Backend: AppBackend.Core>(
+    public func asWidget<Backend: AppBackend.Base>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {

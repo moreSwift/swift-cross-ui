@@ -37,7 +37,7 @@ struct HelpView<Content: View>: View, TypeSafeView {
         backend.createTooltipContainer(wrapping: children.child0.widget.into())
     }
 
-    func computeLayout<Backend: AppBackend.Core>(
+    func computeLayout<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -51,7 +51,7 @@ struct HelpView<Content: View>: View, TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend.Tooltips>(
+    func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,

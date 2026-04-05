@@ -10,11 +10,11 @@ public struct TextEditor: ElementaryView {
         _text = text
     }
 
-    func asWidget<Backend: AppBackend.TextEditors>(backend: Backend) -> Backend.Widget {
+    func asWidget<Backend: AppBackend.Base>(backend: Backend) -> Backend.Widget {
         backend.createTextEditor()
     }
 
-    func computeLayout<Backend: AppBackend.TextViews>(
+    func computeLayout<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -50,7 +50,7 @@ public struct TextEditor: ElementaryView {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    func commit<Backend: AppBackend.TextEditors>(
+    func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

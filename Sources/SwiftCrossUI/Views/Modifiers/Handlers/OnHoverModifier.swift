@@ -30,14 +30,14 @@ struct OnHoverModifier<Content: View>: TypeSafeView {
         )
     }
 
-    func asWidget<Backend: AppBackend.HoverGestures>(
+    func asWidget<Backend: AppBackend.Base>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
         backend.createHoverTarget(wrapping: children.child0.widget.into())
     }
 
-    func computeLayout<Backend: AppBackend.Core>(
+    func computeLayout<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -51,7 +51,7 @@ struct OnHoverModifier<Content: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend.HoverGestures>(
+    func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,

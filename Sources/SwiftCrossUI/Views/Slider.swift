@@ -60,11 +60,11 @@ public struct Slider: ElementaryView, View {
         decimalPlaces = 2
     }
 
-    func asWidget<Backend: AppBackend.Sliders>(backend: Backend) -> Backend.Widget {
+    func asWidget<Backend: AppBackend.Base>(backend: Backend) -> Backend.Widget {
         return backend.createSlider()
     }
 
-    func computeLayout<Backend: AppBackend.Core>(
+    func computeLayout<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -83,7 +83,7 @@ public struct Slider: ElementaryView, View {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    func commit<Backend: AppBackend.Sliders>(
+    func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

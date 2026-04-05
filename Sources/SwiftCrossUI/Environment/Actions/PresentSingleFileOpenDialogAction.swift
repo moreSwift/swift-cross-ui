@@ -3,7 +3,7 @@ import Foundation
 /// Presents an 'Open file' dialog fit for selecting a single file.
 @available(tvOS, unavailable, message: "tvOS does not provide file system access")
 public struct PresentSingleFileOpenDialogAction: Sendable {
-    let backend: any AppBackend.FileDialogs
+    let backend: any AppBackend.Base
     let window: MainActorBox<Any?>
 
     /// Presents an 'Open file' dialog fit for selecting a single file.
@@ -37,7 +37,7 @@ public struct PresentSingleFileOpenDialogAction: Sendable {
         allowSelectingFiles: Bool = true,
         allowSelectingDirectories: Bool = false
     ) async -> URL? {
-        func chooseFile<Backend: AppBackend.FileDialogs>(backend: Backend) async -> URL? {
+        func chooseFile<Backend: AppBackend.Base>(backend: Backend) async -> URL? {
             await withCheckedContinuation { continuation in
                 backend.runInMainThread {
                     let window = self.window.value.map { $0 as! Backend.Window }

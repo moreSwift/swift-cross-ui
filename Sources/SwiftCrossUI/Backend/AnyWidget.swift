@@ -25,7 +25,7 @@ public class AnyWidget {
     ///
     /// - Parameter backend: The backend to use to convert the widget.
     /// - Returns: The widget as the backend's widget type.
-    public func concreteWidget<Backend: AppBackend.Core>(
+    public func concreteWidget<Backend: AppBackend.Base>(
         for backend: Backend.Type
     ) -> Backend.Widget {
         guard let widget = widget as? Backend.Widget else {

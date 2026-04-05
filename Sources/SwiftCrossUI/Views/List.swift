@@ -137,7 +137,7 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         rowCount = data.count
     }
 
-    func children<Backend: AppBackend.SelectableListView>(
+    func children<Backend: AppBackend.Base>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -146,7 +146,7 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         Children()
     }
 
-    func asWidget<Backend: AppBackend.SelectableListView>(
+    func asWidget<Backend: AppBackend.Base>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
@@ -234,7 +234,7 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         )
     }
 
-    func commit<Backend: AppBackend.SelectableListView>(
+    func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,

@@ -36,21 +36,21 @@ public struct ScrollView<Content: View>: TypeSafeView, View {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend.Core>(
+    func layoutableChildren<Backend: AppBackend.Base>(
         backend: Backend,
         children: TupleViewChildren1<VStack<Content>>
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    func asWidget<Backend: AppBackend.ScrollContainer>(
+    func asWidget<Backend: AppBackend.Base>(
         _ children: ScrollViewChildren<Content>,
         backend: Backend
     ) -> Backend.Widget {
         return backend.createScrollContainer(for: children.innerContainer.into())
     }
 
-    func computeLayout<Backend: AppBackend.ScrollContainer>(
+    func computeLayout<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: ScrollViewChildren<Content>,
         proposedSize: ProposedViewSize,
@@ -150,7 +150,7 @@ public struct ScrollView<Content: View>: TypeSafeView, View {
         )
     }
 
-    func commit<Backend: AppBackend.ScrollContainer>(
+    func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: ScrollViewChildren<Content>,
         layout: ViewLayoutResult,
@@ -234,7 +234,7 @@ class ScrollViewChildren<Content: View>: ViewGraphNodeChildren {
         children.erasedNodes
     }
 
-    init<Backend: AppBackend.Core>(
+    init<Backend: AppBackend.Base>(
         wrapping children: TupleView1<VStack<Content>>.Children,
         backend: Backend
     ) {
