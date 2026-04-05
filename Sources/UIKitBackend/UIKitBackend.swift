@@ -2,7 +2,13 @@ import Logging
 import SwiftCrossUI
 import UIKit
 
-public final class UIKitBackend: AppBackend.Base, AppBackend.ApplicationMenus, AppBackend.ExternalURLs, AppBackend.IncomingURLs {
+public final class UIKitBackend:
+    AppBackend.Base,
+    AppBackend.ApplicationMenus,
+    AppBackend.ExternalURLs,
+    AppBackend.IncomingURLs,
+    AppBackend.FileDialogs
+{
     static var onBecomeActive: (() -> Void)?
     static var onReceiveURL: ((URL) -> Void)?
     static var queuedURLs: [URL] = []

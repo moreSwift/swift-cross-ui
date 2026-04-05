@@ -28,7 +28,13 @@ class WinUIApplication: SwiftApplication {
     }
 }
 
-public final class WinUIBackend: AppBackend.Base, AppBackend.ApplicationMenus, AppBackend.ExternalURLs, AppBackend.IncomingURLs {
+public final class WinUIBackend:
+    AppBackend.Base,
+    AppBackend.ApplicationMenus,
+    AppBackend.ExternalURLs,
+    AppBackend.IncomingURLs,
+    AppBackend.FileDialogs
+{
     // Logging
     private struct LogLocation: Hashable, Equatable {
         let file: String

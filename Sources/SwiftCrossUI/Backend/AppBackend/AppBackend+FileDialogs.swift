@@ -45,25 +45,3 @@ extension AppBackend {
         )
     }
 }
-
-// MARK: Default Implementations
-
-extension AppBackend.FileDialogs {
-    public func showOpenDialog(
-        fileDialogOptions: FileDialogOptions,
-        openDialogOptions: OpenDialogOptions,
-        window: Window?,
-        resultHandler handleResult: @escaping (DialogResult<[URL]>) -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func showSaveDialog(
-        fileDialogOptions: FileDialogOptions,
-        saveDialogOptions: SaveDialogOptions,
-        window: Window?,
-        resultHandler handleResult: @escaping (DialogResult<URL>) -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-}

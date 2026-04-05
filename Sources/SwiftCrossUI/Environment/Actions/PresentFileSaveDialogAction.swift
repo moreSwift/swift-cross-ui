@@ -32,7 +32,7 @@ public struct PresentFileSaveDialogAction: Sendable {
         nameFieldLabel: String? = nil,
         defaultFileName: String? = nil
     ) async -> URL? {
-        func chooseFile<Backend: AppBackend.Base>(backend: Backend) async -> URL? {
+        func chooseFile<Backend: AppBackend.FileDialogs>(backend: Backend) async -> URL? {
             return await withCheckedContinuation { continuation in
                 backend.runInMainThread {
                     let window = self.window.value.map { $0 as! Backend.Window }
@@ -63,6 +63,9 @@ public struct PresentFileSaveDialogAction: Sendable {
             }
         }
 
+        guard let backend = backend as? any AppBackend.FileDialogs else {
+            fatalError("\(type(of: backend)) does not support file open/save dialogs")
+        }
         return await chooseFile(backend: backend)
     }
 }
