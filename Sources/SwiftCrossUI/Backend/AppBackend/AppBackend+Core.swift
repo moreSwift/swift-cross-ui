@@ -322,9 +322,6 @@ extension AppBackend {
     /// - ``GenericContainers``
     @MainActor
     public protocol Core: Widgets, Windowing, GenericContainers {
-        /// Creates an instance of the backend.
-        init()
-
         /// The class of device that the backend is currently running on.
         ///
         /// This is used to determine text sizing and other adaptive properties.

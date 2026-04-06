@@ -78,11 +78,6 @@ public final class Gtk3Backend:
         #endif
     }
 
-    // A separate initializer to satisfy ``AppBackend``'s requirements.
-    public convenience init() {
-        self.init(appIdentifier: nil)
-    }
-
     /// Creates a backend instance. If `appIdentifier` is `nil`, the default
     /// identifier `com.example.SwiftCrossUIApp` is used.
     public init(appIdentifier: String?) {
