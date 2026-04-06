@@ -15,7 +15,7 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
         var downstreamObservation: Cancellable?
         var provider: (any AppStorageProvider)?
 
-        init(mode: Mode, provider: (some AppStorageProvider)?) {
+        init(mode: Mode, provider: (any AppStorageProvider)?) {
             self.mode = mode
             self.provider = provider
         }
@@ -83,7 +83,7 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
     public init(
         wrappedValue defaultValue: Value,
         _ key: String,
-        provider: (some AppStorageProvider)? = nil
+        provider: (any AppStorageProvider)? = nil
     ) {
         implementation = StateImpl(
             initialStorage: Storage(mode: .key(key, defaultValue), provider: provider)
@@ -92,7 +92,7 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
 
     public init(
         _ key: String,
-        provider: (some AppStorageProvider)? = nil
+        provider: (any AppStorageProvider)? = nil
     ) where Value: ExpressibleByNilLiteral {
         self.init(wrappedValue: nil, key, provider: provider)
     }
@@ -129,7 +129,7 @@ extension AppStorage {
     public init(
         wrappedValue defaultValue: Value,
         _ key: String,
-        provider: (some AppStorageProvider)? = nil
+        provider: (any AppStorageProvider)? = nil
     ) where Value: AnyObject {
         implementation = StateImpl(
             initialStorage: Storage(mode: .key(key, defaultValue), provider: provider)
@@ -147,7 +147,7 @@ extension AppStorage {
     public init(
         wrappedValue defaultValue: Value,
         _ key: String,
-        provider: (some AppStorageProvider)? = nil
+        provider: (any AppStorageProvider)? = nil
     ) where Value: ObservableObject {
         implementation = StateImpl(
             initialStorage: Storage(mode: .key(key, defaultValue), provider: provider)
@@ -160,14 +160,14 @@ extension AppStorage {
 extension AppStorage {
     public init<Key: AppStorageKey<Value>>(
         _: Key.Type,
-        provider: (some AppStorageProvider)? = nil
+        provider: (any AppStorageProvider)? = nil
     ) {
         self.init(wrappedValue: Key.defaultValue, Key.name, provider: provider)
     }
 
     public init(
         _ keyPath: WritableKeyPath<AppStorageValues, Value>,
-        provider: (some AppStorageProvider)? = nil
+        provider: (any AppStorageProvider)? = nil
     ) {
         implementation = StateImpl(
             initialStorage: Storage(mode: .path(keyPath), provider: provider)
