@@ -224,3 +224,4 @@ method is preferred wherever possible.
 
 - <doc:View-graph>
 - <doc:Scene-graph>
+- <doc:Adding-new-backend-methods>
