@@ -32,26 +32,3 @@ extension AppBackend {
         func navigateWebView(_ webView: Widget, to url: URL)
     }
 }
-
-// MARK: Default Implementations
-
-extension AppBackend.WebViews {
-    public func createWebView() -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updateWebView(
-        _ webView: Widget,
-        environment: EnvironmentValues,
-        onNavigate: @escaping (URL) -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func navigateWebView(
-        _ webView: Widget,
-        to url: URL
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-}

@@ -48,6 +48,9 @@ Here are some guidelines for adding methods to existing protocols:
   comment shown in the above code block. Declare these default implementations
   in the same order as the protocols themselves.
 
+  Don't add these implementations for protocols which aren't a part of
+  ``AppBackend/Base``.
+
 ### Adding new protocols
 
 If you're adding a wholly new feature to SwiftCrossUI -- for example, a new

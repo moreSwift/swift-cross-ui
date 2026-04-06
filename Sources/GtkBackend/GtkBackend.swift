@@ -12,7 +12,17 @@ extension App {
     }
 }
 
-public final class GtkBackend: AppBackend.Full {
+public final class GtkBackend:
+    AppBackend.Base,
+    AppBackend.IncomingURLs,
+    AppBackend.ExternalURLs,
+    AppBackend.RevealFile,
+    AppBackend.ApplicationMenus,
+    AppBackend.FileDialogs,
+    AppBackend.Alerts,
+    AppBackend.Sheets,
+    AppBackend.CornerRadius
+{
     public typealias Window = Gtk.ApplicationWindow
     public typealias Widget = Gtk.Widget
     public typealias Menu = Gtk.PopoverMenu

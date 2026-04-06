@@ -17,7 +17,11 @@ public struct WebView: ElementaryView {
     }
 
     func asWidget<Backend: AppBackend.Base>(backend: Backend) -> Backend.Widget {
-        backend.createWebView()
+        guard let backend = backend as? any AppBackend.WebViews else {
+            fatalError("\(Backend.self) doesn't support web views")
+        }
+
+        return backend.createWebView() as! Backend.Widget
     }
 
     func computeLayout<Backend: AppBackend.Base>(
@@ -36,14 +40,20 @@ public struct WebView: ElementaryView {
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        if url != currentURL {
-            backend.navigateWebView(widget, to: url)
-            currentURL = url
+        func commit<Backend2: AppBackend.WebViews>(backend: Backend2) {
+            let widget = widget as! Backend2.Widget
+            if url != currentURL {
+                backend.navigateWebView(widget, to: url)
+                currentURL = url
+            }
+            backend.updateWebView(widget, environment: environment) { destination in
+                currentURL = destination
+                url = destination
+            }
+            backend.setSize(of: widget, to: layout.size.vector)
         }
-        backend.updateWebView(widget, environment: environment) { destination in
-            currentURL = destination
-            url = destination
-        }
-        backend.setSize(of: widget, to: layout.size.vector)
+
+        let backend = backend as! any AppBackend.WebViews
+        commit(backend: backend)
     }
 }
