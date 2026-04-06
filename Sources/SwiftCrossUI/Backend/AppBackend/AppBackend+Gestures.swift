@@ -2,6 +2,12 @@ import Foundation
 
 extension AppBackend {
     /// Backend methods for gesture handling.
+    ///
+    /// ## Topics
+    ///
+    /// ### Constituent Protocols
+    /// - ``TapGestures``
+    /// - ``HoverGestures``
     public typealias Gestures = TapGestures & HoverGestures
 
     /// Backend methods for tap gesture handling.

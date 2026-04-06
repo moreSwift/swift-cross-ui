@@ -1,8 +1,23 @@
 import Foundation
 
 extension AppBackend {
+    /// Backend methods for widget containers.
+    ///
+    /// These protocols let apps implement views that wrap widgets within
+    /// other widgets, such as scroll views or split views.
+    ///
+    /// The "generic" container is implemented separately from this;
+    /// see ``GenericContainers`` for more details on that protocol.
+    ///
+    /// ## Topics
+    ///
+    /// ### Constituent Protocols
+    /// - ``ScrollContainer``
+    /// - ``SelectableListView``
+    /// - ``SplitView``
+    /// - ``Tables``
     public typealias Containers =
-        ScrollContainer & SelectableListView & SplitView & Tooltips
+        ScrollContainer & SelectableListView & SplitView & Tables
 
     /// Backend methods for scroll containers.
     ///
@@ -176,27 +191,65 @@ extension AppBackend {
         )
     }
 
-    /// Backend methods for tooltips.
+    /// Backend methods for tables.
     ///
-    /// These are used by ``View/help(_:)``.
+    /// These are used by ``Table``.
     @MainActor
-    public protocol Tooltips: Core {
-        /// Create a container capable of showing a textual tooltip.
-        ///
-        /// If no container is necessary, this method is allowed to return `child`
-        /// unmodified.
-        ///
-        /// - Parameters:
-        ///   - child: The widget being wrapped to show a tooltip over.
-        func createTooltipContainer(wrapping child: Widget) -> Widget
+    public protocol Tables: Core {
+        /// The default height of a table row excluding cell padding. This is a
+        /// recommendation by the backend that SwiftCrossUI won't necessarily
+        /// follow in all cases.
+        var defaultTableRowContentHeight: Int { get }
 
-        /// Update the tooltip shown by a widget.
+        /// The default vertical padding to apply to table cells.
+        ///
+        /// This is the amount of padding added above and below each cell, not the
+        /// total amount added along the vertical axis. It's a recommendation by the
+        /// backend that SwiftCrossUI won't necessarily follow in all cases.
+        var defaultTableCellVerticalPadding: Int { get }
+
+        /// Creates an empty table.
+        ///
+        /// - Returns: A table.
+        func createTable() -> Widget
+
+        /// Sets the number of rows of a table.
+        ///
+        /// Existing rows outside of the new bounds should be deleted.
         ///
         /// - Parameters:
-        ///   - widget: The widget to update the tooltip for. Will always have been
-        ///     created by ``createTooltipContainer(wrapping:)``.
-        ///   - tooltip: The text to be shown on hover.
-        func updateTooltipContainer(_ widget: Widget, tooltip: String)
+        ///   - table: The table to set the row count of.
+        ///   - rows: The number of rows.
+        func setRowCount(ofTable table: Widget, to rows: Int)
+
+        /// Sets the labels of a table's columns. Also sets the number of columns of
+        /// the table to the number of labels provided.
+        ///
+        /// - Parameters:
+        ///   - table: The table to set the column labels of.
+        ///   - labels: The column labels to set.
+        ///   - environment: The current environment.
+        func setColumnLabels(
+            ofTable table: Widget,
+            to labels: [String],
+            environment: EnvironmentValues
+        )
+
+        /// Sets the contents of the table as a flat array of cells in order of and
+        /// grouped by row. Also sets the height of each row's content.
+        ///
+        /// A nested array would have significantly more overhead, especially for
+        /// large arrays.
+        ///
+        /// - Parameters:
+        ///   - table: The table.
+        ///   - cells: The widgets to fill the table with.
+        ///   - rowHeights: The heights of the table's rows.
+        func setCells(
+            ofTable table: Widget,
+            to cells: [Widget],
+            withRowHeights rowHeights: [Int]
+        )
     }
 }
 
@@ -284,12 +337,28 @@ extension AppBackend.SplitView {
     }
 }
 
-extension AppBackend.Tooltips {
-    public func createTooltipContainer(wrapping child: Widget) -> Widget {
+extension AppBackend.Tables {
+    public func createTable() -> Widget {
         fatalError("\(Self.self): \(#function) not implemented")
     }
 
-    public func updateTooltipContainer(_ widget: Widget, tooltip: String) {
+    public func setRowCount(ofTable table: Widget, to rows: Int) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setColumnLabels(
+        ofTable table: Widget,
+        to labels: [String],
+        environment: EnvironmentValues
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setCells(
+        ofTable table: Widget,
+        to cells: [Widget],
+        withRowHeights rowHeights: [Int]
+    ) {
         fatalError("\(Self.self): \(#function) not implemented")
     }
 }

@@ -6,19 +6,17 @@ import Foundation
 /// an app. Backends are usually built on top of an existing UI framework.
 ///
 /// Default placeholder implementations are available for all non-essential
-/// app lifecycle methods. These implementations will fatally crash when called
+/// app lifecycle methods. These implementations will `fatalError` when called
 /// and are simply intended to allow incremental implementation of backends,
-/// not a production-ready fallback for views that cannot be represented by a
-/// given backend. The methods you need to implemented up-front (which don't
-/// have default implementations) are: ``AppBackend/Windowing/createWindow(withDefaultSize:)``,
-/// ``AppBackend/Windowing/setTitle(ofWindow:to:)``,
-/// ``AppBackend/Windowing/setBehaviors(ofWindow:closable:minimizable:resizable:)``,
-/// ``AppBackend/Windowing/setChild(ofWindow:to:)``, ``AppBackend/Windowing/show(window:)``,
-/// ``AppBackend/Core/runMainLoop(_:)``, ``AppBackend/Core/runInMainThread(action:)``,
-/// ``AppBackend/Windowing/isWindowProgrammaticallyResizable(_:)``,
-/// ``AppBackend/Widgets/show(widget:)``.
-/// Many of these can simply be given dummy implementations until you're ready
+/// not as a production-ready fallback for views that cannot be represented by
+/// a given backend. The methods you need to implemented up-front (which don't
+/// have default implementations) are all of those required by ``Core``, with
+/// the exception of ``Widgets/showUpdate(of:)-4cnzo`` and
+/// ``Widgets/tag(widget:as:)-2kf0x`` (which are only used for debugging). Many
+/// of these can simply be given dummy implementations until you're ready
 /// to implement them properly.
+///
+/// ## Design Notes
 ///
 /// If you need to modify the children of a widget after creation but there
 /// aren't update methods available, this is an intentional limitation to
@@ -43,16 +41,72 @@ import Foundation
 /// code between the `create` and `update` methods of the various widgets
 /// (since the `update` method is always called between calling `create`
 /// and actually displaying the widget anyway).
+///
+/// ## Backend protocols
+///
+/// Since a fully-functional SwiftCrossUI backend is such a complicated beast,
+/// we've split it up into a bunch of smaller protocols, each of which deals
+/// with implementing a single feature or logical set of features.
+///
+/// At a high level, there are three protocols (technically typealiases of
+/// protocol compositions) you need to worry about.
+///
+/// - term ``Core``: This protocol describes the absolute bare minimum amount
+///   of code required for an app to launch, show something on the screen, and
+///   perform basic widget manipulation.
+/// - term ``Base``: This protocol describes all the code required for a minimally
+///   functional backend, including everything in `Core` as well as many UI
+///   controls and containers, text and images, menus, and basic styling.
+/// - term ``Full``: This protocol describes all the code needed for a fully
+///   functional backend that supports everything SwiftCrossUI has to offer,
+///   including URL and file handling, alerts, and sheets. It includes everything
+///   in `Base`.
+///
+/// See the documentation for each protocol for more details on what they require.
+///
+/// ## Topics
+///
+/// ### Top-Level
+/// - ``AppBackend/Core``
+/// - ``AppBackend/Base``
+/// - ``AppBackend/Full``
 public enum AppBackend {
     /// Denotes a backend that implements all required features of SwiftCrossUI,
     /// but may omit certain features that aren't critical for apps to work
     /// properly.
+    ///
+    /// ## Topics
+    ///
+    /// ### Constituent Protocols
+    /// - ``Core``
+    /// - ``Containers``
+    /// - ``PassiveViews``
+    /// - ``Controls``
+    /// - ``Menus``
+    /// - ``Colors``
+    /// - ``CornerRadius``
+    /// - ``Paths``
+    /// - ``WebViews``
+    /// - ``Gestures``
+    /// - ``Tooltips``
     public typealias Base =
         Core & Containers & PassiveViews & Controls & Menus & Colors
-        & CornerRadius & Paths & WebViews & Gestures
+        & CornerRadius & Paths & WebViews & Gestures & Tooltips
 
     /// Denotes a fully-featured backend that implements all features of
     /// SwiftCrossUI.
+    ///
+    /// ## Topics
+    ///
+    /// ### Constituent Protocols
+    /// - ``Base``
+    /// - ``IncomingURLs``
+    /// - ``ExternalURLs``
+    /// - ``RevealFile``
+    /// - ``ApplicationMenus``
+    /// - ``FileDialogs``
+    /// - ``Alerts``
+    /// - ``Sheets``
     public typealias Full =
         Base & IncomingURLs & ExternalURLs & RevealFile & ApplicationMenus
         & FileDialogs & Alerts & Sheets

@@ -5,7 +5,7 @@
 With being open and extensible as a core goal, SwiftCrossUI allows custom
 backends to be implemented in third-party packages.
 
-'Simply' implement the ``AppBackend`` protocol and you're good to go!
+'Simply' implement the ``AppBackend/Base`` protocol and you're good to go!
 
 ## Topics
 

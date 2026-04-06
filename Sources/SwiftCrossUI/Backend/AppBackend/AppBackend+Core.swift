@@ -298,6 +298,13 @@ extension AppBackend {
     /// This protocol includes methods for application lifecycle handling,
     /// window management, and widget manipulation. These are required for a
     /// functional backend.
+    ///
+    /// ## Topics
+    ///
+    /// ### Constituent Protocols
+    /// - ``Widgets``
+    /// - ``Windowing``
+    /// - ``GenericContainers``
     @MainActor
     public protocol Core: Widgets, Windowing, GenericContainers {
         /// Creates an instance of the backend.

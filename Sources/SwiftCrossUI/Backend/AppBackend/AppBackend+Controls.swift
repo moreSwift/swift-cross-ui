@@ -2,6 +2,21 @@ import Foundation
 
 extension AppBackend {
     /// Backend methods for built-in controls.
+    ///
+    /// ## Topics
+    ///
+    /// ### Constituent Protocols
+    /// - ``Buttons``
+    /// - ``Toggles``
+    /// - ``Switches``
+    /// - ``Checkboxes``
+    /// - ``Sliders``
+    /// - ``TextFields``
+    /// - ``TextEditors``
+    /// - ``Pickers``
+    /// - ``DatePickers``
+    /// - ``ProgressSpinners``
+    /// - ``ProgressBars``
     public typealias Controls =
         Buttons & Toggles & Switches & Checkboxes & Sliders & TextFields
         & TextEditors & Pickers & DatePickers & ProgressSpinners & ProgressBars
