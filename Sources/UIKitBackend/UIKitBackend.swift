@@ -7,7 +7,6 @@ public final class UIKitBackend:
     AppBackend.ApplicationMenus,
     AppBackend.ExternalURLs,
     AppBackend.IncomingURLs,
-    AppBackend.FileOpenDialogs,
     AppBackend.Alerts,
     AppBackend.Sheets,
     AppBackend.CornerRadius

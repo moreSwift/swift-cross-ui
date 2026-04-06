@@ -19,7 +19,8 @@ public final class Gtk3Backend:
     AppBackend.RevealFile,
     AppBackend.ApplicationMenus,
     AppBackend.FileDialogs,
-    AppBackend.Alerts
+    AppBackend.Alerts,
+    AppBackend.CornerRadius
 {
     public typealias Window = Gtk3.ApplicationWindow
     public typealias Widget = Gtk3.Widget
