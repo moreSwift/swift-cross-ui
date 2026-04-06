@@ -2,11 +2,13 @@ import Foundation
 
 extension AppBackend {
     /// Backend methods for file open/save dialogs.
+    public typealias FileDialogs = FileOpenDialogs & FileSaveDialogs
+
+    /// Backend methods for file open dialogs.
     ///
-    /// These are used by ``EnvironmentValues/chooseFile`` and
-    /// ``EnvironmentValues/chooseFileSaveDestination``.
+    /// These are used by ``EnvironmentValues/chooseFile``.
     @MainActor
-    public protocol FileDialogs: Core {
+    public protocol FileOpenDialogs: Core {
         /// Presents an 'Open file' dialog to the user for selecting files or
         /// folders.
         ///
@@ -25,7 +27,13 @@ extension AppBackend {
             window: Window?,
             resultHandler handleResult: @escaping (DialogResult<[URL]>) -> Void
         )
+    }
 
+    /// Backend methods for file save dialogs.
+    ///
+    /// These are used by ``EnvironmentValues/chooseFileSaveDestination``.
+    @MainActor
+    public protocol FileSaveDialogs: Core {
         /// Presents a 'Save file' dialog to the user for selecting a file save
         /// destination.
         ///

@@ -1488,6 +1488,10 @@ public final class WinUIBackend:
         }
     }
 
+    public func dismissAlert(_ alert: Alert, window: Window?) {
+        alert.hide()
+    }
+
     public func showOpenDialog(
         fileDialogOptions: FileDialogOptions,
         openDialogOptions: OpenDialogOptions,
