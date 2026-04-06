@@ -8,8 +8,8 @@ extension AppBackend {
         /// The underlying widget type.
         associatedtype Widget
 
-        /// The default amount of padding used when a user uses the``View/padding(_:_:)``
-        /// modifier.
+        /// The default amount of padding used when a user uses the
+        /// ``View/padding(_:_:)`` modifier.
         var defaultPaddingAmount: Int { get }
 
         /// Shows a widget after it has been created or updated.
@@ -34,8 +34,10 @@ extension AppBackend {
         /// - Parameter widget: The widget to process.
         func showUpdate(of widget: Widget)
 
-        /// Adds a short tag to a widget to assist during debugging, if the backend supports
-        /// such a feature.
+        /// Adds a short tag to a widget to assist during debugging, if the backend
+        /// supports such a feature.
+        ///
+        /// The default implementation does nothing.
         ///
         /// Some backends may only apply tags under particular conditions such as
         /// when being built in debug mode.

@@ -9,7 +9,8 @@ public final class UIKitBackend:
     AppBackend.IncomingURLs,
     AppBackend.FileDialogs,
     AppBackend.Alerts,
-    AppBackend.Sheets
+    AppBackend.Sheets,
+    AppBackend.CornerRadius
 {
     static var onBecomeActive: (() -> Void)?
     static var onReceiveURL: ((URL) -> Void)?

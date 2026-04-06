@@ -12,9 +12,30 @@ import Foundation
 /// a given backend. The methods you need to implemented up-front (which don't
 /// have default implementations) are all of those required by ``Core``, with
 /// the exception of ``Widgets/showUpdate(of:)-4cnzo`` and
-/// ``Widgets/tag(widget:as:)-2kf0x`` (which are only used for debugging). Many
-/// of these can simply be given dummy implementations until you're ready
-/// to implement them properly.
+/// ``Widgets/tag(widget:as:)-2kf0x`` Many of these can simply be given dummy
+/// implementations until you're ready to implement them properly.
+///
+/// ## Backend Protocols
+///
+/// Since a fully-functional SwiftCrossUI backend is such a complicated beast,
+/// we've split it up into a bunch of smaller protocols, each of which deals
+/// with implementing a single feature or logical set of features.
+///
+/// At a high level, there are three protocols (technically typealiases of
+/// protocol compositions) you need to worry about.
+///
+/// - term ``Core``: This protocol describes the absolute bare minimum amount
+///   of code required for an app to launch, show something on the screen, and
+///   perform basic widget manipulation.
+/// - term ``Base``: This protocol describes all the code required for a minimally
+///   functional backend, including everything in `Core` as well as many UI
+///   controls and containers, text and images, menus, and basic styling.
+/// - term ``Full``: This protocol describes all the code needed for a fully
+///   functional backend that supports everything SwiftCrossUI has to offer,
+///   including URL and file handling, alerts, and sheets. It includes everything
+///   in `Base`.
+///
+/// See the documentation for each protocol for more details on what they require.
 ///
 /// ## Design Notes
 ///
@@ -42,28 +63,6 @@ import Foundation
 /// (since the `update` method is always called between calling `create`
 /// and actually displaying the widget anyway).
 ///
-/// ## Backend protocols
-///
-/// Since a fully-functional SwiftCrossUI backend is such a complicated beast,
-/// we've split it up into a bunch of smaller protocols, each of which deals
-/// with implementing a single feature or logical set of features.
-///
-/// At a high level, there are three protocols (technically typealiases of
-/// protocol compositions) you need to worry about.
-///
-/// - term ``Core``: This protocol describes the absolute bare minimum amount
-///   of code required for an app to launch, show something on the screen, and
-///   perform basic widget manipulation.
-/// - term ``Base``: This protocol describes all the code required for a minimally
-///   functional backend, including everything in `Core` as well as many UI
-///   controls and containers, text and images, menus, and basic styling.
-/// - term ``Full``: This protocol describes all the code needed for a fully
-///   functional backend that supports everything SwiftCrossUI has to offer,
-///   including URL and file handling, alerts, and sheets. It includes everything
-///   in `Base`.
-///
-/// See the documentation for each protocol for more details on what they require.
-///
 /// ## Topics
 ///
 /// ### Top-Level
@@ -84,14 +83,13 @@ public enum AppBackend {
     /// - ``Controls``
     /// - ``Menus``
     /// - ``Colors``
-    /// - ``CornerRadius``
     /// - ``Paths``
     /// - ``WebViews``
     /// - ``Gestures``
     /// - ``Tooltips``
     public typealias Base =
         Core & Containers & PassiveViews & Controls & Menus & Colors
-        & CornerRadius & Paths & WebViews & Gestures & Tooltips
+        & Paths & WebViews & Gestures & Tooltips
 
     /// Denotes a fully-featured backend that implements all features of
     /// SwiftCrossUI.
@@ -107,7 +105,8 @@ public enum AppBackend {
     /// - ``FileDialogs``
     /// - ``Alerts``
     /// - ``Sheets``
+    /// - ``CornerRadius``
     public typealias Full =
         Base & IncomingURLs & ExternalURLs & RevealFile & ApplicationMenus
-        & FileDialogs & Alerts & Sheets
+        & FileDialogs & Alerts & Sheets & CornerRadius 
 }

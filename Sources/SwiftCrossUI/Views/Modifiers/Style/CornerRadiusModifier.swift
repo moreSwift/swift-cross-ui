@@ -68,6 +68,15 @@ struct CornerRadiusModifier<Content: View>: View {
             environment: environment,
             backend: backend
         )
-        backend.setCornerRadius(of: widget, to: cornerRadius)
+
+        guard let backend = backend as? any AppBackend.CornerRadius else {
+            logger.warning("\(Backend.self) doesn't support setting corner radii")
+            return
+        }
+
+        setRadius(backend: backend)
+        func setRadius<Backend2: AppBackend.CornerRadius>(backend: Backend2) {
+            backend.setCornerRadius(of: widget as! Backend2.Widget, to: cornerRadius)
+        }
     }
 }

@@ -94,11 +94,11 @@ extension AppBackend {
 
 // MARK: Default Implementations
 
-extension AppBackend.CornerRadius {
-    public func setCornerRadius(of widget: Widget, to radius: Int) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-}
+//extension AppBackend.CornerRadius {
+//    public func setCornerRadius(of widget: Widget, to radius: Int) {
+//        fatalError("\(Self.self): \(#function) not implemented")
+//    }
+//}
 
 extension AppBackend.Tooltips {
     public func createTooltipContainer(wrapping child: Widget) -> Widget {
