@@ -78,12 +78,13 @@ public final class WinUIBackend:
         .automatic, .graphical, .compact, .wheel,
     ]
     public let supportedPickerStyles: [BackendPickerStyle] = [.menu, .radioGroup]
+    public let canOverrideWindowColorScheme = true
 
     public var scrollBarWidth: Int {
         12
     }
 
-    private class InternalState {
+    class InternalState {
         var buttonClickActions: [ObjectIdentifier: () -> Void] = [:]
         var toggleClickActions: [ObjectIdentifier: (Bool) -> Void] = [:]
         var switchClickActions: [ObjectIdentifier: (Bool) -> Void] = [:]
@@ -93,7 +94,7 @@ public final class WinUIBackend:
         var themeChangeAction: (() -> Void)?
     }
 
-    private var internalState: InternalState
+    var internalState: InternalState
     nonisolated(unsafe) private var dispatcherQueue: WinAppSDK.DispatcherQueue?
     /// WinUI only allows one dialog at a time (subsequent dialogs throw
     /// exceptions), so we limit ourselves.
@@ -204,6 +205,21 @@ public final class WinUIBackend:
             setSize(ofWindow: window, to: size)
         }
         return window
+    }
+
+    public func updateWindow(_ window: Window, environment: EnvironmentValues) {
+        window.menuBar.requestedTheme = switch environment.colorScheme {
+            case .light: .light
+            case .dark: .dark
+        }
+
+        let backgroundColor: SwiftCrossUI.Color = switch environment.colorScheme {
+            case .light: .white
+            case .dark: .black
+        }
+        let brush = WinUI.SolidColorBrush()
+        brush.color = backgroundColor.resolve(in: environment).uwpColor
+        window.grid.background = brush
     }
 
     public func size(ofWindow window: Window) -> SIMD2<Int> {
@@ -367,6 +383,7 @@ public final class WinUIBackend:
                 window.menuBar.items.append(item)
             }
             window.setMenuBarVisible(!items.isEmpty)
+            window.menuBar.requestedTheme = .dark
         }
     }
 
@@ -634,16 +651,13 @@ public final class WinUIBackend:
                 11 + 11 + 2,
                 5 + 6 + 2
             )
-        } else if let textField = widget as? WinUI.TextBox, textField.padding == noPadding {
+        } else if let textField = widget as? TextBoxProtocol, textField.padding == noPadding {
             // The default padding applied to text boxes can be found here:
             // https://github.com/microsoft/microsoft-ui-xaml/blob/650b2c1bad272393400403ca323b3cb8745f95d0/src/controls/dev/CommonStyles/Common_themeresources.xaml#L12
             // However, text fields return 0x0 before rendering so our adjustment
             // just has to be the entire size of the text field. I've currently just
             // hardcoded a value obtained from one of my example apps.
-            adjustment = SIMD2(
-                64,
-                32
-            )
+            adjustment = SIMD2(64, 32)
         } else if widget is CalendarView {
             // I don't actually know why this is necessary, but without it the abbreviations for the
             // weekdays wrap, making it taller than it says it is. Value was derived by trial and
@@ -698,7 +712,8 @@ public final class WinUIBackend:
 
         if let lineLimitSettings = environment.lineLimitSettings {
             let height = Int(
-                Double(max(lineLimitSettings.limit, 1)) * lineHeight)
+                Double(max(lineLimitSettings.limit, 1)) * lineHeight
+            )
 
             if height < usedHeight || lineLimitSettings.reservesSpace {
                 usedHeight = height
@@ -1107,47 +1122,6 @@ public final class WinUIBackend:
         }
     }
 
-    public func createTextField() -> Widget {
-        let textField = TextBox()
-        textField.textChanged.addHandler { [weak internalState] _, _ in
-            guard let internalState else { return }
-            internalState.textFieldChangeActions[ObjectIdentifier(textField)]?(textField.text)
-        }
-        textField.keyUp.addHandler { [weak internalState] _, event in
-            guard let internalState else { return }
-
-            if event?.key == .enter {
-                internalState.textFieldSubmitActions[ObjectIdentifier(textField)]?()
-            }
-        }
-        return textField
-    }
-
-    public func updateTextField(
-        _ textField: Widget,
-        placeholder: String,
-        environment: EnvironmentValues,
-        onChange: @escaping (String) -> Void,
-        onSubmit: @escaping () -> Void
-    ) {
-        let textField = (textField as! TextBox)
-        textField.placeholderText = placeholder
-        internalState.textFieldChangeActions[ObjectIdentifier(textField)] = onChange
-        internalState.textFieldSubmitActions[ObjectIdentifier(textField)] = onSubmit
-        environment.apply(to: textField)
-
-        updateInputScope(of: textField, textContentType: environment.textContentType)
-    }
-
-    public func setContent(ofTextField textField: Widget, to content: String) {
-        let textField = textField as! TextBox
-        textField.text = content
-    }
-
-    public func getContent(ofTextField textField: Widget) -> String {
-        (textField as! TextBox).text
-    }
-
     public func createTextEditor() -> Widget {
         let textEditor = TextBox()
         textEditor.textChanged.addHandler { [weak internalState, weak textEditor] _, _ in
@@ -1203,27 +1177,32 @@ public final class WinUIBackend:
         (textEditor as! TextBox).text
     }
 
-    private func updateInputScope(
-        of textField: TextBox,
+    func updateInputScope(
+        of textField: some TextBoxProtocol,
         textContentType: TextContentType
     ) {
-        let inputScope: InputScopeNameValue =
-            switch textContentType {
-                case .decimal(_):
-                    .number
-                case .digits(_):
-                    .digits
-                case .emailAddress:
-                    .emailSmtpAddress
-                case .name:
-                    .personalFullName
-                case .phoneNumber:
-                    .telephoneNumber
-                case .text:
-                    .default
-                case .url:
-                    .url
+
+        let inputScope: InputScopeNameValue? =
+            switch textField {
+                case is TextBox:
+                    switch textContentType {
+                        case .decimal(_): .number
+                        case .digits(_): .digits
+                        case .emailAddress: .emailSmtpAddress
+                        case .name: .personalFullName
+                        case .phoneNumber: .telephoneNumber
+                        case .text: .default
+                        case .url: .url
+                    }
+                case is PasswordBox:
+                    switch textContentType {
+                        case .digits(_): .numericPin
+                        case .text: .password
+                        default: nil
+                    }
+                default: nil
             }
+        guard let inputScope else { return }
 
         let inputScopeName = InputScopeName(inputScope)
 

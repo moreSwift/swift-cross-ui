@@ -2,6 +2,7 @@ import CGtk
 import Foundation
 import Gtk
 import SwiftCrossUI
+import GtkCHelpers
 
 extension App {
     public typealias Backend = GtkBackend
@@ -39,6 +40,7 @@ public final class GtkBackend: AppBackend.Full {
     public let defaultSheetCornerRadius = 10
     public let supportedDatePickerStyles: [DatePickerStyle] = [.automatic, .graphical]
     public let supportedPickerStyles: [BackendPickerStyle] = [.menu]
+    public let canOverrideWindowColorScheme = false
 
     var gtkApp: Application
 
@@ -85,7 +87,7 @@ public final class GtkBackend: AppBackend.Full {
     public init(appIdentifier: String?) {
         gtkApp = Application(
             applicationId: appIdentifier ?? "com.example.SwiftCrossUIApp",
-            flags: G_APPLICATION_HANDLES_OPEN
+            flags: SHIM_G_APPLICATION_HANDLES_OPEN
         )
         gtkApp.registerSession = true
     }
@@ -164,6 +166,10 @@ public final class GtkBackend: AppBackend.Full {
         window.setChild(Gtk.Box())
 
         return window
+    }
+
+    public func updateWindow(_ window: Window, environment: EnvironmentValues) {
+        // TODO(stackotter): Support preferredColorScheme
     }
 
     public func setTitle(ofWindow window: Window, to title: String) {
@@ -1039,7 +1045,7 @@ public final class GtkBackend: AppBackend.Full {
     }
 
     public func createTextField() -> Widget {
-        return Entry()
+        Entry()
     }
 
     public func updateTextField(
@@ -1065,14 +1071,43 @@ public final class GtkBackend: AppBackend.Full {
 
     public func setContent(ofTextField textField: Widget, to content: String) {
         let textField = textField as! Entry
-
         textField.withBlockedSignal(named: "changed") {
             textField.text = content
         }
     }
 
     public func getContent(ofTextField textField: Widget) -> String {
-        return (textField as! Entry).text
+        (textField as! Entry).text
+    }
+
+    public func createSecureField() -> Widget {
+        let entry = Entry()
+        entry.visibility = false
+        return entry
+    }
+
+    public func updateSecureField(
+        _ secureField: Widget,
+        placeholder: String,
+        environment: EnvironmentValues,
+        onChange: @escaping (String) -> Void,
+        onSubmit: @escaping () -> Void
+    ) {
+        updateTextField(
+            secureField,
+            placeholder: placeholder,
+            environment: environment,
+            onChange: onChange,
+            onSubmit: onSubmit
+        )
+    }
+
+    public func setContent(ofSecureField secureField: Widget, to content: String) {
+        setContent(ofTextField: secureField, to: content)
+    }
+
+    public func getContent(ofSecureField secureField: Widget) -> String {
+        getContent(ofTextField: secureField)
     }
 
     public func createTextEditor() -> Widget {

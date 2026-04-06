@@ -11,8 +11,11 @@ public struct PreferenceValues: Sendable {
         interactiveDismissDisabled: nil,
         windowDismissBehavior: nil,
         preferredWindowMinimizeBehavior: nil,
-        windowResizeBehavior: nil
+        windowResizeBehavior: nil,
+        layoutPriority: defaultLayoutPriority
     )
+
+    static let defaultLayoutPriority = 0.0
 
     public var onOpenURL: (@Sendable @MainActor (URL) -> Void)?
 
@@ -28,6 +31,9 @@ public struct PreferenceValues: Sendable {
     /// The background color for enclosing sheets.
     public var presentationBackground: Color?
 
+    /// Sets the preferred color scheme for the nearest enclosing presentation.
+    public var preferredColorScheme: ColorScheme?
+
     /// Controls whether the user can interactively dismiss enclosing sheets.
     public var interactiveDismissDisabled: Bool?
 
@@ -39,6 +45,23 @@ public struct PreferenceValues: Sendable {
 
     /// Controls whether the user can resize the enclosing window.
     public var windowResizeBehavior: WindowInteractionBehavior?
+
+    /// The layout priority of the view.
+    var layoutPriority: Double
+
+    /// Returns a copy of the preferences with the specified property set to the
+    /// provided new value.
+    ///
+    /// - Parameters:
+    ///   - keyPath: A key path to the property to set.
+    ///   - newValue: The new value of the property.
+    /// - Returns: A copy of the preferences with the specified property set to
+    ///   `newValue`.
+    public func with<T>(_ keyPath: WritableKeyPath<Self, T>, _ newValue: T) -> Self {
+        var preferences = self
+        preferences[keyPath: keyPath] = newValue
+        return preferences
+    }
 }
 
 extension PreferenceValues {
@@ -59,11 +82,18 @@ extension PreferenceValues {
         presentationDragIndicatorVisibility =
             children.compactMap(\.presentationDragIndicatorVisibility).first
         presentationBackground = children.compactMap(\.presentationBackground).first
+        preferredColorScheme = children.compactMap(\.preferredColorScheme).first
         interactiveDismissDisabled = children.compactMap(\.interactiveDismissDisabled).first
 
         windowDismissBehavior = children.compactMap(\.windowDismissBehavior).first
         preferredWindowMinimizeBehavior =
             children.compactMap(\.preferredWindowMinimizeBehavior).first
         windowResizeBehavior = children.compactMap(\.windowResizeBehavior).first
+
+        if let firstChild = children.first, children.count == 1 {
+            layoutPriority = firstChild.layoutPriority
+        } else {
+            layoutPriority = Self.defaultLayoutPriority
+        }
     }
 }

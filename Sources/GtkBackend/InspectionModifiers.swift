@@ -2,6 +2,15 @@ import Gtk
 import SwiftCrossUI
 
 extension View {
+    /// Inspects the native window that backs the window scene enclosing this view.
+    public func inspectWindow(
+        _ action: @escaping @MainActor @Sendable (Gtk.ApplicationWindow) -> Void
+    ) -> some View {
+        InspectWindowView(child: self, action: action)
+    }
+}
+
+extension View {
     public func inspect(
         _ inspectionPoints: InspectionPoints = .onCreate,
         _ action: @escaping @MainActor @Sendable (Gtk.Widget) -> Void
@@ -37,14 +46,15 @@ extension Slider {
     }
 }
 
-extension Picker {
-    public func inspect(
-        _ inspectionPoints: InspectionPoints = .onCreate,
-        _ action: @escaping @MainActor @Sendable (Gtk.DropDown) -> Void
-    ) -> some View {
-        InspectView(child: self, inspectionPoints: inspectionPoints, action: action)
-    }
-}
+// TODO(stackotter): Repair Picker.inspect implementations post PickerStyle refactor
+// extension Picker {
+//     public func inspect(
+//         _ inspectionPoints: InspectionPoints = .onCreate,
+//         _ action: @escaping @MainActor @Sendable (Gtk.DropDown) -> Void
+//     ) -> some View {
+//         InspectView(child: self, inspectionPoints: inspectionPoints, action: action)
+//     }
+// }
 
 extension TextField {
     public func inspect(

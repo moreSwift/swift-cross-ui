@@ -346,13 +346,41 @@ extension UIKitBackend {
     }
 
     public func setContent(ofTextField textField: Widget, to content: String) {
-        let textFieldWidget = textField as! TextFieldWidget
-        textFieldWidget.child.text = content
+        (textField as! TextFieldWidget).child.text = content
     }
 
     public func getContent(ofTextField textField: Widget) -> String {
-        let textFieldWidget = textField as! TextFieldWidget
-        return textFieldWidget.child.text ?? ""
+        (textField as! TextFieldWidget).child.text ?? ""
+    }
+
+    public func createSecureField() -> Widget {
+        let textField = TextFieldWidget()
+        textField.child.isSecureTextEntry = true
+        return textField
+    }
+
+    public func updateSecureField(
+        _ secureField: Widget,
+        placeholder: String,
+        environment: EnvironmentValues,
+        onChange: @escaping (String) -> Void,
+        onSubmit: @escaping () -> Void
+    ) {
+        updateTextField(
+            secureField,
+            placeholder: placeholder,
+            environment: environment,
+            onChange: onChange,
+            onSubmit: onSubmit
+        )
+    }
+
+    public func setContent(ofSecureField secureField: Widget, to content: String) {
+        setContent(ofTextField: secureField, to: content)
+    }
+
+    public func getContent(ofSecureField secureField: Widget) -> String {
+        getContent(ofTextField: secureField)
     }
 
     public func createTextEditor() -> Widget {

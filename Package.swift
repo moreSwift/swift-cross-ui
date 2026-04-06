@@ -234,7 +234,7 @@ let package = Package(
         ),
         .target(
             name: "Gtk",
-            dependencies: ["CGtk", "GtkCustomWidgets"],
+            dependencies: ["CGtk", "GtkCHelpers"],
             exclude: ["LICENSE.md"],
             swiftSettings: gtkSwiftSettings
         ),
@@ -243,8 +243,10 @@ let package = Package(
             dependencies: ["Gtk"],
             resources: [.copy("GTK.png")]
         ),
+        // Gtk helpers that we've implemented in C because they'd be difficult
+        // or impossible to recreate in Swift
         .target(
-            name: "GtkCustomWidgets",
+            name: "GtkCHelpers",
             dependencies: ["CGtk"]
         ),
         .executableTarget(
@@ -264,7 +266,7 @@ let package = Package(
         ),
         .target(
             name: "Gtk3",
-            dependencies: ["CGtk3", "Gtk3CustomWidgets"],
+            dependencies: ["CGtk3", "Gtk3CHelpers"],
             exclude: ["LICENSE.md"],
             swiftSettings: gtkSwiftSettings
         ),
@@ -273,8 +275,10 @@ let package = Package(
             dependencies: ["Gtk3"],
             resources: [.copy("GTK.png")]
         ),
+        // Gtk3 helpers that we've implemented in C because they'd be difficult
+        // or impossible to recreate in Swift
         .target(
-            name: "Gtk3CustomWidgets",
+            name: "Gtk3CHelpers",
             dependencies: ["CGtk3"]
         ),
         .target(name: "UIKitBackend", dependencies: ["SwiftCrossUI"]),

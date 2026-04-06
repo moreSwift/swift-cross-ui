@@ -15,6 +15,7 @@ public final class DummyBackend: AppBackend.Base, AppBackend.IncomingURLs, AppBa
         public var content: Widget?
         public var resizeHandler: ((SIMD2<Int>) -> Void)?
         public var closeHandler: (() -> Void)?
+        public var colorScheme = ColorScheme.light
 
         public init(defaultSize: SIMD2<Int>?) {
             size = defaultSize ?? Self.defaultSize
@@ -108,11 +109,16 @@ public final class DummyBackend: AppBackend.Base, AppBackend.IncomingURLs, AppBa
     }
 
     public class TextField: Widget {
+        public var isSecure: Bool
         public var value = ""
         public var placeholder = ""
         public var font: Font.Resolved?
         public var changeHandler: ((String) -> Void)?
         public var submitHandler: (() -> Void)?
+
+        init(isSecure: Bool) {
+            self.isSecure = isSecure
+        }
     }
 
     public class TextView: Widget {
@@ -251,6 +257,7 @@ public final class DummyBackend: AppBackend.Base, AppBackend.IncomingURLs, AppBa
     public var supportsMultipleWindows = true
     public var supportedDatePickerStyles: [DatePickerStyle] = []
     public var supportedPickerStyles: [BackendPickerStyle] = []
+    public let canOverrideWindowColorScheme = true
 
     public var incomingURLHandler: ((URL) -> Void)?
 
@@ -262,6 +269,10 @@ public final class DummyBackend: AppBackend.Base, AppBackend.IncomingURLs, AppBa
 
     public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
         Window(defaultSize: defaultSize)
+    }
+
+    public func updateWindow(_ window: Window, environment: EnvironmentValues) {
+        window.colorScheme = environment.colorScheme
     }
 
     public func setTitle(ofWindow window: Window, to title: String) {
@@ -669,7 +680,7 @@ public final class DummyBackend: AppBackend.Base, AppBackend.IncomingURLs, AppBa
     }
 
     public func createTextField() -> Widget {
-        TextField()
+        TextField(isSecure: false)
     }
 
     public func updateTextField(
@@ -692,6 +703,34 @@ public final class DummyBackend: AppBackend.Base, AppBackend.IncomingURLs, AppBa
 
     public func getContent(ofTextField textField: Widget) -> String {
         (textField as! TextField).value
+    }
+
+    public func createSecureField() -> Widget {
+        TextField(isSecure: true)
+    }
+
+    public func updateSecureField(
+        _ secureField: Widget,
+        placeholder: String,
+        environment: SwiftCrossUI.EnvironmentValues,
+        onChange: @escaping (String) -> Void,
+        onSubmit: @escaping () -> Void
+    ) {
+        updateTextField(
+            secureField,
+            placeholder: placeholder,
+            environment: environment,
+            onChange: onChange,
+            onSubmit: onSubmit
+        )
+    }
+
+    public func setContent(ofSecureField secureField: Widget, to content: String) {
+        setContent(ofTextField: secureField, to: content)
+    }
+
+    public func getContent(ofSecureField secureField: Widget) -> String {
+        getContent(ofTextField: secureField)
     }
 
     // public func createTextEditor() -> Widget {

@@ -1,5 +1,5 @@
 import CGtk3
-import Gtk3CustomWidgets
+import Gtk3CHelpers
 
 /// A custom widget made specifically for SwiftCrossUI. This widget provides the
 /// control of window and pane resizing that SwiftCrossUI requires.

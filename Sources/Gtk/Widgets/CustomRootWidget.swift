@@ -1,6 +1,6 @@
 import CGtk
 import Dispatch
-import GtkCustomWidgets
+import GtkCHelpers
 
 /// A custom widget made specifically for SwiftCrossUI. This widget provides the
 /// control of window and pane resizing that SwiftCrossUI requires.

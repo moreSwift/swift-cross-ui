@@ -75,6 +75,13 @@ extension AppBackend {
         /// backends generally can't.
         var supportsMultipleWindows: Bool { get }
 
+        /// Whether the backend supports overriding window color schemes (as you may
+        /// do with the ``View/preferredColorScheme(_:)`` modifier).
+        ///
+        /// If `false`, then SwiftCrossUI will ignore the `preferredColorScheme(_:)`
+        /// modifier as a nicer failure mode.
+        var canOverrideWindowColorScheme: Bool { get }
+
         /// Creates a new window.
         ///
         /// For some backends it may make sense for this method to return the
@@ -89,6 +96,12 @@ extension AppBackend {
         ///   preferred window size from a previous session.
         /// - Returns: The created window.
         func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window
+        
+        /// Updates a window, generally to react to the current color scheme from the
+        /// environment.
+        ///
+        /// - Parameter environment: the current environment.
+        func updateWindow(_ window: Window, environment: EnvironmentValues)
 
         /// Sets the title of a window.
         ///
