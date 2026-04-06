@@ -203,7 +203,7 @@ usual documentation comments.
 ///   - environment: The environment to compute the layout in.
 ///   - backend: The backend used to create the widget.
 /// - Returns: The view's computed layout result.
-func computeLayout<Backend: AppBackend>(
+func computeLayout<Backend: AppBackend.Base>(
     _ widget: Backend.Widget,
     children: any ViewGraphNodeChildren,
     proposedSize: ProposedViewSize,
