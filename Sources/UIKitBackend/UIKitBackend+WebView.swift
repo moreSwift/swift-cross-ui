@@ -3,7 +3,7 @@ import SwiftCrossUI
 #if canImport(WebKit)
     import WebKit
 
-    extension UIKitBackend: AppBackend.WebViews {
+    extension UIKitBackend {
         public func createWebView() -> Widget {
             WebViewWidget()
         }
