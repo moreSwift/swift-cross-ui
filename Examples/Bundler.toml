@@ -35,6 +35,10 @@ identifier = 'dev.swiftcrossui.SplitExample'
 product = 'SplitExample'
 version = '0.1.0'
 
+[[apps.SplitExample.overlays]]
+condition = "platform(macCatalyst)"
+interface_idiom = "mac"
+
 [apps.SpreadsheetExample]
 identifier = 'dev.swiftcrossui.SpreadsheetExample'
 product = 'SpreadsheetExample'

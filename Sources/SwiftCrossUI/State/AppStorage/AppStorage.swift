@@ -15,8 +15,9 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
         var downstreamObservation: Cancellable?
         var provider: (any AppStorageProvider)?
 
-        init(mode: Mode) {
+        init(mode: Mode, provider: (any AppStorageProvider)?) {
             self.mode = mode
+            self.provider = provider
         }
 
         lazy var didChange: Publisher = {
@@ -40,7 +41,6 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
                             // property on initialization, we're returning the default value instead.
                             return defaultValue
                         }
-                        print("Reading AppStorage value")
                         return provider.getValue(key: key, defaultValue: defaultValue)
                     case .path(let keyPath):
                         return AppStorageValues(provider: provider)[keyPath: keyPath]
@@ -59,7 +59,6 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
                 }
                 switch mode {
                     case .key(let key, _):
-                        print("Writing AppStorage value")
                         provider.setValue(key: key, newValue: newValue)
                     case .path(let keyPath):
                         var values = AppStorageValues(provider: provider)
@@ -81,17 +80,30 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
 
     public var projectedValue: Binding<Value> { implementation.projectedValue }
 
-    public init(wrappedValue defaultValue: Value, _ key: String) {
-        implementation = StateImpl(initialStorage: Storage(mode: .key(key, defaultValue)))
+    public init(
+        wrappedValue defaultValue: Value,
+        _ key: String,
+        provider: (any AppStorageProvider)? = nil
+    ) {
+        implementation = StateImpl(
+            initialStorage: Storage(mode: .key(key, defaultValue), provider: provider)
+        )
     }
 
-    public init(_ key: String) where Value: ExpressibleByNilLiteral {
-        self.init(wrappedValue: nil, key)
+    public init(
+        _ key: String,
+        provider: (any AppStorageProvider)? = nil
+    ) where Value: ExpressibleByNilLiteral {
+        self.init(wrappedValue: nil, key, provider: provider)
     }
 
     public func update(with environment: EnvironmentValues, previousValue: AppStorage<Value>?) {
         implementation.update(with: environment, previousValue: previousValue?.implementation)
-        storage.provider = environment.appStorageProvider
+
+        // don't override a provider specified by the initializer
+        if storage.provider == nil {
+            storage.provider = environment.appStorageProvider
+        }
     }
 
     enum Mode {
@@ -114,8 +126,14 @@ extension AppStorage {
         *, deprecated,
         message: "'AppStorage' does not work correctly with classes; use a struct instead"
     )
-    public init(wrappedValue defaultValue: Value, _ key: String) where Value: AnyObject {
-        implementation = StateImpl(initialStorage: Storage(mode: .key(key, defaultValue)))
+    public init(
+        wrappedValue defaultValue: Value,
+        _ key: String,
+        provider: (any AppStorageProvider)? = nil
+    ) where Value: AnyObject {
+        implementation = StateImpl(
+            initialStorage: Storage(mode: .key(key, defaultValue), provider: provider)
+        )
     }
 
     @available(
@@ -126,19 +144,33 @@ extension AppStorage {
             """
     )
 
-    public init(wrappedValue defaultValue: Value, _ key: String) where Value: ObservableObject {
-        implementation = StateImpl(initialStorage: Storage(mode: .key(key, defaultValue)))
+    public init(
+        wrappedValue defaultValue: Value,
+        _ key: String,
+        provider: (any AppStorageProvider)? = nil
+    ) where Value: ObservableObject {
+        implementation = StateImpl(
+            initialStorage: Storage(mode: .key(key, defaultValue), provider: provider)
+        )
     }
 }
 
 // MARK: - AppStorageKey
 
 extension AppStorage {
-    public init<Key: AppStorageKey<Value>>(_: Key.Type) {
-        self.init(wrappedValue: Key.defaultValue, Key.name)
+    public init<Key: AppStorageKey<Value>>(
+        _: Key.Type,
+        provider: (any AppStorageProvider)? = nil
+    ) {
+        self.init(wrappedValue: Key.defaultValue, Key.name, provider: provider)
     }
 
-    public init(_ keyPath: WritableKeyPath<AppStorageValues, Value>) {
-        implementation = StateImpl(initialStorage: Storage(mode: .path(keyPath)))
+    public init(
+        _ keyPath: WritableKeyPath<AppStorageValues, Value>,
+        provider: (any AppStorageProvider)? = nil
+    ) {
+        implementation = StateImpl(
+            initialStorage: Storage(mode: .path(keyPath), provider: provider)
+        )
     }
 }
