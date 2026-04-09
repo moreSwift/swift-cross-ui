@@ -7,10 +7,9 @@
 /// as macOS it can also return `active` if the app doesn't have any open
 /// windows but still appears in the menu bar.
 ///
-/// See the documentation for ``AppPhase`` for tips on the behavior this
-/// function should implement. Generally speaking, if the app is in the
-/// ``AppPhase/inactive`` or ``AppPhase/background`` phases, all of its
-/// windows should be in the ``ScenePhase/inactive`` phase.
+/// Generally speaking, if the app is in the ``AppPhase/inactive`` or
+/// ``AppPhase/background`` phases, all of its windows should be in the
+/// ``ScenePhase/inactive`` phase.
 public struct AppPhase: Hashable, Sendable {
     // TODO: Figure out how .background could work on desktops
 

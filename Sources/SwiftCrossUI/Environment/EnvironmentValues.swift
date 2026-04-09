@@ -355,9 +355,18 @@ extension EnvironmentValues {
     /// - Important: Unlike SwiftUI, this environment value cannot be accessed from
     ///   outside a scene. If you need to access the phase of the entire application,
     ///   use ``appPhase`` instead.
-    public package(set) var scenePhase: ScenePhase! {
-        // NB: Waiting on PR #511 to let us use `Entry` for implicitly unwrapped optionals
-        get { self[__Key_scenePhase.self] }
+    public package(set) var scenePhase: ScenePhase {
+        get {
+            guard let phase = self[__Key_scenePhase.self] else {
+                fatalError(
+                    """
+                    'scenePhase' accessed from outside a scene; you probably \
+                    meant to use 'appPhase' instead
+                    """
+                )
+            }
+            return phase
+        }
         set { self[__Key_scenePhase.self] = newValue }
     }
     private struct __Key_scenePhase: EnvironmentKey {
