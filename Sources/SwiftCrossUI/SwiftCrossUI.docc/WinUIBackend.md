@@ -12,6 +12,8 @@ Before you can use WinUIBackend you must install two dependencies; the former is
 
 1. Install Windows SDK 10.0.17736;
    ```sh
+   winget install --id Microsoft.WindowsSDK.10.0.17763
+   # Or, on older versions of Windows before they fixed a typo in the version number;
    winget install --id Microsoft.WindowsSDK.10.0.17736
    ```
 2. Install the WindowsAppSDK 1.5.240205001-preview1 variant for your architecture; [x64](https://aka.ms/windowsappsdk/1.5/1.5.240205001-preview1/windowsappruntimeinstall-x64.exe)/[arm64](https://aka.ms/windowsappsdk/1.5/1.5.240205001-preview1/windowsappruntimeinstall-arm64.exe)
