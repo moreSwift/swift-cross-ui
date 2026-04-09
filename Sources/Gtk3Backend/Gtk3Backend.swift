@@ -40,7 +40,7 @@ public final class Gtk3Backend: AppBackend {
 
     var gtkApp: Application
 
-    /// A window to be returned on the next call to ``GtkBackend/createWindow``.
+    /// A window to be returned on the next call to ``Gtk3Backend/createWindow``.
     /// This is necessary because Gtk creates a root window no matter what, and
     /// this needs to be returned on the first call to `createWindow`.
     var precreatedWindow: Window?
@@ -175,6 +175,10 @@ public final class Gtk3Backend: AppBackend {
                 width: defaultSize.x,
                 height: defaultSize.y
             )
+        }
+
+        window.notifyIsActive = { _ in
+            self.rootEnvironmentChangeHandler?()
         }
 
         return window
@@ -512,13 +516,7 @@ public final class Gtk3Backend: AppBackend {
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
         // TODO: React to theme changes
-        
         self.rootEnvironmentChangeHandler = action
-        for window in windows {
-            window.notifyIsActive = { _ in
-                action()
-            }
-        }
     }
 
     public func computeWindowEnvironment(
@@ -537,10 +535,6 @@ public final class Gtk3Backend: AppBackend {
     ) {
         window.notifyScaleFactor = { _ in
             action()
-        }
-        window.notifyIsActive = { [rootEnvironmentChangeHandler] _ in
-            action()
-            rootEnvironmentChangeHandler?()
         }
     }
 

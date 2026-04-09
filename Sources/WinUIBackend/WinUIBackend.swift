@@ -400,9 +400,6 @@ public final class WinUIBackend: AppBackend {
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
         self.rootEnvironmentChangeHandler = action
-        for window in windows {
-            window.activated.addHandler { _, _ in action() }
-        }
     }
 
     public func computeWindowEnvironment(
@@ -423,8 +420,13 @@ public final class WinUIBackend: AppBackend {
 
         // NB: This event fires when the window is activated _or_ deactivated.
         window.activated.addHandler { _, _ in
-            self.rootEnvironmentChangeHandler?()
-            action()
+            if let rootHandler = self.rootEnvironmentChangeHandler {
+                rootHandler()
+                // Don't bother calling `action` since this window's environment
+                // will be recomputed anyway.
+            } else {
+                action()
+            }
         }
     }
 

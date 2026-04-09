@@ -168,6 +168,10 @@ public final class GtkBackend: AppBackend {
 
         window.setChild(Gtk.Box())
 
+        window.notifyIsActive = { _ in
+            self.rootEnvironmentChangeHandler?()
+        }
+
         return window
     }
 
@@ -480,13 +484,7 @@ public final class GtkBackend: AppBackend {
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
         // TODO: React to theme changes
-
         self.rootEnvironmentChangeHandler = action
-        for window in windows {
-            window.notifyIsActive = { _ in
-                action()
-            }
-        }
     }
 
     public func computeWindowEnvironment(
@@ -503,11 +501,6 @@ public final class GtkBackend: AppBackend {
         to action: @escaping () -> Void
     ) {
         // TODO: Notify when window scale factor changes
-        
-        window.notifyIsActive = { [rootEnvironmentChangeHandler] _ in
-            action()
-            rootEnvironmentChangeHandler?()
-        }
     }
 
     public func setIncomingURLHandler(to action: @escaping (URL) -> Void) {
