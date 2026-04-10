@@ -15,6 +15,28 @@ extension AppBackend {
     /// functionality, you can call `fatalError` in your own implementation
     /// of the method. That way you'll still get notified by the compiler if
     /// we add new methods in future SwiftCrossUI versions.
+    ///
+    /// ## Workflow
+    ///
+    /// A typical workflow for implementing a new backend might go something
+    /// like this:
+    ///
+    /// 1. Declare a type (usually a `class`, but there's no technical reason
+    ///    it can't be a `struct`) that conforms to `BaseStubs`.
+    /// 2. Write a small example app using that type as its backend.
+    /// 3. Implement enough of ``Core`` to get the example app to launch and
+    ///    show an empty window.
+    /// 4. Switch the conformance over to ``Base``, and examine the compiler
+    ///    errors for suitable methods to implement.
+    /// 5. Copy their declarations into the type, then switch back over to
+    ///    `BaseStubs` so the backend compiles again.
+    /// 6. Iterate on the method implementations until they work properly.
+    /// 7. Repeat steps 4 through 6 until you have a more-or-less complete
+    ///    backend.
+    ///
+    /// Of course, you can use whatever workflow works best for you; this
+    /// protocol just serves as a tool to keep you from having to implement the
+    /// entire backend in one go.
     public protocol BaseStubs: Base {}
 }
 

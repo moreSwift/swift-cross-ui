@@ -3,15 +3,12 @@
 /// Conform to ``AppBackend/Base`` to create a backend that can be used to run
 /// an app. Backends are usually built on top of an existing UI framework.
 ///
-/// Default placeholder implementations are available for all non-essential
-/// app lifecycle methods. These implementations will `fatalError` when called
-/// and are simply intended to allow incremental implementation of backends,
-/// not as a production-ready fallback for views that cannot be represented by
-/// a given backend. The methods you need to implemented up-front (which don't
-/// have default implementations) are all of those required by ``Core``, with
-/// the exception of ``Widgets/showUpdate(of:)-4cnzo`` and
-/// ``Widgets/tag(widget:as:)-2kf0x`` Many of these can simply be given dummy
-/// implementations until you're ready to implement them properly.
+/// Default placeholder implementations are available for all backend methods,
+/// via the ``AppBackend/BaseStubs`` protocol. **These implementations will
+/// `fatalError` when called and are simply intended to allow incremental
+/// implementation of backends, not as a production-ready fallback for views
+/// that cannot be represented by a given backend.** See that type's
+/// documentation for more details.
 ///
 /// ## Backend Protocols
 ///
@@ -67,6 +64,9 @@
 /// - ``AppBackend/Core``
 /// - ``AppBackend/Base``
 /// - ``AppBackend/Full``
+///
+/// ### Implementation Helpers
+/// - ``AppBackend/BaseStubs``
 public enum AppBackend {
     /// Denotes a backend that implements all required features of SwiftCrossUI,
     /// but may omit certain features that aren't critical for apps to work
