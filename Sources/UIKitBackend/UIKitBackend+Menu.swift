@@ -1,7 +1,7 @@
 import SwiftCrossUI
 import UIKit
 
-extension UIKitBackend: AppBackend.ApplicationMenus {
+extension UIKitBackend {
     public final class Menu {
         var uiMenu: UIMenu?
     }
