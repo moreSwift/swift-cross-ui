@@ -225,6 +225,65 @@ public final class UIKitBackend:
     public func openExternalURL(_ url: URL) throws {
         UIApplication.shared.open(url)
     }
+
+    // MARK: - Unimplemented Features
+
+    public func createTable() -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setRowCount(ofTable table: Widget, to rows: Int) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setColumnLabels(
+        ofTable table: Widget,
+        to labels: [String],
+        environment: EnvironmentValues
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setCells(
+        ofTable table: Widget,
+        to cells: [Widget],
+        withRowHeights rowHeights: [Int]
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createCheckbox() -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updateCheckbox(
+        _ checkboxWidget: Widget,
+        environment: EnvironmentValues,
+        onChange: @escaping (Bool) -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setState(ofCheckbox checkboxWidget: Widget, to state: Bool) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createToggle() -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updateToggle(
+        _ toggle: Widget,
+        label: String,
+        environment: EnvironmentValues,
+        onChange: @escaping (Bool) -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setState(ofToggle toggle: Widget, to state: Bool) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
 }
 
 extension App {

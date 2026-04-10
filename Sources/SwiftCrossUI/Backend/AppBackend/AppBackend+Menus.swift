@@ -86,3 +86,27 @@ extension AppBackend {
         )
     }
 }
+
+// MARK: Default Implementations
+
+extension AppBackend.ButtonMenus {
+    public func updateButton(
+        _ button: Widget,
+        label: String,
+        menu: Menu,
+        environment: EnvironmentValues
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+}
+
+extension AppBackend.PopoverMenus {
+    public func showPopoverMenu(
+        _ menu: Menu,
+        at position: SIMD2<Int>,
+        relativeTo widget: Widget,
+        closeHandler handleClose: @escaping () -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+}
