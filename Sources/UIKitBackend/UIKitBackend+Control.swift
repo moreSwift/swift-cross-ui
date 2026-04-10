@@ -608,5 +608,51 @@ extension UIKitBackend {
                 }
             }
         }
+    #else
+        public func createHoverTarget(wrapping child: Widget) -> Widget {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func updateHoverTarget(
+            _ hoverTarget: any WidgetProtocol,
+            environment: EnvironmentValues,
+            action: @escaping (Bool) -> Void
+        ) {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func createSlider() -> Widget {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func updateSlider(
+            _ slider: Widget,
+            minimum: Double,
+            maximum: Double,
+            decimalPlaces: Int,
+            environment: EnvironmentValues,
+            onChange: @escaping (Double) -> Void
+        ) {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func setValue(ofSlider slider: Widget, to value: Double) {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func createDatePicker() -> Widget {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func updateDatePicker(
+            _ datePicker: Widget,
+            environment: EnvironmentValues,
+            date: Date,
+            range: ClosedRange<Date>,
+            components: DatePickerComponents,
+            onChange: @escaping (Date) -> Void
+        ) {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
     #endif
 }
