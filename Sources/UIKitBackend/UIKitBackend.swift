@@ -4,7 +4,6 @@ import UIKit
 
 public final class UIKitBackend:
     AppBackend.Base,
-    AppBackend.ApplicationMenus,
     AppBackend.ExternalURLs,
     AppBackend.IncomingURLs,
     AppBackend.Alerts,

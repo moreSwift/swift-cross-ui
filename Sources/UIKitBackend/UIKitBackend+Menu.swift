@@ -1,7 +1,7 @@
 import SwiftCrossUI
 import UIKit
 
-extension UIKitBackend {
+extension UIKitBackend: AppBackend.ApplicationMenus {
     public final class Menu {
         var uiMenu: UIMenu?
     }
@@ -87,28 +87,29 @@ extension UIKitBackend {
             buttonWidget.child.showsMenuAsPrimaryAction = true
             if #available(iOS 16, macCatalyst 16, *) {
                 buttonWidget.child.preferredMenuElementOrder =
-                    switch environment.menuOrder {
-                        case .automatic: .automatic
-                        case .priority: .priority
-                        case .fixed: .fixed
-                    }
+                switch environment.menuOrder {
+                    case .automatic: .automatic
+                    case .priority: .priority
+                    case .fixed: .fixed
+                }
             }
         } else {
             preconditionFailure("Current OS is too old to support menu buttons.")
         }
     }
+}
 
-    public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
-        #if targetEnvironment(macCatalyst)
+// Once keyboard shortcuts are implemented, it might be possible to do them on
+// more platforms than just Mac Catalyst. For now, we only conform to the
+// protocol when built for Catalyst.
+#if targetEnvironment(macCatalyst)
+    extension UIKitBackend: AppBackend.ApplicationMenus {
+        public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
             let appDelegate = UIApplication.shared.delegate as! ApplicationDelegate
             appDelegate.menu = submenus
-        #else
-            // Once keyboard shortcuts are implemented, it might be possible to do them on more
-            // platforms than just Mac Catalyst. For now, this is a no-op.
-            logger.notice("ignoring \(#function) call")
-        #endif
+        }
     }
-}
+#endif
 
 extension UIMenuElement.State {
     var isOn: Bool {
