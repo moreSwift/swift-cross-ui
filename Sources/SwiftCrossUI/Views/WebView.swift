@@ -16,12 +16,9 @@ public struct WebView: ElementaryView {
         _url = url
     }
 
+    @CastBackend<AppBackend.WebViews>(returnsWidget: true)
     func asWidget<Backend: AppBackend.Base>(backend: Backend) -> Backend.Widget {
-        guard let backend = backend as? any AppBackend.WebViews else {
-            fatalError("\(Backend.self) doesn't support web views")
-        }
-
-        return backend.createWebView() as! Backend.Widget
+        return backend.createWebView()
     }
 
     func computeLayout<Backend: AppBackend.Base>(
@@ -34,26 +31,21 @@ public struct WebView: ElementaryView {
         return ViewLayoutResult.leafView(size: size)
     }
 
+    @CastBackend<AppBackend.WebViews>
     func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        func commit<Backend2: AppBackend.WebViews>(backend: Backend2) {
-            let widget = widget as! Backend2.Widget
-            if url != currentURL {
-                backend.navigateWebView(widget, to: url)
-                currentURL = url
-            }
-            backend.updateWebView(widget, environment: environment) { destination in
-                currentURL = destination
-                url = destination
-            }
-            backend.setSize(of: widget, to: layout.size.vector)
+        if url != currentURL {
+            backend.navigateWebView(widget, to: url)
+            currentURL = url
         }
-
-        let backend = backend as! any AppBackend.WebViews
-        commit(backend: backend)
+        backend.updateWebView(widget, environment: environment) { destination in
+            currentURL = destination
+            url = destination
+        }
+        backend.setSize(of: widget, to: layout.size.vector)
     }
 }

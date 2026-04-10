@@ -34,15 +34,12 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
         TableViewChildren()
     }
 
+    @CastBackend<AppBackend.Tables>(returnsWidget: true)
     func asWidget<Backend: AppBackend.Base>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
-        guard let backend = backend as? any AppBackend.Tables else {
-            fatalError("\(Backend.self) doesn't implement tables")
-        }
-
-        return backend.createTable() as! Backend.Widget
+        return backend.createTable()
     }
 
     func computeLayout<Backend: AppBackend.Base>(
@@ -136,6 +133,7 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
         )
     }
 
+    @CastBackend<AppBackend.Tables>
     func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: TableViewChildren<RowContent.RowContent>,
@@ -143,44 +141,37 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        let backend = backend as! any AppBackend.Base & AppBackend.Tables
-        commit(backend: backend)
+        let columnLabels = columns.labels
+        backend.setRowCount(ofTable: widget, to: rows.count)
+        backend.setColumnLabels(ofTable: widget, to: columnLabels, environment: environment)
 
-        func commit<Backend2: AppBackend.Base & AppBackend.Tables>(backend: Backend2) {
-            let widget = widget as! Backend2.Widget
+        // TODO: Avoid overhead of converting `cellContainerWidgets` to
+        //   `[AnyWidget]` and back again all the time.
+        backend.setCells(
+            ofTable: widget,
+            to: children.cellContainerWidgets.map { $0.into() },
+            withRowHeights: children.rowHeights
+        )
 
-            let columnLabels = columns.labels
-            backend.setRowCount(ofTable: widget, to: rows.count)
-            backend.setColumnLabels(ofTable: widget, to: columnLabels, environment: environment)
-
-            // TODO: Avoid overhead of converting `cellContainerWidgets` to
-            //   `[AnyWidget]` and back again all the time.
-            backend.setCells(
-                ofTable: widget,
-                to: children.cellContainerWidgets.map { $0.into() },
-                withRowHeights: children.rowHeights
+        let columnCount = columnLabels.count
+        for (rowIndex, rowHeight) in children.rowHeights.enumerated() {
+            let rowCells = children.rowContent[rowIndex].layoutableChildren(
+                backend: backend,
+                children: children.rowNodes[rowIndex].getChildren()
             )
 
-            let columnCount = columnLabels.count
-            for (rowIndex, rowHeight) in children.rowHeights.enumerated() {
-                let rowCells = children.rowContent[rowIndex].layoutableChildren(
-                    backend: backend,
-                    children: children.rowNodes[rowIndex].getChildren()
+            for (columnIndex, cell) in rowCells.enumerated() {
+                let index = rowIndex * columnCount + columnIndex
+                let cellSize = cell.commit()
+                backend.setPosition(
+                    ofChildAt: 0,
+                    in: children.cellContainerWidgets[index].into(),
+                    to: SIMD2(0, (rowHeight - cellSize.size.vector.y) / 2)
                 )
-
-                for (columnIndex, cell) in rowCells.enumerated() {
-                    let index = rowIndex * columnCount + columnIndex
-                    let cellSize = cell.commit()
-                    backend.setPosition(
-                        ofChildAt: 0,
-                        in: children.cellContainerWidgets[index].into(),
-                        to: SIMD2(0, (rowHeight - cellSize.size.vector.y) / 2)
-                    )
-                }
             }
-
-            backend.setSize(of: widget, to: layout.size.vector)
         }
+
+        backend.setSize(of: widget, to: layout.size.vector)
     }
 }
 
