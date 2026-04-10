@@ -55,13 +55,3 @@ extension AppBackend.Colors {
         return color.resolve(in: environment)
     }
 }
-
-extension AppBackend.Colors {
-    public func createColorableRectangle() -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func setColor(ofColorableRectangle widget: Widget, to color: Color.Resolved) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-}

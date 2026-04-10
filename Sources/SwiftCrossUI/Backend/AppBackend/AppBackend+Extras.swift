@@ -91,15 +91,3 @@ extension AppBackend {
         func updateTooltipContainer(_ widget: Widget, tooltip: String)
     }
 }
-
-// MARK: Default Implementations
-
-extension AppBackend.Tooltips {
-    public func createTooltipContainer(wrapping child: Widget) -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updateTooltipContainer(_ widget: Widget, tooltip: String) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-}

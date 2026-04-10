@@ -64,36 +64,3 @@ extension AppBackend {
         )
     }
 }
-
-// MARK: Default Implementations
-
-extension AppBackend.Paths {
-    public func createPathWidget() -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func createPath() -> Path {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updatePath(
-        _ path: Path,
-        _ source: SwiftCrossUI.Path,
-        bounds: SwiftCrossUI.Path.Rect,
-        pointsChanged: Bool,
-        environment: EnvironmentValues
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func renderPath(
-        _ path: Path,
-        container: Widget,
-        strokeColor: Color.Resolved,
-        fillColor: Color.Resolved,
-        overrideStrokeStyle: StrokeStyle?
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-}
-

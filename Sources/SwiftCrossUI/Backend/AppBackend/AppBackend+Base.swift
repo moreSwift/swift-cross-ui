@@ -1,5 +1,3 @@
-import Foundation
-
 /// Namespace for backend protocols.
 ///
 /// Conform to ``AppBackend/Base`` to create a backend that can be used to run

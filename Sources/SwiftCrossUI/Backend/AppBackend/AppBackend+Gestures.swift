@@ -76,34 +76,3 @@ extension AppBackend {
         )
     }
 }
-
-// MARK: Default Implementations
-
-extension AppBackend.TapGestures {
-    public func createTapGestureTarget(wrapping child: Widget, gesture: TapGesture) -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updateTapGestureTarget(
-        _ clickTarget: Widget,
-        gesture: TapGesture,
-        environment: EnvironmentValues,
-        action: @escaping () -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-}
-
-extension AppBackend.HoverGestures {
-    public func createHoverTarget(wrapping child: Widget) -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updateHoverTarget(
-        _ container: Widget,
-        environment: EnvironmentValues,
-        action: @escaping (Bool) -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-}
