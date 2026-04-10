@@ -38,7 +38,11 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
-        return backend.createTable()
+        guard let backend = backend as? any AppBackend.Tables else {
+            fatalError("\(Backend.self) doesn't implement tables")
+        }
+
+        return backend.createTable() as! Backend.Widget
     }
 
     func computeLayout<Backend: AppBackend.Base>(
@@ -48,6 +52,8 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
+        let castedBackend = backend as! any AppBackend.Tables
+
         let size = proposedSize
         var cellResults: [ViewLayoutResult] = []
         children.rowContent = rows.map(columns.content(for:)).map(RowView.init(_:))
@@ -106,7 +112,7 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
                 let cellResult = rowCell.computeLayout(
                     proposedSize: ProposedViewSize(
                         columnWidth,
-                        Double(backend.defaultTableRowContentHeight)
+                        Double(castedBackend.defaultTableRowContentHeight)
                     ),
                     environment: environment
                 )
@@ -115,10 +121,10 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
             }
 
             let rowHeight =
-                max(
-                    rowCellHeights.max() ?? 0,
-                    backend.defaultTableRowContentHeight
-                ) + backend.defaultTableCellVerticalPadding * 2
+            max(
+                rowCellHeights.max() ?? 0,
+                castedBackend.defaultTableRowContentHeight
+            ) + castedBackend.defaultTableCellVerticalPadding * 2
 
             rowHeights.append(rowHeight)
         }
@@ -137,40 +143,44 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        let columnLabels = columns.labels
-        backend.setRowCount(ofTable: widget, to: rows.count)
-        backend.setColumnLabels(ofTable: widget, to: columnLabels, environment: environment)
+        let backend = backend as! any AppBackend.Base & AppBackend.Tables
+        commit(backend: backend)
 
-        // TODO: Avoid overhead of converting `cellContainerWidgets` to
-        //   `[AnyWidget]` and back again all the time.
-        backend.setCells(
-            ofTable: widget,
-            to: children.cellContainerWidgets.map { $0.into() },
-            withRowHeights: children.rowHeights
-        )
+        func commit<Backend2: AppBackend.Base & AppBackend.Tables>(backend: Backend2) {
+            let widget = widget as! Backend2.Widget
 
-        let columnCount = columnLabels.count
-        for (rowIndex, rowHeight) in children.rowHeights.enumerated() {
-            let rowCells = children.rowContent[rowIndex].layoutableChildren(
-                backend: backend,
-                children: children.rowNodes[rowIndex].getChildren()
+            let columnLabels = columns.labels
+            backend.setRowCount(ofTable: widget, to: rows.count)
+            backend.setColumnLabels(ofTable: widget, to: columnLabels, environment: environment)
+
+            // TODO: Avoid overhead of converting `cellContainerWidgets` to
+            //   `[AnyWidget]` and back again all the time.
+            backend.setCells(
+                ofTable: widget,
+                to: children.cellContainerWidgets.map { $0.into() },
+                withRowHeights: children.rowHeights
             )
 
-            for (columnIndex, cell) in rowCells.enumerated() {
-                let index = rowIndex * columnCount + columnIndex
-                let cellSize = cell.commit()
-                backend.setPosition(
-                    ofChildAt: 0,
-                    in: children.cellContainerWidgets[index].into(),
-                    to: SIMD2(
-                        0,
-                        (rowHeight - cellSize.size.vector.y) / 2
-                    )
+            let columnCount = columnLabels.count
+            for (rowIndex, rowHeight) in children.rowHeights.enumerated() {
+                let rowCells = children.rowContent[rowIndex].layoutableChildren(
+                    backend: backend,
+                    children: children.rowNodes[rowIndex].getChildren()
                 )
-            }
-        }
 
-        backend.setSize(of: widget, to: layout.size.vector)
+                for (columnIndex, cell) in rowCells.enumerated() {
+                    let index = rowIndex * columnCount + columnIndex
+                    let cellSize = cell.commit()
+                    backend.setPosition(
+                        ofChildAt: 0,
+                        in: children.cellContainerWidgets[index].into(),
+                        to: SIMD2(0, (rowHeight - cellSize.size.vector.y) / 2)
+                    )
+                }
+            }
+
+            backend.setSize(of: widget, to: layout.size.vector)
+        }
     }
 }
 

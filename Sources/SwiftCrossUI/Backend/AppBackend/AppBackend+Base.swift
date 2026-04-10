@@ -104,7 +104,8 @@ public enum AppBackend {
     /// - ``Sheets``
     /// - ``CornerRadius``
     /// - ``WebViews``
+    /// - ``Tables``
     public typealias Full =
         Base & IncomingURLs & ExternalURLs & RevealFile & ApplicationMenus
-        & FileDialogs & Alerts & Sheets & CornerRadius & WebViews 
+        & FileDialogs & Alerts & Sheets & CornerRadius & WebViews & Tables
 }

@@ -1683,30 +1683,6 @@ public final class Gtk3Backend:
 
     // MARK: - Unimplemented Features
 
-    public func createTable() -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func setRowCount(ofTable table: Widget, to rows: Int) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func setColumnLabels(
-        ofTable table: Widget,
-        to labels: [String],
-        environment: EnvironmentValues
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func setCells(
-        ofTable table: Widget,
-        to cells: [Widget],
-        withRowHeights rowHeights: [Int]
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
     public func createDatePicker() -> Widget {
         fatalError("\(Self.self): \(#function) not implemented")
     }

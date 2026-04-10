@@ -1956,32 +1956,6 @@ public final class GtkBackend:
     public func size(ofSheet sheet: Sheet) -> SIMD2<Int> {
         return SIMD2(x: sheet.size.width, y: sheet.size.height)
     }
-
-    // MARK: - Unimplemented Features
-
-    public func createTable() -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func setRowCount(ofTable table: Widget, to rows: Int) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func setColumnLabels(
-        ofTable table: Widget,
-        to labels: [String],
-        environment: EnvironmentValues
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func setCells(
-        ofTable table: Widget,
-        to cells: [Widget],
-        withRowHeights rowHeights: [Int]
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
 }
 
 extension UnsafeMutablePointer {
