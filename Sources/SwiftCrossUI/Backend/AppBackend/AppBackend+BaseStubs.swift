@@ -154,30 +154,6 @@ extension AppBackend.BaseStubs {
         todo()
     }
 
-    public func createTable() -> Widget {
-        todo()
-    }
-
-    public func setRowCount(ofTable table: Widget, to rows: Int) {
-        todo()
-    }
-
-    public func setColumnLabels(
-        ofTable table: Widget,
-        to labels: [String],
-        environment: EnvironmentValues
-    ) {
-        todo()
-    }
-
-    public func setCells(
-        ofTable table: Widget,
-        to cells: [Widget],
-        withRowHeights rowHeights: [Int]
-    ) {
-        todo()
-    }
-
     public func size(
         of text: String,
         whenDisplayedIn widget: Widget,
@@ -453,31 +429,6 @@ extension AppBackend.BaseStubs {
         todo()
     }
 
-    public func createTapGestureTarget(wrapping child: Widget, gesture: TapGesture) -> Widget {
-        todo()
-    }
-
-    public func updateTapGestureTarget(
-        _ tapGestureTarget: Widget,
-        gesture: TapGesture,
-        environment: EnvironmentValues,
-        action: @escaping () -> Void
-    ) {
-        todo()
-    }
-
-    public func createHoverTarget(wrapping child: Widget) -> Widget {
-        todo()
-    }
-
-    public func updateHoverTarget(
-        _ hoverTarget: Widget,
-        environment: EnvironmentValues,
-        action: @escaping (Bool) -> Void
-    ) {
-        todo()
-    }
-
     public func createTooltipContainer(wrapping child: Widget) -> Widget {
         todo()
     }
@@ -657,14 +608,6 @@ extension AppBackend.BaseStubs {
     }
 
     public var scrollBarWidth: Int {
-        todo()
-    }
-
-    public var defaultTableRowContentHeight: Int {
-        todo()
-    }
-
-    public var defaultTableCellVerticalPadding: Int {
         todo()
     }
 
