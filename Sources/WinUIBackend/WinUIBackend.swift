@@ -330,7 +330,7 @@ public final class WinUIBackend: AppBackend {
     public func show(widget _: Widget) {}
 
     private func renderMenuItem(
-        _ items: ResolvedMenu.Item,
+        _ item: ResolvedMenu.Item,
         environment: EnvironmentValues
     ) -> MenuFlyoutItemBase {
         switch item {
