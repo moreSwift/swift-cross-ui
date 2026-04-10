@@ -288,6 +288,8 @@ struct WindowingApp: App {
                 Menu("Submenu") {
                     Button("Item 1") {}
                     Button("Item 2") {}
+                    Button("Disabled item") {}
+                        .disabled()
                 }
             }
         }

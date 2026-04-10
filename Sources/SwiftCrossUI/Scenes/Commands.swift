@@ -1,7 +1,9 @@
 /// A set of menus to be displayed in a menu bar.
-public struct Commands: Sendable {
+public struct Commands {
     /// Represents an empty menu bar.
-    public static let empty = Commands(menus: [])
+    public static var empty: Commands {
+        Commands(menus: [])
+    }
 
     var menus: [CommandMenu]
 

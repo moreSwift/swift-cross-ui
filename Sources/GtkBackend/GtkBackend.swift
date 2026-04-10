@@ -333,7 +333,8 @@ public final class GtkBackend:
         _ menu: ResolvedMenu,
         actionMap: any GActionMap,
         actionNamespace: String,
-        actionPrefix: String?
+        actionPrefix: String?,
+        environment: EnvironmentValues
     ) -> GMenu {
         var currentSection = GMenu()
         var previousSections: [GMenu] = []
@@ -346,41 +347,49 @@ public final class GtkBackend:
                     "\(i)"
                 }
 
-            switch item {
-                case .button(let label, let action):
-                    if let action {
-                        actionMap.addAction(GSimpleAction(name: actionName, action: action))
-                    }
+            render(item: item, environment: environment)
+            func render(item: ResolvedMenu.Item, environment: EnvironmentValues) {
+                switch item {
+                    case .button(let label, let action):
+                        if let action {
+                            let gAction = GSimpleAction(name: actionName, action: action)
+                            gAction.enabled = environment.isEnabled
+                            actionMap.addAction(gAction)
+                        }
 
-                    currentSection.appendItem(
-                        label: label,
-                        actionName: "\(actionNamespace).\(actionName)"
-                    )
-                case .toggle(let label, let value, let onChange):
-                    actionMap.addAction(
-                        GSimpleAction(name: actionName, state: value, action: onChange)
-                    )
-
-                    currentSection.appendItem(
-                        label: label,
-                        actionName: "\(actionNamespace).\(actionName)"
-                    )
-                case .separator:
-                    // GTK[3] doesn't have explicit separators per se, but instead deals with
-                    // sections (actually quite similar to what you can do in SwiftUI with the
-                    // Section view). It'll automatically draw separators between sections.
-                    previousSections.append(currentSection)
-                    currentSection = GMenu()
-                case .submenu(let submenu):
-                    currentSection.appendSubmenu(
-                        label: submenu.label,
-                        content: renderMenu(
-                            submenu.content,
-                            actionMap: actionMap,
-                            actionNamespace: actionNamespace,
-                            actionPrefix: actionName
+                        currentSection.appendItem(
+                            label: label,
+                            actionName: "\(actionNamespace).\(actionName)"
                         )
-                    )
+                    case .toggle(let label, let value, let onChange):
+                        let gAction = GSimpleAction(name: actionName, state: value, action: onChange)
+                        gAction.enabled = environment.isEnabled
+                        actionMap.addAction(gAction)
+
+                        currentSection.appendItem(
+                            label: label,
+                            actionName: "\(actionNamespace).\(actionName)"
+                        )
+                    case .separator:
+                        // GTK[3] doesn't have explicit separators per se, but instead deals with
+                        // sections (actually quite similar to what you can do in SwiftUI with the
+                        // Section view). It'll automatically draw separators between sections.
+                        previousSections.append(currentSection)
+                        currentSection = GMenu()
+                    case .submenu(let submenu):
+                        currentSection.appendSubmenu(
+                            label: submenu.label,
+                            content: renderMenu(
+                                submenu.content,
+                                actionMap: actionMap,
+                                actionNamespace: actionNamespace,
+                                actionPrefix: actionName,
+                                environment: environment
+                            )
+                        )
+                    case .modifiedEnvironment(let item, let modification):
+                        render(item: item, environment: modification(environment))
+                }
             }
         }
 
@@ -396,7 +405,10 @@ public final class GtkBackend:
         }
     }
 
-    private func renderMenuBar(_ submenus: [ResolvedMenu.Submenu]) -> GMenu {
+    private func renderMenuBar(
+        _ submenus: [ResolvedMenu.Submenu],
+        environment: EnvironmentValues
+    ) -> GMenu {
         let model = GMenu()
         for (i, submenu) in submenus.enumerated() {
             model.appendSubmenu(
@@ -405,7 +417,8 @@ public final class GtkBackend:
                     submenu.content,
                     actionMap: gtkApp,
                     actionNamespace: "app",
-                    actionPrefix: "\(i)"
+                    actionPrefix: "\(i)",
+                    environment: environment
                 )
             )
         }
@@ -413,8 +426,11 @@ public final class GtkBackend:
         return model
     }
 
-    public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
-        let model = renderMenuBar(submenus)
+    public func setApplicationMenu(
+        _ submenus: [ResolvedMenu.Submenu],
+        environment: EnvironmentValues
+    ) {
+        let model = renderMenuBar(submenus, environment: environment)
         gtkApp.menuBarModel = model
 
         let showMenuBar = !submenus.isEmpty
@@ -1275,7 +1291,8 @@ public final class GtkBackend:
             content,
             actionMap: actionGroup,
             actionNamespace: "menu",
-            actionPrefix: nil
+            actionPrefix: nil,
+            environment: environment
         )
         menu.insertActionGroup("menu", actionGroup)
 

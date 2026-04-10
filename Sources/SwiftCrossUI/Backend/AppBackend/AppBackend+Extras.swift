@@ -50,8 +50,13 @@ extension AppBackend {
         /// (such as macOS's menu bar), and others may render their own menu bar
         /// within the application.
         ///
-        /// - Parameter submenus: The submenus of the global menu.
-        func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu])
+        /// - Parameters:
+        ///   - submenus: The submenus of the global menu.
+        ///   - environment: The menu's environment.
+        func setApplicationMenu(
+            _ submenus: [ResolvedMenu.Submenu],
+            environment: EnvironmentValues
+        )
     }
 
     /// Backend methods for setting widgets' corner radii.

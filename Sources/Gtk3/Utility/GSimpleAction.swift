@@ -8,7 +8,7 @@ public class GSimpleAction: GAction, GObjectRepresentable {
         UnsafeMutablePointer<CGtk3.GObject>(actionPointer)
     }
 
-    @GObjectProperty(named: "enabled") var enabled: Bool
+    @GObjectProperty(named: "enabled") public var enabled: Bool
 
     private class Box<T> {
         var value: T

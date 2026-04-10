@@ -335,44 +335,56 @@ public final class WinUIBackend:
 
     public func show(widget _: Widget) {}
 
-    private func renderItems(_ items: [ResolvedMenu.Item]) -> [MenuFlyoutItemBase] {
-        items.map { item in
-            switch item {
-                case .button(let label, let action):
-                    let widget = MenuFlyoutItem()
-                    widget.text = label
-                    widget.click.addHandler { _, _ in
-                        action?()
-                    }
-                    return widget
-                case .toggle(let label, let value, let onChange):
-                    let widget = ToggleMenuFlyoutItem()
-                    widget.text = label
-                    widget.isChecked = value
-                    widget.click.addHandler { [weak widget] _, _ in
-                        guard let widget else { return }
-                        onChange(widget.isChecked)
-                    }
-                    return widget
-                case .separator:
-                    return MenuFlyoutSeparator()
-                case .submenu(let submenu):
-                    let widget = MenuFlyoutSubItem()
-                    widget.text = submenu.label
-                    for subitem in renderItems(submenu.content.items) {
-                        widget.items.append(subitem)
-                    }
-                    return widget
-            }
+    private func renderMenuItem(
+        _ item: ResolvedMenu.Item,
+        environment: EnvironmentValues
+    ) -> MenuFlyoutItemBase {
+        switch item {
+            case .button(let label, let action):
+                let widget = MenuFlyoutItem()
+                widget.text = label
+                widget.click.addHandler { _, _ in
+                    action?()
+                }
+                widget.isEnabled = environment.isEnabled
+                return widget
+            case .toggle(let label, let value, let onChange):
+                let widget = ToggleMenuFlyoutItem()
+                widget.text = label
+                widget.isChecked = value
+                widget.click.addHandler { [weak widget] _, _ in
+                    guard let widget else { return }
+                    onChange(widget.isChecked)
+                }
+                widget.isEnabled = environment.isEnabled
+                return widget
+            case .separator:
+                return MenuFlyoutSeparator()
+            case .submenu(let submenu):
+                let widget = MenuFlyoutSubItem()
+                widget.text = submenu.label
+                for subitem in submenu.content.items {
+                    widget.items.append(
+                        renderMenuItem(subitem, environment: environment)
+                    )
+                }
+                return widget
+            case .modifiedEnvironment(let item, let modification):
+                return renderMenuItem(item, environment: modification(environment))
         }
     }
 
-    public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
+    public func setApplicationMenu(
+        _ submenus: [ResolvedMenu.Submenu],
+        environment: EnvironmentValues
+    ) {
         let items = submenus.map { submenu in
             let item = MenuBarItem()
             item.title = submenu.label
-            for subitem in renderItems(submenu.content.items) {
-                item.items.append(subitem)
+            for subitem in submenu.content.items {
+                item.items.append(
+                    renderMenuItem(subitem, environment: environment)
+                )
             }
             return item
         }
@@ -800,8 +812,8 @@ public final class WinUIBackend:
         environment: EnvironmentValues
     ) {
         menu.items.clear()
-        for item in renderItems(content.items) {
-            menu.items.append(item)
+        for item in content.items {
+            menu.items.append(renderMenuItem(item, environment: environment))
         }
     }
 

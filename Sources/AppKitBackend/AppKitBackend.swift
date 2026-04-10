@@ -170,8 +170,13 @@ public final class AppKitBackend: AppBackend.Full {
         window.makeKeyAndOrderFront(nil)
     }
 
-    public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
-        MenuBar.setUpMenuBar(extraMenus: submenus.map(Self.renderSubmenu(_:)))
+    public func setApplicationMenu(
+        _ submenus: [ResolvedMenu.Submenu],
+        environment: EnvironmentValues
+    ) {
+        MenuBar.setUpMenuBar(extraMenus: submenus.map {
+            Self.renderSubmenu($0, environment: environment)
+        })
     }
 
     public func close(window: Window) {
@@ -193,53 +198,67 @@ public final class AppKitBackend: AppBackend.Full {
         NSWorkspace.shared.activateFileViewerSelecting([url])
     }
 
-    private static func renderMenuItems(_ items: [ResolvedMenu.Item]) -> [NSMenuItem] {
-        items.map { item in
-            switch item {
-                case .button(let label, let action):
-                    // Custom subclass is used to keep strong reference to action
-                    // wrapper.
-                    let renderedItem = NSCustomMenuItem(
-                        title: label,
-                        action: nil,
-                        keyEquivalent: ""
-                    )
-                    if let action {
-                        let wrappedAction = Action(action)
-                        renderedItem.actionWrapper = wrappedAction
-                        renderedItem.action = #selector(wrappedAction.run)
-                        renderedItem.target = wrappedAction
-                    }
-                    return renderedItem
-                case .toggle(let label, let value, let onChange):
-                    // Custom subclass is used to keep strong reference to action
-                    // wrapper.
-                    let renderedItem = NSCustomMenuItem(
-                        title: label,
-                        action: nil,
-                        keyEquivalent: ""
-                    )
-                    renderedItem.isOn = value
+    private static func renderMenuItem(
+        _ item: ResolvedMenu.Item,
+        environment: EnvironmentValues
+    ) -> NSMenuItem {
+        switch item {
+            case .button(let label, let action):
+                // Custom subclass is used to keep strong reference to action
+                // wrapper.
+                let renderedItem = NSCustomMenuItem(
+                    title: label,
+                    action: nil,
+                    keyEquivalent: ""
+                )
+                if let action, environment.isEnabled {
+                    let wrappedAction = Action(action)
+                    renderedItem.actionWrapper = wrappedAction
+                    renderedItem.action = #selector(wrappedAction.run)
+                    renderedItem.target = wrappedAction
+                }
+                return renderedItem
+            case .toggle(let label, let value, let onChange):
+                // Custom subclass is used to keep strong reference to action
+                // wrapper.
+                let renderedItem = NSCustomMenuItem(
+                    title: label,
+                    action: nil,
+                    keyEquivalent: ""
+                )
+                renderedItem.isOn = value
 
+                if environment.isEnabled {
                     let wrappedAction = Action {
                         onChange(!renderedItem.isOn)
                     }
                     renderedItem.actionWrapper = wrappedAction
                     renderedItem.action = #selector(wrappedAction.run)
                     renderedItem.target = wrappedAction
+                }
 
-                    return renderedItem
-                case .separator:
-                    return NSCustomMenuItem.separator()
-                case .submenu(let submenu):
-                    return renderSubmenu(submenu)
-            }
+                return renderedItem
+            case .separator:
+                return NSCustomMenuItem.separator()
+            case .submenu(let submenu):
+                return renderSubmenu(submenu, environment: environment)
+
+            case .modifiedEnvironment(let item, let modification):
+                return renderMenuItem(
+                    item,
+                    environment: modification(environment)
+                )
         }
     }
 
-    static func renderSubmenu(_ submenu: ResolvedMenu.Submenu) -> NSMenuItem {
+    static func renderSubmenu(
+        _ submenu: ResolvedMenu.Submenu,
+        environment: EnvironmentValues
+    ) -> NSMenuItem {
         let renderedMenu = NSMenu()
-        renderedMenu.items = renderMenuItems(submenu.content.items)
+        renderedMenu.items = submenu.content.items.map {
+            Self.renderMenuItem($0, environment: environment)
+        }
 
         let menuItem = NSMenuItem()
         menuItem.title = submenu.label
@@ -1155,7 +1174,9 @@ public final class AppKitBackend: AppBackend.Full {
         environment: EnvironmentValues
     ) {
         menu.appearance = environment.colorScheme.nsAppearance
-        menu.items = Self.renderMenuItems(content.items)
+        menu.items = content.items.map {
+            Self.renderMenuItem($0, environment: environment)
+        }
     }
 
     public func showPopoverMenu(

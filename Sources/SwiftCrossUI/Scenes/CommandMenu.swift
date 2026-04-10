@@ -1,5 +1,5 @@
 /// A command menu.
-public struct CommandMenu: Sendable {
+public struct CommandMenu {
     /// The menu's name.
     var name: String
     /// The menu's contents.
@@ -33,7 +33,7 @@ public struct CommandMenu: Sendable {
     func resolve() -> ResolvedMenu.Submenu {
         ResolvedMenu.Submenu(
             label: name,
-            content: Menu.resolveItems(content)
+            content: Menu.resolve(items: content)
         )
     }
 }

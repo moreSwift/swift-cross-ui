@@ -37,7 +37,10 @@ class _App<AppRoot: App> {
         if let sceneGraphRoot {
             let result = sceneGraphRoot.updateNode(app.body, environment: environment)
             if let backend = backend as? any AppBackend.ApplicationMenus {
-                backend.setApplicationMenu(result.preferences.commands.resolve())
+                backend.setApplicationMenu(
+                    result.preferences.commands.resolve(),
+                    environment: environment
+                )
             }
             sceneGraphRoot.update(
                 backend: backend,
@@ -96,7 +99,10 @@ class _App<AppRoot: App> {
 
             // Update application-wide menu
             if let backend = backend as? any AppBackend.ApplicationMenus {
-                backend.setApplicationMenu(result.preferences.commands.resolve())
+                backend.setApplicationMenu(
+                    result.preferences.commands.resolve(),
+                    environment: environment
+                )
             }
 
             rootNode.update(backend: backend, environment: environment)

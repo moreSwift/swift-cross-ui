@@ -1,7 +1,9 @@
 /// A scene's preferences. Propagated up the scene hierarchy automatically.
-public struct ScenePreferenceValues: Sendable {
+public struct ScenePreferenceValues {
     /// The default preferences.
-    public static let `default` = ScenePreferenceValues(commands: .empty)
+    public static var `default`: ScenePreferenceValues {
+        ScenePreferenceValues(commands: .empty)
+    }
 
     /// The commands to be shown by the app.
     public var commands: Commands

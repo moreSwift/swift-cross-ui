@@ -1,5 +1,5 @@
 /// The result of updating a scene graph node.
-public struct SceneNodeUpdateResult: Sendable {
+public struct SceneNodeUpdateResult {
     /// The preference values produced by the scene and its children.
     public var preferences: ScenePreferenceValues
 

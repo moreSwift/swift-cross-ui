@@ -10,39 +10,71 @@ extension UIKitBackend: AppBackend.ApplicationMenus {
         return Menu()
     }
 
+    private enum RenderedMenuItem {
+        case item(UIMenuElement)
+        case separator
+    }
+
+    @available(tvOS 14, *)
+    private static func renderMenuItem(
+        _ item: ResolvedMenu.Item,
+        environment: EnvironmentValues
+    ) -> RenderedMenuItem {
+        switch item {
+            case .button(let label, let action):
+                if let action, environment.isEnabled {
+                    .item(UIAction(title: label) { _ in action() })
+                } else {
+                    .item(UIAction(title: label, attributes: .disabled) { _ in })
+                }
+            case .toggle(let label, let value, let onChange):
+                .item(
+                    UIAction(
+                        title: label,
+                        attributes: environment.isEnabled ? [] : .disabled,
+                        state: value ? .on : .off
+                    ) { action in
+                        onChange(!action.state.isOn)
+                    }
+                )
+            case .separator:
+                .separator
+            case .submenu(let submenu):
+                .item(
+                    buildMenu(
+                        content: submenu.content,
+                        label: submenu.label,
+                        environment: environment
+                    )
+                )
+            case .modifiedEnvironment(let item, let modification):
+                renderMenuItem(
+                    item,
+                    environment: modification(environment)
+                )
+        }
+    }
+
     @available(tvOS 14, *)
     static func buildMenu(
         content: ResolvedMenu,
         label: String,
-        identifier: UIMenu.Identifier? = nil
+        identifier: UIMenu.Identifier? = nil,
+        environment: EnvironmentValues
     ) -> UIMenu {
         var currentSection: [UIMenuElement] = []
         var previousSections: [[UIMenuElement]] = []
 
         for item in content.items {
-            switch item {
-                case .button(let label, let action):
-                    let uiAction =
-                        if let action {
-                            UIAction(title: label) { _ in action() }
-                        } else {
-                            UIAction(title: label, attributes: .disabled) { _ in }
-                        }
-                    currentSection.append(uiAction)
-                case .toggle(let label, let value, let onChange):
-                    currentSection.append(
-                        UIAction(title: label, state: value ? .on : .off) { action in
-                            onChange(!action.state.isOn)
-                        }
-                    )
+            switch renderMenuItem(item, environment: environment) {
+                case .item(let uiMenuElement):
+                    currentSection.append(uiMenuElement)
                 case .separator:
                     // UIKit doesn't have explicit separators per se, but instead deals with
                     // sections (actually quite similar to what you can do in SwiftUI with the
                     // Section view). It'll automatically draw separators between sections.
                     previousSections.append(currentSection)
                     currentSection = []
-                case .submenu(let submenu):
-                    currentSection.append(buildMenu(content: submenu.content, label: submenu.label))
             }
         }
 
@@ -64,10 +96,14 @@ extension UIKitBackend: AppBackend.ApplicationMenus {
     public func updatePopoverMenu(
         _ menu: Menu,
         content: ResolvedMenu,
-        environment _: EnvironmentValues
+        environment: EnvironmentValues
     ) {
         if #available(iOS 14, macCatalyst 14, tvOS 17, *) {
-            menu.uiMenu = UIKitBackend.buildMenu(content: content, label: "")
+            menu.uiMenu = UIKitBackend.buildMenu(
+                content: content,
+                label: "",
+                environment: environment
+            )
         } else {
             preconditionFailure("Current OS is too old to support menu buttons.")
         }
@@ -104,9 +140,13 @@ extension UIKitBackend: AppBackend.ApplicationMenus {
 // protocol when built for Catalyst.
 #if targetEnvironment(macCatalyst)
     extension UIKitBackend: AppBackend.ApplicationMenus {
-        public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
+        public func setApplicationMenu(
+            _ submenus: [ResolvedMenu.Submenu],
+            environment: EnvironmentValues
+        ) {
             let appDelegate = UIApplication.shared.delegate as! ApplicationDelegate
             appDelegate.menu = submenus
+            appDelegate.environment = environment
         }
     }
 #endif
