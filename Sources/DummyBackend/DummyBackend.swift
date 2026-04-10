@@ -733,143 +733,150 @@ public final class DummyBackend: AppBackend.Base, AppBackend.IncomingURLs, AppBa
         getContent(ofTextField: secureField)
     }
 
-    // public func createTextEditor() -> Widget {
-
-    // }
-
-    // public func updateTextEditor(_ textEditor: Widget, environment: SwiftCrossUI.EnvironmentValues, onChange: @escaping (String) -> Void) {
-
-    // }
-
-    // public func setContent(ofTextEditor textEditor: Widget, to content: String) {
-
-    // }
-
-    // public func getContent(ofTextEditor textEditor: Widget) -> String {
-
-    // }
-
-    // public func createPicker() -> Widget {
-
-    // }
-
-    // public func updatePicker(_ picker: Widget, options: [String], environment: SwiftCrossUI.EnvironmentValues, onChange: @escaping (Int?) -> Void) {
-
-    // }
-
-    // public func setSelectedOption(ofPicker picker: Widget, to selectedOption: Int?) {
-
-    // }
-
-    // public func createProgressSpinner() -> Widget {
-
-    // }
-
-    // public func createProgressBar() -> Widget {
-
-    // }
-
-    // public func updateProgressBar(_ widget: Widget, progressFraction: Double?, environment: SwiftCrossUI.EnvironmentValues) {
-
-    // }
-
-    // public func createPopoverMenu() -> Menu {
-
-    // }
-
-    // public func updatePopoverMenu(_ menu: Menu, content: SwiftCrossUI.ResolvedMenu, environment: SwiftCrossUI.EnvironmentValues) {
-
-    // }
-
-    // public func showPopoverMenu(_ menu: Menu, at position: SIMD2<Int>, relativeTo widget: Widget, closeHandler handleClose: @escaping () -> Void) {
-
-    // }
-
-    // public func createAlert() -> Alert {
-
-    // }
-
-    // public func updateAlert(_ alert: Alert, title: String, actionLabels: [String], environment: SwiftCrossUI.EnvironmentValues) {
-
-    // }
-
-    // public func showAlert(_ alert: Alert, window: Window?, responseHandler handleResponse: @escaping (Int) -> Void) {
-
-    // }
-
-    // public func dismissAlert(_ alert: Alert, window: Window?) {
-
-    // }
-
-    // public func createSheet(content: Widget) -> Sheet {
-
-    // }
-
-    // public func updateSheet(_ sheet: Sheet, window: Window, environment: SwiftCrossUI.EnvironmentValues, size: SIMD2<Int>, onDismiss: @escaping () -> Void, cornerRadius: Double?, detents: [SwiftCrossUI.PresentationDetent], dragIndicatorVisibility: SwiftCrossUI.Visibility, backgroundColor: SwiftCrossUI.Color.Resolved?, interactiveDismissDisabled: Bool) {
-
-    // }
-
-    // public func presentSheet(_ sheet: Sheet, window: Window, parentSheet: Sheet?) {
-
-    // }
-
-    // public func dismissSheet(_ sheet: Sheet, window: Window, parentSheet: Sheet?) {
-
-    // }
-
-    // public func size(ofSheet sheet: Sheet) -> SIMD2<Int> {
-
-    // }
-
-    // public func showOpenDialog(fileDialogOptions: SwiftCrossUI.FileDialogOptions, openDialogOptions: SwiftCrossUI.OpenDialogOptions, window: Window?, resultHandler handleResult: @escaping (SwiftCrossUI.DialogResult<[URL]>) -> Void) {
-
-    // }
-
-    // public func showSaveDialog(fileDialogOptions: SwiftCrossUI.FileDialogOptions, saveDialogOptions: SwiftCrossUI.SaveDialogOptions, window: Window?, resultHandler handleResult: @escaping (SwiftCrossUI.DialogResult<URL>) -> Void) {
-
-    // }
-
-    // public func createTapGestureTarget(wrapping child: Widget, gesture: SwiftCrossUI.TapGesture) -> Widget {
-
-    // }
-
-    // public func updateTapGestureTarget(_ tapGestureTarget: Widget, gesture: SwiftCrossUI.TapGesture, environment: SwiftCrossUI.EnvironmentValues, action: @escaping () -> Void) {
-
-    // }
-
-    // public func createHoverTarget(wrapping child: Widget) -> Widget {
-
-    // }
-
-    // public func updateHoverTarget(_ hoverTarget: Widget, environment: SwiftCrossUI.EnvironmentValues, action: @escaping (Bool) -> Void) {
-
-    // }
-
-    // public func createPathWidget() -> Widget {
-
-    // }
-
-    // public func createPath() -> Path {
-
-    // }
-
-    // public func updatePath(_ path: Path, _ source: SwiftCrossUI.Path, bounds: SwiftCrossUI.Path.Rect, pointsChanged: Bool, environment: SwiftCrossUI.EnvironmentValues) {
-
-    // }
-
-    // public func renderPath(_ path: Path, container: Widget, strokeColor: SwiftCrossUI.Color.Resolved, fillColor: SwiftCrossUI.Color.Resolved, overrideStrokeStyle: SwiftCrossUI.StrokeStyle?) {
-
-    // }
-
-    // public func createWebView() -> Widget {
-
-    // }
-
-    // public func updateWebView(_ webView: Widget, environment: SwiftCrossUI.EnvironmentValues, onNavigate: @escaping (URL) -> Void) {
-
-    // }
-
-    // public func navigateWebView(_ webView: Widget, to url: URL) {
-
-    // }
+    // MARK: - Unimplemented Features
+    // FIXME: Implement them so we can test them
+
+    public func createDatePicker() -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updateDatePicker(
+        _ datePicker: Widget,
+        environment: SwiftCrossUI.EnvironmentValues,
+        date: Date,
+        range: ClosedRange<Date>,
+        components: SwiftCrossUI.DatePickerComponents,
+        onChange: @escaping (Date) -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createPicker(style: SwiftCrossUI.BackendPickerStyle) -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updatePicker(
+        _ picker: Widget,
+        options: [String],
+        environment: SwiftCrossUI.EnvironmentValues,
+        onChange: @escaping (Int?) -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setSelectedOption(
+        ofPicker picker: Widget,
+        to selectedOption: Int?
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createProgressBar() -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updateProgressBar(
+        _ widget: Widget,
+        progressFraction: Double?,
+        environment: SwiftCrossUI.EnvironmentValues
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createProgressSpinner() -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createTextEditor() -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updateTextEditor(
+        _ textEditor: Widget,
+        environment: SwiftCrossUI.EnvironmentValues,
+        onChange: @escaping (String) -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setContent(ofTextEditor textEditor: Widget, to content: String) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func getContent(ofTextEditor textEditor: Widget) -> String {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createPathWidget() -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createPath() -> Path {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updatePath(
+        _ path: Path,
+        _ source: SwiftCrossUI.Path,
+        bounds: SwiftCrossUI.Path.Rect,
+        pointsChanged: Bool,
+        environment: SwiftCrossUI.EnvironmentValues
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func renderPath(
+        _ path: Path,
+        container: Widget,
+        strokeColor: SwiftCrossUI.Color.Resolved,
+        fillColor: SwiftCrossUI.Color.Resolved,
+        overrideStrokeStyle: SwiftCrossUI.StrokeStyle?
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createHoverTarget(wrapping child: Widget) -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updateHoverTarget(
+        _ hoverTarget: Widget,
+        environment: SwiftCrossUI.EnvironmentValues,
+        action: @escaping (Bool) -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createTapGestureTarget(wrapping child: Widget, gesture: SwiftCrossUI.TapGesture) -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updateTapGestureTarget(
+        _ tapGestureTarget: Widget,
+        gesture: SwiftCrossUI.TapGesture,
+        environment: SwiftCrossUI.EnvironmentValues,
+        action: @escaping () -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createTooltipContainer(wrapping child: Widget) -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updateTooltipContainer(_ widget: Widget, tooltip: String) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createPopoverMenu() -> Menu {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updatePopoverMenu(
+        _ menu: Menu,
+        content: SwiftCrossUI.ResolvedMenu,
+        environment: SwiftCrossUI.EnvironmentValues
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
 }

@@ -1680,6 +1680,80 @@ public final class Gtk3Backend:
 
         return properties
     }
+
+    // MARK: - Unimplemented Features
+
+    public func createTable() -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setRowCount(ofTable table: Widget, to rows: Int) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setColumnLabels(
+        ofTable table: Widget,
+        to labels: [String],
+        environment: EnvironmentValues
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setCells(
+        ofTable table: Widget,
+        to cells: [Widget],
+        withRowHeights rowHeights: [Int]
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createDatePicker() -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updateDatePicker(
+        _ datePicker: Widget,
+        environment: EnvironmentValues,
+        date: Date,
+        range: ClosedRange<Date>,
+        components: DatePickerComponents,
+        onChange: @escaping (Date) -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createPicker(style: BackendPickerStyle) -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updatePicker(
+        _ picker: Widget,
+        options: [String],
+        environment: EnvironmentValues,
+        onChange: @escaping (Int?) -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setSelectedOption(
+        ofPicker picker: Widget,
+        to selectedOption: Int?
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func createHoverTarget(wrapping child: Widget) -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updateHoverTarget(
+        _ hoverTarget: Widget,
+        environment: EnvironmentValues,
+        action: @escaping (Bool) -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+    
 }
 
 extension UnsafeMutablePointer {
@@ -1765,78 +1839,5 @@ final class TooltipContainer: Fixed {
         }
 
         tooltip = UnsafeMutableBufferPointer(start: nil, count: 0)
-    }
-
-    // MARK: - Unimplemented Features
-
-    public func createTable() -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func setRowCount(ofTable table: Widget, to rows: Int) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func setColumnLabels(
-        ofTable table: Widget,
-        to labels: [String],
-        environment: EnvironmentValues
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func setCells(
-        ofTable table: Widget,
-        to cells: [Widget],
-        withRowHeights rowHeights: [Int]
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func createDatePicker() -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updateDatePicker(
-        _ datePicker: Widget,
-        environment: EnvironmentValues,
-        date: Date,
-        range: ClosedRange<Date>,
-        components: DatePickerComponents,
-        onChange: @escaping (Date) -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func createPicker(style: BackendPickerStyle) -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updatePicker(
-        _ picker: Widget,
-        options: [String],
-        environment: EnvironmentValues,
-        onChange: @escaping (Int?) -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func setSelectedOption(
-        ofPicker picker: Widget,
-        to selectedOption: Int?
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func createHoverTarget(wrapping child: Widget) -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updateHoverTarget(
-        _ hoverTarget: Widget,
-        environment: EnvironmentValues,
-        action: @escaping (Bool) -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
     }
 }

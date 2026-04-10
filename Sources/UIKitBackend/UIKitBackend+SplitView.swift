@@ -133,4 +133,32 @@ import UIKit
             splitWidget.child.maximumPrimaryColumnWidth = CGFloat(maximumWidth)
         }
     }
+#else
+    extension UIKitBackend {
+        public func createSplitView(
+            leadingChild: Widget,
+            trailingChild: Widget
+        ) -> Widget {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func setResizeHandler(
+            ofSplitView splitView: Widget,
+            to action: @escaping () -> Void
+        ) {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func sidebarWidth(ofSplitView splitView: Widget) -> Int {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func setSidebarWidthBounds(
+            ofSplitView splitView: Widget,
+            minimum minimumWidth: Int,
+            maximum maximumWidth: Int
+        ) {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+    }
 #endif
