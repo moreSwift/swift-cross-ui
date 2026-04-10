@@ -9,8 +9,8 @@ extension View {
     ///     height instead.
     ///   - alignment: How to align the view within its container.
     public func frame(
-        width: Int? = nil,
-        height: Int? = nil,
+        width: Double? = nil,
+        height: Double? = nil,
         alignment: Alignment = .center
     ) -> some View {
         return StrictFrameView(
@@ -39,11 +39,11 @@ extension View {
     ///     the maximum height of its content
     ///   - alignment: How to align the view within its container.
     public func frame(
-        minWidth: Int? = nil,
-        idealWidth: Int? = nil,
+        minWidth: Double? = nil,
+        idealWidth: Double? = nil,
         maxWidth: Double? = nil,
-        minHeight: Int? = nil,
-        idealHeight: Int? = nil,
+        minHeight: Double? = nil,
+        idealHeight: Double? = nil,
         maxHeight: Double? = nil,
         alignment: Alignment = .center
     ) -> some View {
@@ -65,14 +65,14 @@ struct StrictFrameView<Child: View>: TypeSafeView {
     var body: TupleView1<Child>
 
     /// The exact width to make the view.
-    var width: Int?
+    var width: Double?
     /// The exact height to make the view.
-    var height: Int?
+    var height: Double?
     /// The alignment of the child within the frame.
     var alignment: Alignment
 
     /// Wraps a child view with size constraints.
-    init(_ child: Child, width: Int?, height: Int?, alignment: Alignment) {
+    init(_ child: Child, width: Double?, height: Double?, alignment: Alignment) {
         body = TupleView1(child)
         self.width = width
         self.height = height
@@ -103,8 +103,8 @@ struct StrictFrameView<Child: View>: TypeSafeView {
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
-        let width = width.map(Double.init)
-        let height = height.map(Double.init)
+        let width = width
+        let height = height
 
         let childResult = children.child0.computeLayout(
             with: body.view0,
@@ -150,11 +150,11 @@ struct StrictFrameView<Child: View>: TypeSafeView {
 struct FlexibleFrameView<Child: View>: TypeSafeView {
     var body: TupleView1<Child>
 
-    var minWidth: Int?
-    var idealWidth: Int?
+    var minWidth: Double?
+    var idealWidth: Double?
     var maxWidth: Double?
-    var minHeight: Int?
-    var idealHeight: Int?
+    var minHeight: Double?
+    var idealHeight: Double?
     var maxHeight: Double?
     /// The alignment of the child within the frame.
     var alignment: Alignment
@@ -162,11 +162,11 @@ struct FlexibleFrameView<Child: View>: TypeSafeView {
     /// Wraps a child view with size constraints.
     init(
         _ child: Child,
-        minWidth: Int?,
-        idealWidth: Int?,
+        minWidth: Double?,
+        idealWidth: Double?,
         maxWidth: Double?,
-        minHeight: Int?,
-        idealHeight: Int?,
+        minHeight: Double?,
+        idealHeight: Double?,
         maxHeight: Double?,
         alignment: Alignment
     ) {
@@ -207,7 +207,7 @@ struct FlexibleFrameView<Child: View>: TypeSafeView {
     func clampHeight(_ height: Double) -> Double {
         LayoutSystem.clamp(
             height,
-            minimum: minHeight.map(Double.init),
+            minimum: minHeight,
             maximum: maxHeight
         )
     }
@@ -215,7 +215,7 @@ struct FlexibleFrameView<Child: View>: TypeSafeView {
     func clampWidth(_ width: Double) -> Double {
         LayoutSystem.clamp(
             width,
-            minimum: minWidth.map(Double.init),
+            minimum: minWidth,
             maximum: maxWidth
         )
     }
@@ -238,11 +238,11 @@ struct FlexibleFrameView<Child: View>: TypeSafeView {
         }
 
         if let idealWidth, proposedSize.width == nil {
-            proposedFrameSize.width = Double(idealWidth)
+            proposedFrameSize.width = idealWidth
         }
 
         if let idealHeight, proposedSize.height == nil {
-            proposedFrameSize.height = Double(idealHeight)
+            proposedFrameSize.height = idealHeight
         }
 
         let childResult = children.child0.computeLayout(
