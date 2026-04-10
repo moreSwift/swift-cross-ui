@@ -21,7 +21,8 @@ public final class GtkBackend:
     AppBackend.FileDialogs,
     AppBackend.Alerts,
     AppBackend.Sheets,
-    AppBackend.CornerRadius
+    AppBackend.CornerRadius,
+    AppBackend.Gestures
 {
     public typealias Window = Gtk.ApplicationWindow
     public typealias Widget = Gtk.Widget

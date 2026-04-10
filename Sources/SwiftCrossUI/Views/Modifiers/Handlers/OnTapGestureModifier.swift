@@ -62,6 +62,7 @@ struct OnTapGestureModifier<Content: View>: TypeSafeView {
         )
     }
 
+    @CastBackend<AppBackend.TapGestures>(returnsWidget: true)
     func asWidget<Backend: AppBackend.Base>(
         _ children: Children,
         backend: Backend
@@ -83,6 +84,7 @@ struct OnTapGestureModifier<Content: View>: TypeSafeView {
         )
     }
 
+    @CastBackend<AppBackend.TapGestures>
     func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: TupleView1<Content>.Children,

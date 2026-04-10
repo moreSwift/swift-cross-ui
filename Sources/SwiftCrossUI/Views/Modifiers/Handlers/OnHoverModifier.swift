@@ -30,6 +30,7 @@ struct OnHoverModifier<Content: View>: TypeSafeView {
         )
     }
 
+    @CastBackend<AppBackend.HoverGestures>(returnsWidget: true)
     func asWidget<Backend: AppBackend.Base>(
         _ children: Children,
         backend: Backend
@@ -51,6 +52,7 @@ struct OnHoverModifier<Content: View>: TypeSafeView {
         )
     }
 
+    @CastBackend<AppBackend.HoverGestures>
     func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: Children,

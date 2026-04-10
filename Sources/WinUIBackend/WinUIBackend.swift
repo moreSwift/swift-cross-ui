@@ -35,7 +35,8 @@ public final class WinUIBackend:
     AppBackend.IncomingURLs,
     AppBackend.FileDialogs,
     AppBackend.Alerts,
-    AppBackend.CornerRadius
+    AppBackend.CornerRadius,
+    AppBackend.Gestures
 {
     // Logging
     private struct LogLocation: Hashable, Equatable {

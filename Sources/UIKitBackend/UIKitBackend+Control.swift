@@ -495,41 +495,7 @@ extension UIKitBackend {
         wrapper.setOn(state)
     }
 
-    public func createTapGestureTarget(wrapping child: Widget, gesture _: TapGesture) -> Widget {
-        TappableWidget(child: child)
-    }
-
-    public func updateTapGestureTarget(
-        _ tapGestureTarget: Widget,
-        gesture: TapGesture,
-        environment: EnvironmentValues,
-        action: @escaping () -> Void
-    ) {
-        let wrapper = tapGestureTarget as! TappableWidget
-        switch gesture.kind {
-            case .primary:
-                wrapper.onTap = environment.isEnabled ? action : {}
-                wrapper.onLongPress = nil
-            case .secondary, .longPress:
-                wrapper.onTap = nil
-                wrapper.onLongPress = environment.isEnabled ? action : {}
-        }
-    }
-
     #if os(iOS) || os(visionOS) || targetEnvironment(macCatalyst)
-        public func createHoverTarget(wrapping child: Widget) -> Widget {
-            HoverableWidget(child: child)
-        }
-
-        public func updateHoverTarget(
-            _ hoverTarget: any WidgetProtocol,
-            environment: EnvironmentValues,
-            action: @escaping (Bool) -> Void
-        ) {
-            let wrapper = hoverTarget as! HoverableWidget
-            wrapper.hoverChangesHandler = action
-        }
-
         public func createSlider() -> Widget {
             SliderWidget()
         }
@@ -609,18 +575,6 @@ extension UIKitBackend {
             }
         }
     #else
-        public func createHoverTarget(wrapping child: Widget) -> Widget {
-            fatalError("\(Self.self): \(#function) not implemented")
-        }
-
-        public func updateHoverTarget(
-            _ hoverTarget: any WidgetProtocol,
-            environment: EnvironmentValues,
-            action: @escaping (Bool) -> Void
-        ) {
-            fatalError("\(Self.self): \(#function) not implemented")
-        }
-
         public func createSlider() -> Widget {
             fatalError("\(Self.self): \(#function) not implemented")
         }
@@ -656,3 +610,43 @@ extension UIKitBackend {
         }
     #endif
 }
+
+extension UIKitBackend: AppBackend.TapGestures {
+    public func createTapGestureTarget(wrapping child: Widget, gesture _: TapGesture) -> Widget {
+        TappableWidget(child: child)
+    }
+
+    public func updateTapGestureTarget(
+        _ tapGestureTarget: Widget,
+        gesture: TapGesture,
+        environment: EnvironmentValues,
+        action: @escaping () -> Void
+    ) {
+        let wrapper = tapGestureTarget as! TappableWidget
+        switch gesture.kind {
+            case .primary:
+                wrapper.onTap = environment.isEnabled ? action : {}
+                wrapper.onLongPress = nil
+            case .secondary, .longPress:
+                wrapper.onTap = nil
+                wrapper.onLongPress = environment.isEnabled ? action : {}
+        }
+    }
+}
+
+#if os(iOS) || os(visionOS) || targetEnvironment(macCatalyst)
+extension UIKitBackend: AppBackend.HoverGestures {
+    public func createHoverTarget(wrapping child: Widget) -> Widget {
+        HoverableWidget(child: child)
+    }
+
+    public func updateHoverTarget(
+        _ hoverTarget: any WidgetProtocol,
+        environment: EnvironmentValues,
+        action: @escaping (Bool) -> Void
+    ) {
+        let wrapper = hoverTarget as! HoverableWidget
+        wrapper.hoverChangesHandler = action
+    }
+}
+#endif
