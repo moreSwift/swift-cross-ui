@@ -42,9 +42,6 @@ public struct EnvironmentValues {
     /// events can propagate.
     var onResize: @MainActor (_ newSize: ViewSize) -> Void
 
-    /// The app storage provider to use for `@AppStorage` property wrappers.
-    public let appStorageProvider: any AppStorageProvider
-
     /// Backing storage for extensible subscript
     private var values: [ObjectIdentifier: Any]
 
@@ -207,13 +204,8 @@ public struct EnvironmentValues {
     ///
     /// - Parameters:
     ///   - backend: The app's backend.
-    ///   - appStorageProvider: The app's app storage provider
-    package init<Backend: AppBackend.Base>(
-        backend: Backend,
-        appStorageProvider: any AppStorageProvider = DefaultAppStorageProvider()
-    ) {
+    package init<Backend: AppBackend.Base>(backend: Backend) {
         self.backend = backend
-        self.appStorageProvider = appStorageProvider
 
         onResize = { _ in }
         values = [:]
@@ -243,6 +235,9 @@ public struct EnvironmentValues {
 }
 
 extension EnvironmentValues {
+    /// The app storage provider to use for `@AppStorage` property wrappers.
+    @Entry public var appStorageProvider: any AppStorageProvider = DefaultAppStorageProvider()
+
     /// The current stack orientation.
     ///
     /// Inherited by ``ForEach`` and ``Group`` so that they can be used without

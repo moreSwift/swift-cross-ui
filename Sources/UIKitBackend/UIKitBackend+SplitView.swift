@@ -1,19 +1,70 @@
 import UIKit
 
-#if os(iOS)
+#if os(iOS) || targetEnvironment(macCatalyst)
     final class SplitWidget: WrapperControllerWidget<UISplitViewController>,
         UISplitViewControllerDelegate
     {
-        var resizeHandler: (() -> Void)?
-        private let sidebarContainer: ContainerWidget
-        private let mainContainer: ContainerWidget
+        private final class ColumnView: UIView {
+            unowned var splitWidget: SplitWidget!
+
+            @available(*, unavailable)
+            required init?(coder: NSCoder) {
+                fatalError("init(coder:) is not used for this view")
+            }
+
+            init() {
+                super.init(frame: .zero)
+            }
+
+            override func layoutSubviews() {
+                super.layoutSubviews()
+                if !splitWidget.hasCalledResizeHandler {
+                    splitWidget.resizeHandler?()
+                    splitWidget.hasCalledResizeHandler = true
+                }
+            }
+        }
+
+        private final class ColumnWidget: ContainerWidget {
+            let columnView = ColumnView()
+
+            override func loadView() {
+                view = columnView
+            }
+        }
+
+        var resizeHandler: (() -> Void)? {
+            didSet {
+                hasCalledResizeHandler = false
+            }
+        }
+
+        // This is just a flag so that we don't call resizeHandler twice in one pass through the run loop.
+        var hasCalledResizeHandler = false {
+            willSet {
+                if newValue {
+                    DispatchQueue.main.async { [weak self] in
+                        self?.hasCalledResizeHandler = false
+                    }
+                }
+            }
+        }
+
+        private let sidebarContainer: ColumnWidget
+        private let mainContainer: ColumnWidget
 
         init(sidebarWidget: some WidgetProtocol, mainWidget: some WidgetProtocol) {
             // UISplitViewController requires its children to be controllers, not views
-            sidebarContainer = ContainerWidget(child: sidebarWidget)
-            mainContainer = ContainerWidget(child: mainWidget)
+            sidebarContainer = ColumnWidget(child: sidebarWidget)
+            mainContainer = ColumnWidget(child: mainWidget)
 
             super.init(child: UISplitViewController())
+
+            sidebarContainer.parentWidget = self
+            mainContainer.parentWidget = self
+            childWidgets = [sidebarContainer, mainContainer]
+            sidebarContainer.columnView.splitWidget = self
+            mainContainer.columnView.splitWidget = self
 
             child.delegate = self
 
@@ -44,11 +95,6 @@ import UIKit
             ])
 
             super.viewDidLoad()
-        }
-
-        override func viewDidLayoutSubviews() {
-            super.viewDidLayoutSubviews()
-            resizeHandler?()
         }
     }
 
