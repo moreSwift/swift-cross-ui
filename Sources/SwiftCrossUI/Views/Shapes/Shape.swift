@@ -65,6 +65,7 @@ extension Shape {
     }
 
     @MainActor
+    @CastBackend<AppBackend.Paths>(returnsWidget: true)
     public func asWidget<Backend: AppBackend.Base>(
         _ children: any ViewGraphNodeChildren, backend: Backend
     ) -> Backend.Widget {
@@ -88,6 +89,7 @@ extension Shape {
     }
 
     @MainActor
+    @CastBackend<AppBackend.Paths>(backendGenericName: "NewBackend")
     public func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
@@ -107,7 +109,7 @@ extension Shape {
         let pointsChanged = storage.oldPath?.actions != path.actions
         storage.oldPath = path
 
-        let backendPath = storage.backendPath as! Backend.Path
+        let backendPath = storage.backendPath as! NewBackend.Path
         backend.updatePath(
             backendPath,
             path,

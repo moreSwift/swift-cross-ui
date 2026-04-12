@@ -32,6 +32,12 @@ public struct PresentFileSaveDialogAction: Sendable {
         nameFieldLabel: String? = nil,
         defaultFileName: String? = nil
     ) async -> URL? {
+        guard let backend = backend as? any AppBackend.FileSaveDialogs else {
+            logger.warning("\(type(of: backend)) does not support file save dialogs")
+            return nil
+        }
+        return await chooseFile(backend: backend)
+
         func chooseFile<Backend: AppBackend.FileSaveDialogs>(backend: Backend) async -> URL? {
             return await withCheckedContinuation { continuation in
                 backend.runInMainThread {
@@ -62,10 +68,5 @@ public struct PresentFileSaveDialogAction: Sendable {
                 }
             }
         }
-
-        guard let backend = backend as? any AppBackend.FileSaveDialogs else {
-            fatalError("\(type(of: backend)) does not support file save dialogs")
-        }
-        return await chooseFile(backend: backend)
     }
 }

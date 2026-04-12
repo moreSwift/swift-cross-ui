@@ -22,6 +22,19 @@ public struct CastBackendMacro: BodyMacro {
             )
         }
 
+        // Get the `backendGenericName` argument, if we have one; if we don't,
+        // generate one randomly.
+        let backendGeneric =
+            if let backendGenericName = Attribute(attribute)
+                .asMacroAttribute?.arguments
+                .first(where: { $0.label == "backendGenericName" })?
+                .expr.asStringLiteral?.value
+            {
+                TokenSyntax.identifier(backendGenericName)
+            } else {
+                context.makeUniqueName("NewBackend")
+            }
+
         // Make sure this is a function and it has a `backend` parameter.
         guard
             let signature = decl.as(FunctionDeclSyntax.self)?.signature,
@@ -30,7 +43,7 @@ public struct CastBackendMacro: BodyMacro {
             })
         else {
             throw MacroError(
-                "@CastBackend macro expects a function with a `backend` argument"
+                "@CastBackend macro expects a function with a `backend` parameter"
             )
         }
 
@@ -64,7 +77,6 @@ public struct CastBackendMacro: BodyMacro {
         // MARK: Expansion
 
         // Set up identifiers.
-        let backendGeneric = context.makeUniqueName("NewBackend")
         let innerFunction = context.makeUniqueName("castBackend")
         let castedBackend = context.makeUniqueName("castedBackend")
 

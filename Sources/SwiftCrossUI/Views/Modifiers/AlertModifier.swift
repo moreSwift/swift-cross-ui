@@ -79,6 +79,7 @@ struct AlertModifierView<Child: View>: TypeSafeView {
         )
     }
 
+    @CastBackend<AppBackend.Alerts>(backendGenericName: "NewBackend")
     func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: AlertModifierViewChildren<Child>,
@@ -88,36 +89,29 @@ struct AlertModifierView<Child: View>: TypeSafeView {
     ) {
         _ = children.childNode.commit()
 
-        guard let backend = backend as? any AppBackend.Alerts else {
-            fatalError("\(Backend.self) does not support alerts")
-        }
-        commit(backend: backend)
-
-        func commit<Backend2: AppBackend.Alerts>(backend: Backend2) {
-            if isPresented.wrappedValue && children.alert == nil {
-                let alert = backend.createAlert()
-                backend.updateAlert(
-                    alert,
-                    title: title,
-                    actionLabels: actions.map(\.label),
-                    environment: environment
-                )
-                backend.showAlert(
-                    alert,
-                    window: .some(environment.window! as! Backend2.Window)
-                ) { responseId in
-                    children.alert = nil
-                    isPresented.wrappedValue = false
-                    actions[responseId].action()
-                }
-                children.alert = alert
-            } else if isPresented.wrappedValue == false && children.alert != nil {
-                backend.dismissAlert(
-                    children.alert as! Backend2.Alert,
-                    window: .some(environment.window! as! Backend2.Window)
-                )
+        if isPresented.wrappedValue && children.alert == nil {
+            let alert = backend.createAlert()
+            backend.updateAlert(
+                alert,
+                title: title,
+                actionLabels: actions.map(\.label),
+                environment: environment
+            )
+            backend.showAlert(
+                alert,
+                window: .some(environment.window! as! NewBackend.Window)
+            ) { responseId in
                 children.alert = nil
+                isPresented.wrappedValue = false
+                actions[responseId].action()
             }
+            children.alert = alert
+        } else if isPresented.wrappedValue == false && children.alert != nil {
+            backend.dismissAlert(
+                children.alert as! NewBackend.Alert,
+                window: .some(environment.window! as! NewBackend.Window)
+            )
+            children.alert = nil
         }
     }
 }

@@ -69,6 +69,7 @@ extension StyledShape {
     }
 
     @MainActor
+    @CastBackend<AppBackend.Paths>(backendGenericName: "NewBackend")
     public func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
@@ -88,7 +89,7 @@ extension StyledShape {
         let pointsChanged = storage.oldPath?.actions != path.actions
         storage.oldPath = path
 
-        let backendPath = storage.backendPath as! Backend.Path
+        let backendPath = storage.backendPath as! NewBackend.Path
         backend.updatePath(
             backendPath,
             path,

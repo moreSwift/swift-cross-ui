@@ -80,6 +80,7 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
         )
     }
 
+    @CastBackend<AppBackend.Sheets>(backendGenericName: "NewBackend")
     func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: Children,
@@ -89,80 +90,73 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
     ) {
         _ = children.childNode.commit()
 
-        guard let backend = backend as? any AppBackend.Base & AppBackend.Sheets else {
-            fatalError("\(Backend.self) does not support sheets")
-        }
-        commit(backend: backend)
+        if isPresented.wrappedValue && children.sheet == nil {
+            let sheetViewGraphNode = ViewGraphNode(
+                for: sheetContent(),
+                backend: backend,
+                environment: environment
+            )
+            let sheetContentNode = AnyViewGraphNode(sheetViewGraphNode)
+            children.sheetContentNode = sheetContentNode
 
-        func commit<Backend2: AppBackend.Base & AppBackend.Sheets>(backend: Backend2) {
-            if isPresented.wrappedValue && children.sheet == nil {
-                let sheetViewGraphNode = ViewGraphNode(
-                    for: sheetContent(),
-                    backend: backend,
-                    environment: environment
-                )
-                let sheetContentNode = AnyViewGraphNode(sheetViewGraphNode)
-                children.sheetContentNode = sheetContentNode
+            let sheet = backend.createSheet(
+                content: children.sheetContentNode!.widget.into()
+            )
 
-                let sheet = backend.createSheet(
-                    content: children.sheetContentNode!.widget.into()
-                )
+            let dismissAction = DismissAction(action: { [isPresented] in
+                isPresented.wrappedValue = false
+            })
 
-                let dismissAction = DismissAction(action: { [isPresented] in
-                    isPresented.wrappedValue = false
-                })
+            let sheetEnvironment =
+            environment
+                .with(\.dismiss, dismissAction)
+                .with(\.sheet, sheet)
 
-                let sheetEnvironment =
-                environment
-                    .with(\.dismiss, dismissAction)
-                    .with(\.sheet, sheet)
+            _ = children.sheetContentNode!.computeLayout(
+                with: sheetContent(),
+                proposedSize: .unspecified,
+                environment: sheetEnvironment
+            )
+            let result = children.sheetContentNode!.commit()
 
-                _ = children.sheetContentNode!.computeLayout(
-                    with: sheetContent(),
-                    proposedSize: .unspecified,
-                    environment: sheetEnvironment
-                )
-                let result = children.sheetContentNode!.commit()
+            let window = environment.window!
+            let preferences = result.preferences
+            backend.updateSheet(
+                sheet,
+                window: window as! NewBackend.Window,
+                // We intentionally use the outer environment rather than
+                // sheetEnvironment here, because this is meant to be the sheet's
+                // environment, not that of its content.
+                environment: environment,
+                size: result.size.vector,
+                onDismiss: { handleDismiss(children: children) },
+                cornerRadius: preferences.presentationCornerRadius,
+                detents: preferences.presentationDetents ?? [],
+                dragIndicatorVisibility:
+                    preferences.presentationDragIndicatorVisibility ?? .automatic,
+                backgroundColor: preferences.presentationBackground?.resolve(in: environment),
+                interactiveDismissDisabled: preferences.interactiveDismissDisabled ?? false
+            )
 
-                let window = environment.window! as! Backend.Window
-                let preferences = result.preferences
-                backend.updateSheet(
-                    sheet,
-                    window: window as! Backend2.Window,
-                    // We intentionally use the outer environment rather than
-                    // sheetEnvironment here, because this is meant to be the sheet's
-                    // environment, not that of its content.
-                    environment: environment,
-                    size: result.size.vector,
-                    onDismiss: { handleDismiss(children: children) },
-                    cornerRadius: preferences.presentationCornerRadius,
-                    detents: preferences.presentationDetents ?? [],
-                    dragIndicatorVisibility:
-                        preferences.presentationDragIndicatorVisibility ?? .automatic,
-                    backgroundColor: preferences.presentationBackground?.resolve(in: environment),
-                    interactiveDismissDisabled: preferences.interactiveDismissDisabled ?? false
-                )
-
-                let parentSheet = environment.sheet.map { $0 as! Backend2.Sheet }
-                backend.presentSheet(
-                    sheet,
-                    window: window as! Backend2.Window,
-                    parentSheet: parentSheet
-                )
-                children.sheet = sheet
-                children.window = window
-                children.parentSheet = parentSheet
-            } else if !isPresented.wrappedValue && children.sheet != nil {
-                backend.dismissSheet(
-                    children.sheet as! Backend2.Sheet,
-                    window: children.window! as! Backend2.Window,
-                    parentSheet: children.parentSheet.map { $0 as! Backend2.Sheet }
-                )
-                children.sheet = nil
-                children.window = nil
-                children.parentSheet = nil
-                children.sheetContentNode = nil
-            }
+            let parentSheet = environment.sheet.map { $0 as! NewBackend.Sheet }
+            backend.presentSheet(
+                sheet,
+                window: window as! NewBackend.Window,
+                parentSheet: parentSheet
+            )
+            children.sheet = sheet
+            children.window = window
+            children.parentSheet = parentSheet
+        } else if !isPresented.wrappedValue && children.sheet != nil {
+            backend.dismissSheet(
+                children.sheet as! NewBackend.Sheet,
+                window: children.window! as! NewBackend.Window,
+                parentSheet: children.parentSheet.map { $0 as! NewBackend.Sheet }
+            )
+            children.sheet = nil
+            children.window = nil
+            children.parentSheet = nil
+            children.sheetContentNode = nil
         }
     }
 

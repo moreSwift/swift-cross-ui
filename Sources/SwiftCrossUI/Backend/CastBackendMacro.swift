@@ -8,9 +8,15 @@
 /// named `backend`. It will also recognize a parameter named `widget` and will
 /// insert the appropriate cast.
 ///
-/// - Parameter returnsWidget: Whether the attached function returns a widget.
-///   If it does, the macro will insert an extra cast to make sure the correct
-///   widget type comes out.
+/// - Parameters:
+///   - backendGenericName: The name of the generic parameter to the inner
+///     function. If `nil`, one will be generated randomly.
+///   - returnsWidget: Whether the attached function returns a widget. If it
+///     does, the macro will insert an extra cast to make sure the correct
+///     widget type comes out.
 @attached(body)
-internal macro CastBackend<NewBackend>(returnsWidget: Bool = false) =
+internal macro CastBackend<NewBackend>(
+    backendGenericName: String? = nil,
+    returnsWidget: Bool = false
+) =
     #externalMacro(module: "SwiftCrossUIMacrosPlugin", type: "CastBackendMacro")
