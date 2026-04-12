@@ -8,7 +8,11 @@ public final class UIKitBackend:
     AppBackend.IncomingURLs,
     AppBackend.Alerts,
     AppBackend.Sheets,
-    AppBackend.CornerRadius
+    AppBackend.CornerRadius,
+    AppBackend.Menus,
+    AppBackend.Paths,
+    AppBackend.Tooltips,
+    AppBackend.Colors
 {
     static var onBecomeActive: (() -> Void)?
     static var onReceiveURL: ((URL) -> Void)?

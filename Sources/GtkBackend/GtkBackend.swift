@@ -22,7 +22,11 @@ public final class GtkBackend:
     AppBackend.Alerts,
     AppBackend.Sheets,
     AppBackend.CornerRadius,
-    AppBackend.Gestures
+    AppBackend.Gestures,
+    AppBackend.Menus,
+    AppBackend.Paths,
+    AppBackend.Tooltips,
+    AppBackend.Colors
 {
     public typealias Window = Gtk.ApplicationWindow
     public typealias Widget = Gtk.Widget

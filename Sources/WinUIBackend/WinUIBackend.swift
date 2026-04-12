@@ -36,7 +36,11 @@ public final class WinUIBackend:
     AppBackend.FileDialogs,
     AppBackend.Alerts,
     AppBackend.CornerRadius,
-    AppBackend.Gestures
+    AppBackend.Gestures,
+    AppBackend.Menus,
+    AppBackend.Paths,
+    AppBackend.Tooltips,
+    AppBackend.Colors
 {
     // Logging
     private struct LogLocation: Hashable, Equatable {
