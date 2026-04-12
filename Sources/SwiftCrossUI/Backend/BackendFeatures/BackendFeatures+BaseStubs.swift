@@ -339,21 +339,6 @@ extension BackendFeatures.BaseStubs {
         todo()
     }
 
-    public func createDatePicker() -> Widget {
-        todo()
-    }
-
-    public func updateDatePicker(
-        _ datePicker: Widget,
-        environment: EnvironmentValues,
-        date: Date,
-        range: ClosedRange<Date>,
-        components: DatePickerComponents,
-        onChange: @escaping (Date) -> Void
-    ) {
-        todo()
-    }
-
     public func createProgressSpinner() -> Widget {
         todo()
     }
@@ -366,24 +351,6 @@ extension BackendFeatures.BaseStubs {
         _ widget: Widget,
         progressFraction: Double?,
         environment: EnvironmentValues
-    ) {
-        todo()
-    }
-
-    public func updateButton(
-        _ button: Widget,
-        label: String,
-        menu: Menu,
-        environment: EnvironmentValues
-    ) {
-        todo()
-    }
-
-    public func showPopoverMenu(
-        _ menu: Menu,
-        at position: SIMD2<Int>,
-        relativeTo widget: Widget,
-        closeHandler handleClose: @escaping () -> Void
     ) {
         todo()
     }
@@ -573,10 +540,6 @@ extension BackendFeatures.BaseStubs {
     }
 
     public var supportedPickerStyles: [BackendPickerStyle] {
-        todo()
-    }
-
-    public var supportedDatePickerStyles: [DatePickerStyle] {
         todo()
     }
 }

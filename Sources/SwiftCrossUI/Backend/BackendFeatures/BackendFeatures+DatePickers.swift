@@ -1,7 +1,6 @@
 import Foundation
 
 extension BackendFeatures {
-
     /// Backend methods for date pickers.
     ///
     /// These are used by ``DatePicker``.
