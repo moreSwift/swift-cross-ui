@@ -58,10 +58,9 @@ public struct CastBackendMacro: BodyMacro {
         // it actually has a return type.
         let widgetType: TypeSyntax?
         if
-            let args = Attribute(attribute).asMacroAttribute?.arguments,
-            let returnsWidgetExpr = args
-                .first(where: { $0.label == "returnsWidget" })?
-                .expr,
+            let returnsWidgetExpr = Attribute(attribute)
+                .asMacroAttribute?.arguments
+                .first(where: { $0.label == "returnsWidget" })?.expr,
             returnsWidgetExpr.asBooleanLiteral?.value == true
         {
             guard let returnClause = signature.returnClause else {

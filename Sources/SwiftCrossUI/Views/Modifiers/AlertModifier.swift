@@ -81,7 +81,7 @@ struct AlertModifierView<Child: View>: TypeSafeView {
 
     @CastBackend<AppBackend.Alerts>(backendGenericName: "NewBackend")
     func commit<Backend: AppBackend.Base>(
-        _ widget: Backend.Widget,
+        _: Backend.Widget,
         children: AlertModifierViewChildren<Child>,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

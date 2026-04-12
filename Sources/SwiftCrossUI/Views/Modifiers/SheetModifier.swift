@@ -82,7 +82,7 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
 
     @CastBackend<AppBackend.Sheets>(backendGenericName: "NewBackend")
     func commit<Backend: AppBackend.Base>(
-        _ widget: Backend.Widget,
+        _: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

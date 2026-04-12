@@ -3,9 +3,14 @@ import SwiftCrossUI
 
 public final class DummyBackend:
     AppBackend.Base,
+    AppBackend.Menus,
+    AppBackend.Paths,
     AppBackend.IncomingURLs,
     AppBackend.CornerRadius,
-    AppBackend.Gestures
+    AppBackend.Tables,
+    AppBackend.Gestures,
+    AppBackend.Tooltips,
+    AppBackend.Colors
 {
     public class Window {
         static let defaultSize = SIMD2<Int>(400, 200)
