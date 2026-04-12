@@ -1,8 +1,8 @@
 import Foundation
 
-extension AppBackend {
+extension BackendFeatures {
     /// A protocol that provides default implementations of all methods in
-    /// ``Base`` so as to enable rapid iteration on custom backends.
+    /// ``BaseAppBackend`` so as to enable rapid iteration on custom backends.
     ///
     /// - Warning: **This protocol is _not_ intended to be used by
     ///   production-ready backends!** Every default implementation that it
@@ -26,8 +26,8 @@ extension AppBackend {
     /// 2. Write a small example app using that type as its backend.
     /// 3. Implement enough of ``Core`` to get the example app to launch and
     ///    show an empty window.
-    /// 4. Switch the conformance over to ``Base``, and examine the compiler
-    ///    errors for suitable methods to implement.
+    /// 4. Switch the conformance over to ``BaseAppBackend``, and examine the
+    ///    compiler errors for suitable methods to implement.
     /// 5. Copy their declarations into the type, then switch back over to
     ///    `BaseStubs` so the backend compiles again.
     /// 6. Iterate on the method implementations until they work properly.
@@ -37,13 +37,13 @@ extension AppBackend {
     /// Of course, you can use whatever workflow works best for you; this
     /// protocol just serves as a tool to keep you from having to implement the
     /// entire backend in one go.
-    public protocol BaseStubs: Base {}
+    public protocol BaseStubs: BaseAppBackend {}
 }
 
 // This type isn't actually used anywhere, so keep it out of release builds.
 #if DEBUG
 /// A backend "implementation" solely for testing whether
-/// ``AppBackend/BaseStubs`` has default implementations for all required
+/// ``BackendFeatures/BaseStubs`` has default implementations for all required
 /// backend features.
 ///
 /// Aside from empty nested structs to satisfy associated type requirements,
@@ -55,24 +55,24 @@ extension AppBackend {
 ///   1. Accept all fix-mes for the errors in question.
 ///   2. Move the compiler-generated declarations out of this type and into the
 ///      `BaseStubs` extension just below this type in the
-///      `AppBackend+BaseStubs` file. (Precisely _where_ you move them is
+///      `BackendFeatures+BaseStubs` file. (Precisely _where_ you move them is
 ///      unimportant, just try to keep some semblance of a logical order.)
 ///   3. **Make all declarations `public`.** This is important, and the
 ///      compiler likely won't help you here because this struct is `private`.
 ///   4. Write `todo()` in the bodies of every method and property.
-private struct BaseStubsTest: AppBackend.BaseStubs {
+private struct BaseStubsTest: BackendFeatures.BaseStubs {
     struct Window {}
     struct Widget {}
 }
 #endif
 
-extension AppBackend.BaseStubs {
+extension BackendFeatures.BaseStubs {
     fileprivate func todo(function: String = #function) -> Never {
         fatalError("\(Self.self): \(function) not implemented")
     }
 }
 
-extension AppBackend.BaseStubs {
+extension BackendFeatures.BaseStubs {
     public func createScrollContainer(for child: Widget) -> Widget {
         todo()
     }

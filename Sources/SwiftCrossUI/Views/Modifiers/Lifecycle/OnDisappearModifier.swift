@@ -16,7 +16,7 @@ struct OnDisappearModifier<Content: View>: TypeSafeView {
     var body: TupleView1<Content>
     var action: @Sendable @MainActor () -> Void
 
-    func children<Backend: AppBackend.Base>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -31,7 +31,7 @@ struct OnDisappearModifier<Content: View>: TypeSafeView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend.Base>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: OnDisappearModifierChildren
     ) -> [LayoutSystem.LayoutableChild] {
@@ -41,14 +41,14 @@ struct OnDisappearModifier<Content: View>: TypeSafeView {
         )
     }
 
-    func asWidget<Backend: AppBackend.Base>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: OnDisappearModifierChildren,
         backend: Backend
     ) -> Backend.Widget {
         defaultAsWidget(children.wrappedChildren, backend: backend)
     }
 
-    func computeLayout<Backend: AppBackend.Base>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: OnDisappearModifierChildren,
         proposedSize: ProposedViewSize,
@@ -64,7 +64,7 @@ struct OnDisappearModifier<Content: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend.Base>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: OnDisappearModifierChildren,
         layout: ViewLayoutResult,

@@ -1,6 +1,6 @@
 import Foundation
 
-extension AppBackend {
+extension BackendFeatures {
     // FIXME: Factor out `menuImplementationStyle` and rely on conformances instead
 
     /// Backend methods for menus.
@@ -49,7 +49,7 @@ extension AppBackend {
     public protocol ButtonMenus: MenuBase, Buttons {
         /// Sets a button's label and menu.
         ///
-        /// Only used when ``AppBackend/MenuBase/menuImplementationStyle`` is
+        /// Only used when ``BackendFeatures/MenuBase/menuImplementationStyle`` is
         /// ``MenuImplementationStyle/menuButton``.
         ///
         /// - Parameters:
@@ -70,7 +70,7 @@ extension AppBackend {
     public protocol PopoverMenus: MenuBase {
         /// Shows the popover menu at a position relative to the given widget.
         ///
-        /// Only used when ``AppBackend/MenuBase/menuImplementationStyle`` is
+        /// Only used when ``BackendFeatures/MenuBase/menuImplementationStyle`` is
         /// ``MenuImplementationStyle/dynamicPopover``.
         ///
         /// - Parameters:
@@ -89,7 +89,7 @@ extension AppBackend {
 
 // MARK: Default Implementations
 
-extension AppBackend.ButtonMenus {
+extension BackendFeatures.ButtonMenus {
     public func updateButton(
         _ button: Widget,
         label: String,
@@ -100,7 +100,7 @@ extension AppBackend.ButtonMenus {
     }
 }
 
-extension AppBackend.PopoverMenus {
+extension BackendFeatures.PopoverMenus {
     public func showPopoverMenu(
         _ menu: Menu,
         at position: SIMD2<Int>,

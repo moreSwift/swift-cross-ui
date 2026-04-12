@@ -16,12 +16,12 @@ public struct WebView: ElementaryView {
         _url = url
     }
 
-    @CastBackend<AppBackend.WebViews>(returnsWidget: true)
-    func asWidget<Backend: AppBackend.Base>(backend: Backend) -> Backend.Widget {
+    @CastBackend<BackendFeatures.WebViews>(returnsWidget: true)
+    func asWidget<Backend: BaseAppBackend>(backend: Backend) -> Backend.Widget {
         return backend.createWebView()
     }
 
-    func computeLayout<Backend: AppBackend.Base>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -31,8 +31,8 @@ public struct WebView: ElementaryView {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    @CastBackend<AppBackend.WebViews>
-    func commit<Backend: AppBackend.Base>(
+    @CastBackend<BackendFeatures.WebViews>
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

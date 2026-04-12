@@ -18,7 +18,7 @@ struct OnHoverModifier<Content: View>: TypeSafeView {
     var body: TupleView1<Content>
     var action: (Bool) -> Void
 
-    func children<Backend: AppBackend.Base>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -30,15 +30,15 @@ struct OnHoverModifier<Content: View>: TypeSafeView {
         )
     }
 
-    @CastBackend<AppBackend.HoverGestures>(returnsWidget: true)
-    func asWidget<Backend: AppBackend.Base>(
+    @CastBackend<BackendFeatures.HoverGestures>(returnsWidget: true)
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
         backend.createHoverTarget(wrapping: children.child0.widget.into())
     }
 
-    func computeLayout<Backend: AppBackend.Base>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -52,8 +52,8 @@ struct OnHoverModifier<Content: View>: TypeSafeView {
         )
     }
 
-    @CastBackend<AppBackend.HoverGestures>
-    func commit<Backend: AppBackend.Base>(
+    @CastBackend<BackendFeatures.HoverGestures>
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,

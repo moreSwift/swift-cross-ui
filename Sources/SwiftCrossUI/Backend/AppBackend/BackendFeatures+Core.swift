@@ -1,6 +1,6 @@
 import Foundation
 
-extension AppBackend {
+extension BackendFeatures {
     /// Core backend methods for widget handling. These are required for a
     /// functional backend.
     @MainActor
@@ -393,7 +393,7 @@ extension AppBackend {
 
 // MARK: Default Implementations
 
-extension AppBackend.Widgets {
+extension BackendFeatures.Widgets {
     public func showUpdate(of widget: Widget) {
         // This only exists for backends such as CursesBackend that need to
         // explicitly be notified that a widget should display queued changes.

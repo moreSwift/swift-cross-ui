@@ -13,20 +13,20 @@ extension App {
 }
 
 public final class GtkBackend:
-    AppBackend.Base,
-    AppBackend.IncomingURLs,
-    AppBackend.ExternalURLs,
-    AppBackend.RevealFile,
-    AppBackend.ApplicationMenus,
-    AppBackend.FileDialogs,
-    AppBackend.Alerts,
-    AppBackend.Sheets,
-    AppBackend.CornerRadius,
-    AppBackend.Gestures,
-    AppBackend.Menus,
-    AppBackend.Paths,
-    AppBackend.Tooltips,
-    AppBackend.Colors
+    BaseAppBackend,
+    BackendFeatures.IncomingURLs,
+    BackendFeatures.ExternalURLs,
+    BackendFeatures.RevealFile,
+    BackendFeatures.ApplicationMenus,
+    BackendFeatures.FileDialogs,
+    BackendFeatures.Alerts,
+    BackendFeatures.Sheets,
+    BackendFeatures.CornerRadius,
+    BackendFeatures.Gestures,
+    BackendFeatures.Menus,
+    BackendFeatures.Paths,
+    BackendFeatures.Tooltips,
+    BackendFeatures.Colors
 {
     public typealias Window = Gtk.ApplicationWindow
     public typealias Widget = Gtk.Widget
@@ -92,7 +92,7 @@ public final class GtkBackend:
         #endif
     }
 
-    // A separate initializer to satisfy ``AppBackend``'s requirements.
+    // A separate initializer to satisfy `BackendFeatures.Core`'s requirements.
     public convenience init() {
         self.init(appIdentifier: nil)
     }

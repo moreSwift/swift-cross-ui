@@ -41,7 +41,7 @@ struct AlertModifierView<Child: View>: TypeSafeView {
     var isPresented: Binding<Bool>
     var actions: [AlertAction]
 
-    func children<Backend: AppBackend.Base>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -58,14 +58,14 @@ struct AlertModifierView<Child: View>: TypeSafeView {
         )
     }
 
-    func asWidget<Backend: AppBackend.Base>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
         children.childNode.widget.into()
     }
 
-    func computeLayout<Backend: AppBackend.Base>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -79,8 +79,8 @@ struct AlertModifierView<Child: View>: TypeSafeView {
         )
     }
 
-    @CastBackend<AppBackend.Alerts>(backendGenericName: "NewBackend")
-    func commit<Backend: AppBackend.Base>(
+    @CastBackend<BackendFeatures.Alerts>(backendGenericName: "NewBackend")
+    func commit<Backend: BaseAppBackend>(
         _: Backend.Widget,
         children: AlertModifierViewChildren<Child>,
         layout: ViewLayoutResult,

@@ -1,6 +1,6 @@
 import Foundation
 
-extension AppBackend {
+extension BackendFeatures {
     /// Backend methods for alerts.
     ///
     /// These are used by ``View/alert(_:actions:)``,

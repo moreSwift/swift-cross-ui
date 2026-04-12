@@ -38,7 +38,7 @@ public class ViewGraph<Root: View> {
     ///   - view: The root view to create a graph for.
     ///   - backend: The app's backend.
     ///   - environment: The current environment.
-    public init<Backend: AppBackend.Base>(
+    public init<Backend: BaseAppBackend>(
         for view: Root,
         backend: Backend,
         environment: EnvironmentValues
@@ -51,7 +51,7 @@ public class ViewGraph<Root: View> {
         parentEnvironment = environment
         currentRootViewResult = ViewLayoutResult.leafView(size: .zero)
         setIncomingURLHandler =
-            (backend as? any AppBackend.IncomingURLs)?.setIncomingURLHandler(to:)
+            (backend as? any BackendFeatures.IncomingURLs)?.setIncomingURLHandler(to:)
     }
 
     /// Recomputes the entire UI (e.g. due to the root view's state updating).

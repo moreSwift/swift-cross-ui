@@ -6,23 +6,23 @@
 protocol TypeSafeView: View {
     associatedtype Children: ViewGraphNodeChildren
 
-    func children<Backend: AppBackend.Base>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) -> Children
 
-    func layoutableChildren<Backend: AppBackend.Base>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild]
 
-    func asWidget<Backend: AppBackend.Base>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget
 
-    func computeLayout<Backend: AppBackend.Base>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -30,7 +30,7 @@ protocol TypeSafeView: View {
         backend: Backend
     ) -> ViewLayoutResult
 
-    func commit<Backend: AppBackend.Base>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,
@@ -40,7 +40,7 @@ protocol TypeSafeView: View {
 }
 
 extension TypeSafeView {
-    public func children<Backend: AppBackend.Base>(
+    public func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -53,14 +53,14 @@ extension TypeSafeView {
         return children
     }
 
-    public func layoutableChildren<Backend: AppBackend.Base>(
+    public func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: any ViewGraphNodeChildren
     ) -> [LayoutSystem.LayoutableChild] {
         return layoutableChildren(backend: backend, children: children as! Children)
     }
 
-    public func layoutableChildren<Backend: AppBackend.Base>(
+    public func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -69,14 +69,14 @@ extension TypeSafeView {
         []
     }
 
-    public func asWidget<Backend: AppBackend.Base>(
+    public func asWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {
         return asWidget(children as! Children, backend: backend)
     }
 
-    public func computeLayout<Backend: AppBackend.Base>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -92,7 +92,7 @@ extension TypeSafeView {
         )
     }
 
-    public func commit<Backend: AppBackend.Base>(
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,

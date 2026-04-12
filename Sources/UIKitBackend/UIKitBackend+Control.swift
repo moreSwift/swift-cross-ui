@@ -611,7 +611,7 @@ extension UIKitBackend {
     #endif
 }
 
-extension UIKitBackend: AppBackend.TapGestures {
+extension UIKitBackend: BackendFeatures.TapGestures {
     public func createTapGestureTarget(wrapping child: Widget, gesture _: TapGesture) -> Widget {
         TappableWidget(child: child)
     }
@@ -635,7 +635,7 @@ extension UIKitBackend: AppBackend.TapGestures {
 }
 
 #if os(iOS) || os(visionOS) || targetEnvironment(macCatalyst)
-extension UIKitBackend: AppBackend.HoverGestures {
+extension UIKitBackend: BackendFeatures.HoverGestures {
     public func createHoverTarget(wrapping child: Widget) -> Widget {
         HoverableWidget(child: child)
     }

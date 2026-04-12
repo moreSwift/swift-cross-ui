@@ -40,7 +40,7 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
 
     var sheet: Any?
 
-    func children<Backend: AppBackend.Base>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -59,14 +59,14 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
         )
     }
 
-    func asWidget<Backend: AppBackend.Base>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
         children.childNode.widget.into()
     }
 
-    func computeLayout<Backend: AppBackend.Base>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -80,8 +80,8 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
         )
     }
 
-    @CastBackend<AppBackend.Sheets>(backendGenericName: "NewBackend")
-    func commit<Backend: AppBackend.Base>(
+    @CastBackend<BackendFeatures.Sheets>(backendGenericName: "NewBackend")
+    func commit<Backend: BaseAppBackend>(
         _: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,

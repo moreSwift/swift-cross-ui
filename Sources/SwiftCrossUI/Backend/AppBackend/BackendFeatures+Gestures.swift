@@ -1,6 +1,6 @@
 import Foundation
 
-extension AppBackend {
+extension BackendFeatures {
     /// Backend methods for gesture handling.
     ///
     /// ## Topics

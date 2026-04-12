@@ -1,6 +1,6 @@
 import Foundation
 
-extension AppBackend {
+extension BackendFeatures {
     /// Backend methods for sheets.
     ///
     /// These are used by ``View/sheet(isPresented:onDismiss:content:)``.

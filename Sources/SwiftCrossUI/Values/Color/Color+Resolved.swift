@@ -48,7 +48,7 @@ extension Color {
                     }
 
                 case .system(let systemColor):
-                    if let backend = environment.backend as? any AppBackend.Colors {
+                    if let backend = environment.backend as? any BackendFeatures.Colors {
                         backend.resolveAdaptiveColor(
                             systemColor,
                             in: environment
@@ -66,7 +66,7 @@ extension Color {
     }
 
     // NB: Also used in the default implementation for
-    // `AppBackend.Colors.resolveAdaptiveColor(_:in:)`.
+    // `BackendFeatures.Colors.resolveAdaptiveColor(_:in:)`.
     @MainActor
     internal static func defaultResolveAdaptiveColor(
         _ adaptiveColor: Color.SystemAdaptive,

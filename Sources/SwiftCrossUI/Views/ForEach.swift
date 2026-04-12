@@ -38,7 +38,7 @@ extension ForEach: TypeSafeView, View where Child: View {
         return EmptyView()
     }
 
-    func children<Backend: AppBackend.Base>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -52,7 +52,7 @@ extension ForEach: TypeSafeView, View where Child: View {
         )
     }
 
-    func asWidget<Backend: AppBackend.Base>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
@@ -67,7 +67,7 @@ extension ForEach: TypeSafeView, View where Child: View {
         return container
     }
 
-    func computeLayout<Backend: AppBackend.Base>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -208,7 +208,7 @@ extension ForEach: TypeSafeView, View where Child: View {
     }
 
     @MainActor
-    func deprecatedUpdate<Backend: AppBackend.Base>(
+    func deprecatedUpdate<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -279,7 +279,7 @@ extension ForEach: TypeSafeView, View where Child: View {
         )
     }
 
-    func commit<Backend: AppBackend.Base>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,
@@ -380,7 +380,7 @@ class ForEachViewChildren<
 
     var stackLayoutCache = StackLayoutCache.initial
 
-    init<Backend: AppBackend.Base>(
+    init<Backend: BaseAppBackend>(
         from view: ForEach<Items, ID, Child>,
         backend: Backend,
         idKeyPath: KeyPath<Items.Element, ID>?,

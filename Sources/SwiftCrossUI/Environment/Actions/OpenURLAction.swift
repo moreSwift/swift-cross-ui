@@ -8,8 +8,8 @@ import Foundation
 public struct OpenURLAction {
     let action: (URL) -> Void
 
-    init?<Backend: AppBackend.Base>(backend: Backend) {
-        guard let backend = backend as? any AppBackend.ExternalURLs else {
+    init?<Backend: BaseAppBackend>(backend: Backend) {
+        guard let backend = backend as? any BackendFeatures.ExternalURLs else {
             return nil
         }
 

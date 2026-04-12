@@ -39,7 +39,7 @@ public final class AlertSceneNode: SceneGraphNode {
     private var scene: AlertScene
     private var alert: Any?
 
-    public init<Backend: AppBackend.Base>(
+    public init<Backend: BaseAppBackend>(
         from scene: AlertScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -58,8 +58,8 @@ public final class AlertSceneNode: SceneGraphNode {
         return .leafScene()
     }
 
-    @CastBackend<AppBackend.Alerts>(backendGenericName: "NewBackend")
-    public func update<Backend: AppBackend.Base>(
+    @CastBackend<BackendFeatures.Alerts>(backendGenericName: "NewBackend")
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {

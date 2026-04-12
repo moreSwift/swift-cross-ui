@@ -1,6 +1,6 @@
 import Foundation
 
-extension AppBackend {
+extension BackendFeatures {
     /// Backend methods for built-in controls.
     ///
     /// ## Topics
@@ -413,7 +413,7 @@ extension AppBackend {
         ///
         /// This method exists because AppKitBackend requires special handling to resize progress spinners.
         ///
-        /// The default implementation forwards to ``AppBackend/Widgets/setSize(of:to:)``.
+        /// The default implementation forwards to ``BackendFeatures/Widgets/setSize(of:to:)``.
         func setSize(
             ofProgressSpinner widget: Widget,
             to size: SIMD2<Int>
@@ -449,13 +449,13 @@ extension AppBackend {
 
 // MARK: Default Implementations
 
-extension AppBackend.Pickers {
+extension BackendFeatures.Pickers {
     public var defaultPickerStyle: BackendPickerStyle {
         supportedPickerStyles.first ?? .menu
     }
 }
 
-extension AppBackend.ProgressSpinners {
+extension BackendFeatures.ProgressSpinners {
     public func setSize(
         ofProgressSpinner widget: Widget,
         to size: SIMD2<Int>

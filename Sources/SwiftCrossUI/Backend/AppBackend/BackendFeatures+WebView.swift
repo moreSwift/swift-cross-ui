@@ -1,6 +1,6 @@
 import Foundation
 
-extension AppBackend {
+extension BackendFeatures {
     /// Backend methods for web views.
     ///
     /// These are used by ``WebView``.

@@ -139,7 +139,7 @@ extension UIKitBackend {
 // more platforms than just Mac Catalyst. For now, we only conform to the
 // protocol when built for Catalyst.
 #if targetEnvironment(macCatalyst)
-    extension UIKitBackend: AppBackend.ApplicationMenus {
+    extension UIKitBackend: BackendFeatures.ApplicationMenus {
         public func setApplicationMenu(
             _ submenus: [ResolvedMenu.Submenu],
             environment: EnvironmentValues

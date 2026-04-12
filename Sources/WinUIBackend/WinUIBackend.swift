@@ -29,18 +29,18 @@ class WinUIApplication: SwiftApplication {
 }
 
 public final class WinUIBackend:
-    AppBackend.Base,
-    AppBackend.ApplicationMenus,
-    AppBackend.ExternalURLs,
-    AppBackend.IncomingURLs,
-    AppBackend.FileDialogs,
-    AppBackend.Alerts,
-    AppBackend.CornerRadius,
-    AppBackend.Gestures,
-    AppBackend.Menus,
-    AppBackend.Paths,
-    AppBackend.Tooltips,
-    AppBackend.Colors
+    BaseAppBackend,
+    BackendFeatures.ApplicationMenus,
+    BackendFeatures.ExternalURLs,
+    BackendFeatures.IncomingURLs,
+    BackendFeatures.FileDialogs,
+    BackendFeatures.Alerts,
+    BackendFeatures.CornerRadius,
+    BackendFeatures.Gestures,
+    BackendFeatures.Menus,
+    BackendFeatures.Paths,
+    BackendFeatures.Tooltips,
+    BackendFeatures.Colors
 {
     // Logging
     private struct LogLocation: Hashable, Equatable {

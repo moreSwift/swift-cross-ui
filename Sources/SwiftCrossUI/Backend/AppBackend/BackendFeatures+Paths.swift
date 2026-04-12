@@ -1,6 +1,6 @@
 import Foundation
 
-extension AppBackend {
+extension BackendFeatures {
     /// Backend methods for path rendering.
     ///
     /// These are used by ``Shape`` and related types and modifiers.

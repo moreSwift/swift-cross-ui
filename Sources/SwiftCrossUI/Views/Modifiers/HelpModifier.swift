@@ -18,7 +18,7 @@ struct HelpView<Content: View>: View, TypeSafeView {
 
     typealias Children = TupleView1<Content>.Children
 
-    func children<Backend: AppBackend.Base>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -30,15 +30,15 @@ struct HelpView<Content: View>: View, TypeSafeView {
         )
     }
 
-    @CastBackend<AppBackend.Tooltips>(returnsWidget: true)
-    func asWidget<Backend: AppBackend.Base>(
+    @CastBackend<BackendFeatures.Tooltips>(returnsWidget: true)
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
         backend.createTooltipContainer(wrapping: children.child0.widget.into())
     }
 
-    func computeLayout<Backend: AppBackend.Base>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -52,8 +52,8 @@ struct HelpView<Content: View>: View, TypeSafeView {
         )
     }
 
-    @CastBackend<AppBackend.Tooltips>
-    func commit<Backend: AppBackend.Base>(
+    @CastBackend<BackendFeatures.Tooltips>
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,

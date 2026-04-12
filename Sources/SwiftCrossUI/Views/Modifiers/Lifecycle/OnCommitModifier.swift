@@ -12,7 +12,7 @@ struct OnCommitModifier<Content: View>: View {
     var body: TupleView1<Content>
     var action: @MainActor () -> Void
 
-    func asWidget<Backend: AppBackend.Base>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {
@@ -20,7 +20,7 @@ struct OnCommitModifier<Content: View>: View {
         return defaultAsWidget(children, backend: backend)
     }
 
-    func commit<Backend: AppBackend.Base>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,

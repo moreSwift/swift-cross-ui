@@ -1,6 +1,6 @@
 import Foundation
 
-extension AppBackend {
+extension BackendFeatures {
     /// Backend methods for color-related operations.
     ///
     /// These are used by the ``Color`` type.
@@ -35,7 +35,7 @@ extension AppBackend {
 
 // MARK: Default Implementations
 
-extension AppBackend.Colors {
+extension BackendFeatures.Colors {
     public func resolveAdaptiveColor(
         _ adaptiveColor: Color.SystemAdaptive,
         in environment: EnvironmentValues

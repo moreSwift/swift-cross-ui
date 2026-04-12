@@ -50,7 +50,7 @@ struct OnTapGestureModifier<Content: View>: TypeSafeView {
     var gesture: TapGesture
     var action: () -> Void
 
-    func children<Backend: AppBackend.Base>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -62,15 +62,15 @@ struct OnTapGestureModifier<Content: View>: TypeSafeView {
         )
     }
 
-    @CastBackend<AppBackend.TapGestures>(returnsWidget: true)
-    func asWidget<Backend: AppBackend.Base>(
+    @CastBackend<BackendFeatures.TapGestures>(returnsWidget: true)
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
         backend.createTapGestureTarget(wrapping: children.child0.widget.into(), gesture: gesture)
     }
 
-    func computeLayout<Backend: AppBackend.Base>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -84,8 +84,8 @@ struct OnTapGestureModifier<Content: View>: TypeSafeView {
         )
     }
 
-    @CastBackend<AppBackend.TapGestures>
-    func commit<Backend: AppBackend.Base>(
+    @CastBackend<BackendFeatures.TapGestures>
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: TupleView1<Content>.Children,
         layout: ViewLayoutResult,

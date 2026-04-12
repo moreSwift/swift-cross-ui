@@ -62,7 +62,7 @@ public struct Menu {
 extension Menu: TypeSafeView {
     public var body: EmptyView { return EmptyView() }
 
-    func children<Backend: AppBackend.Base>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -70,22 +70,22 @@ extension Menu: TypeSafeView {
         MenuStorage()
     }
 
-    func asWidget<Backend: AppBackend.Base>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: MenuStorage,
         backend: Backend
     ) -> Backend.Widget {
         return backend.createButton()
     }
 
-    func layoutableChildren<Backend: AppBackend.Base>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: MenuStorage
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    @CastBackend<AppBackend.Menus>(backendGenericName: "NewBackend")
-    func computeLayout<Backend: AppBackend.Base>(
+    @CastBackend<BackendFeatures.Menus>(backendGenericName: "NewBackend")
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: MenuStorage,
         proposedSize: ProposedViewSize,
@@ -126,8 +126,8 @@ extension Menu: TypeSafeView {
         return ViewLayoutResult.leafView(size: ViewSize(size))
     }
 
-    @CastBackend<AppBackend.Menus>(backendGenericName: "NewBackend")
-    func commit<Backend: AppBackend.Base>(
+    @CastBackend<BackendFeatures.Menus>(backendGenericName: "NewBackend")
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: MenuStorage,
         layout: ViewLayoutResult,

@@ -3,16 +3,16 @@ import SwiftCrossUI
 import UIKit
 
 public final class UIKitBackend:
-    AppBackend.Base,
-    AppBackend.ExternalURLs,
-    AppBackend.IncomingURLs,
-    AppBackend.Alerts,
-    AppBackend.Sheets,
-    AppBackend.CornerRadius,
-    AppBackend.Menus,
-    AppBackend.Paths,
-    AppBackend.Tooltips,
-    AppBackend.Colors
+    BaseAppBackend,
+    BackendFeatures.ExternalURLs,
+    BackendFeatures.IncomingURLs,
+    BackendFeatures.Alerts,
+    BackendFeatures.Sheets,
+    BackendFeatures.CornerRadius,
+    BackendFeatures.Menus,
+    BackendFeatures.Paths,
+    BackendFeatures.Tooltips,
+    BackendFeatures.Colors
 {
     static var onBecomeActive: (() -> Void)?
     static var onReceiveURL: ((URL) -> Void)?

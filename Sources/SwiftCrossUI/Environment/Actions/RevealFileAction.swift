@@ -3,10 +3,10 @@ import Foundation
 /// Reveals a file in the system's file manager.
 @MainActor
 public struct RevealFileAction {
-    let backend: any AppBackend.RevealFile
+    let backend: any BackendFeatures.RevealFile
 
-    init?<Backend: AppBackend.Base>(backend: Backend) {
-        guard let backend = backend as? any AppBackend.RevealFile else {
+    init?<Backend: BaseAppBackend>(backend: Backend) {
+        guard let backend = backend as? any BackendFeatures.RevealFile else {
             return nil
         }
         self.backend = backend

@@ -25,7 +25,7 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
         self.columns = columns()
     }
 
-    func children<Backend: AppBackend.Base>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -34,22 +34,22 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
         TableViewChildren()
     }
 
-    @CastBackend<AppBackend.Tables>(returnsWidget: true)
-    func asWidget<Backend: AppBackend.Base>(
+    @CastBackend<BackendFeatures.Tables>(returnsWidget: true)
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
         return backend.createTable()
     }
 
-    func computeLayout<Backend: AppBackend.Base>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
-        let castedBackend = backend as! any AppBackend.Tables
+        let castedBackend = backend as! any BackendFeatures.Tables
 
         let size = proposedSize
         var cellResults: [ViewLayoutResult] = []
@@ -133,8 +133,8 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
         )
     }
 
-    @CastBackend<AppBackend.Tables>
-    func commit<Backend: AppBackend.Base>(
+    @CastBackend<BackendFeatures.Tables>
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: TableViewChildren<RowContent.RowContent>,
         layout: ViewLayoutResult,
@@ -204,14 +204,14 @@ struct RowView<Content: View>: View {
         self.body = content
     }
 
-    func layoutableChildren<Backend: AppBackend.Base>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: any ViewGraphNodeChildren
     ) -> [LayoutSystem.LayoutableChild] {
         body.layoutableChildren(backend: backend, children: children)
     }
 
-    func children<Backend: AppBackend.Base>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -219,14 +219,14 @@ struct RowView<Content: View>: View {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    func asWidget<Backend: AppBackend.Base>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {
         return backend.createContainer()
     }
 
-    func computeLayout<Backend: AppBackend.Base>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -236,7 +236,7 @@ struct RowView<Content: View>: View {
         return ViewLayoutResult.leafView(size: .zero)
     }
 
-    func commit<Backend: AppBackend.Base>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,

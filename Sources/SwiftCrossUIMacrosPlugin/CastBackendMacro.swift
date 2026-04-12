@@ -105,13 +105,13 @@ public struct CastBackendMacro: BodyMacro {
         return [
             """
             func \(innerFunction)<
-                \(backendGeneric): AppBackend.Base & \(newBackend)
+                \(backendGeneric): BaseAppBackend & \(newBackend)
             >(_ backend: \(backendGeneric))\(returnClause) {
                 \(widgetCast)
                 \(body.statements)
             }
             
-            guard let \(castedBackend) = backend as? any AppBackend.Base & \(newBackend) else {
+            guard let \(castedBackend) = backend as? any BaseAppBackend & \(newBackend) else {
                 fatalError("'\\(\(backendParameter.type).self)' does not implement '\(newBackend.trimmed)'")
             }
             return \(innerFunction)(\(castedBackend))\(raw: returnCast)

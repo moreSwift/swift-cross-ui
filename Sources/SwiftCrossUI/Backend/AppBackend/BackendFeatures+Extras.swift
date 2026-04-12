@@ -1,6 +1,6 @@
 import Foundation
 
-extension AppBackend {
+extension BackendFeatures {
     /// Backend methods for handling incoming URLs.
     ///
     /// These are used by ``View/onOpenURL(perform:)``.

@@ -93,7 +93,7 @@ public struct EnvironmentValues {
     /// to focus stealing prevention).
     @MainActor
     func bringWindowForward() {
-        func activate<Backend: AppBackend.Base>(with backend: Backend) {
+        func activate<Backend: BaseAppBackend>(with backend: Backend) {
             backend.activate(window: window as! Backend.Window)
         }
         activate(with: backend)
@@ -103,7 +103,7 @@ public struct EnvironmentValues {
     /// The backend in use.
     ///
     /// Mustn't change throughout the app's lifecycle.
-    let backend: any AppBackend.Base
+    let backend: any BaseAppBackend
 
     /// Presents an 'Open file' dialog fit for selecting a single file.
     ///
@@ -204,7 +204,7 @@ public struct EnvironmentValues {
     ///
     /// - Parameters:
     ///   - backend: The app's backend.
-    package init<Backend: AppBackend.Base>(backend: Backend) {
+    package init<Backend: BaseAppBackend>(backend: Backend) {
         self.backend = backend
 
         onResize = { _ in }

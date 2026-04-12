@@ -20,12 +20,12 @@
 /// ```
 @MainActor
 public struct DismissWindowAction {
-    let backend: any AppBackend.Base
+    let backend: any BaseAppBackend
     let window: MainActorBox<Any?>
 
     /// Closes the enclosing window.
     public func callAsFunction() {
-        func closeWindow<Backend: AppBackend.Base>(backend: Backend) {
+        func closeWindow<Backend: BaseAppBackend>(backend: Backend) {
             guard let window = window.value else {
                 logger.warning("dismissWindow() accessed outside of a window's scope")
                 return

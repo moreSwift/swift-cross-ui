@@ -1,6 +1,6 @@
 import Foundation
 
-extension AppBackend {
+extension BackendFeatures {
     /// Backend methods for widget containers.
     ///
     /// These protocols let apps implement views that wrap widgets within

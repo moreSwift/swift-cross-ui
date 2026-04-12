@@ -28,11 +28,11 @@ public struct Button: Sendable {
 extension Button: View {}
 
 extension Button: ElementaryView {
-    public func asWidget<Backend: AppBackend.Base>(backend: Backend) -> Backend.Widget {
+    public func asWidget<Backend: BaseAppBackend>(backend: Backend) -> Backend.Widget {
         return backend.createButton()
     }
 
-    public func computeLayout<Backend: AppBackend.Base>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -63,7 +63,7 @@ extension Button: ElementaryView {
         return ViewLayoutResult.leafView(size: ViewSize(size))
     }
 
-    public func commit<Backend: AppBackend.Base>(
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

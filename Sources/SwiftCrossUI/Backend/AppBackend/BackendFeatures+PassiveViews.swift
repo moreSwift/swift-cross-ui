@@ -1,6 +1,6 @@
 import Foundation
 
-extension AppBackend {
+extension BackendFeatures {
     /// Backend methods for non-interactive, "passive" views.
     ///
     /// ## Topics
@@ -148,7 +148,7 @@ extension AppBackend {
 
 // MARK: Default Implementations
 
-extension AppBackend.TextViews {
+extension BackendFeatures.TextViews {
     public func resolveTextStyle(
         _ textStyle: Font.TextStyle
     ) -> Font.TextStyle.Resolved {
