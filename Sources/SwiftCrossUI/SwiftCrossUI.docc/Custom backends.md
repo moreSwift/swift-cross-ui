@@ -18,6 +18,8 @@ backends to be implemented in third-party packages.
 ## Topics
 
 - ``BackendFeatures``
+- ``BaseAppBackend``
+- ``FullAppBackend``
 - ``CellPosition``
 - ``MenuImplementationStyle``
 - ``DialogResult``

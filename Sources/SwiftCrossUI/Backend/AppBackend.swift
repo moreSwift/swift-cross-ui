@@ -137,5 +137,15 @@ public typealias FullAppBackend =
     & BackendFeatures.Colors
     & BackendFeatures.DatePickers
 
+/// A typealias for ``FullAppBackend``.
+///
+/// Long story short, [SwiftCrossUI PR #513](https://github.com/moreSwift/swift-cross-ui/pull/513)
+/// completely refactored the monolithic `AppBackend` protocol, splitting it out
+/// into around three dozen smaller protocols. This typealias now refers to
+/// another typealias that composes all of these protocols together, meaning
+/// it should behave just as it used to.
+///
+/// After SwiftCrossUI 1.0.0, this typealias will be removed and we may choose
+/// to reuse the name `AppBackend`.
 @available(*, deprecated, renamed: "FullAppBackend", message: "see SwiftCrossUI PR #513 for details")
 public typealias AppBackend = FullAppBackend
