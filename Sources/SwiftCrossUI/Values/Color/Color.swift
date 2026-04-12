@@ -67,6 +67,7 @@ public struct Color: Sendable, Equatable, Hashable {
 }
 
 extension Color: ElementaryView {
+    @CastBackend<AppBackend.Colors>(returnsWidget: true)
     func asWidget<Backend: AppBackend.Base>(backend: Backend) -> Backend.Widget {
         backend.createColorableRectangle()
     }
@@ -82,6 +83,7 @@ extension Color: ElementaryView {
         )
     }
 
+    @CastBackend<AppBackend.Colors>
     func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,

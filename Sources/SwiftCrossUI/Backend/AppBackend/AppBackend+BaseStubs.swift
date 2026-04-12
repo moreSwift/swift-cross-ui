@@ -388,18 +388,7 @@ extension AppBackend.BaseStubs {
     ) {
         todo()
     }
-
-    public func createColorableRectangle() -> Widget {
-        todo()
-    }
-
-    public func setColor(
-        ofColorableRectangle widget: Widget,
-        to color: Color.Resolved
-    ) {
-        todo()
-    }
-
+    
     public func createPopoverMenu() -> Menu {
         todo()
     }
