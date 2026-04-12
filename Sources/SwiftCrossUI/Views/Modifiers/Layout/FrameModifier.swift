@@ -8,6 +8,19 @@ extension View {
     ///   - height: The frame's exact height. `nil` lets the view choose its own
     ///     height instead.
     ///   - alignment: How to align the view within its container.
+    @available(*, deprecated, renamed: "frame(width:height:alignment:)")
+    public func frame(
+        width: Int? = nil,
+        height: Int? = nil,
+        alignment: Alignment = .center
+    ) -> some View {
+        return frame(
+            width: width.map(Double.init),
+            height: height.map(Double.init),
+            alignment: alignment
+        )
+    }
+
     public func frame(
         width: Double? = nil,
         height: Double? = nil,
@@ -38,6 +51,27 @@ extension View {
     ///   - maxHeight: The frame's maximum height. `nil` means the frame inherits
     ///     the maximum height of its content
     ///   - alignment: How to align the view within its container.
+    @available(*, deprecated, renamed: "frame(minWidth:idealWidth:maxWidth:minHeight:idealHeight:maxHeight:alignment:)")
+    public func frame(
+        minWidth: Int? = nil,
+        idealWidth: Int? = nil,
+        maxWidth: Int? = nil,
+        minHeight: Int? = nil,
+        idealHeight: Int? = nil,
+        maxHeight: Int? = nil,
+        alignment: Alignment = .center
+    ) -> some View {
+        return frame(
+            minWidth: minWidth.map(Double.init),
+            idealWidth: idealWidth.map(Double.init),
+            maxWidth: maxWidth.map(Double.init),
+            minHeight: minHeight.map(Double.init),
+            idealHeight: idealHeight.map(Double.init),
+            maxHeight: maxHeight.map(Double.init),
+            alignment: alignment
+        )
+    }
+
     public func frame(
         minWidth: Double? = nil,
         idealWidth: Double? = nil,
