@@ -63,7 +63,6 @@ extension AppBackend {
 private struct BaseStubsTest: AppBackend.BaseStubs {
     struct Window {}
     struct Widget {}
-    struct Menu {}
 }
 #endif
 
@@ -388,18 +387,6 @@ extension AppBackend.BaseStubs {
     ) {
         todo()
     }
-    
-    public func createPopoverMenu() -> Menu {
-        todo()
-    }
-
-    public func updatePopoverMenu(
-        _ menu: Menu,
-        content: ResolvedMenu,
-        environment: EnvironmentValues
-    ) {
-        todo()
-    }
 
     public var deviceClass: DeviceClass {
         todo()
@@ -590,10 +577,6 @@ extension AppBackend.BaseStubs {
     }
 
     public var supportedDatePickerStyles: [DatePickerStyle] {
-        todo()
-    }
-
-    public var menuImplementationStyle: MenuImplementationStyle {
         todo()
     }
 }

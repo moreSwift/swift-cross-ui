@@ -84,6 +84,7 @@ extension Menu: TypeSafeView {
         []
     }
 
+    @CastBackend<AppBackend.Menus>(backendGenericName: "NewBackend")
     func computeLayout<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: MenuStorage,
@@ -109,7 +110,7 @@ extension Menu: TypeSafeView {
                 )
             case .menuButton:
                 let menu =
-                    children.menu.flatMap { $0 as? Backend.Menu }
+                    children.menu.flatMap { $0 as? NewBackend.Menu }
                     ?? backend.createPopoverMenu()
                 children.menu = menu
                 backend.updateButton(
@@ -125,6 +126,7 @@ extension Menu: TypeSafeView {
         return ViewLayoutResult.leafView(size: ViewSize(size))
     }
 
+    @CastBackend<AppBackend.Menus>(backendGenericName: "NewBackend")
     func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: MenuStorage,
@@ -163,7 +165,7 @@ extension Menu: TypeSafeView {
                 if let menu = children.menu {
                     let content = resolve().content
                     backend.updatePopoverMenu(
-                        menu as! Backend.Menu,
+                        menu as! NewBackend.Menu,
                         content: content,
                         environment: environment
                     )
@@ -172,7 +174,7 @@ extension Menu: TypeSafeView {
                 // We can assume that computeLayout has already run, so children.menu
                 // will already be correctly initialized.
                 let content = resolve().content
-                let menu = children.menu! as! Backend.Menu
+                let menu = children.menu! as! NewBackend.Menu
                 backend.updatePopoverMenu(
                     menu,
                     content: content,

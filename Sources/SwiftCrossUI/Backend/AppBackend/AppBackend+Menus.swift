@@ -1,7 +1,7 @@
 import Foundation
 
 extension AppBackend {
-    // TODO: Factor out `menuImplementationStyle` and rely on conformances instead
+    // FIXME: Factor out `menuImplementationStyle` and rely on conformances instead
 
     /// Backend methods for menus.
     ///
