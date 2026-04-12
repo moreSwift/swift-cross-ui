@@ -147,5 +147,8 @@ public typealias FullAppBackend =
 ///
 /// After SwiftCrossUI 1.0.0, this typealias will be removed and we may choose
 /// to reuse the name `AppBackend`.
-@available(*, deprecated, renamed: "FullAppBackend", message: "see SwiftCrossUI PR #513 for details")
+@available(
+    *, deprecated, renamed: "FullAppBackend",
+     message: "this is now a composition of many smaller protocols; see SwiftCrossUI PR #513 for details"
+)
 public typealias AppBackend = FullAppBackend
