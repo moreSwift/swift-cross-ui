@@ -24,7 +24,11 @@
 ///   perform basic widget manipulation.
 /// - term ``Base``: This protocol describes all the code required for a minimally
 ///   functional backend, including everything in `Core` as well as many UI
-///   controls and containers, text and images, menus, and basic styling.
+///   controls and containers, text and images. Conforming to this protocol is
+///   required for your backend type to be usable in SwiftCrossUI APIs.
+///
+///   You will probably want to implement some other backend protocols in
+///   addition to `Base`, since this is pretty bare-bones on its own.
 /// - term ``Full``: This protocol describes all the code needed for a fully
 ///   functional backend that supports everything SwiftCrossUI has to offer,
 ///   including URL and file handling, alerts, and sheets. It includes everything
@@ -68,9 +72,12 @@
 /// ### Implementation Helpers
 /// - ``AppBackend/BaseStubs``
 public enum AppBackend {
-    /// Denotes a backend that implements all required features of SwiftCrossUI,
-    /// but may omit certain features that aren't critical for apps to work
-    /// properly.
+    /// Denotes a backend that implements a minimal subset of SwiftCrossUI
+    /// features.
+    ///
+    /// This is the protocol your backend must conform to in order to be usable
+    /// with SwiftCrossUI APIs. It inherits all of ``Core`` as well as many
+    /// UI controls and containers.
     ///
     /// ## Topics
     ///
@@ -79,7 +86,6 @@ public enum AppBackend {
     /// - ``Containers``
     /// - ``PassiveViews``
     /// - ``Controls``
-    /// - ``Menus``
     public typealias Base = Core & Containers & PassiveViews & Controls
 
     /// Denotes a fully-featured backend that implements all features of
@@ -89,22 +95,23 @@ public enum AppBackend {
     ///
     /// ### Constituent Protocols
     /// - ``Base``
+    /// - ``Menus``
+    /// - ``Paths``
+    /// - ``Alerts``
+    /// - ``Sheets``
     /// - ``IncomingURLs``
     /// - ``ExternalURLs``
     /// - ``RevealFile``
     /// - ``ApplicationMenus``
     /// - ``FileDialogs``
-    /// - ``Alerts``
-    /// - ``Sheets``
     /// - ``CornerRadius``
     /// - ``WebViews``
     /// - ``Tables``
     /// - ``Gestures``
-    /// - ``Paths``
     /// - ``Tooltips``
     /// - ``Colors`` 
     public typealias Full =
-        Base & IncomingURLs & ExternalURLs & RevealFile & ApplicationMenus
-        & FileDialogs & Alerts & Sheets & CornerRadius & WebViews & Tables
-        & Gestures & Paths & Tooltips & Colors & Menus
+        Base & Menus & Paths & Alerts & Sheets & IncomingURLs & ExternalURLs
+        & RevealFile & ApplicationMenus & FileDialogs & CornerRadius & WebViews
+        & Tables & Gestures & Tooltips & Colors
 }

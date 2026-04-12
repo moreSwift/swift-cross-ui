@@ -30,23 +30,11 @@ Here are some guidelines for adding methods to existing protocols:
 - Add documentation to your backend method describing the expected behavior, as
   well as any areas where the conforming backend is free to do its own thing.
   Make sure to document parameters and return values!
-- If the method is not absolutely critical for core app functionality (usually
-  this is indicated by it being a requirement of ``AppBackend/Core``), add a
-  default implementation that simply calls `fatalError`. For example:
-
-  ```swift
-  // MARK: Default Implementations
-      
-  extension AppBackend.Tooltips {
-      public func createTooltipContainer(wrapping child: Widget) -> Widget {
-          fatalError("\(Self.self): \(#function) not implemented")
-      }
-  }
-  ```
-
-  Put any such default implementation near the end of the file, after the MARK
-  comment shown in the above code block. Declare these default implementations
-  in the same order as the protocols themselves.
+- If the method is a requirement of ``AppBackend/Base`` (including methods
+  in ``AppBackend/Core``), add a default implementation to
+  ``AppBackend/BaseStubs``. There's a private struct in that file called
+  `BaseStubsTest` that the compiler will probably error on if you add new
+  backend APIs; see that type's doc comment for further info.
 
   Don't add these implementations for protocols which aren't a part of
   ``AppBackend/Base``.
@@ -70,15 +58,16 @@ Here are some tips for new backend protocols:
     ``AppBackend/Controls`` or ``AppBackend/Gestures``), add it there and don't
     add it anywhere else. It'll automatically bubble up the protocol inheritance
     chain into `Base` or `Full`.
-  - If it's critical for basic app functionality, add it to the inheritance clause
-    of ``AppBackend/Core``. **You should have to do this very rarely.**
-  - If it could be considered a basic feature that all SwiftCrossUI backends can
-    reasonably implement (mobile and desktop!), add it to the ``AppBackend/Base``
-    typealias. This will probably be the most common choice.
+  - If it's critical for core app functionality, add it to the inheritance
+    clause of ``AppBackend/Core``. **You should have to do this very rarely.**
+  - If it could be considered a basic feature that all SwiftCrossUI backends
+    should implement (mobile and desktop!), add it to the ``AppBackend/Base``
+    typealias.
   - If the feature is optional and can reasonably go unimplemented by certain
     backends, add it to ``AppBackend/Full``. Make sure to dynamically cast your
     backend instance in the feature's implementation and prepare some sort of
-    fallback if the backend doesn't support the feature.
+    fallback if the backend doesn't support the feature. (The internal
+    `CastBackend` macro can help with casting backends in view implementations.)
   - Whatever type you add your protocol to, don't forget to also add it to that
     type's doc comment! That way people can quickly see what other functionality
     is required by a specific protocol.
