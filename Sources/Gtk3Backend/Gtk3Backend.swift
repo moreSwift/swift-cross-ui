@@ -46,7 +46,6 @@ public final class Gtk3Backend:
     public let menuImplementationStyle = MenuImplementationStyle.dynamicPopover
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
-    public let supportedDatePickerStyles: [DatePickerStyle] = []
     public let supportedPickerStyles: [BackendPickerStyle] = []
     public let canOverrideWindowColorScheme = false
 
@@ -1705,21 +1704,6 @@ public final class Gtk3Backend:
 
     // MARK: - Unimplemented Features
 
-    public func createDatePicker() -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updateDatePicker(
-        _ datePicker: Widget,
-        environment: EnvironmentValues,
-        date: Date,
-        range: ClosedRange<Date>,
-        components: DatePickerComponents,
-        onChange: @escaping (Date) -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
     public func createPicker(style: BackendPickerStyle) -> Widget {
         fatalError("\(Self.self): \(#function) not implemented")
     }
@@ -1739,19 +1723,6 @@ public final class Gtk3Backend:
     ) {
         fatalError("\(Self.self): \(#function) not implemented")
     }
-
-    public func createHoverTarget(wrapping child: Widget) -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updateHoverTarget(
-        _ hoverTarget: Widget,
-        environment: EnvironmentValues,
-        action: @escaping (Bool) -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-    
 }
 
 extension UnsafeMutablePointer {

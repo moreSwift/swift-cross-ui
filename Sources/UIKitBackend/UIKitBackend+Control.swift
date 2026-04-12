@@ -520,60 +520,6 @@ extension UIKitBackend {
             let sliderWidget = slider as! SliderWidget
             sliderWidget.child.setValue(Float(value), animated: true)
         }
-
-        public func createDatePicker() -> Widget {
-            DatePickerWidget()
-        }
-
-        public func updateDatePicker(
-            _ datePicker: Widget,
-            environment: EnvironmentValues,
-            date: Date,
-            range: ClosedRange<Date>,
-            components: DatePickerComponents,
-            onChange: @escaping (Date) -> Void
-        ) {
-            let datePickerWidget = datePicker as! DatePickerWidget
-
-            datePickerWidget.child.date = date
-            datePickerWidget.onChange = onChange
-
-            datePickerWidget.child.isEnabled = environment.isEnabled
-            datePickerWidget.child.calendar = environment.calendar
-            datePickerWidget.child.timeZone = environment.timeZone
-            datePickerWidget.child.minimumDate = range.lowerBound
-            datePickerWidget.child.maximumDate = range.upperBound
-
-            datePickerWidget.child.datePickerMode =
-                switch components {
-                    case [.date, .hourAndMinute]:
-                        .dateAndTime
-                    case .date:
-                        .date
-                    case .hourAndMinute:
-                        .time
-                    default:
-                        // Crashing upon receiving [] is consistent with SwiftUI.
-                        fatalError("Unexpected Components: \(components)")
-                }
-
-            if #available(iOS 13.4, macCatalyst 13.4, *) {
-                switch environment.datePickerStyle {
-                    case .automatic:
-                        datePickerWidget.child.preferredDatePickerStyle = .automatic
-                    case .compact:
-                        datePickerWidget.child.preferredDatePickerStyle = .compact
-                    case .graphical:
-                        guard #available(iOS 14, macCatalyst 14, *) else {
-                            preconditionFailure(
-                                "DatePickerStyle.graphical is only available on iOS 14 or newer")
-                        }
-                        datePickerWidget.child.preferredDatePickerStyle = .inline
-                    case .wheel:
-                        datePickerWidget.child.preferredDatePickerStyle = .wheels
-                }
-            }
-        }
     #else
         public func createSlider() -> Widget {
             fatalError("\(Self.self): \(#function) not implemented")
@@ -591,21 +537,6 @@ extension UIKitBackend {
         }
 
         public func setValue(ofSlider slider: Widget, to value: Double) {
-            fatalError("\(Self.self): \(#function) not implemented")
-        }
-
-        public func createDatePicker() -> Widget {
-            fatalError("\(Self.self): \(#function) not implemented")
-        }
-
-        public func updateDatePicker(
-            _ datePicker: Widget,
-            environment: EnvironmentValues,
-            date: Date,
-            range: ClosedRange<Date>,
-            components: DatePickerComponents,
-            onChange: @escaping (Date) -> Void
-        ) {
             fatalError("\(Self.self): \(#function) not implemented")
         }
     #endif
@@ -635,18 +566,84 @@ extension UIKitBackend: BackendFeatures.TapGestures {
 }
 
 #if os(iOS) || os(visionOS) || targetEnvironment(macCatalyst)
-extension UIKitBackend: BackendFeatures.HoverGestures {
-    public func createHoverTarget(wrapping child: Widget) -> Widget {
-        HoverableWidget(child: child)
+    extension UIKitBackend: BackendFeatures.HoverGestures {
+        public func createHoverTarget(wrapping child: Widget) -> Widget {
+            HoverableWidget(child: child)
+        }
+
+        public func updateHoverTarget(
+            _ hoverTarget: any WidgetProtocol,
+            environment: EnvironmentValues,
+            action: @escaping (Bool) -> Void
+        ) {
+            let wrapper = hoverTarget as! HoverableWidget
+            wrapper.hoverChangesHandler = action
+        }
     }
 
-    public func updateHoverTarget(
-        _ hoverTarget: any WidgetProtocol,
-        environment: EnvironmentValues,
-        action: @escaping (Bool) -> Void
-    ) {
-        let wrapper = hoverTarget as! HoverableWidget
-        wrapper.hoverChangesHandler = action
+    extension UIKitBackend: BackendFeatures.DatePickers {
+        public nonisolated var supportedDatePickerStyles: [DatePickerStyle] {
+            if #available(iOS 14, macCatalyst 14, *) {
+                [.automatic, .graphical, .compact, .wheel]
+            } else if #available(iOS 13.4, macCatalyst 13.4, *) {
+                [.automatic, .compact, .wheel]
+            } else {
+                [.automatic]
+            }
+        }
+
+        public func createDatePicker() -> Widget {
+            DatePickerWidget()
+        }
+
+        public func updateDatePicker(
+            _ datePicker: Widget,
+            environment: EnvironmentValues,
+            date: Date,
+            range: ClosedRange<Date>,
+            components: DatePickerComponents,
+            onChange: @escaping (Date) -> Void
+        ) {
+            let datePickerWidget = datePicker as! DatePickerWidget
+
+            datePickerWidget.child.date = date
+            datePickerWidget.onChange = onChange
+
+            datePickerWidget.child.isEnabled = environment.isEnabled
+            datePickerWidget.child.calendar = environment.calendar
+            datePickerWidget.child.timeZone = environment.timeZone
+            datePickerWidget.child.minimumDate = range.lowerBound
+            datePickerWidget.child.maximumDate = range.upperBound
+
+            datePickerWidget.child.datePickerMode =
+            switch components {
+                case [.date, .hourAndMinute]:
+                        .dateAndTime
+                case .date:
+                        .date
+                case .hourAndMinute:
+                        .time
+                default:
+                    // Crashing upon receiving [] is consistent with SwiftUI.
+                    fatalError("Unexpected Components: \(components)")
+            }
+
+            if #available(iOS 13.4, macCatalyst 13.4, *) {
+                switch environment.datePickerStyle {
+                    case .automatic:
+                        datePickerWidget.child.preferredDatePickerStyle = .automatic
+                    case .compact:
+                        datePickerWidget.child.preferredDatePickerStyle = .compact
+                    case .graphical:
+                        guard #available(iOS 14, macCatalyst 14, *) else {
+                            preconditionFailure(
+                                "DatePickerStyle.graphical is only available on iOS 14 or newer")
+                        }
+                        datePickerWidget.child.preferredDatePickerStyle = .inline
+                    case .wheel:
+                        datePickerWidget.child.preferredDatePickerStyle = .wheels
+                }
+            }
+        }
     }
-}
 #endif

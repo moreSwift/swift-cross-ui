@@ -124,10 +124,12 @@ internal struct DatePickerImplementation: ElementaryView {
 
     let body = EmptyView()
 
+    @CastBackend<BackendFeatures.DatePickers>(returnsWidget: true)
     func asWidget<Backend: BaseAppBackend>(backend: Backend) -> Backend.Widget {
         backend.createDatePicker()
     }
 
+    @CastBackend<BackendFeatures.DatePickers>
     func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,

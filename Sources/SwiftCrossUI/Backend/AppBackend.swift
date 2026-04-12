@@ -117,6 +117,7 @@ public typealias BaseAppBackend =
 /// - ``BackendFeatures/Gestures``
 /// - ``BackendFeatures/Tooltips``
 /// - ``BackendFeatures/Colors``
+/// - ``BackendFeatures/DatePickers``
 public typealias FullAppBackend =
     BaseAppBackend
     & BackendFeatures.Menus
@@ -134,6 +135,7 @@ public typealias FullAppBackend =
     & BackendFeatures.Gestures
     & BackendFeatures.Tooltips
     & BackendFeatures.Colors
+    & BackendFeatures.DatePickers
 
 @available(*, deprecated, renamed: "FullAppBackend", message: "see SwiftCrossUI PR #513 for details")
 public typealias AppBackend = FullAppBackend

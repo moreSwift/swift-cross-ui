@@ -211,11 +211,10 @@ public struct EnvironmentValues {
         values = [:]
         observableObjects = [:]
 
-        let supportedDatePickerStyles = backend.supportedDatePickerStyles
-        if supportedDatePickerStyles.isEmpty {
-            self.supportedDatePickerStyles = [.automatic]
+        if let backend = backend as? any BackendFeatures.DatePickers {
+            self.supportedDatePickerStyles = backend.supportedDatePickerStyles
         } else {
-            self.supportedDatePickerStyles = supportedDatePickerStyles
+            self.supportedDatePickerStyles = [.automatic]
         }
     }
 

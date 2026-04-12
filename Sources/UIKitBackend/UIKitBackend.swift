@@ -57,20 +57,6 @@ public final class UIKitBackend:
         }
     }
 
-    public nonisolated var supportedDatePickerStyles: [DatePickerStyle] {
-        #if os(tvOS)
-            []
-        #else
-            if #available(iOS 14, macCatalyst 14, *) {
-                [.automatic, .graphical, .compact, .wheel]
-            } else if #available(iOS 13.4, macCatalyst 13.4, *) {
-                [.automatic, .compact, .wheel]
-            } else {
-                [.automatic]
-            }
-        #endif
-    }
-
     public var defaultPickerStyle: BackendPickerStyle {
         #if os(tvOS)
             .segmented

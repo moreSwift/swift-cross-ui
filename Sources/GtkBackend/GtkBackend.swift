@@ -26,7 +26,8 @@ public final class GtkBackend:
     BackendFeatures.Menus,
     BackendFeatures.Paths,
     BackendFeatures.Tooltips,
-    BackendFeatures.Colors
+    BackendFeatures.Colors,
+    BackendFeatures.DatePickers
 {
     public typealias Window = Gtk.ApplicationWindow
     public typealias Widget = Gtk.Widget

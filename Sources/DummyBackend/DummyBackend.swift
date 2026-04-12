@@ -3,13 +3,9 @@ import SwiftCrossUI
 
 public final class DummyBackend:
     BaseAppBackend,
-    BackendFeatures.Menus,
-    BackendFeatures.Paths,
     BackendFeatures.IncomingURLs,
     BackendFeatures.CornerRadius,
     BackendFeatures.Tables,
-    BackendFeatures.Gestures,
-    BackendFeatures.Tooltips,
     BackendFeatures.Colors
 {
     public class Window {
@@ -265,7 +261,6 @@ public final class DummyBackend:
     public var menuImplementationStyle = MenuImplementationStyle.dynamicPopover
     public var deviceClass = DeviceClass.desktop
     public var supportsMultipleWindows = true
-    public var supportedDatePickerStyles: [DatePickerStyle] = []
     public var supportedPickerStyles: [BackendPickerStyle] = []
     public let canOverrideWindowColorScheme = true
 
@@ -746,21 +741,6 @@ public final class DummyBackend:
     // MARK: - Unimplemented Features
     // FIXME: Implement them so we can test them
 
-    public func createDatePicker() -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updateDatePicker(
-        _ datePicker: Widget,
-        environment: SwiftCrossUI.EnvironmentValues,
-        date: Date,
-        range: ClosedRange<Date>,
-        components: SwiftCrossUI.DatePickerComponents,
-        onChange: @escaping (Date) -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
     public func createPicker(style: SwiftCrossUI.BackendPickerStyle) -> Widget {
         fatalError("\(Self.self): \(#function) not implemented")
     }
@@ -814,79 +794,6 @@ public final class DummyBackend:
     }
 
     public func getContent(ofTextEditor textEditor: Widget) -> String {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func createPathWidget() -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func createPath() -> Path {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updatePath(
-        _ path: Path,
-        _ source: SwiftCrossUI.Path,
-        bounds: SwiftCrossUI.Path.Rect,
-        pointsChanged: Bool,
-        environment: SwiftCrossUI.EnvironmentValues
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func renderPath(
-        _ path: Path,
-        container: Widget,
-        strokeColor: SwiftCrossUI.Color.Resolved,
-        fillColor: SwiftCrossUI.Color.Resolved,
-        overrideStrokeStyle: SwiftCrossUI.StrokeStyle?
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func createHoverTarget(wrapping child: Widget) -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updateHoverTarget(
-        _ hoverTarget: Widget,
-        environment: SwiftCrossUI.EnvironmentValues,
-        action: @escaping (Bool) -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func createTapGestureTarget(wrapping child: Widget, gesture: SwiftCrossUI.TapGesture) -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updateTapGestureTarget(
-        _ tapGestureTarget: Widget,
-        gesture: SwiftCrossUI.TapGesture,
-        environment: SwiftCrossUI.EnvironmentValues,
-        action: @escaping () -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func createTooltipContainer(wrapping child: Widget) -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updateTooltipContainer(_ widget: Widget, tooltip: String) {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func createPopoverMenu() -> Menu {
-        fatalError("\(Self.self): \(#function) not implemented")
-    }
-
-    public func updatePopoverMenu(
-        _ menu: Menu,
-        content: SwiftCrossUI.ResolvedMenu,
-        environment: SwiftCrossUI.EnvironmentValues
-    ) {
         fatalError("\(Self.self): \(#function) not implemented")
     }
 }

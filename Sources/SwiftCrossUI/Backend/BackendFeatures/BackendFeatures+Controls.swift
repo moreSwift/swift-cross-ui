@@ -15,13 +15,11 @@ extension BackendFeatures {
     /// - ``SecureFields``
     /// - ``TextEditors``
     /// - ``Pickers``
-    /// - ``DatePickers``
     /// - ``ProgressSpinners``
     /// - ``ProgressBars``
     public typealias Controls =
         Buttons & Toggles & Switches & Checkboxes & Sliders & TextFields
-        & SecureFields & TextEditors & Pickers & DatePickers & ProgressSpinners
-        & ProgressBars
+        & SecureFields & TextEditors & Pickers & ProgressSpinners & ProgressBars
 
     /// Backend methods for buttons.
     ///
@@ -374,28 +372,6 @@ extension BackendFeatures {
         ///   - selectedOption: The index of the option to select. If `nil`, all
         ///     options should be deselected.
         func setSelectedOption(ofPicker picker: Widget, to selectedOption: Int?)
-    }
-
-    /// Backend methods for date pickers.
-    ///
-    /// These are used by ``DatePicker``.
-    @MainActor
-    public protocol DatePickers: Core {
-        /// The supported date picker styles.
-        ///
-        /// Must include ``DatePickerStyle/automatic`` if date pickers are supported at all.
-        nonisolated var supportedDatePickerStyles: [DatePickerStyle] { get }
-
-        func createDatePicker() -> Widget
-
-        func updateDatePicker(
-            _ datePicker: Widget,
-            environment: EnvironmentValues,
-            date: Date,
-            range: ClosedRange<Date>,
-            components: DatePickerComponents,
-            onChange: @escaping (Date) -> Void
-        )
     }
 
     /// Backend methods for progress spinners.
