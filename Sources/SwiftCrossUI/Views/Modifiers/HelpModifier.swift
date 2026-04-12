@@ -30,6 +30,7 @@ struct HelpView<Content: View>: View, TypeSafeView {
         )
     }
 
+    @CastBackend<AppBackend.Tooltips>(returnsWidget: true)
     func asWidget<Backend: AppBackend.Base>(
         _ children: Children,
         backend: Backend
@@ -51,6 +52,7 @@ struct HelpView<Content: View>: View, TypeSafeView {
         )
     }
 
+    @CastBackend<AppBackend.Tooltips>
     func commit<Backend: AppBackend.Base>(
         _ widget: Backend.Widget,
         children: Children,

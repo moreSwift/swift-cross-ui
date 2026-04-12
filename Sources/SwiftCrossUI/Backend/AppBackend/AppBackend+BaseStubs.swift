@@ -64,7 +64,6 @@ private struct BaseStubsTest: AppBackend.BaseStubs {
     struct Window {}
     struct Widget {}
     struct Menu {}
-    struct Path {}
 }
 #endif
 
@@ -398,42 +397,6 @@ extension AppBackend.BaseStubs {
         ofColorableRectangle widget: Widget,
         to color: Color.Resolved
     ) {
-        todo()
-    }
-
-    public func createPathWidget() -> Widget {
-        todo()
-    }
-
-    public func createPath() -> Path {
-        todo()
-    }
-
-    public func updatePath(
-        _ path: Path,
-        _ source: SwiftCrossUI.Path,
-        bounds: SwiftCrossUI.Path.Rect,
-        pointsChanged: Bool,
-        environment: EnvironmentValues
-    ) {
-        todo()
-    }
-
-    public func renderPath(
-        _ path: Path,
-        container: Widget,
-        strokeColor: Color.Resolved,
-        fillColor: Color.Resolved,
-        overrideStrokeStyle: StrokeStyle?
-    ) {
-        todo()
-    }
-
-    public func createTooltipContainer(wrapping child: Widget) -> Widget {
-        todo()
-    }
-
-    public func updateTooltipContainer(_ widget: Widget, tooltip: String) {
         todo()
     }
 

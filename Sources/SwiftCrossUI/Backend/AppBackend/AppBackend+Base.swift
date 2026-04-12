@@ -81,9 +81,8 @@ public enum AppBackend {
     /// - ``Controls``
     /// - ``Menus``
     /// - ``Colors``
-    /// - ``Tooltips``
     public typealias Base =
-        Core & Containers & PassiveViews & Controls & Menus & Colors & Tooltips
+        Core & Containers & PassiveViews & Controls & Menus & Colors
 
     /// Denotes a fully-featured backend that implements all features of
     /// SwiftCrossUI.
@@ -104,8 +103,9 @@ public enum AppBackend {
     /// - ``Tables``
     /// - ``Gestures``
     /// - ``Paths``
+    /// - ``Tooltips``
     public typealias Full =
         Base & IncomingURLs & ExternalURLs & RevealFile & ApplicationMenus
         & FileDialogs & Alerts & Sheets & CornerRadius & WebViews & Tables
-        & Gestures& Paths
+        & Gestures & Paths & Tooltips
 }
