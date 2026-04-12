@@ -21,7 +21,7 @@ public final class Gtk3Backend:
     BackendFeatures.FileDialogs,
     BackendFeatures.Alerts,
     BackendFeatures.CornerRadius,
-    BackendFeatures.Gestures,
+    BackendFeatures.TapGestures,
     BackendFeatures.Menus,
     BackendFeatures.Paths,
     BackendFeatures.Tooltips,
