@@ -16,3 +16,9 @@ public struct ScenePhase: Hashable, Sendable {
     /// input events. The scene may or may not still be visible to the user.
     public static let inactive = Self(phase: .inactive)
 }
+
+extension ScenePhase: CustomStringConvertible {
+    public var description: String {
+        String(describing: phase)
+    }
+}

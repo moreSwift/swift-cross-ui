@@ -54,3 +54,9 @@ public struct AppPhase: Hashable, Sendable {
     /// This phase is currently never reached on desktop backends.
     public static let background = Self(phase: .background)
 }
+
+extension AppPhase: CustomStringConvertible {
+    public var description: String {
+        String(describing: phase)
+    }
+}
