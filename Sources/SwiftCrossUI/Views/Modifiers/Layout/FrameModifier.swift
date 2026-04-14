@@ -55,19 +55,19 @@ extension View {
     public func frame(
         minWidth: Int? = nil,
         idealWidth: Int? = nil,
-        maxWidth: Int? = nil,
+        maxWidth: Double? = nil,
         minHeight: Int? = nil,
         idealHeight: Int? = nil,
-        maxHeight: Int? = nil,
+        maxHeight: Double? = nil,
         alignment: Alignment = .center
     ) -> some View {
         return frame(
             minWidth: minWidth.map(Double.init),
             idealWidth: idealWidth.map(Double.init),
-            maxWidth: maxWidth.map(Double.init),
+            maxWidth: maxWidth,
             minHeight: minHeight.map(Double.init),
             idealHeight: idealHeight.map(Double.init),
-            maxHeight: maxHeight.map(Double.init),
+            maxHeight: maxHeight,
             alignment: alignment
         )
     }
