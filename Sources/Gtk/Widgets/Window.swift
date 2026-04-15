@@ -19,6 +19,10 @@ open class Window: Widget {
     @GObjectProperty(named: "decorated") public var isDecorated: Bool
     @GObjectProperty(named: "destroy-with-parent") public var destroyWithParent: Bool
 
+    public var isActive: Bool {
+        gtk_window_is_active(castedPointer()).toBool()
+    }
+
     public func setTransient(for other: Window) {
         gtk_window_set_transient_for(castedPointer(), other.castedPointer())
     }

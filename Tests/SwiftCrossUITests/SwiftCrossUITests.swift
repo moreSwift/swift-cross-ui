@@ -81,7 +81,7 @@ struct SwiftCrossUITests {
 
         let blueRectangleHeight = Double(100)
         let view = ScrollView {
-            Color.blue.frame(height: Int(blueRectangleHeight))
+            Color.blue.frame(height: blueRectangleHeight)
         }
 
         let viewGraph = ViewGraph(

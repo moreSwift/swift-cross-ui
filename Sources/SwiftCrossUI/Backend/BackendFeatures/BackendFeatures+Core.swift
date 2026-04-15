@@ -249,6 +249,11 @@ extension BackendFeatures {
         /// environment when the window changes displays. In the future this may be
         /// useful for color space handling.
         ///
+        /// If the root environment change handler (set by
+        /// ``setRootEnvironmentChangeHandler(to:)``) needs to be called for
+        /// whatever reason, the backend can skip calling `action` since the
+        /// window's environment will be recomputed anyway. 
+        ///
         /// - Parameters:
         ///   - window: The window to set the environment change handler of.
         ///   - action: The window environment change handler.

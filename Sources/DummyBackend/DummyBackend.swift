@@ -21,6 +21,7 @@ public final class DummyBackend:
         public var content: Widget?
         public var resizeHandler: ((SIMD2<Int>) -> Void)?
         public var closeHandler: (() -> Void)?
+        public var phase = ScenePhase.inactive
         public var colorScheme = ColorScheme.light
 
         public init(defaultSize: SIMD2<Int>?) {
@@ -265,6 +266,7 @@ public final class DummyBackend:
     public let canOverrideWindowColorScheme = true
 
     public var incomingURLHandler: ((URL) -> Void)?
+    public var appPhase = AppPhase.active
 
     public init() {}
 
@@ -325,10 +327,14 @@ public final class DummyBackend:
         window.resizeHandler = action
     }
 
-    public func show(window: Window) {}
+    public func show(window: Window) {
+        window.phase = .active
+    }
 
-    public func activate(window: Window) {}
-
+    public func activate(window: Window) {
+        window.phase = .active
+    }
+    
     public func close(window: Window) {
         window.closeHandler?()
     }
@@ -345,6 +351,7 @@ public final class DummyBackend:
 
     public func computeRootEnvironment(defaultEnvironment: EnvironmentValues) -> EnvironmentValues {
         defaultEnvironment
+            .with(\.appPhase, appPhase)
     }
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {}
@@ -353,6 +360,7 @@ public final class DummyBackend:
         -> EnvironmentValues
     {
         rootEnvironment
+            .with(\.scenePhase, window.phase)
     }
 
     public func setWindowEnvironmentChangeHandler(

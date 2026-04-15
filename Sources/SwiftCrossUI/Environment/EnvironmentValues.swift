@@ -345,6 +345,44 @@ extension EnvironmentValues {
         }
     }
 
+    /// The app's lifecycle phase.
+    ///
+    /// Unlike in SwiftUI, where the app's lifecycle phase can only be accessed
+    /// by using `@Environment(\.scenePhase)` directly on the ``App`` struct, this
+    /// environment value can be accessed from anywhere within the application.
+    @Entry public package(set) var appPhase: AppPhase = .active
+
+    /// The current scene's lifecycle phase.
+    ///
+    /// - Important: Unlike SwiftUI, this environment value cannot be accessed from
+    ///   outside a scene. If you need to access the phase of the entire application,
+    ///   use ``appPhase`` instead.
+    public package(set) var scenePhase: ScenePhase {
+        get {
+            if window != nil {
+                // If there's a window but no scenePhase, we assume that the
+                // backend is actively trying to _set_ the scene phase; return
+                // a dummy value to prevent a crash.
+                return .inactive
+            }
+
+            guard let phase = self[__Key_scenePhase.self] else {
+                fatalError(
+                    """
+                    'scenePhase' accessed from outside a scene (most likely \
+                    with an @Environment property on the App struct); you \
+                    probably meant to use 'appPhase' instead
+                    """
+                )
+            }
+            return phase
+        }
+        set { self[__Key_scenePhase.self] = newValue }
+    }
+    private struct __Key_scenePhase: EnvironmentKey {
+        static let defaultValue: ScenePhase? = nil
+    }
+
     /// Backing store for ``EnvironmentValues/window``.
     /// Used to resolve "non-sendable type" warnings in Swift 5 and errors in Swift 6 language mode.
     @Entry private var windowStore = UncheckedSendable<Any?>(wrappedValue: nil)

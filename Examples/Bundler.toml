@@ -5,6 +5,10 @@ identifier = 'dev.swiftcrossui.ControlsExample'
 product = 'ControlsExample'
 version = '0.1.0'
 
+[[apps.ControlsExample.overlays]]
+condition = 'platform(macCatalyst)'
+interface_idiom = 'mac'
+
 [apps.CounterExample]
 identifier = 'dev.swiftcrossui.CounterExample'
 product = 'CounterExample'

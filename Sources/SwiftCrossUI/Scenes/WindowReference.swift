@@ -147,7 +147,10 @@ final class WindowReference<SceneType: WindowingScene> {
         }
 
         var environment =
-            backend.computeWindowEnvironment(window: window, rootEnvironment: environment)
+            backend.computeWindowEnvironment(
+                window: window,
+                rootEnvironment: environment.with(\.window, window)
+            )
             .with(\.onResize) { [weak self] _ in
                 guard let self else { return }
                 // TODO: Figure out whether this would still work if we didn't recompute the
@@ -161,7 +164,6 @@ final class WindowReference<SceneType: WindowingScene> {
                     environment: environment
                 )
             }
-            .with(\.window, window)
         let outerColorScheme = environment.colorScheme
 
         // Update environment with latest cached value before first update to

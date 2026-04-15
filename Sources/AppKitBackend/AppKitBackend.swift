@@ -277,6 +277,7 @@ public final class AppKitBackend: FullAppBackend {
         return
             defaultEnvironment
             .with(\.colorScheme, isDark ? .dark : .light)
+            .with(\.appPhase, NSApplication.shared.isActive ? .active : .inactive)
     }
 
     public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
@@ -307,6 +308,22 @@ public final class AppKitBackend: FullAppBackend {
         ) { _ in
             action()
         }
+
+        // For updating views that rely on `appPhase`
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            action()
+        }
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.didResignActiveNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            action()
+        }
     }
 
     public func computeWindowEnvironment(
@@ -315,7 +332,9 @@ public final class AppKitBackend: FullAppBackend {
     ) -> EnvironmentValues {
         window.lastBackingScaleFactor = window.backingScaleFactor
 
-        return rootEnvironment.with(\.windowScaleFactor, window.backingScaleFactor)
+        return rootEnvironment
+            .with(\.windowScaleFactor, window.backingScaleFactor)
+            .with(\.scenePhase, window.isKeyWindow ? .active : .inactive)
     }
 
     public func setWindowEnvironmentChangeHandler(
@@ -334,6 +353,22 @@ public final class AppKitBackend: FullAppBackend {
             if backingScaleFactorChanged {
                 action()
             }
+        }
+
+        // For updating views that rely on `scenePhase`
+        NotificationCenter.default.addObserver(
+            forName: NSWindow.didBecomeKeyNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            action()
+        }
+        NotificationCenter.default.addObserver(
+            forName: NSWindow.didResignKeyNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            action()
         }
     }
 

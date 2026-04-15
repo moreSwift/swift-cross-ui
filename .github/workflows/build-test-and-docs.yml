@@ -116,10 +116,10 @@ jobs:
             buildtarget WebViewExample
             buildtarget HoverExample
             buildtarget AdvancedCustomizationExample
+            buildtarget ControlsExample
 
             if [ $device_type != TV ]; then
               # Slider is not implemented for tvOS
-              buildtarget ControlsExample
               buildtarget RandomNumberGeneratorExample
             fi
 

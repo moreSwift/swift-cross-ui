@@ -194,10 +194,13 @@ struct TertiaryWindowView: View {
 
 struct SingletonWindowView: View {
     @Environment(\.dismissWindow) private var dismissWindow
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         VStack {
             Text("This a singleton window!")
+
+            Text("Window scene phase: \(scenePhase)")
 
             Button("Close window") {
                 dismissWindow()
@@ -217,6 +220,8 @@ struct WindowingApp: App {
     @State var enforceMaxSize = true
     @State var closable = true
     @State var minimizable = true
+
+    @Environment(\.appPhase) var appPhase
 
     var bannerImage: URL {
         // TODO(stackotter): Update SwiftBundlerRuntime to support fetching
@@ -240,6 +245,8 @@ struct WindowingApp: App {
                         Text("Window title:")
                         TextField("My window", text: $title)
                     }
+
+                    Text("App phase: \(appPhase)")
 
                     Toggle("Enable resizing", isOn: $resizable)
                         .windowResizeBehavior(resizable ? .enabled : .disabled)

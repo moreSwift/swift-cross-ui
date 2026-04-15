@@ -86,14 +86,12 @@ struct ControlsApp: App {
                             Text("Currently enabled: \(exampleSwitchState)")
                         }
 
-                        #if !canImport(UIKitBackend)
-                            VStack {
-                                Text("Checkbox")
-                                Toggle("Toggle me:", isOn: $exampleCheckboxState)
-                                    .toggleStyle(.checkbox)
-                                Text("Currently enabled: \(exampleCheckboxState)")
-                            }
-                        #endif
+                        VStack {
+                            Text("Checkbox")
+                            Toggle("Toggle me:", isOn: $exampleCheckboxState)
+                                .toggleStyle(.checkbox)
+                            Text("Currently enabled: \(exampleCheckboxState)")
+                        }
 
                         #if !os(tvOS)
                             VStack {
