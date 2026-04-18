@@ -45,7 +45,7 @@ public struct TextField: ElementaryView, View {
         self._text = Binding(
             get: { String(value.wrappedValue) },
             set: { newString in
-                if let parsed = V(newString) {
+                if let parsed = V(newString), parsed != value.wrappedValue {
                     value.wrappedValue = parsed
                 }
             }
@@ -71,7 +71,7 @@ public struct TextField: ElementaryView, View {
         self._text = Binding(
             get: { String(value.wrappedValue) },
             set: { newString in
-                if let parsed = V(newString) {
+                if let parsed = V(newString), parsed != value.wrappedValue {
                     value.wrappedValue = parsed
                 }
             }
