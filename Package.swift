@@ -27,16 +27,22 @@ if let version = getGtk4MinorVersion(), version >= 10 {
 }
 
 let env = ProcessInfo.processInfo.environment
-let defaultBackend: String
+let defaultBackendDependencies: [Target.Dependency]
 if let backend = env["SCUI_DEFAULT_BACKEND"] {
-    defaultBackend = backend
+    defaultBackendDependencies = [.target(name: backend)]
 } else {
+    // With no #if here, Windows and Linux dependencies are also compiled when building for
+    // UIKit platforms.
     #if os(macOS)
-        defaultBackend = "AppKitBackend"
-    #elseif os(Windows)
-        defaultBackend = "WinUIBackend"
+        defaultBackendDependencies = [
+            .target(name: "AppKitBackend", condition: .when(platforms: [.macOS])),
+            .target(name: "UIKitBackend", condition: .when(platforms: [.iOS, .tvOS, .macCatalyst, .visionOS])),
+        ]
     #else
-        defaultBackend = "GtkBackend"
+        defaultBackendDependencies = [
+            .target(name: "WinUIBackend", condition: .when(platforms: [.windows])),
+            .target(name: "GtkBackend", condition: .when(platforms: [.linux])),
+        ]
     #endif
 }
 
@@ -201,19 +207,7 @@ let package = Package(
         .target(name: "SwiftCrossUIMetadataSupport"),
         .target(
             name: "DefaultBackend",
-            dependencies: [
-                .target(
-                    name: defaultBackend,
-                    condition: .when(platforms: [.linux, .macOS, .windows])
-                ),
-                // Non-desktop platforms need to be handled separately:
-                // Only one backend is supported, and `#if` won't work because it's evaluated
-                // on the compiling desktop, not the target.
-                .target(
-                    name: "UIKitBackend",
-                    condition: .when(platforms: [.iOS, .tvOS, .macCatalyst, .visionOS])
-                ),
-            ]
+            dependencies: defaultBackendDependencies
         ),
         .target(name: "AppKitBackend", dependencies: ["SwiftCrossUI"]),
         .target(
