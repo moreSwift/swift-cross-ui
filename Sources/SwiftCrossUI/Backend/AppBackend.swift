@@ -118,6 +118,7 @@ public typealias BaseAppBackend =
 /// - ``BackendFeatures/Tooltips``
 /// - ``BackendFeatures/Colors``
 /// - ``BackendFeatures/DatePickers``
+/// - ``BackendFeatures/Windowing``
 public typealias FullAppBackend =
     BaseAppBackend
     & BackendFeatures.Menus
@@ -136,6 +137,7 @@ public typealias FullAppBackend =
     & BackendFeatures.Tooltips
     & BackendFeatures.Colors
     & BackendFeatures.DatePickers
+    & BackendFeatures.Windowing
 
 /// A typealias for ``FullAppBackend``.
 ///

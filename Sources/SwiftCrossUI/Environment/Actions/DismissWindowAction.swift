@@ -25,7 +25,7 @@ public struct DismissWindowAction {
 
     /// Closes the enclosing window.
     public func callAsFunction() {
-        func closeWindow<Backend: BaseAppBackend>(backend: Backend) {
+        func closeWindow<Backend: BackendFeatures.Windowing>(backend: Backend) {
             guard let window = window.value else {
                 logger.warning("dismissWindow() accessed outside of a window's scope")
                 return
@@ -33,6 +33,10 @@ public struct DismissWindowAction {
             backend.close(window: window as! Backend.Window)
         }
 
+        guard let backend = backend as? any BackendFeatures.Windowing else {
+            logger.warning("\(type(of: backend)) doesn't support closing windows")
+            return
+        }
         closeWindow(backend: backend)
     }
 }

@@ -67,7 +67,7 @@ extension BackendFeatures {
     /// Core backend methods for window handling. These are required for a
     /// functional backend.
     @MainActor
-    public protocol Windowing<Window>: Widgets {
+    public protocol CoreWindowing<Window>: Widgets {
         /// The underlying window type. Can be a wrapper or subclass.
         associatedtype Window
 
@@ -102,29 +102,6 @@ extension BackendFeatures {
         ///
         /// - Parameter environment: the current environment.
         func updateWindow(_ window: Window, environment: EnvironmentValues)
-
-        /// Sets the title of a window.
-        ///
-        /// - Parameters:
-        ///   - window: The window to set the title of.
-        ///   - title: The new title.
-        func setTitle(ofWindow window: Window, to title: String)
-
-        /// Sets the behaviors of a window.
-        ///
-        /// - Parameters:
-        ///   - window: The window to set the behaviors on.
-        ///   - closable: Whether the window can be closed by the user.
-        ///   - minimizable: Whether the window can be minimized by the user.
-        ///   - resizable: Whether the window can be resized by the user. Even if
-        ///     resizable, the window shouldn't be allowed to become smaller than its
-        ///     minimum size, or larger than its maximum size.
-        func setBehaviors(
-            ofWindow window: Window,
-            closable: Bool,
-            minimizable: Bool,
-            resizable: Bool
-        )
 
         /// Sets the root child of a window.
         ///
@@ -201,33 +178,6 @@ extension BackendFeatures {
         ///
         /// - Parameter window: The window to activate.
         func activate(window: Window)
-
-        /// Closes a window.
-        ///
-        /// At some point during or after execution of this function, the handler
-        /// set by ``setCloseHandler(ofWindow:to:)`` should be called.
-        /// Oftentimes this will be done automatically by the backend's underlying
-        /// UI framework.
-        ///
-        /// This is primarily used by ``DismissWindowAction``.
-        func close(window: Window)
-
-        /// Sets the handler for the window's close events (for example, when the
-        /// user clicks the close button in the title bar).
-        ///
-        /// The close handler should also be called whenever ``close(window:)-9xucx``
-        /// is called (some UI frameworks do this automatically).
-        ///
-        /// This is used by SwiftCrossUI to release scene nodes' references to
-        /// `window` when the window is closed.
-        ///
-        /// This is only called once per window; as such, it doesn't matter if
-        /// setting the close handler again overrides the previous handler or adds a
-        /// new one.
-        func setCloseHandler(
-            ofWindow window: Window,
-            to action: @escaping () -> Void
-        )
 
         /// Computes a window's environment based off the root environment.
         ///
@@ -323,10 +273,10 @@ extension BackendFeatures {
     ///
     /// ### Constituent Protocols
     /// - ``Widgets``
-    /// - ``Windowing``
+    /// - ``CoreWindowing``
     /// - ``GenericContainers``
     @MainActor
-    public protocol Core: Widgets, Windowing, GenericContainers {
+    public protocol Core: Widgets, CoreWindowing, GenericContainers {
         /// Creates an instance of the backend.
         init()
 
