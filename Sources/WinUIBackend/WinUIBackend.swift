@@ -41,7 +41,8 @@ public final class WinUIBackend:
     BackendFeatures.Paths,
     BackendFeatures.Tooltips,
     BackendFeatures.Colors,
-    BackendFeatures.DatePickers
+    BackendFeatures.DatePickers,
+    BackendFeatures.Windowing
 {
     // Logging
     private struct LogLocation: Hashable, Equatable {

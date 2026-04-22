@@ -25,7 +25,8 @@ public final class Gtk3Backend:
     BackendFeatures.Menus,
     BackendFeatures.Paths,
     BackendFeatures.Tooltips,
-    BackendFeatures.Colors
+    BackendFeatures.Colors,
+    BackendFeatures.Windowing
 {
     public typealias Window = Gtk3.ApplicationWindow
     public typealias Widget = Gtk3.Widget

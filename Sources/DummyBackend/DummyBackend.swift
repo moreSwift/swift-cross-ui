@@ -6,7 +6,8 @@ public final class DummyBackend:
     BackendFeatures.IncomingURLs,
     BackendFeatures.CornerRadius,
     BackendFeatures.Tables,
-    BackendFeatures.Colors
+    BackendFeatures.Colors,
+    BackendFeatures.Windowing
 {
     public class Window {
         static let defaultSize = SIMD2<Int>(400, 200)

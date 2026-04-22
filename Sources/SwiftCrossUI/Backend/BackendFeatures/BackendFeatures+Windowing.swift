@@ -2,15 +2,17 @@ import Foundation
 
 extension BackendFeatures {
     /// Extra backend methods for window handling.
-    @MainActor
-    public protocol Windowing<Window>: Core {
-        /// Sets the title of a window.
-        ///
-        /// - Parameters:
-        ///   - window: The window to set the title of.
-        ///   - title: The new title.
-        func setTitle(ofWindow window: Window, to title: String)
+    ///
+    /// ## Topics
+    ///
+    /// ### Constituent Protocols
+    /// - ``WindowBehaviors``
+    /// - ``WindowClosing``
+    public typealias Windowing = WindowBehaviors & WindowClosing
 
+    /// Backend methods for setting window behaviors.
+    @MainActor
+    public protocol WindowBehaviors<Window>: Core {
         /// Sets the behaviors of a window.
         ///
         /// - Parameters:
@@ -26,7 +28,11 @@ extension BackendFeatures {
             minimizable: Bool,
             resizable: Bool
         )
+    }
 
+    /// Backend methods for closing windows.
+    @MainActor
+    public protocol WindowClosing<Window>: Core {
         /// Closes a window.
         ///
         /// At some point during or after execution of this function, the handler

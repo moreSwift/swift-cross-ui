@@ -40,18 +40,17 @@ final class WindowReference<SceneType: WindowingScene> {
         self.containerWidget = AnyWidget(container)
 
         backend.setChild(ofWindow: window, to: container)
-
-        if let backend = backend as? any BackendFeatures.Windowing {
-            setupWindow(backend: backend)
-            func setupWindow<NewBackend: BackendFeatures.Windowing>(backend: NewBackend) {
-                let window = window as! NewBackend.Window
-                backend.setTitle(ofWindow: window, to: scene.title)
-                backend.setCloseHandler(ofWindow: window, to: closeHandler)
-            }
-        }
+        backend.setTitle(ofWindow: window, to: scene.title)
 
         self.window = window
         parentEnvironment = environment
+
+        if let backend = backend as? any BackendFeatures.WindowClosing {
+            setCloseHandler(backend: backend)
+            func setCloseHandler<NewBackend: BackendFeatures.WindowClosing>(backend: NewBackend) {
+                backend.setCloseHandler(ofWindow: window as! NewBackend.Window, to: closeHandler)
+            }
+        }
 
         backend.setResizeHandler(ofWindow: window) { [weak self] newSize in
             guard let self else { return }
@@ -148,12 +147,7 @@ final class WindowReference<SceneType: WindowingScene> {
             // 'default' size which would mean that setting the default size every time
             // the default size changed would resize the window (which is incorrect
             // behaviour).
-            if let backend = backend as? any BackendFeatures.Windowing {
-                setTitle(backend: backend)
-                func setTitle<NewBackend: BackendFeatures.Windowing>(backend: NewBackend) {
-                    backend.setTitle(ofWindow: window as! NewBackend.Window, to: newScene.title)
-                }
-            }
+            backend.setTitle(ofWindow: window, to: newScene.title)
             scene = newScene
         }
 
@@ -274,9 +268,9 @@ final class WindowReference<SceneType: WindowingScene> {
             backend.setSize(ofWindow: window, to: proposedWindowSize)
         }
 
-        if let backend = backend as? any BackendFeatures.Windowing {
+        if let backend = backend as? any BackendFeatures.WindowBehaviors {
             setBehaviors(backend: backend)
-            func setBehaviors<NewBackend: BackendFeatures.Windowing>(backend: NewBackend) {
+            func setBehaviors<NewBackend: BackendFeatures.WindowBehaviors>(backend: NewBackend) {
                 backend.setBehaviors(
                     ofWindow: window as! NewBackend.Window,
                     closable:

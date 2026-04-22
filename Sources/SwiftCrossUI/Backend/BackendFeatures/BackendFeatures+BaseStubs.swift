@@ -410,16 +410,7 @@ extension BackendFeatures.BaseStubs {
     public func setTitle(ofWindow window: Window, to title: String) {
         todo()
     }
-
-    public func setBehaviors(
-        ofWindow window: Window,
-        closable: Bool,
-        minimizable: Bool,
-        resizable: Bool
-    ) {
-        todo()
-    }
-
+    
     public func setChild(ofWindow window: Window, to child: Widget) {
         todo()
     }
@@ -456,17 +447,6 @@ extension BackendFeatures.BaseStubs {
     }
 
     public func activate(window: Window) {
-        todo()
-    }
-
-    public func close(window: Window) {
-        todo()
-    }
-
-    public func setCloseHandler(
-        ofWindow window: Window,
-        to action: @escaping () -> Void
-    ) {
         todo()
     }
 

@@ -103,6 +103,13 @@ extension BackendFeatures {
         /// - Parameter environment: the current environment.
         func updateWindow(_ window: Window, environment: EnvironmentValues)
 
+        /// Sets the title of a window.
+        ///
+        /// - Parameters:
+        ///   - window: The window to set the title of.
+        ///   - title: The new title.
+        func setTitle(ofWindow window: Window, to title: String)
+
         /// Sets the root child of a window.
         ///
         /// This replaces the previous child if one exists.
