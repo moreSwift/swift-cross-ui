@@ -23,7 +23,7 @@ public final class GtkBackend:
     BackendFeatures.Sheets,
     BackendFeatures.CornerRadius,
     BackendFeatures.Gestures,
-    BackendFeatures.Menus,
+    BackendFeatures.PopoverMenus,
     BackendFeatures.Paths,
     BackendFeatures.Tooltips,
     BackendFeatures.Colors,
@@ -51,7 +51,6 @@ public final class GtkBackend:
     public let scrollBarWidth = 0
     public let requiresToggleSwitchSpacer = false
     public let requiresImageUpdateOnScaleFactorChange = false
-    public let menuImplementationStyle = MenuImplementationStyle.dynamicPopover
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
     public let defaultSheetCornerRadius = 10

@@ -98,7 +98,7 @@ extension Menu: TypeSafeView {
 
         // Update the button before measuring its natural size
         switch backend.menuImplementationStyle {
-            case .dynamicPopover:
+            case .dynamicPopover(let backend):
                 // Our menu button action implementation needs to know the size
                 // of the button, but we don't have that yet, so just update it
                 // with an empty action and fix it in commit.
@@ -108,7 +108,7 @@ extension Menu: TypeSafeView {
                     environment: environment,
                     action: {}
                 )
-            case .menuButton:
+            case .menuButton(let backend):
                 let menu =
                     children.menu.flatMap { $0 as? NewBackend.Menu }
                     ?? backend.createPopoverMenu()
@@ -138,7 +138,7 @@ extension Menu: TypeSafeView {
         backend.setSize(of: widget, to: size.vector)
 
         switch backend.menuImplementationStyle {
-            case .dynamicPopover:
+            case .dynamicPopover(let backend):
                 backend.updateButton(
                     widget,
                     label: label,
@@ -170,7 +170,7 @@ extension Menu: TypeSafeView {
                         environment: environment
                     )
                 }
-            case .menuButton:
+            case .menuButton(let backend):
                 // We can assume that computeLayout has already run, so children.menu
                 // will already be correctly initialized.
                 let content = resolve().content

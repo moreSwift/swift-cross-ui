@@ -76,7 +76,7 @@ public final class DummyBackend:
         public var label = ""
         public var font: Font.Resolved?
         public var action: (() -> Void)?
-        public var menu: Menu?
+//        public var menu: Menu?
     }
 
     public class ToggleButton: Widget {
@@ -250,9 +250,7 @@ public final class DummyBackend:
         }
     }
 
-    public class Menu {}
-
-    public class Path {}
+//    public class Menu {}
 
     public var defaultTableRowContentHeight = 10
     public var defaultTableCellVerticalPadding = 10
@@ -260,7 +258,6 @@ public final class DummyBackend:
     public var scrollBarWidth = 8
     public var requiresToggleSwitchSpacer = false
     public var requiresImageUpdateOnScaleFactorChange = false
-    public var menuImplementationStyle = MenuImplementationStyle.dynamicPopover
     public var deviceClass = DeviceClass.desktop
     public var supportsMultipleWindows = true
     public var supportedPickerStyles: [BackendPickerStyle] = []
@@ -607,17 +604,17 @@ public final class DummyBackend:
         button.action = action
     }
 
-    public func updateButton(
-        _ button: Widget,
-        label: String,
-        menu: Menu,
-        environment: EnvironmentValues
-    ) {
-        let button = button as! Button
-        button.label = label
-        button.menu = menu
-        button.font = environment.resolvedFont
-    }
+//    public func updateButton(
+//        _ button: Widget,
+//        label: String,
+//        menu: Menu,
+//        environment: EnvironmentValues
+//    ) {
+//        let button = button as! Button
+//        button.label = label
+//        button.menu = menu
+//        button.font = environment.resolvedFont
+//    }
 
     public func createToggle() -> Widget {
         ToggleButton()

@@ -2,14 +2,6 @@ import SwiftCrossUI
 import UIKit
 
 extension UIKitBackend {
-    public final class Menu {
-        var uiMenu: UIMenu?
-    }
-
-    public func createPopoverMenu() -> Menu {
-        return Menu()
-    }
-
     private enum RenderedMenuItem {
         case item(UIMenuElement)
         case separator
@@ -92,21 +84,28 @@ extension UIKitBackend {
 
         return UIMenu(title: label, identifier: identifier, children: children)
     }
+}
 
+@available(iOS 14, macCatalyst 14, tvOS 17, *)
+extension UIKitBackend: BackendFeatures.ButtonMenus {
+    public final class Menu {
+        var uiMenu: UIMenu?
+    }
+
+    public func createPopoverMenu() -> Menu {
+        return Menu()
+    }
+    
     public func updatePopoverMenu(
         _ menu: Menu,
         content: ResolvedMenu,
         environment: EnvironmentValues
     ) {
-        if #available(iOS 14, macCatalyst 14, tvOS 17, *) {
-            menu.uiMenu = UIKitBackend.buildMenu(
-                content: content,
-                label: "",
-                environment: environment
-            )
-        } else {
-            preconditionFailure("Current OS is too old to support menu buttons.")
-        }
+        menu.uiMenu = UIKitBackend.buildMenu(
+            content: content,
+            label: "",
+            environment: environment
+        )
     }
 
     public func updateButton(
@@ -115,22 +114,18 @@ extension UIKitBackend {
         menu: Menu,
         environment: EnvironmentValues
     ) {
-        if #available(iOS 14, macCatalyst 14, tvOS 17, *) {
-            let buttonWidget = button as! ButtonWidget
-            buttonWidget.child.isEnabled = environment.isEnabled
-            setButtonTitle(buttonWidget, label, environment: environment)
-            buttonWidget.child.menu = menu.uiMenu
-            buttonWidget.child.showsMenuAsPrimaryAction = true
-            if #available(iOS 16, macCatalyst 16, *) {
-                buttonWidget.child.preferredMenuElementOrder =
-                switch environment.menuOrder {
-                    case .automatic: .automatic
-                    case .priority: .priority
-                    case .fixed: .fixed
-                }
+        let buttonWidget = button as! ButtonWidget
+        buttonWidget.child.isEnabled = environment.isEnabled
+        setButtonTitle(buttonWidget, label, environment: environment)
+        buttonWidget.child.menu = menu.uiMenu
+        buttonWidget.child.showsMenuAsPrimaryAction = true
+        if #available(iOS 16, macCatalyst 16, *) {
+            buttonWidget.child.preferredMenuElementOrder =
+            switch environment.menuOrder {
+                case .automatic: .automatic
+                case .priority: .priority
+                case .fixed: .fixed
             }
-        } else {
-            preconditionFailure("Current OS is too old to support menu buttons.")
         }
     }
 }

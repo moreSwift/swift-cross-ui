@@ -37,7 +37,7 @@ public final class WinUIBackend:
     BackendFeatures.Alerts,
     BackendFeatures.CornerRadius,
     BackendFeatures.Gestures,
-    BackendFeatures.Menus,
+    BackendFeatures.ButtonMenus,
     BackendFeatures.Paths,
     BackendFeatures.Tooltips,
     BackendFeatures.Colors,
@@ -78,7 +78,6 @@ public final class WinUIBackend:
     public let defaultPaddingAmount = 10
     public let requiresToggleSwitchSpacer = false
     public let requiresImageUpdateOnScaleFactorChange = false
-    public let menuImplementationStyle = MenuImplementationStyle.menuButton
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
     public let supportedDatePickerStyles: [DatePickerStyle] = [

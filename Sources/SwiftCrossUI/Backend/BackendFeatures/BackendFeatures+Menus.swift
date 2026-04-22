@@ -1,26 +1,24 @@
 import Foundation
 
 extension BackendFeatures {
-    // FIXME: Factor out `menuImplementationStyle` and rely on conformances instead
-
     /// Backend methods for menus.
     ///
     /// - Important: You only need to write a conformance to _one of_
     ///   ``ButtonMenus`` or ``PopoverMenus``, depending on what you use as
-    ///   your ``MenuBase/menuImplementationStyle`` (that is, what would work best
+    ///   your ``Menus/menuImplementationStyle`` (that is, what would work best
     ///   for your backend's underlying UI framework).
-    public typealias Menus = ButtonMenus & PopoverMenus
-
-    /// Backend methods for basic menu handling.
     @MainActor
-    public protocol MenuBase<Menu>: Core {
+    public protocol Menus<Menu>: Core, Buttons {
         /// The underlying menu type. Can be a wrapper or subclass.
         associatedtype Menu
 
         /// How the backend handles rendering of menu buttons.
         ///
         /// This affects which menu-related methods are called.
-        var menuImplementationStyle: MenuImplementationStyle { get }
+        ///
+        /// This requirement is automatically implemented for backends that conform to exactly
+        /// one of ``BackendFeatures/PopoverMenus`` or ``BackendFeatures/ButtonMenus``.
+        var menuImplementationStyle: MenuImplementationStyle<Widget, Menu> { get }
 
         /// Creates a popover menu (the sort you often see when right clicking on
         /// apps).
@@ -46,10 +44,10 @@ extension BackendFeatures {
     /// Backend methods for menus that are simply attached to an existing
     /// button widget.
     @MainActor
-    public protocol ButtonMenus: MenuBase, Buttons {
+    public protocol ButtonMenus<Widget, Menu>: Menus {
         /// Sets a button's label and menu.
         ///
-        /// Only used when ``BackendFeatures/MenuBase/menuImplementationStyle`` is
+        /// Only used when ``BackendFeatures/Menus/menuImplementationStyle`` is
         /// ``MenuImplementationStyle/menuButton``.
         ///
         /// - Parameters:
@@ -67,10 +65,10 @@ extension BackendFeatures {
 
     /// Backend methods for menus which need a separate widget to be created.
     @MainActor
-    public protocol PopoverMenus: MenuBase {
+    public protocol PopoverMenus<Widget, Menu>: Menus {
         /// Shows the popover menu at a position relative to the given widget.
         ///
-        /// Only used when ``BackendFeatures/MenuBase/menuImplementationStyle`` is
+        /// Only used when ``BackendFeatures/Menus/menuImplementationStyle`` is
         /// ``MenuImplementationStyle/dynamicPopover``.
         ///
         /// - Parameters:
@@ -89,24 +87,14 @@ extension BackendFeatures {
 
 // MARK: Default Implementations
 
-extension BackendFeatures.ButtonMenus {
-    public func updateButton(
-        _ button: Widget,
-        label: String,
-        menu: Menu,
-        environment: EnvironmentValues
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
+extension BackendFeatures.Menus where Self: BackendFeatures.PopoverMenus {
+    public var menuImplementationStyle: MenuImplementationStyle<Widget, Menu> {
+        .dynamicPopover(self)
     }
 }
 
-extension BackendFeatures.PopoverMenus {
-    public func showPopoverMenu(
-        _ menu: Menu,
-        at position: SIMD2<Int>,
-        relativeTo widget: Widget,
-        closeHandler handleClose: @escaping () -> Void
-    ) {
-        fatalError("\(Self.self): \(#function) not implemented")
+extension BackendFeatures.Menus where Self: BackendFeatures.ButtonMenus {
+    public var menuImplementationStyle: MenuImplementationStyle<Widget, Menu> {
+        .menuButton(self)
     }
 }

@@ -9,7 +9,6 @@ public final class UIKitBackend:
     BackendFeatures.Alerts,
     BackendFeatures.Sheets,
     BackendFeatures.CornerRadius,
-    BackendFeatures.Menus,
     BackendFeatures.Paths,
     BackendFeatures.Tooltips,
     BackendFeatures.Colors
@@ -28,7 +27,6 @@ public final class UIKitBackend:
     public let scrollBarWidth = 0
     public let defaultPaddingAmount = 15
     public let requiresToggleSwitchSpacer = true
-    public let menuImplementationStyle = MenuImplementationStyle.menuButton
 
     // TODO: When tables are supported, update these
     public let defaultTableRowContentHeight = -1

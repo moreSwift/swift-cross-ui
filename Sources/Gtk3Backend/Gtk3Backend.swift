@@ -22,7 +22,7 @@ public final class Gtk3Backend:
     BackendFeatures.Alerts,
     BackendFeatures.CornerRadius,
     BackendFeatures.TapGestures,
-    BackendFeatures.Menus,
+    BackendFeatures.PopoverMenus,
     BackendFeatures.Paths,
     BackendFeatures.Tooltips,
     BackendFeatures.Colors,
@@ -44,7 +44,6 @@ public final class Gtk3Backend:
     public let requiresToggleSwitchSpacer = false
     public let scrollBarWidth = 0
     public let requiresImageUpdateOnScaleFactorChange = true
-    public let menuImplementationStyle = MenuImplementationStyle.dynamicPopover
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
     public let supportedPickerStyles: [BackendPickerStyle] = []
