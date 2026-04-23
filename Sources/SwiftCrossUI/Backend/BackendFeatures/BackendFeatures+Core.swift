@@ -100,7 +100,9 @@ extension BackendFeatures {
         /// Updates a window, generally to react to the current color scheme from the
         /// environment.
         ///
-        /// - Parameter environment: the current environment.
+        /// - Parameters:
+        ///   - window: The window to update.
+        ///   - environment: the current environment.
         func updateWindow(_ window: Window, environment: EnvironmentValues)
 
         /// Sets the title of a window.

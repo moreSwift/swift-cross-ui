@@ -36,7 +36,8 @@ Here are some guidelines for adding methods to existing protocols:
   ``BackendFeatures/Core``), add a default implementation to
   ``BackendFeatures/BaseStubs``. There's a private struct in that file called
   `BaseStubsTest` that the compiler will probably error on if you add new
-  backend APIs; see that type's doc comment for further info.
+  backend APIs without updating `BaseStubs`; see that type's doc comment for
+  further info.
 
   Don't add these implementations for protocols which aren't a part of
   ``BaseAppBackend``.

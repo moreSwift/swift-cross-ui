@@ -5,7 +5,7 @@ extension BackendFeatures {
     ///
     /// - Important: You only need to write a conformance to _one of_
     ///   ``ButtonMenus`` or ``PopoverMenus``, depending on what you use as
-    ///   your ``Menus/menuImplementationStyle`` (that is, what would work best
+    ///   your ``Menus/menuImplementationStyle-4blzf`` (that is, what would work best
     ///   for your backend's underlying UI framework).
     @MainActor
     public protocol Menus<Menu>: Core, Buttons {
@@ -18,6 +18,9 @@ extension BackendFeatures {
         ///
         /// This requirement is automatically implemented for backends that conform to exactly
         /// one of ``BackendFeatures/PopoverMenus`` or ``BackendFeatures/ButtonMenus``.
+        ///
+        /// ## See Also
+        /// - ``MenuImplementationStyle``
         var menuImplementationStyle: MenuImplementationStyle<Widget, Menu> { get }
 
         /// Creates a popover menu (the sort you often see when right clicking on
@@ -88,12 +91,22 @@ extension BackendFeatures {
 // MARK: Default Implementations
 
 extension BackendFeatures.Menus where Self: BackendFeatures.PopoverMenus {
+    /// The default implementation of ``BackendFeatures/Menus/menuImplementationStyle-4blzf``
+    /// for backends that implement ``BackendFeatures/PopoverMenus``.
+    ///
+    /// This simply returns `.dynamicPopover(self)`. You should very rarely have
+    /// to override this.
     public var menuImplementationStyle: MenuImplementationStyle<Widget, Menu> {
         .dynamicPopover(self)
     }
 }
 
 extension BackendFeatures.Menus where Self: BackendFeatures.ButtonMenus {
+    /// The default implementation of ``BackendFeatures/Menus/menuImplementationStyle-4blzf``
+    /// for backends that implement ``BackendFeatures/ButtonMenus``.
+    ///
+    /// This simply returns `.menuButton(self)`. You should very rarely have
+    /// to override this.
     public var menuImplementationStyle: MenuImplementationStyle<Widget, Menu> {
         .menuButton(self)
     }

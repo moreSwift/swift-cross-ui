@@ -17,9 +17,13 @@ backends to be implemented in third-party packages.
 
 ## Topics
 
+### Protocols
+- <doc:AppBackend-refactor>
 - ``BackendFeatures``
 - ``BaseAppBackend``
 - ``FullAppBackend``
+
+### Supporting Types
 - ``CellPosition``
 - ``MenuImplementationStyle``
 - ``DialogResult``

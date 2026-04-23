@@ -29,7 +29,7 @@ extension BackendFeatures {
     ///
     /// These are used by ``EnvironmentValues/revealFile``.
     @MainActor
-    public protocol RevealFile: Core {
+    public protocol RevealFiles: Core {
         /// Reveals a file in the system's file manager.
         ///
         /// This typically opens the file's enclosing directory and highlights the

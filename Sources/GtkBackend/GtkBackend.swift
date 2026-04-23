@@ -16,7 +16,7 @@ public final class GtkBackend:
     BaseAppBackend,
     BackendFeatures.IncomingURLs,
     BackendFeatures.ExternalURLs,
-    BackendFeatures.RevealFile,
+    BackendFeatures.RevealFiles,
     BackendFeatures.ApplicationMenus,
     BackendFeatures.FileDialogs,
     BackendFeatures.Alerts,

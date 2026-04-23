@@ -108,7 +108,7 @@ public typealias BaseAppBackend =
 /// - ``BackendFeatures/Sheets``
 /// - ``BackendFeatures/IncomingURLs``
 /// - ``BackendFeatures/ExternalURLs``
-/// - ``BackendFeatures/RevealFile``
+/// - ``BackendFeatures/RevealFiles``
 /// - ``BackendFeatures/ApplicationMenus``
 /// - ``BackendFeatures/FileDialogs``
 /// - ``BackendFeatures/CornerRadius``
@@ -127,7 +127,7 @@ public typealias FullAppBackend =
     & BackendFeatures.Sheets
     & BackendFeatures.IncomingURLs
     & BackendFeatures.ExternalURLs
-    & BackendFeatures.RevealFile
+    & BackendFeatures.RevealFiles
     & BackendFeatures.ApplicationMenus
     & BackendFeatures.FileDialogs
     & BackendFeatures.CornerRadius
