@@ -111,3 +111,33 @@ extension BackendFeatures.Menus where Self: BackendFeatures.ButtonMenus {
         .menuButton(self)
     }
 }
+
+// NB: The default implementations below serve to provide more helpful error messages when
+// the two `menuImplementationStyle` implementations above conflict or when neither of them
+// can be used -- i.e. when both (or neither) of `PopoverMenus` and `ButtonMenus` are
+// conformed to.
+
+extension BackendFeatures.Menus where Self: BackendFeatures.PopoverMenus, Self: BackendFeatures.ButtonMenus {
+    @available(
+        *, unavailable,
+        message: """
+        you should only conform to one of 'PopoverMenus' or 'ButtonMenus'. Implement \
+        'menuImplementationStyle' manually if conforming to both is intentional
+        """
+    )
+    public var menuImplementationStyle: MenuImplementationStyle<Widget, Menu> {
+        fatalError("unavailable default implementation of 'menuImplementationStyle'")
+    }
+}
+
+extension BackendFeatures.Menus {
+    @available(
+        *, unavailable,
+        message: """
+        you need to conform to one of 'PopoverMenus' or 'ButtonMenus' for full 'Menus' conformance
+        """
+    )
+    public var menuImplementationStyle: MenuImplementationStyle<Widget, Menu> {
+        fatalError("unavailable default implementation of 'menuImplementationStyle'")
+    }
+}
