@@ -37,6 +37,14 @@ extension BackendFeatures {
     /// Of course, you can use whatever workflow works best for you; this
     /// protocol just serves as a tool to keep you from having to implement the
     /// entire backend in one go.
+    #if !DEBUG
+        @available(
+            *, deprecated,
+            message: """
+            'BaseStubs' should not be used in release builds, conform to 'BaseAppBackend' instead
+            """
+        )
+    #endif
     public protocol BaseStubs: BaseAppBackend {}
 }
 
@@ -66,12 +74,18 @@ private struct BaseStubsTest: BackendFeatures.BaseStubs {
 }
 #endif
 
+#if !DEBUG
+    @available(*, deprecated)
+#endif
 extension BackendFeatures.BaseStubs {
     fileprivate func todo(function: String = #function) -> Never {
         fatalError("\(Self.self): \(function) not implemented")
     }
 }
 
+#if !DEBUG
+    @available(*, deprecated)
+#endif
 extension BackendFeatures.BaseStubs {
     public func createScrollContainer(for child: Widget) -> Widget {
         todo()
