@@ -1,4 +1,4 @@
-import JavaKit
+import SwiftJava
 import AndroidKit
 
 @JavaClass(

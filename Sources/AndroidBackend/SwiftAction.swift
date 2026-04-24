@@ -1,4 +1,4 @@
-import JavaKit
+import SwiftJava
 
 /// A Java class that allows us to pass Swift `() -> Void` closures to Java code.
 @JavaClass("dev.swiftcrossui.androidbackend.SwiftAction")

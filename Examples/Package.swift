@@ -9,22 +9,22 @@ var exampleDependencies: [Target.Dependency] = [
 ]
 var hotReloadingDependencies: [Package.Dependency] = []
 
-// The Swift Bundler runtime requires Swift >=6.0
-#if compiler(>=6.0)
-    hotReloadingDependencies = [
-        .package(
-            url: "https://github.com/moreSwift/swift-bundler",
-            revision: "5d2ecbc11df78e56afeab0621c43d8e898dae98e"
-        )
-    ]
-    exampleDependencies.append(
-        .product(
-            name: "SwiftBundlerRuntime",
-            package: "swift-bundler",
-            condition: .when(platforms: [.macOS, .linux])
-        )
-    )
-#endif
+// // The Swift Bundler runtime requires Swift >=6.0
+// #if compiler(>=6.0)
+//     hotReloadingDependencies = [
+//         .package(
+//             url: "https://github.com/moreSwift/swift-bundler",
+//             revision: "5d2ecbc11df78e56afeab0621c43d8e898dae98e"
+//         )
+//     ]
+//     exampleDependencies.append(
+//         .product(
+//             name: "SwiftBundlerRuntime",
+//             package: "swift-bundler",
+//             condition: .when(platforms: [.macOS, .linux])
+//         )
+//     )
+// #endif
 
 let package = Package(
     name: "Examples",
