@@ -133,11 +133,11 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/swiftlang/swift-syntax.git",
-            from: "601.0.0"
+            "601.0.0"..<"604.0.0"
         ),
         .package(
             url: "https://github.com/stackotter/swift-macro-toolkit",
-            .upToNextMinor(from: "0.7.0")
+            .upToNextMinor(from: "0.9.0")
         ),
         .package(
             url: "https://github.com/stackotter/swift-image-formats",
@@ -170,11 +170,11 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/moreSwift/AndroidKit",
-            revision: "5825000272d7f65d94b2a4c7bb65a76ce6c668e1"
+            revision: "c4517cf574cbd203ee6549fb0997ed1ae2f3e459"
         ),
         .package(
-            url: "https://github.com/stackotter/swift-java",
-            revision: "fec4d95d17bfa019803c2d904e2d2e12194341c9"
+            url: "https://github.com/swiftlang/swift-java",
+            branch: "main"
         ),
         // .package(
         //     url: "https://github.com/stackotter/TermKit",
@@ -340,7 +340,7 @@ let package = Package(
                 "SwiftCrossUI",
                 "AndroidBackendShim",
                 "AndroidKit",
-                .product(name: "JavaKit", package: "swift-java"),
+                .product(name: "SwiftJava", package: "swift-java"),
             ],
             exclude: ["Kotlin"]
         ),

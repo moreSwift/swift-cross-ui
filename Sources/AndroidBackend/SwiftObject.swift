@@ -1,4 +1,4 @@
-import JavaKit
+import SwiftJava
 
 // Adapted from https://github.com/PureSwift/Android/blob/e980a12f6d7236bed32ff687b40dae2366ac8e91/Demo/app/src/main/swift/JavaRetainedValue.swift#L13
 /// Java class that retains a Swift value for the duration of its lifetime.
