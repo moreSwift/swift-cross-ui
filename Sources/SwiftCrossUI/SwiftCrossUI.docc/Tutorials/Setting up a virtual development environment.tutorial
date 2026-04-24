@@ -177,7 +177,6 @@
                 Download the installer ISO for your chosen Linux distribution. **Make sure it matches
                 the architecture of your host machine** (x64 on Intel-based Macs, arm64 on Apple
                 silicon).
-<!--                @Image(source: vm-01-02, alt: "A browser window on the Windows download page.")-->
             }
             
             @Step {
@@ -192,7 +191,7 @@
             
             @Step {
                 Click Linux.
-<!--                @Image(source: vm-01-05, alt: "A UTM window with the pointer hovering over the Windows button.")-->
+                @Image(source: vm-02-05, alt: "A UTM window with the pointer hovering over the Linux button.")
             }
             
             @Step {
@@ -200,17 +199,17 @@
                 
                 You can probably get away with the default settings here, but you can increase them
                 later if you need to.
-<!--                @Image(source: vm-01-06, alt: "A UTM window with the pointer hovering over the Continue button.")-->
+                @Image(source: vm-02-06, alt: "A UTM window with the pointer hovering over the Continue button.")
             }
             
             @Step {
                 Click Browse and select your downloaded ISO file.
-<!--                @Image(source: vm-01-07, alt: "A UTM window with the pointer hovering over the Open button in a file picker.")-->
+                @Image(source: vm-02-07, alt: "A UTM window with the pointer hovering over the Open button in a file picker.")
             }
             
             @Step {
                 Click Continue.
-<!--                @Image(source: vm-01-08, alt: "A UTM window with the pointer hovering over the Continue button.")-->
+                @Image(source: vm-02-08, alt: "A UTM window with the pointer hovering over the Continue button.")
             }
             
             @Step {
@@ -218,27 +217,27 @@
                 
                 Unless you plan on using this VM for more than just SwiftCrossUI app development,
                 you probably won't need more than 64 GB.
-<!--                @Image(source: vm-01-09, alt: "A UTM window with the pointer hovering over the Continue button.")-->
+                @Image(source: vm-02-09, alt: "A UTM window with the pointer hovering over the Continue button.")
             }
             
             @Step {
                 Select a shared folder if you want, then click Continue.
-<!--                @Image(source: vm-01-10, alt: "A UTM window with the pointer hovering over the Continue button.")-->
+                @Image(source: vm-02-10, alt: "A UTM window with the pointer hovering over the Continue button.")
             }
             
             @Step {
                 Name your VM, then click Save.
-<!--                @Image(source: vm-01-11, alt: "A UTM window with the pointer hovering over the Save button.")-->
+                @Image(source: vm-02-11, alt: "A UTM window with the pointer hovering over the Save button.")
             }
             
             @Step {
                 Click Run. A new window will open for the VM.
-<!--                @Image(source: vm-01-12, alt: "A UTM window with the pointer hovering over the Run button.")-->
+                @Image(source: vm-02-12, alt: "A UTM window with the pointer hovering over the Run button.")
             }
             
             @Step {
                 Install your Linux distro like you would on any other machine.
-<!--                @Image(source: vm-01-13, alt: "A UTM window running the Windows installer.")-->
+                @Image(source: vm-02-13, alt: "A UTM window running the Ubuntu Server installer.")
             }
             
             @Step {
@@ -259,8 +258,12 @@
             that it will automatically be mounted on boot.
             
             @Step {
-                Add these two lines to the bottom of `/etc/fstab`, replacing `USER` with your actual
-                username. (You can edit this file using `sudo nano /etc/fstab`.)
+                Add these two lines to the bottom of `/etc/fstab`, replacing `USER` with your Linux
+                username, and `HOST_USER_ID` with your **macOS** user ID. To find your user ID, run
+                `id -u` from macOS; if you're the only user on the machine, your ID will most likely
+                be 501.
+                
+                > Tip: You can edit `fstab` using `sudo nano /etc/fstab`. 
                 @Code(name: "/etc/fstab", file: vm-02-16)
             }
             
@@ -272,10 +275,7 @@
             
             @Step {
                 After rebooting, you should find your directory mounted at `~/utm`.
-                
-                > Tip: If you run into file ownership related issues, check your macOS user ID with
-                > the `id -u` command. If it isn't `501`, update the `bindfs` fstab rule accordingly
-                > and reboot again.
+                @Image(source: vm-02-18, alt: "A UTM window showing the \"utm\" directory in Nautilus.")
             }
             
             You're now ready to begin setting up a SwiftCrossUI development environment inside your

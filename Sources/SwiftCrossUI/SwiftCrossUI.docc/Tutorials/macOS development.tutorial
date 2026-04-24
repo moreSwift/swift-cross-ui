@@ -16,7 +16,7 @@
         }
         
         @Steps {
-            Installing Xcode from the App Store is dead simple.
+            Installing Xcode from the App Store is trivial:
             
             @Step {
                 Visit Xcode's [App Store page](https://apps.apple.com/us/app/xcode/id497799835?mt=12/)
@@ -83,19 +83,13 @@
                 Once installed, run `swift-bundler --version` as a quick sanity check.
                 @Code(name: "SwiftBundler.shell", file: swift-bundler-version.shell)
             }
-        }
-    }
-        
-    @Section(title: "Further steps") {
-        @ContentAndMedia {
-            If you're only using <doc:AppKitBackend> and <doc:UIKitBackend> when targeting Apple
-            platforms, then you're good to go.
             
-            If you'd like to test your app with <doc:GtkBackend> or <doc:Gtk3Backend> without leaving
-            your Mac, visit the backends' respective documentation pages for detailed dependency
-            installation instructions.
+            And that's it! If you're only using <doc:AppKitBackend> and <doc:UIKitBackend> when
+            targeting Apple platforms, then you're good to go.
+            
+            If you'd like to test your app with <doc:GtkBackend> or <doc:Gtk3Backend> without
+            leaving your Mac, visit the backends' respective documentation pages for detailed
+            dependency installation instructions.
         }
-        
-        @Steps {}
     }
 }
