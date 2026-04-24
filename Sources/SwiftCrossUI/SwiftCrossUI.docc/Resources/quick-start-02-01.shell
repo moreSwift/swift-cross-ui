@@ -1,0 +1,7 @@
+[~/]$ swift-bundler create HelloWorld --template SwiftCrossUI
+info: Creating package from the 'SwiftCrossUI' template
+info: Applying 'Base' template
+info: Applying 'SwiftCrossUI' template
+info: Updating indentation to 'spaces=4'
+info: Done in 0.47s. Package located at './HelloWorld'
+[~/]$ cd HelloWorld

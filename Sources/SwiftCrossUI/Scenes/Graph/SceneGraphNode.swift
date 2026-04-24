@@ -13,7 +13,7 @@ public protocol SceneGraphNode: AnyObject {
     /// Creates a node from a corresponding scene.
     ///
     /// Should perform initial setup of any widgets required to display the
-    /// scene (although ``SceneGraphNode/update(_:backend:environment:)`` is
+    /// scene (although ``SceneGraphNode/update(backend:environment:)`` is
     /// guaranteed to be called immediately after initialization).
     ///
     /// - Parameters:

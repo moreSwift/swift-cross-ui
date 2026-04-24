@@ -2,8 +2,8 @@ import Foundation
 
 /// A view that is scrollable when it would otherwise overflow available space.
 ///
-/// Use the ``View/frame(width:height:alignment:)`` modifier to constrain width
-/// or height if necessary.
+/// Use the ``View/frame(width:height:alignment:)-(Double?,_,_)`` modifier to
+/// constrain width or height if necessary.
 public struct ScrollView<Content: View>: TypeSafeView, View {
     public var body: VStack<Content>
     public var axes: Axis.Set

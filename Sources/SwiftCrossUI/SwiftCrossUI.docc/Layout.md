@@ -21,6 +21,6 @@
 
 ### Frame
 
-- ``View/frame(width:height:alignment:)``
-- ``View/frame(minWidth:idealWidth:maxWidth:minHeight:idealHeight:maxHeight:alignment:)``
+- ``View/frame(width:height:alignment:)-(Double?,_,_)``
+- ``View/frame(minWidth:idealWidth:maxWidth:minHeight:idealHeight:maxHeight:alignment:)-(Double?,_,_,_,_,_,_)``
 - ``Alignment``

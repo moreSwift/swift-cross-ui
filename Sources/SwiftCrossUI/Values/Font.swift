@@ -97,7 +97,7 @@ public struct Font: Hashable, Sendable {
 
     /// Overrides the font's point size.
     ///
-    /// - Parameter design: The font's new point size.
+    /// - Parameter pointSize: The font's new point size.
     /// - Returns: The updated font.
     public func pointSize(_ pointSize: Double) -> Font {
         var font = self

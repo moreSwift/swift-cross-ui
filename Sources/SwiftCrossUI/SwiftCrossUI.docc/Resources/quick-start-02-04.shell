@@ -1,0 +1,37 @@
+[~/]$ swift-bundler create HelloWorld --template SwiftCrossUI
+info: Creating package from the 'SwiftCrossUI' template
+info: Applying 'Base' template
+info: Applying 'SwiftCrossUI' template
+info: Updating indentation to 'spaces=4'
+info: Done in 0.47s. Package located at './HelloWorld'
+[~/]$ cd HelloWorld
+[~/HelloWorld/]$ swift-bundler run
+info: Loading package manifest
+info: Starting debug build
+...
+Build of product 'HelloWorld' complete! (93.60s)
+info: Bundling 'HelloWorld.app'
+info: Copying executable
+info: Creating 'PkgInfo'
+info: Creating 'Info.plist'
+info: Copying dynamic libraries
+info: Codesigning app bundle
+info: Done in 96.26s. App bundle located at './.build/bundler/apps/HelloWorld/HelloWorld.app'
+info: Running 'HelloWorld.app'
+[~/HelloWorld/]$ swift-bundler run --simulator "iPhone 14"
+info: Loading package manifest
+info: Starting debug build
+...
+Build Succeeded
+info: Bundling 'HelloWorld.app'
+info: Copying executable
+info: Creating 'PkgInfo'
+info: Creating 'Info.plist'
+info: Copying dynamic libraries
+info: Codesigning app bundle
+info: Done in 70.85s. App bundle located at './.build/bundler/apps/HelloWorld/HelloWorld.app'
+info: Running 'HelloWorld.app'
+info: Preparing simulator
+info: Installing app
+info: Opening Simulator
+info: Launching com.example.HelloWorld

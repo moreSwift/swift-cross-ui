@@ -1,7 +1,7 @@
 /// Controls how a window's resizing bounds relate to the resizability of the
 /// window's content.
 ///
-/// If you want to disable window resizing entirely, use ``View/windowResizeBehaviour(_:)``
+/// If you want to disable window resizing entirely, use ``View/windowResizeBehavior(_:)``
 /// which controls whether the enclosing window is user resizable.
 public enum WindowResizability: Sendable {
     /// SwiftCrossUI decides whether to use `contentSize` or `contentMinSize` depending
