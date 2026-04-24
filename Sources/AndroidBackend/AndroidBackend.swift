@@ -99,7 +99,11 @@ public final class AndroidBackend: AppBackend {
     /// The main activity. Set by ``entrypoint``.
     static var activity: Activity!
 
-    public init() {}
+    var helpers: AndroidBackendHelpers
+
+    public init() {
+        helpers = AndroidBackendHelpers(environment: Self.env.env)
+    }
 
     public func runMainLoop(
         _ callback: @escaping @MainActor () -> Void
@@ -136,17 +140,8 @@ public final class AndroidBackend: AppBackend {
     }
 
     public func size(ofWindow window: Window) -> SIMD2<Int> {
-        // let windowMetrics = Self.activity.getWindowManager().getCurrentWindowMetrics()
-        // let insets = windowMetrics.getWindowInsets()
-        //     .getInsetsIgnoringVisibility(JavaClass<WindowInsets.Type>())
-
-        let activity = Self.activity.javaHolder.object!
-        let cls = try! Self.env.getObjectClass(activity)
-        let getWidthMethod = try! Self.env.getMethodID(cls, "getWindowWidth", "()I")
-        let getHeightMethod = try! Self.env.getMethodID(cls, "getWindowHeight", "()I")
-        let width = Self.env.callIntMethod(activity, getWidthMethod, [])
-        let height = Self.env.callIntMethod(activity, getHeightMethod, [])
-        log("Size of window: \(width)x\(height)")
+        let width = Int(helpers.getWindowWidth(Self.activity))
+        let height = Int(helpers.getWindowHeight(Self.activity))
         return SIMD2(Int(width), Int(height))
     }
 
