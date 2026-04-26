@@ -18,6 +18,8 @@ The most conventional scene is ``WindowGroup``, but app menus are also scenes.
 - ``WindowGroup``
 - ``Window``
 - ``WindowResizability``
+- ``WindowInteractionBehavior``
+- ``SceneLaunchBehavior``
 
 ### Alerts
 

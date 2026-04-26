@@ -47,6 +47,9 @@
 - ``AlertAction``
 - ``AlertActionsBuilder``
 
+- ``EnvironmentValues/isPickerStyleSupported``
+- ``PickerSupportedAction``
+
 ### Custom environment values
 
 - ``EnvironmentKey``

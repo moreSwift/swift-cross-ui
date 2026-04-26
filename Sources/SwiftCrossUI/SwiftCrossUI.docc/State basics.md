@@ -31,4 +31,5 @@ For situations where you need data to trickle back up again, use ``Binding``
 - ``AppStorageValues``
 - ``AppStorageProvider``
 - ``DefaultAppStorageProvider``
+- ``UserDefaultsAppStorageProvider``
 - ``View/appStorageProvider(_:)``

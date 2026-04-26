@@ -23,3 +23,4 @@ Employ controls to receive user input.
 - ``MenuItemsBuilder``
 - ``ToggleStyle``
 - ``TextContentType``
+- ``DatePickerStyle``

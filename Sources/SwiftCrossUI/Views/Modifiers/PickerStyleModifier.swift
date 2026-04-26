@@ -1,4 +1,11 @@
 extension View {
+    /// Sets the picker style for views.
+    ///
+    /// - Parameter style: The picker style to use.
+    ///
+    /// ## See Also
+    ///
+    /// - ``PickerStyle``
     public func pickerStyle(_ style: any PickerStyle) -> some View {
         EnvironmentModifier(self) { environment in
             if !style.isSupported(backend: environment.backend) {

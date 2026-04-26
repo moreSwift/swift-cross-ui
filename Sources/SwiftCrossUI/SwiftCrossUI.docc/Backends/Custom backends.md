@@ -14,3 +14,4 @@ backends to be implemented in third-party packages.
 - ``MenuImplementationStyle``
 - ``DialogResult``
 - ``ResolvedMenu``
+- ``BackendPickerStyle``
