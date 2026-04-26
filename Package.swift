@@ -198,6 +198,14 @@ let package = Package(
                 .product(name: "ImageFormats", package: "swift-image-formats"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Mutex", package: "swift-mutex"),
+
+                // This import is purely required to fix a linker issue and a plugin build
+                // error that occur when building for a non-Android platform now that we've
+                // added the AndroidBackend. Providing the '--disable-experimental-prebuilts'
+                // flag when building SwiftCrossUI apps doesn't seem to be sufficient to fix
+                // the issues, even though I would've thought that was the effect that adding
+                // this dependency has.
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
             ],
             exclude: [
                 "Builders/ViewBuilder.swift.gyb",
@@ -339,8 +347,21 @@ let package = Package(
             dependencies: [
                 "SwiftCrossUI",
                 "AndroidBackendShim",
-                "AndroidKit",
-                .product(name: "SwiftJava", package: "swift-java"),
+
+                // These two dependencies have to be marked as only included on Android
+                // (even though this target is only used on Android) because SwiftPM requires
+                // every library product to only include dependencies matching the package's
+                // minimum platform requirements (even when not compiling said product)
+                .product(
+                    name: "AndroidKit",
+                    package: "AndroidKit",
+                    condition: .when(platforms: [.android])
+                ),
+                .product(
+                    name: "SwiftJava",
+                    package: "swift-java",
+                    condition: .when(platforms: [.android])
+                ),
             ],
             exclude: ["Kotlin"]
         ),
