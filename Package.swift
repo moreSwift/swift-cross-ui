@@ -1,4 +1,4 @@
-// swift-tools-version:6.1
+// swift-tools-version:5.9
 
 import CompilerPluginSupport
 import Foundation
@@ -26,8 +26,15 @@ if let version = getGtk4MinorVersion(), version >= 10 {
     gtkSwiftSettings.append(.define("GTK_4_10_PLUS"))
 }
 
+let androidBackendSupported: Bool
+#if compiler(>=6.2)
+    androidBackendSupported = true
+#else
+    androidBackendSupported = false
+#endif
+
 let env = ProcessInfo.processInfo.environment
-let defaultBackendDependencies: [Target.Dependency]
+var defaultBackendDependencies: [Target.Dependency]
 if let backend = env["SCUI_DEFAULT_BACKEND"] {
     defaultBackendDependencies = [.target(name: backend)]
 } else {
@@ -37,21 +44,22 @@ if let backend = env["SCUI_DEFAULT_BACKEND"] {
         defaultBackendDependencies = [
             .target(name: "AppKitBackend", condition: .when(platforms: [.macOS])),
             .target(name: "UIKitBackend", condition: .when(platforms: [.iOS, .tvOS, .macCatalyst, .visionOS])),
-            .target(
-                name: "AndroidBackend",
-                condition: .when(platforms: [.android])
-            ),
         ]
     #else
         defaultBackendDependencies = [
             .target(name: "WinUIBackend", condition: .when(platforms: [.windows])),
             .target(name: "GtkBackend", condition: .when(platforms: [.linux])),
+        ]
+    #endif
+
+    if androidBackendSupported {
+        defaultBackendDependencies += [
             .target(
                 name: "AndroidBackend",
                 condition: .when(platforms: [.android])
             ),
         ]
-    #endif
+    }
 }
 
 let hotReloadingEnabled: Bool
@@ -114,7 +122,6 @@ let package = Package(
         .library(name: "WinUIBackend", type: libraryType, targets: ["WinUIBackend"]),
         .library(name: "DefaultBackend", type: libraryType, targets: ["DefaultBackend"]),
         .library(name: "UIKitBackend", type: libraryType, targets: ["UIKitBackend"]),
-        .library(name: "AndroidBackend", type: libraryType, targets: ["AndroidBackend"]),
         .library(name: "Gtk", type: libraryType, targets: ["Gtk"]),
         .library(name: "Gtk3", type: libraryType, targets: ["Gtk3"]),
         .executable(name: "GtkExample", targets: ["GtkExample"]),
@@ -167,14 +174,6 @@ let package = Package(
         .package(
             url: "https://github.com/swhitty/swift-mutex",
             .upToNextMinor(from: "0.0.6")
-        ),
-        .package(
-            url: "https://github.com/moreSwift/AndroidKit",
-            revision: "c4517cf574cbd203ee6549fb0997ed1ae2f3e459"
-        ),
-        .package(
-            url: "https://github.com/swiftlang/swift-java",
-            branch: "main"
         ),
         // .package(
         //     url: "https://github.com/stackotter/TermKit",
@@ -342,6 +341,43 @@ let package = Package(
             swiftSettings: swiftSettings
         ),
 
+        // .target(
+        //     name: "CursesBackend",
+        //     dependencies: ["SwiftCrossUI", "TermKit"]
+        // ),
+        // .target(
+        //     name: "QtBackend",
+        //     dependencies: ["SwiftCrossUI", .product(name: "Qlift", package: "qlift")]
+        // ),
+        // .target(
+        //     name: "LVGLBackend",
+        //     dependencies: [
+        //         "SwiftCrossUI",
+        //         .product(name: "LVGL", package: "LVGLSwift"),
+        //         .product(name: "CLVGL", package: "LVGLSwift"),
+        //     ]
+        // ),
+    ]
+)
+
+// Add AndroidBackend if the Swift version is new enough
+if androidBackendSupported {
+    package.dependencies += [
+        .package(
+            url: "https://github.com/moreSwift/AndroidKit",
+            revision: "c4517cf574cbd203ee6549fb0997ed1ae2f3e459"
+        ),
+        .package(
+            url: "https://github.com/swiftlang/swift-java",
+            branch: "main"
+        ),
+    ]
+
+    package.products.append(
+        .library(name: "AndroidBackend", type: libraryType, targets: ["AndroidBackend"]),
+    )
+
+    package.targets += [
         .target(
             name: "AndroidBackend",
             dependencies: [
@@ -366,24 +402,8 @@ let package = Package(
             exclude: ["Kotlin"]
         ),
         .target(name: "AndroidBackendShim"),
-        // .target(
-        //     name: "CursesBackend",
-        //     dependencies: ["SwiftCrossUI", "TermKit"]
-        // ),
-        // .target(
-        //     name: "QtBackend",
-        //     dependencies: ["SwiftCrossUI", .product(name: "Qlift", package: "qlift")]
-        // ),
-        // .target(
-        //     name: "LVGLBackend",
-        //     dependencies: [
-        //         "SwiftCrossUI",
-        //         .product(name: "LVGL", package: "LVGLSwift"),
-        //         .product(name: "CLVGL", package: "LVGLSwift"),
-        //     ]
-        // ),
     ]
-)
+}
 
 if testGtk3Backend {
     package.targets.append(
