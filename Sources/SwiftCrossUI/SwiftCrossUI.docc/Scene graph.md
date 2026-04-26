@@ -4,6 +4,9 @@
 
 - ``SceneGraphNode``
 - ``WindowGroupNode``
+- ``WindowNode``
+- ``AlertSceneNode``
+- ``SceneNodeUpdateResult``
 - ``TupleScene2``
 - ``TupleScene3``
 - ``TupleScene4``

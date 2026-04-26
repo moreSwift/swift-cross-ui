@@ -216,11 +216,14 @@ method is preferred wherever possible.
 
 - ``ViewSize``
 - ``ViewLayoutResult``
+- ``ProposedViewSize``
 
 - ``AnyWidget``
 
 - ``PublishedMarkerProtocol``
 - ``DynamicProperty``
+- ``ObservableProperty``
+- ``SnapshottableProperty``
 
 - <doc:View-graph>
 - <doc:Scene-graph>

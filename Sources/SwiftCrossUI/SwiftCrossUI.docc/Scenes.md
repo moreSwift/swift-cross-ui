@@ -16,7 +16,12 @@ The most conventional scene is ``WindowGroup``, but app menus are also scenes.
 ### Windows
 
 - ``WindowGroup``
+- ``Window``
 - ``WindowResizability``
+
+### Alerts
+
+- ``AlertScene``
 
 ### Commands
 

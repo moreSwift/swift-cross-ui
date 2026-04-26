@@ -5,6 +5,7 @@
 - ``Environment``
 - ``EnvironmentValues``
 - ``EnvironmentKey``
+- ``Entry()``
 
 ### Layout
 
@@ -20,6 +21,15 @@
 
 - ``EnvironmentValues/revealFile``
 - ``RevealFileAction``
+
+- ``EnvironmentValues/dismiss``
+- ``DismissAction``
+
+- ``EnvironmentValues/dismissWindow``
+- ``DismissWindowAction``
+
+- ``EnvironmentValues/openWindow``
+- ``OpenWindowAction``
 
 - ``EnvironmentValues/chooseFileSaveDestination``
 - ``PresentFileSaveDialogAction``
@@ -40,3 +50,10 @@
 ### Custom environment values
 
 - ``EnvironmentKey``
+
+### Environment value types
+
+- ``AppPhase``
+- ``LineLimit``
+- ``ScenePhase``
+- ``MenuOrder``

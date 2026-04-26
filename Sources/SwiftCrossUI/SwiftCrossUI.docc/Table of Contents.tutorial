@@ -25,6 +25,14 @@
     @Resources {
         Explore more resources for SwiftCrossUI.
         
+        @Documentation(destination: "https://docs.swiftcrossui.dev/documentation/swiftcrossui/") {
+            Explore more resources for building apps in SwiftCrossUI.
+            
+            - <doc:View-fundamentals>
+            - <doc:Controls>
+            - <doc:State-basics>
+        }
+        
         @SampleCode(destination: "https://github.com/moreSwift/swift-cross-ui/tree/main/Examples") {
             View example SwiftCrossUI apps to get a feel for the library.
             

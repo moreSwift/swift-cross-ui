@@ -18,11 +18,13 @@ For situations where you need data to trickle back up again, use ``Binding``
 - ``State``
 - ``Binding``
 - ``ObservableObject``
+- ``ObservableObject()``
+- ``ObservationIgnored()``
 - ``Published``
 - ``Publisher``
 - ``Cancellable``
 
-## App Storage
+### App Storage
 
 - ``AppStorage``
 - ``AppStorageKey``

@@ -25,4 +25,6 @@ The main two view composition primitives are ``VStack``, for vertical layouts, a
 - ``ScrollView``
 - ``Axis``
 - ``ProgressView``
+- ``WebView``
+- ``GeometryReader``
 - ``AnyView``

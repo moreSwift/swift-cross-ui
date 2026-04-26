@@ -5,7 +5,7 @@
 ### Fonts
 
 - ``View/font(_:)``
-- ``View/bold()``
+- ``View/emphasized()``
 - ``Font``
 
 ### Color

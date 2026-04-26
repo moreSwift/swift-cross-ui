@@ -4,3 +4,4 @@
 
 - ``View/preference(key:value:)``
 - ``PreferenceValues``
+- ``ScenePreferenceValues``
