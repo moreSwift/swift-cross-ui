@@ -4,6 +4,10 @@ import SwiftCrossUI
 import AndroidKit
 import AndroidBackendShim
 
+// Many force tries are required for the Android backend but we don't really want them
+// anywhere else so just disable the lint rule at a file level.
+// swiftlint:disable force_try
+
 func log(_ message: String) {
     android_log(Int32(ANDROID_LOG_DEBUG.rawValue), "swift", message)
 }
