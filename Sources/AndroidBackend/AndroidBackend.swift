@@ -18,10 +18,9 @@ func log(_ message: String) {
 @MainActor
 @_cdecl("AndroidBackend_entrypoint")
 public func entrypoint(_ env: UnsafeMutablePointer<JNIEnv?>, _ object: jobject) {
-    let env = JNIEnvWrapper(env: env)
     AndroidBackend.env = env
 
-    let holder = JavaObjectHolder(object: object, environment: env.env)
+    let holder = JavaObjectHolder(object: object, environment: env)
     AndroidBackend.activity = Activity(javaHolder: holder)
 
     // Source: https://phatbl.at/2019/01/08/intercepting-stdout-in-swift.html
@@ -58,7 +57,11 @@ public func entrypoint(_ env: UnsafeMutablePointer<JNIEnv?>, _ object: jobject) 
         FileHandle.standardError.fileDescriptor
     )
 
-    main()
+    // Pass dummy arguments to application main function
+    let argv = UnsafeMutableBufferPointer<UnsafeMutablePointer<CChar>?>.allocate(capacity: 1)
+    argv[0] = nil
+
+    main(0, argv.baseAddress)
 }
 
 extension App {
@@ -80,13 +83,15 @@ public final class AndroidBackend: AppBackend {
     static let stdoutPipe = Pipe()
     static let stderrPipe = Pipe()
 
+    // TODO(stackotter): Dynamically determine the device class
     public let deviceClass = DeviceClass.phone
+
     public let defaultTableRowContentHeight = 0
     public let defaultTableCellVerticalPadding = 0
     public let defaultPaddingAmount = 10
     public let scrollBarWidth = 0
     public let requiresToggleSwitchSpacer = false
-    public let defaultToggleStyle = ToggleStyle.switch
+    public let defaultToggleStyle = ToggleStyle.checkbox
     public let requiresImageUpdateOnScaleFactorChange = false
     public let menuImplementationStyle = MenuImplementationStyle.menuButton
     public let canRevealFiles = false
@@ -98,21 +103,21 @@ public final class AndroidBackend: AppBackend {
     /// A reference used to keep the tickler alive.
     var tickler: MainRunLoopTickler?
 
-    /// The JNI environment. Set by ``entrypoint``.
-    static var env: JNIEnvWrapper!
+    /// The JNI environment pointer. Set by ``entrypoint``.
+    static var env: UnsafeMutablePointer<JNIEnv?>!
     /// The main activity. Set by ``entrypoint``.
     static var activity: Activity!
 
     var helpers: AndroidBackendHelpers
 
     public init() {
-        helpers = AndroidBackendHelpers(environment: Self.env.env)
+        helpers = AndroidBackendHelpers(environment: Self.env)
     }
 
     public func runMainLoop(
         _ callback: @escaping @MainActor () -> Void
     ) {
-        let tickler = MainRunLoopTickler(environment: Self.env.env)
+        let tickler = MainRunLoopTickler(environment: Self.env)
         tickler.start()
         self.tickler = tickler
 
@@ -122,19 +127,19 @@ public final class AndroidBackend: AppBackend {
     }
 
     public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
-        // TODO: Find out whether Android has a window abstraction like UIKit does.
+        // TODO(stackotter): Properly support multiple calls to createWindow
     }
 
     public func updateWindow(_ window: Window, environment: EnvironmentValues) {
-        // TODO: Update window theme?
+        // TODO(stackotter): Update window theme?
     }
 
     public func setCloseHandler(ofWindow window: Window, to action: @escaping () -> Void) {
-        // TODO: Set close handler?
+        // TODO(stackotter): Set close handler?
     }
 
     public func setTitle(ofWindow window: Window, to title: String) {
-        // TODO: Handle navigation titles.
+        // TODO(stackotter): Handle navigation titles.
     }
 
     public func setResizability(ofWindow window: Window, to resizable: Bool) {}
@@ -164,7 +169,10 @@ public final class AndroidBackend: AppBackend {
     public func setResizeHandler(
         ofWindow window: Window,
         to action: @escaping (_ newSize: SIMD2<Int>) -> Void
-    ) {}
+    ) {
+        // TODO(stackotter): Handle orientation changes and other changes such
+        //   as density changes
+    }
 
     public func show(window: Window) {
         log("Show window")
@@ -176,35 +184,34 @@ public final class AndroidBackend: AppBackend {
         _ submenus: [ResolvedMenu.Submenu],
         environment: EnvironmentValues
     ) {
-        // TODO: Register app menu items as shortcuts when we support keyboard
+        // TODO(stackotter): Register app menu items as shortcuts when we support keyboard
         //   shortcuts.
     }
 
     public func setIncomingURLHandler(to action: @escaping (Foundation.URL) -> Void) {
-        // TODO: Handle incoming URLs
+        // TODO(stackotter): Handle incoming URLs
     }
 
     public func runInMainThread(action: @escaping @MainActor () -> Void) {
-        // TODO: Jump to the right thread
         Task { @MainActor in
             action()
         }
     }
 
     public func computeRootEnvironment(defaultEnvironment: EnvironmentValues) -> EnvironmentValues {
-        // TODO: React to system theme
+        // TODO(stackotter): React to system theme
         defaultEnvironment
     }
 
     public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
-        // TODO: Listen for system theme changes
+        // TODO(stackotter): Listen for system theme changes
     }
 
     public func computeWindowEnvironment(
         window: Window,
         rootEnvironment: EnvironmentValues
     ) -> EnvironmentValues {
-        // TODO: Figure out if we'll ever need window-specific environment
+        // TODO(stackotter): Figure out if we'll ever need window-specific environment
         //   changes. Probably don't unless Android apps can support
         //   multi-windowing when external displays are connected, in which
         //   case we may need to handle per-window pixel density.
@@ -215,14 +222,14 @@ public final class AndroidBackend: AppBackend {
         of window: Window,
         to action: @escaping @Sendable @MainActor () -> Void
     ) {
-        // TODO: React to per-window environment changes. See
+        // TODO(stackotter): React to per-window environment changes. See
         //   computeWindowEnvironment
     }
 
     public func show(widget: Widget) {}
 
     public func createContainer() -> Widget {
-        RelativeLayout(Self.activity, environment: Self.env.env)
+        RelativeLayout(Self.activity, environment: Self.env)
             .as(AndroidKit.View.self)!
     }
 
@@ -270,7 +277,7 @@ public final class AndroidBackend: AppBackend {
 
     public func naturalSize(of widget: Widget) -> SIMD2<Int> {
         let measureSpecClass = try! JavaClass<AndroidKit.View.MeasureSpec>(
-            environment: Self.env.env
+            environment: Self.env
         )
         widget.measure(
             measureSpecClass.UNSPECIFIED,
@@ -286,16 +293,18 @@ public final class AndroidBackend: AppBackend {
         layoutParams.width = Int32(size.x)
         layoutParams.height = Int32(size.y)
         widget.setLayoutParams(layoutParams)
+
+        // TODO(stackotter): Use density-adaptive units everywhere
     }
 
     public func createButton() -> Widget {
-        AndroidKit.Button(Self.activity, environment: Self.env.env)
+        AndroidKit.Button(Self.activity, environment: Self.env)
             .as(AndroidKit.View.self)!
     }
 
     /// Converts a Swift String to a Java CharSequence.
     private func charSequence(from string: String) -> CharSequence {
-        let jstring = JavaString(string, environment: Self.env.env)
+        let jstring = JavaString(string, environment: Self.env)
         return jstring.as(CharSequence.self)!
     }
 
@@ -308,12 +317,12 @@ public final class AndroidBackend: AppBackend {
         // TODO(stackotter): Handle environment.
         let button = button.as(AndroidKit.Button.self)!
         button.setText(charSequence(from: label))
-        let listener = ViewOnClickListener(action: action, environment: Self.env.env)
+        let listener = ViewOnClickListener(action: action, environment: Self.env)
         button.setOnClickListener(listener.as(AndroidView.View.OnClickListener.self))
     }
 
     public func createTextField() -> Widget {
-        CustomEditText(activity: Self.activity, environment: Self.env.env)
+        CustomEditText(activity: Self.activity, environment: Self.env)
             .as(AndroidKit.View.self)!
     }
 
@@ -328,7 +337,7 @@ public final class AndroidBackend: AppBackend {
         let textField = textField.as(CustomEditText.self)!
         textField.as(AndroidKit.TextView.self)!.setHint(charSequence(from: placeholder))
         textField.setOnChange(
-            SwiftAction(environment: Self.env.env) {
+            SwiftAction(environment: Self.env) {
                 // Don't take textField as a weak reference, because otherwise it
                 // gets dropped immediately (it's not actually held anywhere; it's
                 // just a wrapper around a Java class instance). This doesn't cause
@@ -338,7 +347,7 @@ public final class AndroidBackend: AppBackend {
                 onChange(content)
             }
         )
-        textField.setOnSubmit(SwiftAction(environment: Self.env.env, action: onSubmit))
+        textField.setOnSubmit(SwiftAction(environment: Self.env, action: onSubmit))
     }
 
     public func setContent(ofTextField textField: Widget, to content: String) {
@@ -352,7 +361,7 @@ public final class AndroidBackend: AppBackend {
     }
 
     public func createTextView() -> Widget {
-        AndroidKit.TextView(Self.activity, environment: Self.env.env)
+        AndroidKit.TextView(Self.activity, environment: Self.env)
             .as(AndroidKit.View.self)!
     }
 
@@ -362,7 +371,7 @@ public final class AndroidBackend: AppBackend {
         environment: EnvironmentValues
     ) {
         let textView = textView.as(AndroidKit.TextView.self)!
-        let content = JavaString(content, environment: Self.env.env)
+        let content = JavaString(content, environment: Self.env)
         textView.setText(content.as(CharSequence.self))
         // TODO: Handle environment
     }

@@ -9,7 +9,7 @@ class SwiftObject(val pointerValue: Long) {
 
     external fun toStringSwift(): String
 
-    fun finalize() {
+    protected fun finalize() {
         finalizeSwift()
     }
 

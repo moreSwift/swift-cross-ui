@@ -15,7 +15,11 @@ class CustomEditText(
     init {
         setOnEditorActionListener { v, actionId, event ->
             Log.i("CustomEditText", "Editor action!")
-            if (actionId == EditorInfo.IME_ACTION_SEND) {
+            if (
+                actionId == EditorInfo.IME_ACTION_SEND
+                || actionId == EditorInfo.IME_ACTION_GO
+                || actionId == EditorInfo.IME_ACTION_SEARCH
+            ) {
                 Log.i("CustomEditText", "Submit")
                 onSubmit?.call()
                 true
