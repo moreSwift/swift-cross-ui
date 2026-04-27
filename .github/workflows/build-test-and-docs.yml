@@ -99,7 +99,7 @@ jobs:
 
             buildtarget () {
               # Use the same derived data path as DocC compilation so that we don't duplicate work.
-              xcodebuild -derivedDataPath /tmp/data -skipMacroValidation -scheme "$1" -destination "id=$deviceid" build | xcbeautify --renderer github-actions
+              xcodebuild -derivedDataPath /tmp/data -skipMacroValidation -scheme "$1" -destination "id=$deviceid" -usePackageSupportBuiltinSCM build | xcbeautify --renderer github-actions
             }
 
             buildtarget SwiftCrossUI
@@ -163,7 +163,7 @@ jobs:
         set -uxo pipefail
         buildtarget () {
           # Use the same derived data path as DocC compilation so that we don't duplicate work.
-          xcodebuild -derivedDataPath /tmp/data -skipMacroValidation -scheme "$1" -destination "variant=Mac Catalyst,arch=arm64,platform=macOS" build | xcbeautify --renderer github-actions
+          xcodebuild -derivedDataPath /tmp/data -skipMacroValidation -scheme "$1" -destination "variant=Mac Catalyst,arch=arm64,platform=macOS" -usePackageSupportBuiltinSCM build | xcbeautify --renderer github-actions
         }
 
         buildtarget SwiftCrossUI
