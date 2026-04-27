@@ -11,7 +11,7 @@ class MainRunLoopTickler: JavaObject {
 }
 
 @JavaImplementation("dev.swiftcrossui.androidbackend.MainRunLoopTickler")
-extension ViewOnClickListener {
+extension MainRunLoopTickler {
     @JavaMethod
     func getDefaultDelay() -> Int32 {
         50
