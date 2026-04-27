@@ -3,7 +3,7 @@ disabled_rules:
   - identifier_name
   - switch_case_alignment
   - cyclomatic_complexity # Too many false alarms for enum conversion switch statements
-  - redundant_optional_initialization
+  - implicit_optional_initialization
   - closure_parameter_position
   - opening_brace
   - nesting # Sometimes it just makes sense to nest 2 levels deep
