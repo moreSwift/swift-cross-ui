@@ -26,14 +26,32 @@ if let version = getGtk4MinorVersion(), version >= 10 {
     gtkSwiftSettings.append(.define("GTK_4_10_PLUS"))
 }
 
+let invokedByXcodebuild: Bool
+#if os(macOS)
+    import Darwin
+
+    let ppid = getppid()
+    let PROC_PIDPATHINFO_MAXSIZE = 4096
+    let pathBuffer = UnsafeMutablePointer<UInt8>.allocate(capacity: PROC_PIDPATHINFO_MAXSIZE)
+    proc_pidpath(ppid, UnsafeMutableRawPointer(pathBuffer), UInt32(PROC_PIDPATHINFO_MAXSIZE))
+    let parentProcessPath = String(cString: pathBuffer)
+    let parentProcessName = URL(fileURLWithPath: parentProcessPath).lastPathComponent
+    invokedByXcodebuild = parentProcessName == "xcodebuild"
+#else
+    invokedByXcodebuild = false
+#endif
+
+let env = ProcessInfo.processInfo.environment
 let androidBackendSupported: Bool
 #if compiler(>=6.2)
-    androidBackendSupported = true
+    // xcodebuild can't handle non-Apple platform conditional dependencies for some weird
+    // reason, so we have to remove AndroidBackend when we detect that we're being built
+    // by xcodebuild.
+    androidBackendSupported = !invokedByXcodebuild
 #else
     androidBackendSupported = false
 #endif
 
-let env = ProcessInfo.processInfo.environment
 var defaultBackendDependencies: [Target.Dependency]
 if let backend = env["SCUI_DEFAULT_BACKEND"] {
     defaultBackendDependencies = [.target(name: backend)]
