@@ -244,9 +244,6 @@ let package = Package(
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .target(name: "AppKitBackend", condition: .when(platforms: [.macOS])),
-                .product(
-                    name: "ImageFormats", package: "swift-image-formats",
-                    moduleAliases: ["ImageFormats": "Asdf"], condition: .when(platforms: [.macOS])),
             ]
         ),
         .target(name: "SwiftCrossUIMetadataSupport"),
