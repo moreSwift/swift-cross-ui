@@ -1,23 +1,6 @@
 {
-  "originHash" : "2eca8fb26a837179d0d3305169c3daa1d550d1f7a81812f07c59732b4cbb8f21",
+  "originHash" : "b16f5ed87f8ee3560e03aa22270b97057512d43da2e496e2fa272f048bba8a39",
   "pins" : [
-    {
-      "identity" : "androidkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/moreSwift/AndroidKit",
-      "state" : {
-        "revision" : "c4517cf574cbd203ee6549fb0997ed1ae2f3e459"
-      }
-    },
-    {
-      "identity" : "javalang",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/PureSwift/JavaLang.git",
-      "state" : {
-        "branch" : "master",
-        "revision" : "1b7320afd8d40a669422ee61d5335ae6d647dce5"
-      }
-    },
     {
       "identity" : "jpeg",
       "kind" : "remoteSourceControl",
@@ -25,15 +8,6 @@
       "state" : {
         "revision" : "a27e47f49479993b2541bc5f5c95d9354ed567a0",
         "version" : "1.0.2"
-      }
-    },
-    {
-      "identity" : "kotlin",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/PureSwift/Kotlin.git",
-      "state" : {
-        "branch" : "master",
-        "revision" : "88a9bb94d156ef95d177bc6a65580dfacdda4b13"
       }
     },
     {
@@ -55,33 +29,6 @@
       }
     },
     {
-      "identity" : "swift-android-native",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swift-android-sdk/swift-android-native.git",
-      "state" : {
-        "branch" : "main",
-        "revision" : "610ff27be7ce866f4a6a5ed4735d6f5339e27dd9"
-      }
-    },
-    {
-      "identity" : "swift-argument-parser",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-argument-parser",
-      "state" : {
-        "revision" : "626b5b7b2f45e1b0b1c6f4a309296d1d21d7311b",
-        "version" : "1.7.1"
-      }
-    },
-    {
-      "identity" : "swift-collections",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-collections",
-      "state" : {
-        "revision" : "6675bc0ff86e61436e615df6fc5174e043e57924",
-        "version" : "1.4.1"
-      }
-    },
-    {
       "identity" : "swift-cwinrt",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/moreSwift/swift-cwinrt",
@@ -95,26 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stackotter/swift-image-formats",
       "state" : {
-        "revision" : "2e5dc1ead747afab9fd517d81316d961969e3610",
-        "version" : "0.3.3"
-      }
-    },
-    {
-      "identity" : "swift-java",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swiftlang/swift-java",
-      "state" : {
-        "branch" : "main",
-        "revision" : "de257ec1ad4a4480b899cf45e7761cf16f526307"
-      }
-    },
-    {
-      "identity" : "swift-java-jni-core",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swiftlang/swift-java-jni-core",
-      "state" : {
-        "branch" : "main",
-        "revision" : "b440a0be98381550cf189c903782e817619ffa05"
+        "revision" : "d735e0ed3d4a4aed50f4042494e7c769b5b70229",
+        "version" : "0.5.0"
       }
     },
     {
@@ -145,30 +74,12 @@
       }
     },
     {
-      "identity" : "swift-subprocess",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swiftlang/swift-subprocess.git",
-      "state" : {
-        "revision" : "13d087685b95d64d6aac9b94500d347bbe84c39b",
-        "version" : "0.4.0"
-      }
-    },
-    {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax",
       "state" : {
         "revision" : "9de99a78f099e59caf2b2beec65a4c45d54b2081",
         "version" : "603.0.1"
-      }
-    },
-    {
-      "identity" : "swift-system",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-system",
-      "state" : {
-        "revision" : "7c6ad0fc39d0763e0b699210e4124afd5041c5df",
-        "version" : "1.6.4"
       }
     },
     {
