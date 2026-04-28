@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:5.10
 
 import CompilerPluginSupport
 import Foundation
@@ -217,8 +217,8 @@ let package = Package(
                 .product(name: "Mutex", package: "swift-mutex"),
 
                 // This import is purely required to fix a linker issue and a plugin build
-                // error that occur when building for a non-Android platform now that we've
-                // added the AndroidBackend. Providing the '--disable-experimental-prebuilts'
+                // error that occur on macOS when building for non-Android platforms now that
+                // we've added the AndroidBackend. Providing the '--disable-experimental-prebuilts'
                 // flag when building SwiftCrossUI apps doesn't seem to be sufficient to fix
                 // the issues, even though I would've thought that was the effect that adding
                 // this dependency has.
@@ -375,7 +375,7 @@ let package = Package(
     ]
 )
 
-// Add AndroidBackend if the Swift version is new enough
+// Add AndroidBackend if the Swift version is new enough and we're not using xcodebuild
 if androidBackendSupported {
     package.dependencies += [
         .package(
