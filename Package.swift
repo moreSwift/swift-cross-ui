@@ -166,7 +166,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/stackotter/swift-image-formats",
-            .upToNextMinor(from: "0.3.3")
+            .upToNextMinor(from: "0.5.0")
         ),
         .package(
             url: "https://github.com/moreSwift/swift-windowsappsdk",

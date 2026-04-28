@@ -1,12 +1,20 @@
 {
-  "originHash" : "114cc6acab31e35145137abf6fea62a5c29bafd55e5dc0f14de3398f4be851a6",
   "pins" : [
     {
       "identity" : "androidkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/moreSwift/AndroidKit",
       "state" : {
-        "revision" : "5825000272d7f65d94b2a4c7bb65a76ce6c668e1"
+        "revision" : "c4517cf574cbd203ee6549fb0997ed1ae2f3e459"
+      }
+    },
+    {
+      "identity" : "javalang",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/PureSwift/JavaLang.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "1b7320afd8d40a669422ee61d5335ae6d647dce5"
       }
     },
     {
@@ -16,6 +24,15 @@
       "state" : {
         "revision" : "a27e47f49479993b2541bc5f5c95d9354ed567a0",
         "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "kotlin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/PureSwift/Kotlin.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "88a9bb94d156ef95d177bc6a65580dfacdda4b13"
       }
     },
     {
@@ -37,6 +54,15 @@
       }
     },
     {
+      "identity" : "swift-android-native",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-android-sdk/swift-android-native.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "610ff27be7ce866f4a6a5ed4735d6f5339e27dd9"
+      }
+    },
+    {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser",
@@ -52,6 +78,15 @@
       "state" : {
         "revision" : "45a7b500c24e7243da7b02e19cf436d0107a0c1b",
         "version" : "0.2.0"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections",
+      "state" : {
+        "revision" : "6675bc0ff86e61436e615df6fc5174e043e57924",
+        "version" : "1.4.1"
       }
     },
     {
@@ -86,16 +121,26 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stackotter/swift-image-formats",
       "state" : {
-        "revision" : "2e5dc1ead747afab9fd517d81316d961969e3610",
-        "version" : "0.3.3"
+        "revision" : "d735e0ed3d4a4aed50f4042494e7c769b5b70229",
+        "version" : "0.5.0"
       }
     },
     {
       "identity" : "swift-java",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stackotter/swift-java",
+      "location" : "https://github.com/swiftlang/swift-java",
       "state" : {
-        "revision" : "fec4d95d17bfa019803c2d904e2d2e12194341c9"
+        "branch" : "main",
+        "revision" : "e7e9ba0cccee75be776fb666881200fdd85c7f2d"
+      }
+    },
+    {
+      "identity" : "swift-java-jni-core",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-java-jni-core",
+      "state" : {
+        "branch" : "main",
+        "revision" : "b440a0be98381550cf189c903782e817619ffa05"
       }
     },
     {
@@ -112,8 +157,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stackotter/swift-macro-toolkit",
       "state" : {
-        "revision" : "d319bcc2586f7dbc6a09c05792105078263f1ed3",
-        "version" : "0.7.2"
+        "revision" : "d6ed555bb83c9f21a292e9769952e8f52610a6e2",
+        "version" : "0.9.0"
       }
     },
     {
@@ -126,12 +171,21 @@
       }
     },
     {
+      "identity" : "swift-subprocess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-subprocess.git",
+      "state" : {
+        "revision" : "13d087685b95d64d6aac9b94500d347bbe84c39b",
+        "version" : "0.4.0"
+      }
+    },
+    {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax.git",
       "state" : {
-        "revision" : "f99ae8aa18f0cf0d53481901f88a0991dc3bd4a2",
-        "version" : "601.0.1"
+        "revision" : "9de99a78f099e59caf2b2beec65a4c45d54b2081",
+        "version" : "603.0.1"
       }
     },
     {
@@ -207,5 +261,5 @@
       }
     }
   ],
-  "version" : 3
+  "version" : 2
 }
