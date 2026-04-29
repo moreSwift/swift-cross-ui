@@ -1,4 +1,14 @@
 import UIKit
+import SwiftCrossUI
+
+class CustomSplitViewController: UISplitViewController {
+    override func touchesBegan(
+        _ touches: Set<UITouch>,
+        with event: UIEvent?
+    ) {
+        print("Touched split view controller")
+    }
+}
 
 #if os(iOS) || targetEnvironment(macCatalyst)
     final class SplitWidget: WrapperControllerWidget<UISplitViewController>,
@@ -23,6 +33,17 @@ import UIKit
                     splitWidget.hasCalledResizeHandler = true
                 }
             }
+
+            override func touchesBegan(
+                _ touches: Set<UITouch>,
+                with event: UIEvent?
+            ) {
+                print("Touched column view")
+                print(bounds)
+                print(subviews[0].bounds)
+                print("Subview:", ObjectIdentifier(subviews[0]))
+                print("ColumnView:", ObjectIdentifier(self))
+            }
         }
 
         private final class ColumnWidget: ContainerWidget {
@@ -30,6 +51,21 @@ import UIKit
 
             override func loadView() {
                 view = columnView
+            }
+
+            override func touchesBegan(
+                _ touches: Set<UITouch>,
+                with event: UIEvent?
+            ) {
+                print("Touched column widget")
+                print(children)
+            }
+
+            override init(child: some WidgetProtocol) {
+                super.init(child: child)
+            }
+
+            override func viewDidLoad() {
             }
         }
 
@@ -55,6 +91,7 @@ import UIKit
 
         init(sidebarWidget: some WidgetProtocol, mainWidget: some WidgetProtocol) {
             // UISplitViewController requires its children to be controllers, not views
+            print("Adding sidebar widget:", ObjectIdentifier(sidebarWidget))
             sidebarContainer = ColumnWidget(child: sidebarWidget)
             mainContainer = ColumnWidget(child: mainWidget)
 
@@ -75,6 +112,7 @@ import UIKit
         }
 
         override func viewDidLoad() {
+            print("Constraining \(ObjectIdentifier(sidebarContainer.view)) and \(ObjectIdentifier(sidebarContainer.child.view))")
             NSLayoutConstraint.activate([
                 sidebarContainer.view.leadingAnchor.constraint(
                     equalTo: sidebarContainer.child.view.leadingAnchor
@@ -111,11 +149,6 @@ import UIKit
             leadingChild: any WidgetProtocol,
             trailingChild: any WidgetProtocol
         ) -> any WidgetProtocol {
-            precondition(
-                UIDevice.current.userInterfaceIdiom != .phone,
-                "NavigationSplitView is currently unsupported on iPhone and iPod touch."
-            )
-
             return SplitWidget(sidebarWidget: leadingChild, mainWidget: trailingChild)
         }
 
@@ -125,6 +158,8 @@ import UIKit
         ) {
             let splitWidget = splitView as! SplitWidget
             splitWidget.resizeHandler = action
+
+            // UIApplication.shared.keyWindow!.rootViewController = splitView.controller
         }
 
         public func sidebarWidth(ofSplitView splitView: Widget) -> Int {
@@ -140,6 +175,13 @@ import UIKit
             let splitWidget = splitView as! SplitWidget
             splitWidget.child.minimumPrimaryColumnWidth = CGFloat(minimumWidth)
             splitWidget.child.maximumPrimaryColumnWidth = CGFloat(maximumWidth)
+        }
+
+        public func visibleColumns(
+            ofSplitView splitView: Widget
+        ) -> Set<NavigationSplitViewColumn> {
+            // TODO(stackotter): Make a proper implementation
+            [.sidebar]
         }
     }
 #else
@@ -167,6 +209,12 @@ import UIKit
             minimum minimumWidth: Int,
             maximum maximumWidth: Int
         ) {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func visibleColumns(
+            ofSplitView splitView: Widget
+        ) -> Set<NavigationSplitViewColumn> {
             fatalError("\(Self.self): \(#function) not implemented")
         }
     }
