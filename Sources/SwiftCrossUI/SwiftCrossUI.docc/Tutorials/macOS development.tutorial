@@ -41,7 +41,7 @@
             @Step {
                 Unzip the `.xip` file.
                 
-                The Finder works fine in a pinch, but we recommend using
+                Archive Utility works fine in a pinch, but we recommend using
                 [unxip](https://github.com/saagarjha/unxip) instead; it's faster and it doesn't use
                 temporary storage on your internal drive (which is useful if you're low on storage).
             }
