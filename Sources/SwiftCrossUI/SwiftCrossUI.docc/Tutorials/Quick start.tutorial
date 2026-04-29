@@ -100,7 +100,7 @@
     @Section(title: "All done!") {
         You're good to go! If you make something cool with SwiftCrossUI, let us know so we can add
         your project to our showcase! And be sure to join the [Discord server](https://moreswift.dev/discord)
-        to get all the juicy details on what we're up to.
+        to get all the details on what we're up to.
         
         @Steps {}
     }

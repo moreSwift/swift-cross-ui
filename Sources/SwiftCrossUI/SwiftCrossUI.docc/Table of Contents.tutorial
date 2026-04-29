@@ -26,7 +26,7 @@
         Explore more resources for SwiftCrossUI.
         
         @Forums(destination: "https://moreswift.dev/discord") {
-            Join the moreSwift Discord server for all the juicy details on what we're up to.
+            Join the moreSwift Discord server for all the details on what we're up to.
         }
         
         @Documentation(destination: "https://docs.swiftcrossui.dev/documentation/swiftcrossui/") {
