@@ -29,9 +29,10 @@
                 
                 Each backend has different requirements. In this guide we'll use
                 <doc:DefaultBackend> which uses <doc:AppKitBackend> on macOS, <doc:GtkBackend> on
-                Linux, <doc:WinUIBackend> on Windows, and <doc:UIKitBackend> on iOS/tvOS. Click
-                through the backend relevant to your machine for detailed installation requirements.
-                <doc:AppKitBackend> and <doc:UIKitBackend> have no system dependencies.
+                Linux, <doc:WinUIBackend> on Windows, and <doc:UIKitBackend> on iOS/tvOS/visionOS.
+                Click through the backend relevant to your machine for detailed installation
+                requirements. <doc:AppKitBackend> and <doc:UIKitBackend> have no system
+                dependencies.
             }
             
             @Step {
@@ -79,7 +80,7 @@
             
             @Step {
                 If you're on macOS, you can provide the `--device` or `--simulator` options to run
-                the app on an iOS or tvOS device or simulator.
+                the app on an iOS, tvOS, or visionOS device or simulator.
                 
                 @Code(name: "CreateProject.shell", file: quick-start-02-04.shell) {
                     @Image(source: quick-start-02-04-preview, alt: "An iPhone simulator window containing the text \"Hello, World!\".")

@@ -69,7 +69,7 @@ compile time while the later is only required at runtime.
             var body: some Scene {
                 WindowGroup {
                     Text("Hello, World!")
-                    .padding()
+                        .padding()
                 }
             }
         }

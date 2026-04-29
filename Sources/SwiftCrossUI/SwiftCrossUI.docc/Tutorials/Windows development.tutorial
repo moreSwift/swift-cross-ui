@@ -48,7 +48,13 @@
             }
             
             @Step {
-                Build Swift Bundler for release.
+                Build Swift Bundler for debugging.
+                
+                Building Swift Bundler for release is extremely memory-intensive on Windows and
+                likely to fail on lower memory configurations, and since Swift Bundler is mostly
+                constrained by IO and external processes, there isn't much gain to be had from
+                release optimizations. We recommend building for debugging on Windows for everyday
+                use.
                 @Code(name: "SwiftBundler.shell", file: windows-02-02.shell)
             }
             

@@ -4,7 +4,7 @@
     }
     
     @Chapter(name: "Quick start") {
-        Create _truly_ cross-platform apps that use native UI frameworks.
+        Create _truly_ cross-platform apps that are native everywhere.
         @TutorialReference(tutorial: "doc:Quick-start")
     }
     
@@ -23,7 +23,7 @@
     }
     
     @Resources {
-        Explore more resources for SwiftCrossUI.
+        Explore more SwiftCrossUI resources.
         
         @Forums(destination: "https://moreswift.dev/discord") {
             Join the moreSwift Discord server for all the details on what we're up to.

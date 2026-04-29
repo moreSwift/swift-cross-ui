@@ -10,7 +10,7 @@ system.
 ## Overview
 
 The beauty of SwiftCrossUI is that you can write your app once and have it look native everywhere.
-For this reason I recommend using DefaultBackend unless you've got particular constraints. It uses
+For this reason we recommend using DefaultBackend unless you have particular constraints. It uses
 <doc:AppKitBackend> on macOS, <doc:WinUIBackend> on Window, <doc:GtkBackend> on Linux, and
 <doc:UIKitBackend> on iOS/tvOS.
 
@@ -63,7 +63,7 @@ For this reason I recommend using DefaultBackend unless you've got particular co
             var body: some Scene {
                 WindowGroup {
                     Text("Hello, World!")
-                    .padding()
+                        .padding()
                 }
             }
         }

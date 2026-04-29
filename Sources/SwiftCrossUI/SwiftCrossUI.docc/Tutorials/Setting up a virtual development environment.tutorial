@@ -22,7 +22,7 @@
         
         @Steps {
             @Step {
-                Install UTM from [their website](https://mac.getutm.app/).
+                Install UTM from [its website](https://mac.getutm.app/).
             }
                 
             @Step {
@@ -170,7 +170,7 @@
         
         @Steps {
             @Step {
-                Install UTM from [their website](https://mac.getutm.app/).
+                Install UTM from [its website](https://mac.getutm.app/).
             }
                 
             @Step {

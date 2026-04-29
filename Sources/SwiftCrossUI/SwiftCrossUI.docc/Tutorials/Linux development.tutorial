@@ -34,7 +34,7 @@
             > [`xtremekforever`'s post on the Swift Forums](https://forums.swift.org/t/running-swift-on-unsupported-distributions/71741).
             > It contains a table that tells you which distribution to select in Swiftly, or in the
             > swift.org downloads section, in order to maximize the chance of things working on your
-            > chosen distribution. The best distribution to download for isn't always the most
+            > chosen distribution. The best distribution to download isn't always the most
             > intuitive.
         }
     }

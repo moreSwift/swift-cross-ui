@@ -1,6 +1,6 @@
 # GtkBackend
 
-SwiftCrossUI's native Linux backend built on top of Gtk4.
+SwiftCrossUI's native Linux backend built on top of Gtk 4.
 
 @Metadata {
     @TitleHeading("Backend")
@@ -13,10 +13,10 @@ While Gtk isn't the preferred UI framework on every Linux distro, it's the close
 SwiftCrossUI has to a native Linux backend for now. The Qt backend may be brought back to life at
 some point to cover the rest of Linux distros.
 
-For targetting older, pre-Gtk4 Linux distros, see the secondary <doc:Gtk3Backend>.
+For targetting older, pre-Gtk-4 Linux distros, see the secondary <doc:Gtk3Backend>.
 
 This backend supports Linux, macOS, and Windows, but its support for macOS has a few known issues
-worse due to underlying Gtk issues (and its support for Windows isn't well tested).
+due to underlying bugs in Gtk (and its support for Windows isn't well tested).
 
 ## System dependencies
 
@@ -58,7 +58,7 @@ $ brew install pkg-config gtk4
 
 If you don't have Homebrew, installation instructions can be found at [brew.sh](https://brew.sh).
 
-It should also be possible to use `gtk4` installed via MacPorts, but I have not tested that.
+It should also be possible to use `gtk4` installed via MacPorts, but we have not tested that.
 
 If you run into errors related to `libffi` or `FFI` when trying to build a SwiftCrossUI project with
 `GtkBackend`, which can occur when certain older versions of the Xcode Command Line Tools are
@@ -206,7 +206,7 @@ section.
             var body: some Scene {
                 WindowGroup {
                     Text("Hello, World!")
-                    .padding()
+                        .padding()
                 }
             }
         }

@@ -51,7 +51,7 @@ included on all Macs.
             var body: some Scene {
                 WindowGroup {
                     Text("Hello, World!")
-                    .padding()
+                        .padding()
                 }
             }
         }

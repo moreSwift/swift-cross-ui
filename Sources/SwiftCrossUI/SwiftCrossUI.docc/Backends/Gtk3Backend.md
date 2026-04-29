@@ -14,8 +14,8 @@ significantly worse than <doc:GtkBackend>'s (due to underlying Gtk3 issues). Eve
 recommended to use <doc:GtkBackend> over Gtk3Backend where possible.
 
 > Warning: Non-Linux Gtk3Backend support is not a priority of this backend, and should only be used
-during development (e.g. to test your Linux UI natively on a Mac). There are multiple better choices
-of backend available on each non-Linux platform.
+> during development (e.g. to test your Linux UI natively on a Mac). There are multiple better
+> choices of backend available on each non-Linux platform.
 
 ## System dependencies
 
@@ -49,7 +49,7 @@ $ brew install pkg-config gtk+3
 
 If you don't have Homebrew, installation instructions can be found at [brew.sh](https://brew.sh).
 
-It should also be possible to use `gtk+3` installed via MacPorts, but I have not tested that.
+It should also be possible to use `gtk+3` installed via MacPorts, but we have not tested that.
 
 ### Windows
 
@@ -105,7 +105,7 @@ any issues you faced and update this documentation.
             var body: some Scene {
                 WindowGroup {
                     Text("Hello, World!")
-                    .padding()
+                        .padding()
                 }
             }
         }
