@@ -11,7 +11,8 @@
 - 7\. [Code formatting](#7-code-formatting)
 - 8\. [Comments](#8-comments)
 - 9\. [Documentation](#9-documentation)
-  - 9.5\. [Documentation formatting](#95-documentation-formatting)
+  - 9.5\. [Previewing documentation](#96-previewing-documentation)
+  - 9.6\. [Documentation formatting](#95-documentation-formatting)
 - 10\. [Referencing/attribution](#10-referencingattribution)
 
 ## 1. Environment setup
@@ -160,7 +161,20 @@ moreSwift’s projects use DocC to document code, and to author documentation ar
 
 If using Xcode, pressing option+cmd+/ generates a template documentation comment for the declaration that your cursor is currently on. If using another code editor with Sourcekit LSP, similar functionality is generally available as a code action.
 
-### 9.5. Documentation formatting
+### 9.5. Previewing documentation
+
+To preview documentation, run `./Scripts/preview_docs.sh` from the root of the repository.
+
+```sh
+# Preview docs (builds SwiftCrossUI first to obtain symbol graphs, and then
+# previews Sources/SwiftCrossUI/SwiftCrossUI.docc)
+./Scripts/preview_docs.sh
+
+# Preview docs without symbol graphs (faster if just working on articles/tutorials)
+SKIP_SYMBOL_GRAPHS=1 ./Scripts/preview_docs.sh
+```
+
+### 9.6. Documentation formatting
 
 1. Documentations comments should be punctuated as proper sentences (which generally means ending with a period).
 2. Use sentence case
