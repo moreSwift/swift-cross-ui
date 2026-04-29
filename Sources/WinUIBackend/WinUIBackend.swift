@@ -6,7 +6,8 @@ import WinAppSDK
 import WinSDK
 import WinUI
 import WinUIInterop
-import WindowsFoundation
+@preconcurrency import WindowsFoundation
+import Mutex
 
 // Many force tries are required for the WinUI backend but we don't really want them
 // anywhere else so just disable the lint rule at a file level.
@@ -20,11 +21,17 @@ extension App {
     }
 }
 
-class WinUIApplication: SwiftApplication {
-    static var callback: ((WinUIApplication) -> Void)?
+class WinUIApplication: SwiftApplication, @unchecked Sendable {
+    static let callback = Mutex<(@MainActor (WinUIApplication) -> Void)?>(nil)
 
     override func onLaunched(_ args: WinUI.LaunchActivatedEventArgs) {
-        Self.callback?(self)
+        Self.callback.withLock { callback in
+            // We can't explicitly hop to the main actor because we haven't set up
+            // our WinUI MainActor fix yet.
+            MainActor.assumeIsolated {
+                callback?(self)
+            }
+        }
     }
 }
 
@@ -98,7 +105,7 @@ public final class WinUIBackend:
         var textFieldChangeActions: [ObjectIdentifier: (String) -> Void] = [:]
         var textFieldSubmitActions: [ObjectIdentifier: () -> Void] = [:]
     }
-    private var rootEnvironmentChangeHandler: (() -> Void)?
+    private var rootEnvironmentChangeHandler: (@Sendable @MainActor () -> Void)?
 
     var internalState: InternalState
     nonisolated(unsafe) private var dispatcherQueue: WinAppSDK.DispatcherQueue?
@@ -140,30 +147,34 @@ public final class WinUIBackend:
         // Ensure that the app's windows adapt to DPI changes at runtime
         SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)
 
-        WinUIApplication.callback = { application in
-            // Toggle Switch has annoying default 'internal margins' (not Control
-            // margins that we can set directly) that we can luckily get rid of by
-            // overriding the relevant resource values.
-            _ = application.resources.insert("ToggleSwitchPreContentMargin", 0.0 as Double)
-            _ = application.resources.insert("ToggleSwitchPostContentMargin", 0.0 as Double)
+        WinUIApplication.callback.withLock { launchCallback in
+            launchCallback = { application in
+                // Toggle Switch has annoying default 'internal margins' (not Control
+                // margins that we can set directly) that we can luckily get rid of by
+                // overriding the relevant resource values.
+                _ = application.resources.insert("ToggleSwitchPreContentMargin", 0.0 as Double)
+                _ = application.resources.insert("ToggleSwitchPostContentMargin", 0.0 as Double)
 
-            // Handle theme changes
-            UWP.UISettings().colorValuesChanged.addHandler { _, _ in
-                self.rootEnvironmentChangeHandler?()
+                // Handle theme changes
+                UWP.UISettings().colorValuesChanged.addHandler { _, _ in
+                    Task { @MainActor in
+                        self.rootEnvironmentChangeHandler?()
+                    }
+                }
+
+                // TODO: Read in previously hardcoded values from the application's
+                // resources dictionary for future-proofing. Example code for getting
+                // property values;
+                //   let iinspectable =
+                //       application.resources.lookup("ToggleSwitchPreContentMargin")!
+                //       as! WindowsFoundation.IInspectable
+                //   let pv: __ABI_Windows_Foundation.IPropertyValue = try! iinspectable.QueryInterface()
+                //   let value = try! pv.GetDoubleImpl()
+
+                self.measurementTextBlock = (self.createTextView() as! TextBlock)
+
+                callback()
             }
-
-            // TODO: Read in previously hardcoded values from the application's
-            // resources dictionary for future-proofing. Example code for getting
-            // property values;
-            //   let iinspectable =
-            //       application.resources.lookup("ToggleSwitchPreContentMargin")!
-            //       as! WindowsFoundation.IInspectable
-            //   let pv: __ABI_Windows_Foundation.IPropertyValue = try! iinspectable.QueryInterface()
-            //   let value = try! pv.GetDoubleImpl()
-
-            self.measurementTextBlock = (self.createTextView() as! TextBlock)
-
-            callback()
         }
         WinUIApplication.main()
     }
@@ -304,7 +315,9 @@ public final class WinUIBackend:
         window.setChild(widget)
         try! widget.updateLayout()
         widget.actualThemeChanged.addHandler { _, _ in
-            self.rootEnvironmentChangeHandler?()
+            Task { @MainActor in
+                self.rootEnvironmentChangeHandler?()
+            }
         }
     }
 
@@ -422,7 +435,9 @@ public final class WinUIBackend:
             .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
+    public func setRootEnvironmentChangeHandler(
+        to action: @escaping @Sendable @MainActor () -> Void
+    ) {
         self.rootEnvironmentChangeHandler = action
     }
 
@@ -438,7 +453,7 @@ public final class WinUIBackend:
 
     public func setWindowEnvironmentChangeHandler(
         of window: Window,
-        to action: @escaping () -> Void
+        to action: @escaping @Sendable @MainActor () -> Void
     ) {
         // TODO: Notify when window scale factor changes
 

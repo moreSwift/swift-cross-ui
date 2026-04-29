@@ -19,6 +19,9 @@
 #elseif canImport(UIKitBackend)
     import UIKitBackend
     public typealias DefaultBackend = UIKitBackend
+#elseif canImport(AndroidBackend)
+    import AndroidBackend
+    public typealias DefaultBackend = AndroidBackend
 #else
     #error("Unknown backend selected")
 #endif

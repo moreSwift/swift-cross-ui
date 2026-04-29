@@ -218,7 +218,7 @@ extension BackendFeatures {
         ///   - action: The window environment change handler.
         func setWindowEnvironmentChangeHandler(
             of window: Window,
-            to action: @escaping () -> Void
+            to action: @escaping @Sendable @MainActor () -> Void
         )
     }
 
@@ -351,7 +351,7 @@ extension BackendFeatures {
         /// or may not override the previous handler.
         ///
         /// - Parameter action: The root environment change handler.
-        func setRootEnvironmentChangeHandler(to action: @escaping () -> Void)
+        func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void)
     }
 }
 

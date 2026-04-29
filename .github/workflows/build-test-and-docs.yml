@@ -99,7 +99,7 @@ jobs:
 
             buildtarget () {
               # Use the same derived data path as DocC compilation so that we don't duplicate work.
-              xcodebuild -derivedDataPath /tmp/data -skipMacroValidation -scheme "$1" -destination "id=$deviceid" build | xcbeautify --renderer github-actions
+              xcodebuild -derivedDataPath /tmp/data -skipMacroValidation -scheme "$1" -destination "id=$deviceid" -usePackageSupportBuiltinSCM build | xcbeautify --renderer github-actions
             }
 
             buildtarget SwiftCrossUI
@@ -145,7 +145,7 @@ jobs:
   uikit-catalyst:
     runs-on: macos-15
     steps:
-    - name: Setup Xcode 16.4 (Swift 6.1)
+    - name: Setup Xcode 16.4 (Swift 6.1.2)
       uses: maxim-lobanov/setup-xcode@v1.6.0
       with:
         xcode-version: '16.4'
@@ -163,7 +163,7 @@ jobs:
         set -uxo pipefail
         buildtarget () {
           # Use the same derived data path as DocC compilation so that we don't duplicate work.
-          xcodebuild -derivedDataPath /tmp/data -skipMacroValidation -scheme "$1" -destination "variant=Mac Catalyst,arch=arm64,platform=macOS" build | xcbeautify --renderer github-actions
+          xcodebuild -derivedDataPath /tmp/data -skipMacroValidation -scheme "$1" -destination "variant=Mac Catalyst,arch=arm64,platform=macOS" -usePackageSupportBuiltinSCM build | xcbeautify --renderer github-actions
         }
 
         buildtarget SwiftCrossUI
@@ -338,7 +338,6 @@ jobs:
   assemble-docs:
     runs-on: macos-15
     needs: [macos, uikit, windows, linux]
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
 
     steps:
     - name: Setup Xcode version

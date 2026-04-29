@@ -385,7 +385,7 @@ extension BackendFeatures.BaseStubs {
         todo()
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
+    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
         todo()
     }
 
@@ -470,7 +470,7 @@ extension BackendFeatures.BaseStubs {
 
     public func setWindowEnvironmentChangeHandler(
         of window: Window,
-        to action: @escaping () -> Void
+        to action: @escaping @Sendable @MainActor () -> Void
     ) {
         todo()
     }

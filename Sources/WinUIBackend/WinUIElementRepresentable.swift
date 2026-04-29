@@ -201,6 +201,7 @@ final class RepresentingWidget<Representable: WinUIElementRepresentable>: WinUI.
     }
 
     var child: Representable.WinUIElementType?
+    var cleanUp: (@MainActor @Sendable () -> Void)?
 
     func update(with environment: EnvironmentValues) {
         if var context, let child {
@@ -218,11 +219,22 @@ final class RepresentingWidget<Representable: WinUIElementRepresentable>: WinUI.
             self.child = child
             self.context = context
         }
+
+        // Work around nonisolated deinit
+        let child = child
+        let context = context
+        cleanUp = {
+            if let context, let child {
+                Representable.dismantleWinUIElement(child, coordinator: context.coordinator)
+            }
+        }
     }
 
     deinit {
-        if let context, let child {
-            Representable.dismantleWinUIElement(child, coordinator: context.coordinator)
+        if let cleanUp {
+            Task { @MainActor in
+                cleanUp()
+            }
         }
     }
 }
