@@ -68,6 +68,34 @@ runs:
         command: x
         files: ./${{ inputs.target }}-symbol-graphs.tar.gz
 
+    - name: Restore docc build cache
+      id: restore-docc-cache
+      uses: actions/cache/restore@v5
+      with:
+        path: ./docc
+        key: docc-tool-771f704083804760db2dd19692fa2c13a3dd20d0
+
+    - name: Build docc
+      if: steps.restore-docc-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        set -eux
+        checkout="$(pwd)"
+        cd ../
+        git clone https://github.com/stackotter/swift-docc
+        cd swift-docc
+        git checkout 771f704083804760db2dd19692fa2c13a3dd20d0
+        swift build -c release --product docc
+        cp .build/release/docc $checkout/docc
+
+    - name: Cache DocC
+      id: cache-docc
+      if: steps.restore-docc-cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v5
+      with:
+        path: ./docc
+        key: ${{ steps.restore-docc-cache.outputs.cache-primary-key }}
+
     - name: Compile documentation (with DocC)
       if: ${{ inputs.use-swiftpm != 'true' }}
       shell: bash
@@ -83,7 +111,8 @@ runs:
           symbol_graph_dir="$TARGET-symbol-graphs"
         fi
         echo $symbol_graph_dir
-        xcrun docc convert "$catalog" \
+        DOCC_HTML_DIR="$(dirname -- $(xcrun --find docc))/../share/docc/render" ./docc \
+          convert "$catalog" \
           --additional-symbol-graph-dir $symbol_graph_dir \
           --transform-for-static-hosting \
           --hosting-base-path swift-cross-ui \
