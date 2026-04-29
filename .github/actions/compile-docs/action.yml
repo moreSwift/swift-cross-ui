@@ -88,8 +88,9 @@ runs:
         swift build -c release --product docc
         cp .build/release/docc $checkout/docc
 
-    - name: Restore docc build cache
+    - name: Cache DocC
       id: cache-docc
+      if: steps.restore-docc-cache.outputs.cache-hit != 'true'
       uses: actions/cache/save@v5
       with:
         path: ./docc
@@ -110,7 +111,8 @@ runs:
           symbol_graph_dir="$TARGET-symbol-graphs"
         fi
         echo $symbol_graph_dir
-        DOCC_HTML_DIR="$(xcrun --find docc)/../share/docc/render" ./docc convert "$catalog" \
+        DOCC_HTML_DIR="$(dirname -- $(xcrun --find docc))/../share/docc/render" ./docc \
+          convert "$catalog" \
           --additional-symbol-graph-dir $symbol_graph_dir \
           --transform-for-static-hosting \
           --hosting-base-path swift-cross-ui \
