@@ -142,6 +142,26 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
             )
         )
 
+        let visibleColumns = backend.visibleColumns(ofSplitView: widget)
+        if visibleColumns.count == 0 {
+            let column = Array(visibleColumns)[0]
+            switch column.column {
+                case .sidebar, .content:
+                    // TODO(stackotter): Update SplitViews backend feature to
+                    //   support all three columns. The nested double-column
+                    //   split view approach is too desktop-centric
+                    backend.setSize(
+                        of: children.leadingPaneContainer.into(),
+                        to: layout.size.vector
+                    )
+                case .detail:
+                    backend.setSize(
+                        of: children.trailingPaneContainer.into(),
+                        to: layout.size.vector
+                    )
+            }
+        }
+
         // Center pane children
         backend.setPosition(
             ofChildAt: 0,

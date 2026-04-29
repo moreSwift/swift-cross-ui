@@ -84,8 +84,16 @@ struct ContentView: View {
                         Text(subject.rawValue)
                     }
                 }
+                Button {
+                    print("large click")
+                } label: {
+                    Color.red.frame(width: 100, height: 100)
+                }
                 Spacer()
-                Button("Switch to 3 column example") { columns = .three }
+                Button("Switch to 3 column example") {
+                    print("3 column")
+                    columns = .three
+                }
             }.padding(10)
         } detail: {
             VStack {
@@ -140,7 +148,12 @@ struct SplitApp: App {
     var body: some Scene {
         WindowGroup("Split") {
             #hotReloadable {
-                ContentView()
+                VStack {
+                    ContentView()
+                    Button("Hi") {
+                        print("hi")
+                    }
+                }
             }
         }
         .defaultSize(width: 600, height: 250)
