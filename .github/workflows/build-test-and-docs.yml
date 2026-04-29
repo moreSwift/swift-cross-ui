@@ -338,7 +338,6 @@ jobs:
   assemble-docs:
     runs-on: macos-15
     needs: [macos, uikit, windows, linux]
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
 
     steps:
     - name: Setup Xcode version
