@@ -69,14 +69,14 @@ runs:
         files: ./${{ inputs.target }}-symbol-graphs.tar.gz
 
     - name: Restore docc build cache
-      id: cache-docc
-      uses: actions/cache@v5
+      id: restore-docc-cache
+      uses: actions/cache/restore@v5
       with:
         path: ../docc
         key: docc-tool-771f704083804760db2dd19692fa2c13a3dd20d0
 
     - name: Build docc
-      if: steps.cache-docc.outputs.cache-hit != 'true'
+      if: steps.restore-docc-cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
         set -eux
@@ -86,6 +86,13 @@ runs:
         git checkout 771f704083804760db2dd19692fa2c13a3dd20d0
         swift build -c release --product docc
         cp .build/release/docc ..
+
+    - name: Restore docc build cache
+      id: cache-docc
+      uses: actions/cache/save@v5
+      with:
+        path: ../docc
+        key: ${{ steps.restore-docc-cache.outputs.cache-primary-key }}
 
     - name: Compile documentation (with DocC)
       if: ${{ inputs.use-swiftpm != 'true' }}
