@@ -185,11 +185,6 @@ let package = Package(
             .upToNextMinor(from: "0.2.0")
         ),
         .package(
-            url: "https://github.com/apple/swift-log.git",
-            // swift-log bumped its swift-tools-version in 1.7.0
-            .upToNextMinor(from: "1.6.4")
-        ),
-        .package(
             url: "https://github.com/swhitty/swift-mutex",
             .upToNextMinor(from: "0.0.6")
         ),
@@ -374,6 +369,26 @@ let package = Package(
         // ),
     ]
 )
+
+// Newer versions of swift-log only support Swift >=6.1, and SwiftPM doesn't
+// seem to want to use the tools-version of the package during resolution
+// (even though I could swear it has in the past), so we have to change the
+// version requirement based on compiler version.
+#if compiler(<6.1)
+    package.dependencies.append(
+        .package(
+            url: "https://github.com/apple/swift-log.git",
+            .upToNextMinor(from: "1.6.4")
+        )
+    )
+#else
+    package.dependencies.append(
+        .package(
+            url: "https://github.com/apple/swift-log.git",
+            from: "1.6.4"
+        )
+    )
+#endif
 
 // Add AndroidBackend if the Swift version is new enough and we're not using xcodebuild
 if androidBackendSupported {
