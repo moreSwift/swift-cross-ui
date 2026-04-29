@@ -72,7 +72,7 @@ runs:
       id: restore-docc-cache
       uses: actions/cache/restore@v5
       with:
-        path: ../docc
+        path: ./docc
         key: docc-tool-771f704083804760db2dd19692fa2c13a3dd20d0
 
     - name: Build docc
@@ -80,18 +80,19 @@ runs:
       shell: bash
       run: |
         set -eux
+        checkout="$(pwd)"
         cd ../
         git clone https://github.com/stackotter/swift-docc
         cd swift-docc
         git checkout 771f704083804760db2dd19692fa2c13a3dd20d0
         swift build -c release --product docc
-        cp .build/release/docc ..
+        cp .build/release/docc $checkout/docc
 
     - name: Restore docc build cache
       id: cache-docc
       uses: actions/cache/save@v5
       with:
-        path: ../docc
+        path: ./docc
         key: ${{ steps.restore-docc-cache.outputs.cache-primary-key }}
 
     - name: Compile documentation (with DocC)
@@ -109,7 +110,7 @@ runs:
           symbol_graph_dir="$TARGET-symbol-graphs"
         fi
         echo $symbol_graph_dir
-        DOCC_HTML_DIR="$(xcrun --find docc)/../share/docc/render" ../docc convert "$catalog" \
+        DOCC_HTML_DIR="$(xcrun --find docc)/../share/docc/render" ./docc convert "$catalog" \
           --additional-symbol-graph-dir $symbol_graph_dir \
           --transform-for-static-hosting \
           --hosting-base-path swift-cross-ui \
