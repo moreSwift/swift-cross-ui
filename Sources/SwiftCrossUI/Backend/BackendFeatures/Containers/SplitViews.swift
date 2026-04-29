@@ -43,5 +43,10 @@ extension BackendFeatures {
             minimum minimumWidth: Int,
             maximum maximumWidth: Int
         )
+
+        /// Gets the visible columns of a split view.
+        /// - Parameter splitView: The split view.
+        /// - Returns: The split view's visible columns.
+        func visibleColumns(ofSplitView splitView: Widget) -> Set<NavigationSplitViewColumn>
     }
 }
