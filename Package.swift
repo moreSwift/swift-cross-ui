@@ -395,11 +395,11 @@ if androidBackendSupported {
     package.dependencies += [
         .package(
             url: "https://github.com/moreSwift/AndroidKit",
-            revision: "c4517cf574cbd203ee6549fb0997ed1ae2f3e459"
+            .upToNextMinor(from: "0.7.1")
         ),
         .package(
             url: "https://github.com/swiftlang/swift-java",
-            branch: "main"
+            .upToNextMinor(from: "0.2.0")
         ),
     ]
 
