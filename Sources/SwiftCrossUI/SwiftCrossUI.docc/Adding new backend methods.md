@@ -5,7 +5,7 @@ Guidelines for organizing backend protocols
 ## Overview
 
 - Tip: This page is for SwiftCrossUI contributors who need to add new
-  functionality to ``BackendFeatures``. If you're just trying to write your own
+  functionality to ``BackendFeatures``. If you're trying to write your own
   backend by using the `BackendFeatures` set of protocols, refer to
   <doc:Custom-backends> and the documentation for the appropriate protocols.
 
