@@ -108,7 +108,7 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
             })
 
             let sheetEnvironment =
-            environment
+                environment
                 .with(\.dismiss, dismissAction)
                 .with(\.sheet, sheet)
 

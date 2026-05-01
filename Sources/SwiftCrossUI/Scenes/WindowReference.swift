@@ -46,10 +46,10 @@ final class WindowReference<SceneType: WindowingScene> {
         parentEnvironment = environment
 
         if let backend = backend as? any BackendFeatures.WindowClosing {
-            setCloseHandler(backend: backend)
             func setCloseHandler<NewBackend: BackendFeatures.WindowClosing>(backend: NewBackend) {
                 backend.setCloseHandler(ofWindow: window as! NewBackend.Window, to: closeHandler)
             }
+            setCloseHandler(backend: backend)
         }
 
         backend.setResizeHandler(ofWindow: window) { [weak self] newSize in
@@ -269,7 +269,6 @@ final class WindowReference<SceneType: WindowingScene> {
         }
 
         if let backend = backend as? any BackendFeatures.WindowBehaviors {
-            setBehaviors(backend: backend)
             func setBehaviors<NewBackend: BackendFeatures.WindowBehaviors>(backend: NewBackend) {
                 backend.setBehaviors(
                     ofWindow: window as! NewBackend.Window,
@@ -281,6 +280,7 @@ final class WindowReference<SceneType: WindowingScene> {
                         finalContentResult.preferences.windowResizeBehavior?.isEnabled ?? true
                 )
             }
+            setBehaviors(backend: backend)
         }
 
         // Generally just used to update the window color scheme

@@ -70,7 +70,7 @@ struct CornerRadiusModifier<Content: View>: View {
         )
 
         guard let backend = backend as? any BackendFeatures.CornerRadius else {
-            logger.warning("\(Backend.self) doesn't support setting corner radii")
+            logger.warnOnce("\(Backend.self) doesn't support setting corner radii")
             return
         }
 

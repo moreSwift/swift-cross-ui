@@ -227,7 +227,7 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         //   computeWindowEnvironment
     }
 
-//    public func show(widget: Widget) {}
+    public func show(widget: Widget) {}
 
     public func createContainer() -> Widget {
         RelativeLayout(Self.activity, environment: Self.env)

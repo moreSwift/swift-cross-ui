@@ -42,15 +42,14 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
         return backend.createTable()
     }
 
+    @CastBackend<BackendFeatures.Tables>
     func computeLayout<Backend: BaseAppBackend>(
-        _ widget: Backend.Widget,
+        _: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
-        let castedBackend = backend as! any BackendFeatures.Tables
-
         let size = proposedSize
         var cellResults: [ViewLayoutResult] = []
         children.rowContent = rows.map(columns.content(for:)).map(RowView.init(_:))
@@ -109,7 +108,7 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
                 let cellResult = rowCell.computeLayout(
                     proposedSize: ProposedViewSize(
                         columnWidth,
-                        Double(castedBackend.defaultTableRowContentHeight)
+                        Double(backend.defaultTableRowContentHeight)
                     ),
                     environment: environment
                 )
@@ -118,10 +117,10 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
             }
 
             let rowHeight =
-            max(
-                rowCellHeights.max() ?? 0,
-                castedBackend.defaultTableRowContentHeight
-            ) + castedBackend.defaultTableCellVerticalPadding * 2
+                max(
+                    rowCellHeights.max() ?? 0,
+                    backend.defaultTableRowContentHeight
+                ) + backend.defaultTableCellVerticalPadding * 2
 
             rowHeights.append(rowHeight)
         }

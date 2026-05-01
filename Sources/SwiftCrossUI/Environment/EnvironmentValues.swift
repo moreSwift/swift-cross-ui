@@ -154,7 +154,7 @@ public struct EnvironmentValues {
     /// `nil` on platforms that don't support opening external URLS (none at the
     /// moment).
     @MainActor
-    public var openURL: OpenURLAction? {
+    public var openURL: OpenURLAction {
         OpenURLAction(backend: backend)
     }
 

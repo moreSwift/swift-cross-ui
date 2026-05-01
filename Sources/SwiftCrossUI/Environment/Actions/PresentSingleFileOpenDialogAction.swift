@@ -38,10 +38,9 @@ public struct PresentSingleFileOpenDialogAction: Sendable {
         allowSelectingDirectories: Bool = false
     ) async -> URL? {
         guard let backend = backend as? any BackendFeatures.FileOpenDialogs else {
-            logger.warning("\(type(of: backend)) does not support file open dialogs")
+            logger.warnOnce("\(type(of: backend)) does not support file open dialogs")
             return nil
         }
-        return await chooseFile(backend: backend)
 
         func chooseFile<Backend: BackendFeatures.FileOpenDialogs>(backend: Backend) async -> URL? {
             await withCheckedContinuation { continuation in
@@ -74,5 +73,6 @@ public struct PresentSingleFileOpenDialogAction: Sendable {
                 }
             }
         }
+        return await chooseFile(backend: backend)
     }
 }

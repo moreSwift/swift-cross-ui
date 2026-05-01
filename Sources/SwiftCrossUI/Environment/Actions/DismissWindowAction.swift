@@ -35,7 +35,7 @@ public struct DismissWindowAction {
             backend.close(window: window as! Backend.Window)
         }
         guard let backend = backend as? any BackendFeatures.WindowClosing else {
-            logger.warning("\(type(of: backend)) doesn't support closing windows")
+            logger.warnOnce("\(type(of: backend)) doesn't support closing windows")
             return
         }
         closeWindow(backend: backend)
