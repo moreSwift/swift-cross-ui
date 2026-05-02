@@ -1,12 +1,12 @@
 extension BackendFeatures {
-    /// Backend methods for menus.
+    /// Backend methods for menu buttons.
     ///
     /// - Important: You only need to write a conformance to _one of_
-    ///   ``ButtonMenus`` or ``PopoverMenus``, depending on what you use as
-    ///   your ``Menus/menuImplementationStyle-4blzf`` (that is, what would work best
+    ///   ``AttachedMenus`` or ``PopoverMenus``, depending on what you use as
+    ///   your ``MenuButtons/menuImplementationStyle-4blzf`` (that is, what would work best
     ///   for your backend's underlying UI framework).
     @MainActor
-    public protocol Menus<Menu>: Core, Buttons {
+    public protocol MenuButtons<Menu>: Core, Buttons {
         /// The underlying menu type. Can be a wrapper or subclass.
         associatedtype Menu
 
@@ -15,7 +15,7 @@ extension BackendFeatures {
         /// This affects which menu-related methods are called.
         ///
         /// This requirement is automatically implemented for backends that conform to exactly
-        /// one of ``BackendFeatures/PopoverMenus`` or ``BackendFeatures/ButtonMenus``.
+        /// one of ``BackendFeatures/PopoverMenus`` or ``BackendFeatures/AttachedMenus``.
         ///
         /// ## See Also
         /// - ``MenuImplementationStyle``
@@ -45,10 +45,10 @@ extension BackendFeatures {
     /// Backend methods for menus that are simply attached to an existing
     /// button widget.
     @MainActor
-    public protocol ButtonMenus<Widget, Menu>: Menus {
+    public protocol AttachedMenus<Widget, Menu>: MenuButtons {
         /// Sets a button's label and menu.
         ///
-        /// Only used when ``BackendFeatures/Menus/menuImplementationStyle`` is
+        /// Only used when ``BackendFeatures/MenuButtons/menuImplementationStyle`` is
         /// ``MenuImplementationStyle/menuButton``.
         ///
         /// - Parameters:
@@ -66,10 +66,10 @@ extension BackendFeatures {
 
     /// Backend methods for menus which need a separate widget to be created.
     @MainActor
-    public protocol PopoverMenus<Widget, Menu>: Menus {
+    public protocol PopoverMenus<Widget, Menu>: MenuButtons {
         /// Shows the popover menu at a position relative to the given widget.
         ///
-        /// Only used when ``BackendFeatures/Menus/menuImplementationStyle`` is
+        /// Only used when ``BackendFeatures/MenuButtons/menuImplementationStyle`` is
         /// ``MenuImplementationStyle/dynamicPopover``.
         ///
         /// - Parameters:
@@ -88,8 +88,8 @@ extension BackendFeatures {
 
 // MARK: Default Implementations
 
-extension BackendFeatures.Menus where Self: BackendFeatures.PopoverMenus {
-    /// The default implementation of ``BackendFeatures/Menus/menuImplementationStyle-4blzf``
+extension BackendFeatures.MenuButtons where Self: BackendFeatures.PopoverMenus {
+    /// The default implementation of ``BackendFeatures/MenuButtons/menuImplementationStyle-4blzf``
     /// for backends that implement ``BackendFeatures/PopoverMenus``.
     ///
     /// This simply returns `.dynamicPopover(self)`. You should very rarely have
@@ -99,9 +99,9 @@ extension BackendFeatures.Menus where Self: BackendFeatures.PopoverMenus {
     }
 }
 
-extension BackendFeatures.Menus where Self: BackendFeatures.ButtonMenus {
-    /// The default implementation of ``BackendFeatures/Menus/menuImplementationStyle-4blzf``
-    /// for backends that implement ``BackendFeatures/ButtonMenus``.
+extension BackendFeatures.MenuButtons where Self: BackendFeatures.AttachedMenus {
+    /// The default implementation of ``BackendFeatures/MenuButtons/menuImplementationStyle-4blzf``
+    /// for backends that implement ``BackendFeatures/AttachedMenus``.
     ///
     /// This simply returns `.menuButton(self)`. You should very rarely have
     /// to override this.
@@ -112,14 +112,14 @@ extension BackendFeatures.Menus where Self: BackendFeatures.ButtonMenus {
 
 // NB: The default implementations below serve to provide more helpful error messages when
 // the two `menuImplementationStyle` implementations above conflict or when neither of them
-// can be used -- i.e. when both (or neither) of `PopoverMenus` and `ButtonMenus` are
+// can be used -- i.e. when both (or neither) of `PopoverMenus` and `AttachedMenus` are
 // conformed to.
 
-extension BackendFeatures.Menus where Self: BackendFeatures.PopoverMenus, Self: BackendFeatures.ButtonMenus {
+extension BackendFeatures.MenuButtons where Self: BackendFeatures.PopoverMenus, Self: BackendFeatures.AttachedMenus {
     @available(
         *, unavailable,
         message: """
-        you should only conform to one of 'PopoverMenus' or 'ButtonMenus'. Implement \
+        you should only conform to one of 'PopoverMenus' or 'AttachedMenus'. Implement \
         'menuImplementationStyle' manually if conforming to both is intentional
         """
     )
@@ -128,11 +128,11 @@ extension BackendFeatures.Menus where Self: BackendFeatures.PopoverMenus, Self: 
     }
 }
 
-extension BackendFeatures.Menus {
+extension BackendFeatures.MenuButtons {
     @available(
         *, unavailable,
         message: """
-        you need to conform to one of 'PopoverMenus' or 'ButtonMenus' for full 'Menus' conformance
+        you need to conform to one of 'PopoverMenus' or 'AttachedMenus' for full 'MenuButtons' conformance
         """
     )
     public var menuImplementationStyle: MenuImplementationStyle<Widget, Menu> {

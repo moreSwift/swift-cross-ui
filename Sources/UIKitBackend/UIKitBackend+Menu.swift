@@ -87,7 +87,7 @@ extension UIKitBackend {
 }
 
 @available(iOS 14, macCatalyst 14, tvOS 17, *)
-extension UIKitBackend: BackendFeatures.ButtonMenus {
+extension UIKitBackend: BackendFeatures.AttachedMenus {
     public final class Menu {
         var uiMenu: UIMenu?
     }
@@ -121,11 +121,11 @@ extension UIKitBackend: BackendFeatures.ButtonMenus {
         buttonWidget.child.showsMenuAsPrimaryAction = true
         if #available(iOS 16, macCatalyst 16, *) {
             buttonWidget.child.preferredMenuElementOrder =
-            switch environment.menuOrder {
-                case .automatic: .automatic
-                case .priority: .priority
-                case .fixed: .fixed
-            }
+                switch environment.menuOrder {
+                    case .automatic: .automatic
+                    case .priority: .priority
+                    case .fixed: .fixed
+                }
         }
     }
 }

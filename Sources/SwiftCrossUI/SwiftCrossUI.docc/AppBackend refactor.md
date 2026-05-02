@@ -58,7 +58,7 @@ comprehensive-ish list of changes:
   - ``BackendFeatures/Tables``: AppKitBackend only
   - ``BackendFeatures/TapGestures``: all backends
   - ``BackendFeatures/HoverGestures``: all backends except UIKitBackend on tvOS
-  - ``BackendFeatures/Menus``: all backends except UIKitBackend before iOS 14 / Mac Catalyst 14 / tvOS 17
+  - ``BackendFeatures/MenuButtons``: all backends except UIKitBackend before iOS 14 / Mac Catalyst 14 / tvOS 17
   - ``BackendFeatures/Paths``: all backends
   - ``BackendFeatures/Tooltips``: all backends
   - ``BackendFeatures/Colors``: all backends

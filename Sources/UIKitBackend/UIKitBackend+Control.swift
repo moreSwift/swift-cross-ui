@@ -616,17 +616,17 @@ extension UIKitBackend: BackendFeatures.TapGestures {
             datePickerWidget.child.maximumDate = range.upperBound
 
             datePickerWidget.child.datePickerMode =
-            switch components {
-                case [.date, .hourAndMinute]:
-                        .dateAndTime
-                case .date:
-                        .date
-                case .hourAndMinute:
-                        .time
-                default:
-                    // Crashing upon receiving [] is consistent with SwiftUI.
-                    fatalError("Unexpected Components: \(components)")
-            }
+                switch components {
+                    case [.date, .hourAndMinute]:
+                            .dateAndTime
+                    case .date:
+                            .date
+                    case .hourAndMinute:
+                            .time
+                    default:
+                        // Crashing upon receiving [] is consistent with SwiftUI.
+                        fatalError("Unexpected Components: \(components)")
+                }
 
             if #available(iOS 13.4, macCatalyst 13.4, *) {
                 switch environment.datePickerStyle {

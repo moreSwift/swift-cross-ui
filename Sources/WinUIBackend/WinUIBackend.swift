@@ -44,7 +44,7 @@ public final class WinUIBackend:
     BackendFeatures.Alerts,
     BackendFeatures.CornerRadius,
     BackendFeatures.Gestures,
-    BackendFeatures.ButtonMenus,
+    BackendFeatures.AttachedMenus,
     BackendFeatures.Paths,
     BackendFeatures.Tooltips,
     BackendFeatures.Colors,

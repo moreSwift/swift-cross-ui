@@ -84,7 +84,7 @@ extension Menu: TypeSafeView {
         []
     }
 
-    @CastBackend<BackendFeatures.Menus>(backendGenericName: "NewBackend")
+    @CastBackend<BackendFeatures.MenuButtons>(backendGenericName: "NewBackend")
     func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: MenuStorage,
@@ -126,7 +126,7 @@ extension Menu: TypeSafeView {
         return ViewLayoutResult.leafView(size: ViewSize(size))
     }
 
-    @CastBackend<BackendFeatures.Menus>(backendGenericName: "NewBackend")
+    @CastBackend<BackendFeatures.MenuButtons>(backendGenericName: "NewBackend")
     func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: MenuStorage,

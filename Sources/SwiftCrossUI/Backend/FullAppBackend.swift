@@ -5,7 +5,7 @@
 ///
 /// ### Constituent Protocols
 /// - ``BaseAppBackend``
-/// - ``BackendFeatures/Menus``
+/// - ``BackendFeatures/MenuButtons``
 /// - ``BackendFeatures/Paths``
 /// - ``BackendFeatures/Alerts``
 /// - ``BackendFeatures/Sheets``
@@ -24,7 +24,7 @@
 /// - ``BackendFeatures/Windowing``
 public typealias FullAppBackend =
     BaseAppBackend
-    & BackendFeatures.Menus
+    & BackendFeatures.MenuButtons
     & BackendFeatures.Paths
     & BackendFeatures.Alerts
     & BackendFeatures.Sheets
