@@ -17,7 +17,7 @@ extension Logger {
         line: UInt = #line
     ) {
         warnedSourceLocations.withLock { sourceLocations in
-            guard !sourceLocations.insert(.init(file: file, line: line)).inserted else {
+            guard sourceLocations.insert(.init(file: file, line: line)).inserted else {
                 return
             }
             warning(

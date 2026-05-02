@@ -18,5 +18,4 @@
 internal macro CastBackend<NewBackend>(
     backendGenericName: String? = nil,
     returnsWidget: Bool = false
-) =
-    #externalMacro(module: "SwiftCrossUIMacrosPlugin", type: "CastBackendMacro")
+) = #externalMacro(module: "SwiftCrossUIMacrosPlugin", type: "CastBackendMacro")

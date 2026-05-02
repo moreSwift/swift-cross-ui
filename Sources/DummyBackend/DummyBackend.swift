@@ -76,7 +76,6 @@ public final class DummyBackend:
         public var label = ""
         public var font: Font.Resolved?
         public var action: (() -> Void)?
-//        public var menu: Menu?
     }
 
     public class ToggleButton: Widget {
@@ -249,8 +248,6 @@ public final class DummyBackend:
             [leadingChild, trailingChild]
         }
     }
-
-//    public class Menu {}
 
     public var defaultTableRowContentHeight = 10
     public var defaultTableCellVerticalPadding = 10
@@ -603,18 +600,6 @@ public final class DummyBackend:
         button.label = label
         button.action = action
     }
-
-//    public func updateButton(
-//        _ button: Widget,
-//        label: String,
-//        menu: Menu,
-//        environment: EnvironmentValues
-//    ) {
-//        let button = button as! Button
-//        button.label = label
-//        button.menu = menu
-//        button.font = environment.resolvedFont
-//    }
 
     public func createToggle() -> Widget {
         ToggleButton()

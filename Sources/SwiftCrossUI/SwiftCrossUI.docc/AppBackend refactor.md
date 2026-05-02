@@ -44,25 +44,26 @@ comprehensive-ish list of changes:
   - ``BaseAppBackend``: all backends
     - ``BackendFeatures/Toggles`` is stubbed for UIKitBackend on all platforms;
       ``BackendFeatures/Sliders`` is stubbed for UIKitBackend on tvOS.
-  - ``BackendFeatures/ApplicationMenus``: all backends except UIKit (except for Mac Catalyst)
+  - ``BackendFeatures/ApplicationMenus``: all backends except UIKitBackend (except for Mac Catalyst
+    where it _is_ implemented)
   - ``BackendFeatures/ExternalURLs``: all backends
   - ``BackendFeatures/IncomingURLs``: all backends
-  - ``BackendFeatures/RevealFiles``: all backends except UIKit and WinUI
-  - ``BackendFeatures/FileOpenDialogs``: all backends except UIKit on tvOS
-  - ``BackendFeatures/FileSaveDialogs``: all backends except UIKit
+  - ``BackendFeatures/RevealFiles``: all backends except UIKitBackend and WinUIBackend
+  - ``BackendFeatures/FileOpenDialogs``: all backends except UIKitBackend on tvOS
+  - ``BackendFeatures/FileSaveDialogs``: all backends except UIKitBackend
   - ``BackendFeatures/Alerts``: all backends
-  - ``BackendFeatures/Sheets``: all backends except WinUI and Gtk3
-  - ``BackendFeatures/CornerRadius``: all backends (but janky on Gtk3)
-  - ``BackendFeatures/WebViews``: AppKit and UIKit only
-  - ``BackendFeatures/Tables``: AppKit only
+  - ``BackendFeatures/Sheets``: all backends except WinUIBackend and Gtk3Backend
+  - ``BackendFeatures/CornerRadius``: all backends (but janky on Gtk3Backend)
+  - ``BackendFeatures/WebViews``: AppKitBackend and UIKitBackend only
+  - ``BackendFeatures/Tables``: AppKitBackend only
   - ``BackendFeatures/TapGestures``: all backends
-  - ``BackendFeatures/HoverGestures``: all backends except UIKit (except for iOS, visionOS, and Mac Catalyst)
-  - ``BackendFeatures/Menus``: all backends except UIKit before iOS 14 / Mac Catalyst 14 / tvOS 17
+  - ``BackendFeatures/HoverGestures``: all backends except UIKitBackend on tvOS
+  - ``BackendFeatures/Menus``: all backends except UIKitBackend before iOS 14 / Mac Catalyst 14 / tvOS 17
   - ``BackendFeatures/Paths``: all backends
   - ``BackendFeatures/Tooltips``: all backends
   - ``BackendFeatures/Colors``: all backends
-  - ``BackendFeatures/DatePickers``: all backends except Gtk3 and UIKit on tvOS
-  - ``BackendFeatures/WindowClosing``: all backends except UIKit
+  - ``BackendFeatures/DatePickers``: all backends except Gtk3Backend, and UIKitBackend on tvOS
+  - ``BackendFeatures/WindowClosing``: all backends except UIKitBackend
   - ``BackendFeatures/WindowBehaviors``: all backends
 
 ## Random Extras

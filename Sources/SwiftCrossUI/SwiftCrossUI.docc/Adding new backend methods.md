@@ -19,7 +19,7 @@ maintainable.
 - Note: These guidelines are not hard-and-fast rules. If you feel the need to
   break them, feel free (just be sure other maintainers are cool with it first).
 
-### Adding methods to existing protocols
+## Adding methods to existing protocols
 
 If you're augmenting an existing SwiftCrossUI feature with new functionality,
 it's usually best to add a new method to an existing protocol that deals with
@@ -42,7 +42,7 @@ Here are some guidelines for adding methods to existing protocols:
   Don't add these implementations for protocols which aren't a part of
   ``BaseAppBackend``.
 
-### Adding new protocols
+## Adding new protocols
 
 If you're adding a wholly new feature to SwiftCrossUI -- for example, a new
 control -- you should put its corresponding backend methods in a new protocol.
