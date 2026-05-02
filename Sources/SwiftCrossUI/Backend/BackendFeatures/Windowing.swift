@@ -1,5 +1,3 @@
-import Foundation
-
 extension BackendFeatures {
     /// Extra backend methods for window handling.
     ///

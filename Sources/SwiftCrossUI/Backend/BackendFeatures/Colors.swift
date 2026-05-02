@@ -1,5 +1,3 @@
-import Foundation
-
 extension BackendFeatures {
     /// Backend methods for color-related operations.
     ///
