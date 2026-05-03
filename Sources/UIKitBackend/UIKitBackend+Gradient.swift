@@ -170,14 +170,9 @@ class GradientView: BaseViewWidget {
         return self.layer as! CAGradientLayer
     }
 
-    func setupGradient() {
-        gradientLayer.drawsAsynchronously = true
-    }
-
     override func didMoveToWindow() {
         super.didMoveToWindow()
-        // UIView is always layer-backed, no need for wantsLayer
-        setupGradient()
+        gradientLayer.drawsAsynchronously = true
     }
 }
 
@@ -210,6 +205,7 @@ extension UnitPoint {
         CGPoint(x: x, y: y)
     }
 }
+
 extension Angle {
     var cgPoint: CGPoint {
         let x = 0.5 + cos(radians) * 0.5

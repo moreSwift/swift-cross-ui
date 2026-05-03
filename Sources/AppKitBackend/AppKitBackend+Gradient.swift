@@ -75,7 +75,7 @@ final class LinearGradientView: NSView {
         guard let nsGradient = NSGradient(
             colors: colors,
             atLocations: gradient.gradient.stops.map { CGFloat($0.location) },
-            colorSpace: .extendedSRGB
+            colorSpace: .deviceRGB
         ) else {
             logger.error("Failed to construct NSGradient; init returned nil")
             return
@@ -122,7 +122,7 @@ final class RadialGradientView: NSView {
         guard let nsGradient = NSGradient(
             colors: colors,
             atLocations: gradient.gradient.stops.map { CGFloat($0.location) },
-            colorSpace: .extendedSRGB
+            colorSpace: .deviceRGB
         ) else {
             logger.error("Failed to construct NSGradient; init returned nil")
             return
