@@ -20,6 +20,7 @@ struct GradientsApp: App {
 
     var body: some Scene {
         WindowGroup("Gradients Example") {
+            #if !canImport(UIKitBackend)
             NavigationSplitView {
                 ForEach(GradientType.allCases, id: \.rawValue) { type in
                     Button(type.rawValue) {
@@ -35,12 +36,38 @@ struct GradientsApp: App {
                         case .radial:
                             RadialGradientView()
                         case .angular:
+                            #if !canImport(WinUIBackend)
+                                ScrollView(.horizontal) {
+                                    AngularGradientView()
+                                }
+                            #endif
+                    }
+                }
+            }
+            #else
+            VStack {
+                HStack {
+                    ForEach(GradientType.allCases, id: \.rawValue) { type in
+                        Button(type.rawValue) {
+                            gradientType = type
+                        }
+                        .disabled(gradientType == type)
+                    }
+                }
+                ScrollView {
+                    switch gradientType {
+                        case .linear:
+                            LinearGradientView()
+                        case .radial:
+                            RadialGradientView()
+                        case .angular:
                             ScrollView(.horizontal) {
                                 AngularGradientView()
                             }
                     }
                 }
             }
+            #endif
         }
     }
 }

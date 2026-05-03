@@ -41,30 +41,35 @@ public struct AngularGradient: ElementaryView {
         self.startAngle = startAngle
         self.endAngle = endAngle
     }
-
-    func asWidget<Backend>(
+    
+    @CastBackend<BackendFeatures.AngularGradients>(
+        backendGenericName: "NewBackend",
+        returnsWidget: true
+    )
+    public func asWidget<Backend: BaseAppBackend>(
         backend: Backend
-    ) -> Backend.Widget where Backend: AppBackend {
+    ) -> Backend.Widget {
         backend.createAngularGradient()
     }
 
-    func computeLayout<Backend>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
         backend: Backend
-    ) -> ViewLayoutResult where Backend: AppBackend {
+    ) -> ViewLayoutResult {
         ViewLayoutResult.leafView(
             size: proposedSize.replacingUnspecifiedDimensions(by: Self.idealSize)
         )
     }
-
-    func commit<Backend>(
+    
+    @CastBackend<BackendFeatures.AngularGradients>(backendGenericName: "NewBackend")
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,
         backend: Backend
-    ) where Backend: AppBackend {
+    ) {
         backend.setSize(of: widget, to: layout.size.vector)
         backend.updateAngularGradient(
             widget,

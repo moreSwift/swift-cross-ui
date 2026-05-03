@@ -23,30 +23,35 @@ public struct LinearGradient: ElementaryView {
         self.startPoint = startPoint
         self.endPoint = endPoint
     }
-
-    func asWidget<Backend>(
+    
+    @CastBackend<BackendFeatures.LinearGradients>(
+        backendGenericName: "NewBackend",
+        returnsWidget: true
+    )
+    public func asWidget<Backend: BaseAppBackend>(
         backend: Backend
-    ) -> Backend.Widget where Backend: AppBackend {
+    ) -> Backend.Widget {
         backend.createLinearGradient()
     }
 
-    func computeLayout<Backend>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
         backend: Backend
-    ) -> ViewLayoutResult where Backend: AppBackend {
+    ) -> ViewLayoutResult {
         ViewLayoutResult.leafView(
             size: proposedSize.replacingUnspecifiedDimensions(by: Self.idealSize)
         )
     }
-
-    func commit<Backend>(
+    
+    @CastBackend<BackendFeatures.LinearGradients>(backendGenericName: "NewBackend")
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,
         backend: Backend
-    ) where Backend: AppBackend {
+    ) {
         backend.setSize(of: widget, to: layout.size.vector)
         backend.updateLinearGradient(
             widget,

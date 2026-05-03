@@ -25,30 +25,35 @@ public struct RadialGradient: ElementaryView {
         self.center = center
         self.endRadius = endRadius
     }
-
-    func asWidget<Backend>(
+    
+    @CastBackend<BackendFeatures.RadialGradients>(
+        backendGenericName: "NewBackend",
+        returnsWidget: true
+    )
+    public func asWidget<Backend: BaseAppBackend>(
         backend: Backend
-    ) -> Backend.Widget where Backend: AppBackend {
+    ) -> Backend.Widget {
         backend.createRadialGradient()
     }
 
-    func computeLayout<Backend>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
         backend: Backend
-    ) -> ViewLayoutResult where Backend: AppBackend {
+    ) -> ViewLayoutResult {
         ViewLayoutResult.leafView(
             size: proposedSize.replacingUnspecifiedDimensions(by: Self.idealSize)
         )
     }
-
-    func commit<Backend>(
+    
+    @CastBackend<BackendFeatures.RadialGradients>(backendGenericName: "NewBackend")
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,
         backend: Backend
-    ) where Backend: AppBackend {
+    ) {
         backend.setSize(of: widget, to: layout.size.vector)
         backend.updateRadialGradient(
             widget,

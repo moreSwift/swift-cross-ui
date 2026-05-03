@@ -11,7 +11,10 @@ public final class UIKitBackend:
     BackendFeatures.CornerRadius,
     BackendFeatures.Paths,
     BackendFeatures.Tooltips,
-    BackendFeatures.Colors
+    BackendFeatures.Colors,
+    BackendFeatures.LinearGradients,
+    BackendFeatures.RadialGradients,
+    BackendFeatures.AngularGradients
 {
     static var onWindowEnvironmentChange: (() -> Void)?
     static var onBecomeActive: (() -> Void)?
