@@ -1,6 +1,7 @@
 import SwiftCrossUI
 import WinUI
 import WindowsFoundation
+import UWP
 
 extension WinUIBackend {
     public func createLinearGradient() -> Widget {
@@ -20,7 +21,7 @@ extension WinUIBackend {
         for stop in gradient.gradient.stops {
             let color = stop.color.resolve(in: environment)
             let winUIstop = GradientStop()
-            winUIstop.color = .init(
+            winUIstop.color = UWP.Color(
                 a: UInt8(color.opacity * 255),
                 r: UInt8(color.red * 255),
                 g: UInt8(color.green * 255),
@@ -56,7 +57,7 @@ extension WinUIBackend {
         for stop in gradient.adjustedStops {
             let color = stop.color.resolve(in: environment)
             let winUIstop = GradientStop()
-            winUIstop.color = .init(
+            winUIstop.color = UWP.Color(
                 a: UInt8(color.opacity * 255),
                 r: UInt8(color.red * 255),
                 g: UInt8(color.green * 255),
