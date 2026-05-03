@@ -16,7 +16,7 @@ extension OptionalView: View {
 extension OptionalView: TypeSafeView {
     typealias Children = OptionalViewChildren<V>
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -32,14 +32,14 @@ extension OptionalView: TypeSafeView {
         )
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: OptionalViewChildren<V>,
         backend: Backend
     ) -> Backend.Widget {
         return backend.createContainer()
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: OptionalViewChildren<V>,
         proposedSize: ProposedViewSize,
@@ -80,7 +80,7 @@ extension OptionalView: TypeSafeView {
         return result
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: OptionalViewChildren<V>,
         layout: ViewLayoutResult,
@@ -125,7 +125,7 @@ class OptionalViewChildren<V: View>: ViewGraphNodeChildren {
 
     /// Creates storage for an optional view's child if present (which can change at
     /// any time).
-    init<Backend: AppBackend>(
+    init<Backend: BaseAppBackend>(
         from view: V?,
         backend: Backend,
         snapshot: ViewGraphSnapshotter.NodeSnapshot?,

@@ -33,12 +33,12 @@ public class AnyViewGraphNode<NodeView: View> {
     /// The type-erased getter for the node's children.
     private var _getNodeChildren: () -> any ViewGraphNodeChildren
     /// The type-erased getter for the node's underlying erased backend.
-    private var _getBackend: () -> any AppBackend
+    private var _getBackend: () -> any BaseAppBackend
     /// The type-erased getter for the node's last proposed size.
     private var _getLastProposedSize: () -> ProposedViewSize
 
     /// Type-erases a view graph node.
-    public init<Backend: AppBackend>(_ node: ViewGraphNode<NodeView, Backend>) {
+    public init<Backend: BaseAppBackend>(_ node: ViewGraphNode<NodeView, Backend>) {
         self.node = node
         _computeLayoutWithNewView = node.computeLayout(with:proposedSize:environment:)
         _commit = node.commit
@@ -60,7 +60,7 @@ public class AnyViewGraphNode<NodeView: View> {
     }
 
     /// Creates a new view graph node and immediately type-erases it.
-    public convenience init<Backend: AppBackend>(
+    public convenience init<Backend: BaseAppBackend>(
         for view: NodeView,
         backend: Backend,
         snapshot: ViewGraphSnapshotter.NodeSnapshot? = nil,
@@ -115,13 +115,13 @@ public class AnyViewGraphNode<NodeView: View> {
     /// Gets the node's backend.
     ///
     /// - Returns: The node's backend.
-    public func getBackend() -> any AppBackend {
+    public func getBackend() -> any BaseAppBackend {
         _getBackend()
     }
 
     /// Converts the node back to its original type. Crashes if the requested backend doesn't
     /// match the node's original backend.
-    public func concreteNode<Backend: AppBackend>(
+    public func concreteNode<Backend: BaseAppBackend>(
         for backend: Backend.Type
     ) -> ViewGraphNode<NodeView, Backend> {
         guard let node = node as? ViewGraphNode<NodeView, Backend> else {

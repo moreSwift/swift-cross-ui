@@ -20,7 +20,7 @@ public protocol View {
     ///   - environment: The current environment.
     /// - Returns: The view's children as a type-erased collection of view graph
     ///   nodes.
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -40,7 +40,7 @@ public protocol View {
     ///   - children: The view's children.
     /// - Returns: The view's children in a format that can be consumed by the
     /// ``LayoutSystem``.
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: any ViewGraphNodeChildren
     ) -> [LayoutSystem.LayoutableChild]
@@ -50,7 +50,7 @@ public protocol View {
     /// A view is represented by the same widget instance for the whole time
     /// that it's visible even if its content is changing; keep that in mind
     /// while deciding the structure of the widget. For example, a view
-    /// displaying one of two children should use ``AppBackend/createContainer()``
+    /// displaying one of two children should use ``BackendFeatures/GenericContainers/createContainer()``
     /// to create a container for the displayed child instead of just directly
     /// returning the widget of the currently displayed child (which would
     /// result in you not being able to ever switch to displaying the other
@@ -61,7 +61,7 @@ public protocol View {
     ///   - children: The view's children.
     ///   - backend: The app's backend.
     /// - Returns: The view's widget created using the given backend.
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget
@@ -84,7 +84,7 @@ public protocol View {
     ///   - backend: The app's backend.
     /// - Returns: The view's computed size, along with any propagated
     ///   preferences.
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -102,7 +102,7 @@ public protocol View {
     ///     ``computeLayout(_:children:proposedSize:environment:backend:)``.
     ///   - environment: The current environment.
     ///   - backend: The app's backend.
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,
@@ -112,7 +112,7 @@ public protocol View {
 }
 
 extension View {
-    public func children<Backend: AppBackend>(
+    public func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -126,7 +126,7 @@ extension View {
 
     /// The default `View.children` implementation. Haters may see this as a
     /// composition lover re-implementing inheritance; I see it as innovation.
-    public func defaultChildren<Backend: AppBackend>(
+    public func defaultChildren<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -134,7 +134,7 @@ extension View {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    public func layoutableChildren<Backend: AppBackend>(
+    public func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: any ViewGraphNodeChildren
     ) -> [LayoutSystem.LayoutableChild] {
@@ -144,14 +144,14 @@ extension View {
     /// The default `View.layoutableChildren` implementation. Haters may see
     /// this as a composition lover re-implementing inheritance; I see it as
     /// innovation.
-    public func defaultLayoutableChildren<Backend: AppBackend>(
+    public func defaultLayoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: any ViewGraphNodeChildren
     ) -> [LayoutSystem.LayoutableChild] {
         body.layoutableChildren(backend: backend, children: children)
     }
 
-    public func asWidget<Backend: AppBackend>(
+    public func asWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {
@@ -160,7 +160,7 @@ extension View {
 
     /// The default `View.asWidget` implementation. Haters may see this as a
     /// composition lover re-implementing inheritance; I see it as innovation.
-    public func defaultAsWidget<Backend: AppBackend>(
+    public func defaultAsWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {
@@ -168,7 +168,7 @@ extension View {
         return vStack.asWidget(children, backend: backend)
     }
 
-    public func computeLayout<Backend: AppBackend>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -186,7 +186,7 @@ extension View {
 
     /// The default `View.computeLayout` implementation. Haters may see this as a
     /// composition lover re-implementing inheritance; I see it as innovation.
-    public func defaultComputeLayout<Backend: AppBackend>(
+    public func defaultComputeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -203,7 +203,7 @@ extension View {
         )
     }
 
-    public func commit<Backend: AppBackend>(
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,
@@ -219,7 +219,7 @@ extension View {
         )
     }
 
-    public func defaultCommit<Backend: AppBackend>(
+    public func defaultCommit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,

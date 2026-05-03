@@ -35,7 +35,22 @@ class WinUIApplication: SwiftApplication, @unchecked Sendable {
     }
 }
 
-public final class WinUIBackend: AppBackend {
+public final class WinUIBackend:
+    BaseAppBackend,
+    BackendFeatures.ApplicationMenus,
+    BackendFeatures.ExternalURLs,
+    BackendFeatures.IncomingURLs,
+    BackendFeatures.FileDialogs,
+    BackendFeatures.Alerts,
+    BackendFeatures.CornerRadius,
+    BackendFeatures.Gestures,
+    BackendFeatures.AttachedMenus,
+    BackendFeatures.Paths,
+    BackendFeatures.Tooltips,
+    BackendFeatures.Colors,
+    BackendFeatures.DatePickers,
+    BackendFeatures.Windowing
+{
     // Logging
     private struct LogLocation: Hashable, Equatable {
         let file: String
@@ -64,15 +79,12 @@ public final class WinUIBackend: AppBackend {
     public typealias Menu = WinUI.MenuFlyout
     public typealias Alert = WinUI.ContentDialog
     public typealias Path = GeometryGroupHolder
-    public typealias Sheet = CustomWindow // Only for protocol conformance. WinUI doesn't currently support it.
 
     public let defaultTableRowContentHeight = 20
     public let defaultTableCellVerticalPadding = 4
     public let defaultPaddingAmount = 10
     public let requiresToggleSwitchSpacer = false
     public let requiresImageUpdateOnScaleFactorChange = false
-    public let menuImplementationStyle = MenuImplementationStyle.menuButton
-    public let canRevealFiles = false
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
     public let supportedDatePickerStyles: [DatePickerStyle] = [
@@ -1520,6 +1532,10 @@ public final class WinUIBackend: AppBackend {
                 }
             handleResponse(index)
         }
+    }
+
+    public func dismissAlert(_ alert: Alert, window: Window?) {
+        try! alert.hide()
     }
 
     public func showOpenDialog(

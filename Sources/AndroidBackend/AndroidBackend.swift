@@ -72,13 +72,15 @@ extension App {
     }
 }
 
-public final class AndroidBackend: AppBackend {
+// TODO: Implement the rest of `BaseAppBackend` so we can move off of `BaseStubs`
+
+public final class AndroidBackend: BackendFeatures.BaseStubs {
     public typealias Window = Void
     public typealias Widget = AndroidKit.View
-    public typealias Menu = Never
-    public typealias Alert = Never
-    public typealias Path = Never
-    public typealias Sheet = Never
+//    public typealias Menu = Never
+//    public typealias Alert = Never
+//    public typealias Path = Never
+//    public typealias Sheet = Never
 
     static let stdoutPipe = Pipe()
     static let stderrPipe = Pipe()
@@ -86,19 +88,18 @@ public final class AndroidBackend: AppBackend {
     // TODO(stackotter): Dynamically determine the device class
     public let deviceClass = DeviceClass.phone
 
-    public let defaultTableRowContentHeight = 0
-    public let defaultTableCellVerticalPadding = 0
+//    public let defaultTableRowContentHeight = 0
+//    public let defaultTableCellVerticalPadding = 0
     public let defaultPaddingAmount = 10
     public let scrollBarWidth = 0
     public let requiresToggleSwitchSpacer = false
     public let defaultToggleStyle = ToggleStyle.checkbox
     public let requiresImageUpdateOnScaleFactorChange = false
-    public let menuImplementationStyle = MenuImplementationStyle.menuButton
-    public let canRevealFiles = false
+//    public let menuImplementationStyle = MenuImplementationStyle.menuButton
     public let supportsMultipleWindows = false
     public let supportedPickerStyles: [BackendPickerStyle] = []
     public let canOverrideWindowColorScheme = false
-    public nonisolated let supportedDatePickerStyles: [DatePickerStyle] = [.automatic]
+//    public nonisolated let supportedDatePickerStyles: [DatePickerStyle] = [.automatic]
 
     /// A reference used to keep the tickler alive.
     var tickler: MainRunLoopTickler?
@@ -134,9 +135,9 @@ public final class AndroidBackend: AppBackend {
         // TODO(stackotter): Update window theme?
     }
 
-    public func setCloseHandler(ofWindow window: Window, to action: @escaping () -> Void) {
-        // TODO(stackotter): Set close handler?
-    }
+//    public func setCloseHandler(ofWindow window: Window, to action: @escaping () -> Void) {
+//        // TODO(stackotter): Set close handler?
+//    }
 
     public func setTitle(ofWindow window: Window, to title: String) {
         // TODO(stackotter): Handle navigation titles.
@@ -164,7 +165,7 @@ public final class AndroidBackend: AppBackend {
 
     public func setSizeLimits(ofWindow window: Void, minimum minimumSize: SIMD2<Int>, maximum maximumSize: SIMD2<Int>?) {}
 
-    public func setBehaviors(ofWindow window: Void, closable: Bool, minimizable: Bool, resizable: Bool) {}
+//    public func setBehaviors(ofWindow window: Void, closable: Bool, minimizable: Bool, resizable: Bool) {}
 
     public func setResizeHandler(
         ofWindow window: Window,
@@ -180,17 +181,17 @@ public final class AndroidBackend: AppBackend {
 
     public func activate(window: Window) {}
 
-    public func setApplicationMenu(
-        _ submenus: [ResolvedMenu.Submenu],
-        environment: EnvironmentValues
-    ) {
-        // TODO(stackotter): Register app menu items as shortcuts when we support keyboard
-        //   shortcuts.
-    }
+//    public func setApplicationMenu(
+//        _ submenus: [ResolvedMenu.Submenu],
+//        environment: EnvironmentValues
+//    ) {
+//        // TODO(stackotter): Register app menu items as shortcuts when we support keyboard
+//        //   shortcuts.
+//    }
 
-    public func setIncomingURLHandler(to action: @escaping (Foundation.URL) -> Void) {
-        // TODO(stackotter): Handle incoming URLs
-    }
+//    public func setIncomingURLHandler(to action: @escaping (Foundation.URL) -> Void) {
+//        // TODO(stackotter): Handle incoming URLs
+//    }
 
     public func runInMainThread(action: @escaping @MainActor () -> Void) {
         Task { @MainActor in

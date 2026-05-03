@@ -26,7 +26,7 @@ public final class TupleSceneNode${i}<${", ".join("Scene%d: Scene" % j for j in 
     var node${j}: Scene${j}.Node
     %end
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BackendFeatures>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -49,7 +49,7 @@ public final class TupleSceneNode${i}<${", ".join("Scene%d: Scene" % j for j in 
         )
     }
 
-    public func update<Backend: AppBackend>(
+    public func update<Backend: BackendFeatures>(
         backend: Backend,
         environment: EnvironmentValues
     ) {

@@ -23,7 +23,7 @@ public struct HotReloadableView: TypeSafeView {
         self.child = child()
     }
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -37,7 +37,7 @@ public struct HotReloadableView: TypeSafeView {
         )
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: HotReloadableViewChildren,
         backend: Backend
     ) -> Backend.Widget {
@@ -51,7 +51,7 @@ public struct HotReloadableView: TypeSafeView {
     /// view graph sub tree's state onto the new view graph sub tree. This is not possible to do
     /// perfectly by definition, so if we can't successfully transfer the state of the sub tree
     /// we just fall back on the failing view's default state.
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: HotReloadableViewChildren,
         proposedSize: ProposedViewSize,
@@ -88,7 +88,7 @@ public struct HotReloadableView: TypeSafeView {
         return result
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: HotReloadableViewChildren,
         layout: ViewLayoutResult,
@@ -123,7 +123,7 @@ class HotReloadableViewChildren: ViewGraphNodeChildren {
     var hasChangedChild = true
 
     /// Creates the erased child node and wraps the child's widget in a single-child container.
-    init<Backend: AppBackend>(
+    init<Backend: BaseAppBackend>(
         from view: HotReloadableView,
         backend: Backend,
         snapshot: ViewGraphSnapshotter.NodeSnapshot?,

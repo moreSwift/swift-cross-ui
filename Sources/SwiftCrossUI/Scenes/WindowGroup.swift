@@ -44,7 +44,7 @@ public final class WindowGroupNode<Content: View>: SceneGraphNode {
     /// The underlying scene.
     private var scene: WindowGroup<Content>
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: WindowGroup<Content>,
         backend: Backend,
         environment: EnvironmentValues
@@ -81,7 +81,7 @@ public final class WindowGroupNode<Content: View>: SceneGraphNode {
         return .leafScene()
     }
 
-    public func update<Backend: AppBackend>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {

@@ -48,7 +48,7 @@ package struct InspectView<Child: View> {
 extension InspectView: View {
     package var body: some View { EmptyView() }
 
-    package func asWidget<Backend: AppBackend>(
+    package func asWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {
@@ -60,7 +60,7 @@ extension InspectView: View {
         return widget
     }
 
-    package func children<Backend: AppBackend>(
+    package func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -68,14 +68,14 @@ extension InspectView: View {
         child.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    package func layoutableChildren<Backend: AppBackend>(
+    package func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: any ViewGraphNodeChildren
     ) -> [LayoutSystem.LayoutableChild] {
         child.layoutableChildren(backend: backend, children: children)
     }
 
-    package func computeLayout<Backend: AppBackend>(
+    package func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -96,7 +96,7 @@ extension InspectView: View {
         return result
     }
 
-    package func commit<Backend: AppBackend>(
+    package func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,

@@ -93,17 +93,16 @@ public struct EnvironmentValues {
     /// to focus stealing prevention).
     @MainActor
     func bringWindowForward() {
-        func activate<Backend: AppBackend>(with backend: Backend) {
+        func activate<Backend: BaseAppBackend>(with backend: Backend) {
             backend.activate(window: window as! Backend.Window)
         }
         activate(with: backend)
-        logger.info("window activated")
     }
 
     /// The backend in use.
     ///
     /// Mustn't change throughout the app's lifecycle.
-    let backend: any AppBackend
+    let backend: any BaseAppBackend
 
     /// Presents an 'Open file' dialog fit for selecting a single file.
     ///
@@ -151,6 +150,9 @@ public struct EnvironmentValues {
     ///
     /// May present an application picker if multiple applications are registered
     /// for the given URL protocol.
+    ///
+    /// `nil` on platforms that don't support opening external URLS (none at the
+    /// moment).
     @MainActor
     public var openURL: OpenURLAction {
         OpenURLAction(backend: backend)
@@ -201,18 +203,17 @@ public struct EnvironmentValues {
     ///
     /// - Parameters:
     ///   - backend: The app's backend.
-    package init<Backend: AppBackend>(backend: Backend) {
+    package init<Backend: BaseAppBackend>(backend: Backend) {
         self.backend = backend
 
         onResize = { _ in }
         values = [:]
         observableObjects = [:]
 
-        let supportedDatePickerStyles = backend.supportedDatePickerStyles
-        if supportedDatePickerStyles.isEmpty {
-            self.supportedDatePickerStyles = [.automatic]
+        if let backend = backend as? any BackendFeatures.DatePickers {
+            self.supportedDatePickerStyles = backend.supportedDatePickerStyles
         } else {
-            self.supportedDatePickerStyles = supportedDatePickerStyles
+            self.supportedDatePickerStyles = [.automatic]
         }
     }
 

@@ -62,7 +62,7 @@ public struct Menu {
 extension Menu: TypeSafeView {
     public var body: EmptyView { return EmptyView() }
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -70,21 +70,22 @@ extension Menu: TypeSafeView {
         MenuStorage()
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: MenuStorage,
         backend: Backend
     ) -> Backend.Widget {
         return backend.createButton()
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: MenuStorage
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    func computeLayout<Backend: AppBackend>(
+    @CastBackend<BackendFeatures.MenuButtons>(backendGenericName: "NewBackend")
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: MenuStorage,
         proposedSize: ProposedViewSize,
@@ -97,7 +98,7 @@ extension Menu: TypeSafeView {
 
         // Update the button before measuring its natural size
         switch backend.menuImplementationStyle {
-            case .dynamicPopover:
+            case .dynamicPopover(let backend):
                 // Our menu button action implementation needs to know the size
                 // of the button, but we don't have that yet, so just update it
                 // with an empty action and fix it in commit.
@@ -107,9 +108,9 @@ extension Menu: TypeSafeView {
                     environment: environment,
                     action: {}
                 )
-            case .menuButton:
+            case .menuButton(let backend):
                 let menu =
-                    children.menu.flatMap { $0 as? Backend.Menu }
+                    children.menu.flatMap { $0 as? NewBackend.Menu }
                     ?? backend.createPopoverMenu()
                 children.menu = menu
                 backend.updateButton(
@@ -125,7 +126,8 @@ extension Menu: TypeSafeView {
         return ViewLayoutResult.leafView(size: ViewSize(size))
     }
 
-    func commit<Backend: AppBackend>(
+    @CastBackend<BackendFeatures.MenuButtons>(backendGenericName: "NewBackend")
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: MenuStorage,
         layout: ViewLayoutResult,
@@ -136,7 +138,7 @@ extension Menu: TypeSafeView {
         backend.setSize(of: widget, to: size.vector)
 
         switch backend.menuImplementationStyle {
-            case .dynamicPopover:
+            case .dynamicPopover(let backend):
                 backend.updateButton(
                     widget,
                     label: label,
@@ -163,16 +165,16 @@ extension Menu: TypeSafeView {
                 if let menu = children.menu {
                     let content = resolve().content
                     backend.updatePopoverMenu(
-                        menu as! Backend.Menu,
+                        menu as! NewBackend.Menu,
                         content: content,
                         environment: environment
                     )
                 }
-            case .menuButton:
+            case .menuButton(let backend):
                 // We can assume that computeLayout has already run, so children.menu
                 // will already be correctly initialized.
                 let content = resolve().content
-                let menu = children.menu! as! Backend.Menu
+                let menu = children.menu! as! NewBackend.Menu
                 backend.updatePopoverMenu(
                     menu,
                     content: content,

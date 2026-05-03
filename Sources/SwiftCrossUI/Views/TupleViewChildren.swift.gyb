@@ -13,7 +13,7 @@ protocol TupleViewChildren: ViewGraphNodeChildren {
 /// helps compress the generated code a bit and minimise the number of additions
 /// and deletions caused by updating the generator.
 @MainActor
-private func node<V: View, Backend: AppBackend>(
+private func node<V: View, Backend: BaseAppBackend>(
     for view: V,
     _ backend: Backend,
     _ snapshot: ViewGraphSnapshotter.NodeSnapshot?,
@@ -60,7 +60,7 @@ public class TupleViewChildren${i + 1}<${struct_type_parameters}>: TupleViewChil
     % end
 
     /// Creates the nodes for ${i + 1} child views.
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         ${" ".join("_ %s: %s," % (child.lower(), child) for child in children)}
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,

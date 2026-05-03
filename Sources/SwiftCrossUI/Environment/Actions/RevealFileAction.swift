@@ -3,25 +3,13 @@ import Foundation
 /// Reveals a file in the system's file manager.
 @MainActor
 public struct RevealFileAction {
-    let action: (URL) -> Void
+    let backend: any BackendFeatures.RevealFiles
 
-    init?<Backend: AppBackend>(backend: Backend) {
-        guard backend.canRevealFiles else {
+    init?<Backend: BaseAppBackend>(backend: Backend) {
+        guard let backend = backend as? any BackendFeatures.RevealFiles else {
             return nil
         }
-
-        action = { file in
-            do {
-                try backend.revealFile(file)
-            } catch {
-                logger.warning(
-                    "failed to reveal file",
-                    metadata: [
-                        "url": "\(file)",
-                        "error": "\(error)",
-                    ])
-            }
-        }
+        self.backend = backend
     }
 
     /// Reveals a file in the system's file manager.
@@ -30,6 +18,16 @@ public struct RevealFileAction {
     ///
     /// - Parameter file: The file to reveal.
     public func callAsFunction(_ file: URL) {
-        action(file)
+        do {
+            try backend.revealFile(file)
+        } catch {
+            logger.warning(
+                "failed to reveal file",
+                metadata: [
+                    "url": "\(file)",
+                    "error": "\(error)",
+                ]
+            )
+        }
     }
 }

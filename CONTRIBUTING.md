@@ -78,6 +78,7 @@ Here are a few rules regarding special files;
 2. Use `logger` to log warnings and errors. 
 3. Avoid using positional closure parameters (e.g. `$0`, `$1`) for non-trivial closures (generally those that don't fit on a single line). Give the parameter a name and use that instead.
 4. Use `guard` statements where possible, especially when introducing early returns, as they are easier to skim read than if statements (as long as you understand the condition, you can skip over the body of the guard statement knowing that it will exit the current scope no matter what).
+5. When adding new backend methods, refer to the [appropriate documentation article](<./Sources/SwiftCrossUI/SwiftCrossUI.docc/Adding new backend methods.md>) for how to organize backend methods and protocols, as well as for general style guidelines.
 
 ## 7. Code formatting
 
@@ -216,7 +217,7 @@ usual documentation comments.
 ///   - environment: The environment to compute the layout in.
 ///   - backend: The backend used to create the widget.
 /// - Returns: The view's computed layout result.
-func computeLayout<Backend: AppBackend>(
+func computeLayout<Backend: BaseAppBackend>(
     _ widget: Backend.Widget,
     children: any ViewGraphNodeChildren,
     proposedSize: ProposedViewSize,

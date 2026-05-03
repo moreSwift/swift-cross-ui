@@ -24,7 +24,7 @@ package var logger: Logger {
 @MainActor
 public protocol App {
     /// The backend used to render the app.
-    associatedtype Backend: AppBackend
+    associatedtype Backend: BaseAppBackend
     /// The type of scene representing the content of the app.
     associatedtype Body: Scene
 

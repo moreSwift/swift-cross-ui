@@ -2,7 +2,17 @@ import Logging
 import SwiftCrossUI
 import UIKit
 
-public final class UIKitBackend: AppBackend {
+public final class UIKitBackend:
+    BaseAppBackend,
+    BackendFeatures.ExternalURLs,
+    BackendFeatures.IncomingURLs,
+    BackendFeatures.Alerts,
+    BackendFeatures.Sheets,
+    BackendFeatures.CornerRadius,
+    BackendFeatures.Paths,
+    BackendFeatures.Tooltips,
+    BackendFeatures.Colors
+{
     static var onWindowEnvironmentChange: (() -> Void)?
     static var onBecomeActive: (() -> Void)?
     static var onReceiveURL: ((URL) -> Void)?
@@ -17,7 +27,6 @@ public final class UIKitBackend: AppBackend {
     public let scrollBarWidth = 0
     public let defaultPaddingAmount = 15
     public let requiresToggleSwitchSpacer = true
-    public let menuImplementationStyle = MenuImplementationStyle.menuButton
 
     // TODO: When tables are supported, update these
     public let defaultTableRowContentHeight = -1
@@ -25,7 +34,6 @@ public final class UIKitBackend: AppBackend {
 
     public let requiresImageUpdateOnScaleFactorChange = false
 
-    public let canRevealFiles = false
     public let supportsMultipleWindows = false
     public let canOverrideWindowColorScheme = true
 
@@ -46,20 +54,6 @@ public final class UIKitBackend: AppBackend {
             @unknown default:
                 .tablet
         }
-    }
-
-    public nonisolated var supportedDatePickerStyles: [DatePickerStyle] {
-        #if os(tvOS)
-            []
-        #else
-            if #available(iOS 14, macCatalyst 14, *) {
-                [.automatic, .graphical, .compact, .wheel]
-            } else if #available(iOS 13.4, macCatalyst 13.4, *) {
-                [.automatic, .compact, .wheel]
-            } else {
-                [.automatic]
-            }
-        #endif
     }
 
     public var defaultPickerStyle: BackendPickerStyle {
@@ -252,6 +246,25 @@ public final class UIKitBackend: AppBackend {
 
     public func openExternalURL(_ url: URL) throws {
         UIApplication.shared.open(url)
+    }
+
+    // MARK: - Unimplemented Features
+
+    public func createToggle() -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updateToggle(
+        _ toggle: Widget,
+        label: String,
+        environment: EnvironmentValues,
+        onChange: @escaping (Bool) -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setState(ofToggle toggle: Widget, to state: Bool) {
+        fatalError("\(Self.self): \(#function) not implemented")
     }
 }
 

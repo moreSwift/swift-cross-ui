@@ -12,12 +12,26 @@ extension App {
     }
 }
 
-public final class Gtk3Backend: AppBackend {
+public final class Gtk3Backend:
+    BaseAppBackend,
+    BackendFeatures.IncomingURLs,
+    BackendFeatures.ExternalURLs,
+    BackendFeatures.RevealFiles,
+    BackendFeatures.ApplicationMenus,
+    BackendFeatures.FileDialogs,
+    BackendFeatures.Alerts,
+    BackendFeatures.CornerRadius,
+    BackendFeatures.TapGestures,
+    BackendFeatures.PopoverMenus,
+    BackendFeatures.Paths,
+    BackendFeatures.Tooltips,
+    BackendFeatures.Colors,
+    BackendFeatures.Windowing
+{
     public typealias Window = Gtk3.ApplicationWindow
     public typealias Widget = Gtk3.Widget
     public typealias Menu = Gtk3.Menu
     public typealias Alert = Gtk3.MessageDialog
-    public typealias Sheet = Gtk3.Window
 
     public final class Path {
         var path: SwiftCrossUI.Path?
@@ -30,11 +44,8 @@ public final class Gtk3Backend: AppBackend {
     public let requiresToggleSwitchSpacer = false
     public let scrollBarWidth = 0
     public let requiresImageUpdateOnScaleFactorChange = true
-    public let menuImplementationStyle = MenuImplementationStyle.dynamicPopover
-    public let canRevealFiles = true
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
-    public let supportedDatePickerStyles: [DatePickerStyle] = []
     public let supportedPickerStyles: [BackendPickerStyle] = []
     public let canOverrideWindowColorScheme = false
 
@@ -73,7 +84,7 @@ public final class Gtk3Backend: AppBackend {
         #endif
     }
 
-    // A separate initializer to satisfy ``AppBackend``'s requirements.
+    // A separate initializer to satisfy `BackendFeatures.Core`'s requirements.
     public convenience init() {
         self.init(appIdentifier: nil)
     }
@@ -1699,6 +1710,28 @@ public final class Gtk3Backend: AppBackend {
         }
 
         return properties
+    }
+
+    // MARK: - Unimplemented Features
+
+    public func createPicker(style: BackendPickerStyle) -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updatePicker(
+        _ picker: Widget,
+        options: [String],
+        environment: EnvironmentValues,
+        onChange: @escaping (Int?) -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setSelectedOption(
+        ofPicker picker: Widget,
+        to selectedOption: Int?
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
     }
 }
 

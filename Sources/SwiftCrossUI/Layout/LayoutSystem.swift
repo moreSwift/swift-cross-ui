@@ -108,7 +108,7 @@ public enum LayoutSystem {
     ///   ``Group`` to avoid changing stack layout participation (since ``Group``
     ///   is meant to appear completely invisible to the layout system).
     @MainActor
-    static func computeStackLayout<Backend: AppBackend>(
+    static func computeStackLayout<Backend: BaseAppBackend>(
         container: Backend.Widget,
         children: [LayoutableChild],
         cache: inout StackLayoutCache,
@@ -324,7 +324,7 @@ public enum LayoutSystem {
     }
 
     @MainActor
-    static func commitStackLayout<Backend: AppBackend>(
+    static func commitStackLayout<Backend: BaseAppBackend>(
         container: Backend.Widget,
         children: [LayoutableChild],
         cache: inout StackLayoutCache,

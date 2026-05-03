@@ -7,7 +7,7 @@
 public struct InlinePickerStyle: PickerStyle, _BuiltinPickerStyle {
     public nonisolated init() {}
 
-    public func _asBackendPickerStyle<Backend: AppBackend>(backend: Backend) -> BackendPickerStyle {
+    public func _asBackendPickerStyle<Backend: BaseAppBackend>(backend: Backend) -> BackendPickerStyle {
         // If the backend only supports .menu, or doesn't support pickers at
         // all, then inline pickers aren't supported regardless -- so it doesn't
         // matter which of the three is returned in that case.

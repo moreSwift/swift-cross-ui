@@ -6,7 +6,7 @@ public struct _BuiltinPickerImplementation: TypeSafeView {
     var options: [String]
     var selectedIndex: Binding<Int?>
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -18,14 +18,14 @@ public struct _BuiltinPickerImplementation: TypeSafeView {
         )
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: BuiltinPickerChildren,
         backend: Backend
     ) -> Backend.Widget {
         children.container.widget as! Backend.Widget
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: BuiltinPickerChildren,
         proposedSize: ProposedViewSize,
@@ -72,7 +72,7 @@ public struct _BuiltinPickerImplementation: TypeSafeView {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: BuiltinPickerChildren,
         layout: ViewLayoutResult,

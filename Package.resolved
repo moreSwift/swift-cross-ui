@@ -1,20 +1,13 @@
 {
+  "originHash" : "1ab616f4e066c05334e087fd60fbd4cb842e764b1f7b59093a9a799fcd9d94fe",
   "pins" : [
     {
       "identity" : "androidkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/moreSwift/AndroidKit",
       "state" : {
-        "revision" : "c4517cf574cbd203ee6549fb0997ed1ae2f3e459"
-      }
-    },
-    {
-      "identity" : "javalang",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/PureSwift/JavaLang.git",
-      "state" : {
-        "branch" : "master",
-        "revision" : "1b7320afd8d40a669422ee61d5335ae6d647dce5"
+        "revision" : "ef885e5d6248397b520327799dec1d3ddc808819",
+        "version" : "0.7.1"
       }
     },
     {
@@ -24,15 +17,6 @@
       "state" : {
         "revision" : "a27e47f49479993b2541bc5f5c95d9354ed567a0",
         "version" : "1.0.2"
-      }
-    },
-    {
-      "identity" : "kotlin",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/PureSwift/Kotlin.git",
-      "state" : {
-        "branch" : "master",
-        "revision" : "88a9bb94d156ef95d177bc6a65580dfacdda4b13"
       }
     },
     {
@@ -58,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-android-sdk/swift-android-native.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "610ff27be7ce866f4a6a5ed4735d6f5339e27dd9"
+        "revision" : "86554f67e706892f202cf02a6ce7def19acb42a1",
+        "version" : "2.0.0"
       }
     },
     {
@@ -85,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections",
       "state" : {
-        "revision" : "6675bc0ff86e61436e615df6fc5174e043e57924",
-        "version" : "1.4.1"
+        "revision" : "7b847a3b7008b2dc2f47ca3110d8c782fb2e5c7e",
+        "version" : "1.3.0"
       }
     },
     {
@@ -130,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-java",
       "state" : {
-        "branch" : "main",
-        "revision" : "e7e9ba0cccee75be776fb666881200fdd85c7f2d"
+        "revision" : "3d52a15db42c4d5ef322fde074626106b9bf82d7",
+        "version" : "0.2.0"
       }
     },
     {
@@ -139,8 +123,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-java-jni-core",
       "state" : {
-        "branch" : "main",
-        "revision" : "b440a0be98381550cf189c903782e817619ffa05"
+        "revision" : "b440a0be98381550cf189c903782e817619ffa05",
+        "version" : "0.5.1"
       }
     },
     {
@@ -243,6 +227,24 @@
       }
     },
     {
+      "identity" : "swiftjavalang",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stackotter/SwiftJavaLang.git",
+      "state" : {
+        "revision" : "b60871fd650b81b142a1d6a62d7d440ea1e9bff7",
+        "version" : "0.2.1"
+      }
+    },
+    {
+      "identity" : "swiftkotlin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stackotter/SwiftKotlin.git",
+      "state" : {
+        "revision" : "f408b73ebb86a33411f27a668e2d843a10f007c2",
+        "version" : "0.2.1"
+      }
+    },
+    {
       "identity" : "xmlcoder",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/CoreOffice/XMLCoder",
@@ -261,5 +263,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

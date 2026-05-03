@@ -17,7 +17,7 @@ struct OnAppearModifier<Content: View>: View {
     var body: TupleView1<Content>
     var action: @MainActor () -> Void
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {

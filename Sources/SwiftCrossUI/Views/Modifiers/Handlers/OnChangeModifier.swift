@@ -31,7 +31,7 @@ struct OnChangeModifier<Value: Equatable, Content: View>: View {
     var initial: Bool
 
     // TODO: Should this go in computeLayout or commit?
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,

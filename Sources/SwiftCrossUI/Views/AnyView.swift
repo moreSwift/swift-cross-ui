@@ -16,7 +16,7 @@ public struct AnyView: TypeSafeView {
         self.child = child
     }
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -30,7 +30,7 @@ public struct AnyView: TypeSafeView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: AnyViewChildren
     ) -> [LayoutSystem.LayoutableChild] {
@@ -39,7 +39,7 @@ public struct AnyView: TypeSafeView {
         body.layoutableChildren(backend: backend, children: children)
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: AnyViewChildren,
         backend: Backend
     ) -> Backend.Widget {
@@ -52,7 +52,7 @@ public struct AnyView: TypeSafeView {
     /// Attempts to update the child. If the initial update fails then it means that the child's
     /// concrete type has changed and we must recreate the child node and swap out our current
     /// child widget with the new view's widget.
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: AnyViewChildren,
         proposedSize: ProposedViewSize,
@@ -88,7 +88,7 @@ public struct AnyView: TypeSafeView {
         return result
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: AnyViewChildren,
         layout: ViewLayoutResult,
@@ -123,7 +123,7 @@ class AnyViewChildren: ViewGraphNodeChildren {
     }
 
     /// Creates the erased child node and wraps the child's widget in a single-child container.
-    init<Backend: AppBackend>(
+    init<Backend: BaseAppBackend>(
         from view: AnyView,
         backend: Backend,
         snapshot: ViewGraphSnapshotter.NodeSnapshot?,

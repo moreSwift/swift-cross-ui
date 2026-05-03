@@ -495,41 +495,7 @@ extension UIKitBackend {
         wrapper.setOn(state)
     }
 
-    public func createTapGestureTarget(wrapping child: Widget, gesture _: TapGesture) -> Widget {
-        TappableWidget(child: child)
-    }
-
-    public func updateTapGestureTarget(
-        _ tapGestureTarget: Widget,
-        gesture: TapGesture,
-        environment: EnvironmentValues,
-        action: @escaping () -> Void
-    ) {
-        let wrapper = tapGestureTarget as! TappableWidget
-        switch gesture.kind {
-            case .primary:
-                wrapper.onTap = environment.isEnabled ? action : {}
-                wrapper.onLongPress = nil
-            case .secondary, .longPress:
-                wrapper.onTap = nil
-                wrapper.onLongPress = environment.isEnabled ? action : {}
-        }
-    }
-
     #if os(iOS) || os(visionOS) || targetEnvironment(macCatalyst)
-        public func createHoverTarget(wrapping child: Widget) -> Widget {
-            HoverableWidget(child: child)
-        }
-
-        public func updateHoverTarget(
-            _ hoverTarget: any WidgetProtocol,
-            environment: EnvironmentValues,
-            action: @escaping (Bool) -> Void
-        ) {
-            let wrapper = hoverTarget as! HoverableWidget
-            wrapper.hoverChangesHandler = action
-        }
-
         public func createSlider() -> Widget {
             SliderWidget()
         }
@@ -553,6 +519,77 @@ extension UIKitBackend {
         public func setValue(ofSlider slider: Widget, to value: Double) {
             let sliderWidget = slider as! SliderWidget
             sliderWidget.child.setValue(Float(value), animated: true)
+        }
+    #else
+        public func createSlider() -> Widget {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func updateSlider(
+            _ slider: Widget,
+            minimum: Double,
+            maximum: Double,
+            decimalPlaces: Int,
+            environment: EnvironmentValues,
+            onChange: @escaping (Double) -> Void
+        ) {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func setValue(ofSlider slider: Widget, to value: Double) {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+    #endif
+}
+
+extension UIKitBackend: BackendFeatures.TapGestures {
+    public func createTapGestureTarget(wrapping child: Widget, gesture _: TapGesture) -> Widget {
+        TappableWidget(child: child)
+    }
+
+    public func updateTapGestureTarget(
+        _ tapGestureTarget: Widget,
+        gesture: TapGesture,
+        environment: EnvironmentValues,
+        action: @escaping () -> Void
+    ) {
+        let wrapper = tapGestureTarget as! TappableWidget
+        switch gesture.kind {
+            case .primary:
+                wrapper.onTap = environment.isEnabled ? action : {}
+                wrapper.onLongPress = nil
+            case .secondary, .longPress:
+                wrapper.onTap = nil
+                wrapper.onLongPress = environment.isEnabled ? action : {}
+        }
+    }
+}
+
+#if os(iOS) || os(visionOS) || targetEnvironment(macCatalyst)
+    extension UIKitBackend: BackendFeatures.HoverGestures {
+        public func createHoverTarget(wrapping child: Widget) -> Widget {
+            HoverableWidget(child: child)
+        }
+
+        public func updateHoverTarget(
+            _ hoverTarget: any WidgetProtocol,
+            environment: EnvironmentValues,
+            action: @escaping (Bool) -> Void
+        ) {
+            let wrapper = hoverTarget as! HoverableWidget
+            wrapper.hoverChangesHandler = action
+        }
+    }
+
+    extension UIKitBackend: BackendFeatures.DatePickers {
+        public nonisolated var supportedDatePickerStyles: [DatePickerStyle] {
+            if #available(iOS 14, macCatalyst 14, *) {
+                [.automatic, .graphical, .compact, .wheel]
+            } else if #available(iOS 13.4, macCatalyst 13.4, *) {
+                [.automatic, .compact, .wheel]
+            } else {
+                [.automatic]
+            }
         }
 
         public func createDatePicker() -> Widget {
@@ -581,11 +618,11 @@ extension UIKitBackend {
             datePickerWidget.child.datePickerMode =
                 switch components {
                     case [.date, .hourAndMinute]:
-                        .dateAndTime
+                            .dateAndTime
                     case .date:
-                        .date
+                            .date
                     case .hourAndMinute:
-                        .time
+                            .time
                     default:
                         // Crashing upon receiving [] is consistent with SwiftUI.
                         fatalError("Unexpected Components: \(components)")
@@ -608,5 +645,5 @@ extension UIKitBackend {
                 }
             }
         }
-    #endif
-}
+    }
+#endif

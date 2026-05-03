@@ -68,7 +68,7 @@ public struct ViewGraphSnapshotter: ErasedViewGraphNodeTransformer {
 
     public init() {}
 
-    public func transform<U: View, Backend: AppBackend>(
+    public func transform<U: View, Backend: BaseAppBackend>(
         node: ViewGraphNode<U, Backend>
     ) -> NodeSnapshot {
         Self.snapshot(of: AnyViewGraphNode(node))

@@ -2,7 +2,7 @@ import Foundation
 
 /// Presents a 'Save file' dialog fit for selecting a save destination.
 public struct PresentFileSaveDialogAction: Sendable {
-    let backend: any AppBackend
+    let backend: any BaseAppBackend
     let window: MainActorBox<Any?>
 
     /// Presents a 'Save file' dialog fit for selecting a save destination.
@@ -32,7 +32,12 @@ public struct PresentFileSaveDialogAction: Sendable {
         nameFieldLabel: String? = nil,
         defaultFileName: String? = nil
     ) async -> URL? {
-        func chooseFile<Backend: AppBackend>(backend: Backend) async -> URL? {
+        guard let backend = backend as? any BackendFeatures.FileSaveDialogs else {
+            logger.warnOnce("\(type(of: backend)) does not support file save dialogs")
+            return nil
+        }
+
+        func chooseFile<Backend: BackendFeatures.FileSaveDialogs>(backend: Backend) async -> URL? {
             return await withCheckedContinuation { continuation in
                 backend.runInMainThread {
                     let window = self.window.value.map { $0 as! Backend.Window }
@@ -62,7 +67,6 @@ public struct PresentFileSaveDialogAction: Sendable {
                 }
             }
         }
-
         return await chooseFile(backend: backend)
     }
 }

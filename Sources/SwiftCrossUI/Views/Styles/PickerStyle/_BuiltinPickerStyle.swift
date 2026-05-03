@@ -1,7 +1,7 @@
 /// A built-in picker style backed by a backend-supported picker widget.
 public protocol _BuiltinPickerStyle {
     @MainActor
-    func _asBackendPickerStyle<Backend: AppBackend>(backend: Backend) -> BackendPickerStyle
+    func _asBackendPickerStyle<Backend: BaseAppBackend>(backend: Backend) -> BackendPickerStyle
 }
 
 extension PickerStyle where Self: _BuiltinPickerStyle {
@@ -21,7 +21,7 @@ extension PickerStyle where Self: _BuiltinPickerStyle {
         )
     }
 
-    public func isSupported<Backend: AppBackend>(backend: Backend) -> Bool {
+    public func isSupported<Backend: BaseAppBackend>(backend: Backend) -> Bool {
         backend.supportedPickerStyles.contains(_asBackendPickerStyle(backend: backend))
     }
 }

@@ -94,7 +94,7 @@ public class Publisher {
     /// If the provided backend has the notion of a main thread, then the update
     /// handler will end up on that thread, but regardless of backend it's
     /// guaranteed that updates will always run serially.
-    func observeAsUIUpdater<Backend: AppBackend>(
+    func observeAsUIUpdater<Backend: BaseAppBackend>(
         backend: Backend,
         action: @escaping @MainActor @Sendable () -> Void
     ) -> Cancellable {

@@ -19,7 +19,7 @@ final class WindowReference<SceneType: WindowingScene> {
     /// - Parameters:
     ///   - closeHandler: The action to perform when the window is closed. Should
     ///     dispose of the scene's reference to this `WindowReference`.
-    init<Backend: AppBackend>(
+    init<Backend: BaseAppBackend>(
         scene: SceneType,
         backend: Backend,
         environment: EnvironmentValues,
@@ -45,7 +45,12 @@ final class WindowReference<SceneType: WindowingScene> {
         self.window = window
         parentEnvironment = environment
 
-        backend.setCloseHandler(ofWindow: window, to: closeHandler)
+        if let backend = backend as? any BackendFeatures.WindowClosing {
+            func setCloseHandler<NewBackend: BackendFeatures.WindowClosing>(backend: NewBackend) {
+                backend.setCloseHandler(ofWindow: window as! NewBackend.Window, to: closeHandler)
+            }
+            setCloseHandler(backend: backend)
+        }
 
         backend.setResizeHandler(ofWindow: window) { [weak self] newSize in
             guard let self else { return }
@@ -74,7 +79,7 @@ final class WindowReference<SceneType: WindowingScene> {
         }
     }
 
-    func update<Backend: AppBackend>(
+    func update<Backend: BaseAppBackend>(
         _ newScene: SceneType?,
         backend: Backend,
         environment: EnvironmentValues
@@ -122,7 +127,7 @@ final class WindowReference<SceneType: WindowingScene> {
     ///   - windowSizeIsFinal: If true, no further resizes can/will be made. This
     ///     is true on platforms that don't support programmatic window resizing,
     ///     and when a window is full screen.
-    private func update<Backend: AppBackend>(
+    private func update<Backend: BaseAppBackend>(
         _ newScene: SceneType?,
         proposedWindowSize: SIMD2<Int>,
         needsWindowSizeCommit: Bool,
@@ -263,15 +268,20 @@ final class WindowReference<SceneType: WindowingScene> {
             backend.setSize(ofWindow: window, to: proposedWindowSize)
         }
 
-        backend.setBehaviors(
-            ofWindow: window,
-            closable:
-                finalContentResult.preferences.windowDismissBehavior?.isEnabled ?? true,
-            minimizable:
-                finalContentResult.preferences.preferredWindowMinimizeBehavior?.isEnabled ?? true,
-            resizable:
-                finalContentResult.preferences.windowResizeBehavior?.isEnabled ?? true
-        )
+        if let backend = backend as? any BackendFeatures.WindowBehaviors {
+            func setBehaviors<NewBackend: BackendFeatures.WindowBehaviors>(backend: NewBackend) {
+                backend.setBehaviors(
+                    ofWindow: window as! NewBackend.Window,
+                    closable:
+                        finalContentResult.preferences.windowDismissBehavior?.isEnabled ?? true,
+                    minimizable:
+                        finalContentResult.preferences.preferredWindowMinimizeBehavior?.isEnabled ?? true,
+                    resizable:
+                        finalContentResult.preferences.windowResizeBehavior?.isEnabled ?? true
+                )
+            }
+            setBehaviors(backend: backend)
+        }
 
         // Generally just used to update the window color scheme
         backend.updateWindow(window, environment: environment)
@@ -286,7 +296,7 @@ final class WindowReference<SceneType: WindowingScene> {
         }
     }
 
-    func activate<Backend: AppBackend>(backend: Backend) {
+    func activate<Backend: BaseAppBackend>(backend: Backend) {
         guard let window = window as? Backend.Window else {
             fatalError("Scene updated with a backend incompatible with the window it was given")
         }
@@ -294,7 +304,7 @@ final class WindowReference<SceneType: WindowingScene> {
         backend.activate(window: window)
     }
 
-    private func updateEnvironment<Backend: AppBackend>(
+    private func updateEnvironment<Backend: BaseAppBackend>(
         _ environment: inout EnvironmentValues,
         viewLayoutResult: ViewLayoutResult,
         outerColorScheme: ColorScheme,

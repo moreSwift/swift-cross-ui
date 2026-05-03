@@ -24,11 +24,11 @@ public protocol PickerStyle: Sendable {
     ///
     /// The default implementation always returns `true`.
     /// - Parameter backend: The backend being queried for support.
-    func isSupported<Backend: AppBackend>(backend: Backend) -> Bool
+    func isSupported<Backend: BaseAppBackend>(backend: Backend) -> Bool
 }
 
 extension PickerStyle {
-    public func isSupported<Backend: AppBackend>(backend: Backend) -> Bool {
+    public func isSupported<Backend: BaseAppBackend>(backend: Backend) -> Bool {
         // Custom picker styles are supported on all platforms by default.
         true
     }

@@ -94,7 +94,7 @@ extension View where Self: UIViewControllerRepresentable {
         preconditionFailure("This should never be called")
     }
 
-    public func children<Backend: AppBackend>(
+    public func children<Backend: BaseAppBackend>(
         backend _: Backend,
         snapshots _: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment _: EnvironmentValues
@@ -102,14 +102,14 @@ extension View where Self: UIViewControllerRepresentable {
         EmptyViewChildren()
     }
 
-    public func layoutableChildren<Backend: AppBackend>(
+    public func layoutableChildren<Backend: BaseAppBackend>(
         backend _: Backend,
         children _: any ViewGraphNodeChildren
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    public func asWidget<Backend: AppBackend>(
+    public func asWidget<Backend: BaseAppBackend>(
         _: any ViewGraphNodeChildren,
         backend _: Backend
     ) -> Backend.Widget {
@@ -120,7 +120,7 @@ extension View where Self: UIViewControllerRepresentable {
         }
     }
 
-    public func computeLayout<Backend: AppBackend>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children _: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -139,7 +139,7 @@ extension View where Self: UIViewControllerRepresentable {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    public func commit<Backend: AppBackend>(
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,

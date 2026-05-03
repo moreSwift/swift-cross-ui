@@ -8,7 +8,7 @@ struct CornerRadiusModifier<Content: View>: View {
     var body: Content
     var cornerRadius: Int
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -16,21 +16,21 @@ struct CornerRadiusModifier<Content: View>: View {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {
         body.asWidget(children, backend: backend)
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: any ViewGraphNodeChildren
     ) -> [LayoutSystem.LayoutableChild] {
         body.layoutableChildren(backend: backend, children: children)
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -46,7 +46,7 @@ struct CornerRadiusModifier<Content: View>: View {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,
@@ -68,6 +68,15 @@ struct CornerRadiusModifier<Content: View>: View {
             environment: environment,
             backend: backend
         )
-        backend.setCornerRadius(of: widget, to: cornerRadius)
+
+        guard let backend = backend as? any BackendFeatures.CornerRadius else {
+            logger.warnOnce("\(Backend.self) doesn't support setting corner radii")
+            return
+        }
+
+        setRadius(backend: backend)
+        func setRadius<Backend2: BackendFeatures.CornerRadius>(backend: Backend2) {
+            backend.setCornerRadius(of: widget as! Backend2.Widget, to: cornerRadius)
+        }
     }
 }

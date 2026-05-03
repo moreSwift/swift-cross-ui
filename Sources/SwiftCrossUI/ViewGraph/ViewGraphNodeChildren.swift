@@ -15,7 +15,7 @@ public protocol ViewGraphNodeChildren {
 extension ViewGraphNodeChildren {
     /// Gets the node's type-erased widgets for a specific backend (crashing if the
     /// widgets were created by a different backend).
-    public func widgets<Backend: AppBackend>(for backend: Backend) -> [Backend.Widget] {
+    public func widgets<Backend: BaseAppBackend>(for backend: Backend) -> [Backend.Widget] {
         return widgets.map { $0.into() }
     }
 }
