@@ -9,7 +9,6 @@ struct GradientTests {
         let gradient = Gradient(colors: .init(repeating: .red, count: 12))
         
         checkExpectations(gradient: gradient)
-        checkExpectations(gradient: gradient1)
         
         func checkExpectations(gradient: Gradient) {
             let count = Double(gradient.stops.count) - 1
