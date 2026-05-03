@@ -2,11 +2,13 @@
 public struct RadialGradient: ElementaryView {
     /// The gradient represented as an array of color stops, each having a parametric location value.
     public let gradient: Gradient
-    /// The radius the gradient starts laying out colors.
-    /// The circle smaller than this radius gets filled with the first color.
+    /// The radius at which the first gradient stop will be placed.
+    ///
+    /// All space outside inside radius gets filled with the color of the first gradient stop.
     public let startRadius: Double
-    /// The radius the gradient stops laying out colors.
-    /// The circle bigger than this radius gets filled with the last color.
+    /// The radius at which the last gradient stop will be placed.
+    ///
+    /// All space outside this radius gets filled with the color of the last gradient stop.
     public let endRadius: Double
     /// The normalized center point of the gradient in its coordinate space.
     public let center: UnitPoint
@@ -97,29 +99,27 @@ extension RadialGradient {
 
     /// Stops adjusted to accomodate startRadius on backends without native support.
     public var adjustedStops: [Gradient.Stop] {
+        guard startRadius != 0 else { return gradient.stops }
+        
         let range = endRadius - startRadius
 
-        guard range != endRadius else { return gradient.stops }
-
-        #if DEBUG
-            if range < 0 {
-                logger.warning(
-                    """
-                    The difference between endRadius and startRadius \
-                    must be >= 0 on 'RadialGradient'.
-                    """
-                )
-                return gradient.stops
-            }
-        #endif
+        if range < 0 {
+            logger.warning(
+                """
+                The difference between endRadius and startRadius \
+                must be >= 0 on 'RadialGradient'.
+                """
+            )
+            return gradient.stops
+        }
 
         let dividableRange = range / endRadius
         let innerCircle = (endRadius - range) / endRadius
 
-        return gradient.stops.map {
+        return gradient.stops.map { stop in
             Gradient.Stop(
-                color: $0.color,
-                location: innerCircle + $0.location * dividableRange
+                color: stop.color,
+                location: innerCircle + stop.location * dividableRange
             )
         }
     }

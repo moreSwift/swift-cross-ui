@@ -72,11 +72,14 @@ final class LinearGradientView: NSView {
 
         NSBezierPath(rect: bounds).addClip()
 
-        let nsGradient = NSGradient(
+        guard let nsGradient = NSGradient(
             colors: colors,
             atLocations: gradient.gradient.stops.map { CGFloat($0.location) },
             colorSpace: .extendedSRGB
-        )!
+        ) else {
+            logger.error("Failed to construct NSGradient; init returned nil")
+            return
+        }
 
         let startPoint = UnitPoint(
             x: Double(bounds.width) * gradient.startPoint.x,
@@ -116,11 +119,14 @@ final class RadialGradientView: NSView {
 
         NSBezierPath(rect: bounds).addClip()
 
-        let nsGradient = NSGradient(
+        guard let nsGradient = NSGradient(
             colors: colors,
             atLocations: gradient.gradient.stops.map { CGFloat($0.location) },
             colorSpace: .extendedSRGB
-        )!
+        ) else {
+            logger.error("Failed to construct NSGradient; init returned nil")
+            return
+        }
 
         let center = CGPoint(
             x: bounds.width * gradient.center.x,
@@ -144,6 +150,7 @@ final class RadialGradientView: NSView {
 
 class GradientView: NSView {
     override var isFlipped: Bool { true }
+    
     func setGradientLayer(to layer: CAGradientLayer) {
         self.layer = layer
         layer.drawsAsynchronously = true
@@ -167,23 +174,25 @@ extension CAGradientLayer {
 
         let adjustedStops = gradient.adjustedStops
 
-        layer.locations = adjustedStops.map {
-            NSNumber(value: $0.location)
+        layer.locations = adjustedStops.map { stop in
+            NSNumber(value: stop.location)
         }
 
-        layer.colors = adjustedStops.map {
-            $0.color.resolve(in: environment).cgColor
+        layer.colors = adjustedStops.map { stop in
+            stop.color.resolve(in: environment).cgColor
         }
 
         layer.startPoint = gradient.center.cgPoint
-        layer.endPoint = (Angle(degrees: 360) - gradient.startAngle).cgPoint
+        layer.endPoint = (Angle(degrees: 360) - gradient.startAngle).unitCirclePoint
 
         return layer
     }
 }
 
 extension Angle {
-    var cgPoint: CGPoint {
+    /// The coordinate on a unit circle within the 0 to 1 range that would be
+    /// crossed by a line shooting out from the center at the Angle
+    var unitCirclePoint: CGPoint {
         let x = 0.5 + cos(radians) * 0.5
         let y = 0.5 + sin(radians) * 0.5
 

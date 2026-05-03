@@ -7,7 +7,6 @@ struct GradientTests {
     @Test("Automatic equal distribution of color")
     func testAutomaticColorDistribution() async throws {
         let gradient = Gradient(colors: .init(repeating: .red, count: 12))
-        let gradient1 = Gradient(colors: .init(repeating: .green, count: 3))
         
         checkExpectations(gradient: gradient)
         checkExpectations(gradient: gradient1)

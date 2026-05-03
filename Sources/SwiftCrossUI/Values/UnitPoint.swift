@@ -1,4 +1,7 @@
 /// A normalized 2D point in a view's coordinate space.
+///
+/// points matching 0 <= x <= 1 and 0 <= y <= 1 are inside the bounds of the view,
+/// > 1 or < 0 are outside of the view
 public struct UnitPoint {
     /// The normalized distance from the origin to the point in the horizontal direction.
     public var x: Double

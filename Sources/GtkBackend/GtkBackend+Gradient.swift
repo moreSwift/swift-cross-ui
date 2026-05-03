@@ -28,12 +28,15 @@ extension GtkBackend {
         let angle = Angle(origin: startPoint, destination: endPoint)
 
         let stops = cssStops(gradient: gradient.gradient, environment: environment)
-
+            .joined(separator: ", ")
+        
+        let radians = (angle + Angle(degrees: 90)).radians
+        
         widget.css.set(
             property: .init(
                 key: "background",
                 value: """
-                    linear-gradient(\((angle + Angle(degrees: 90)).radians)rad, \(stops.joined(separator: ", ")))
+                    linear-gradient(\(radians)rad, \(stops))
                     """
             )
         )
@@ -52,14 +55,19 @@ extension GtkBackend {
         let widget = widget as! Box
 
         let stops = cssStops(gradient: gradient.gradient, environment: environment)
-
+            .joined(separator: ", ")
+        
+        let centerXPercent = gradient.center.x * 100
+        let centerYPercent = gradient.center.y * 100
+        
         widget.css.set(
             property: .init(
                 key: "background",
                 value: """
                     radial-gradient(\
-                    circle at \(gradient.center.x * 100)% \(gradient.center.y * 100)%, \
-                    \(stops.joined(separator: ", ")))
+                    circle at \(centerXPercent)% \(centerYPercent)%, \
+                    \(stops)\
+                    )
                     """
             )
         )
@@ -79,25 +87,28 @@ extension GtkBackend {
 
         let adjustedStops = gradient.adjustedStops
 
-        let stops = adjustedStops.map {
-            let resolved = $0.color.resolve(in: environment)
+        let stops = adjustedStops.map { stop in
+            let resolved = stop.color.resolve(in: environment)
             let red = resolved.red * 255
             let green = resolved.green * 255
             let blue = resolved.blue * 255
-            return
-                """
-                rgba(\(red), \(green), \(blue), \
-                \(resolved.opacity)) \($0.location * 360)deg
-                """
-        }
+            
+            let location = stop.location * 360
+            
+            return "rgba(\(red), \(green), \(blue), \(resolved.opacity)) \(location)deg"
+        }.joined(separator: ", ")
+        
+        let startDegrees = gradient.startAngle.degrees + 90
+        let centerXPercent = gradient.center.x * 100
+        let centerYPercent = gradient.center.y * 100
 
         widget.css.set(
             property: .init(
                 key: "background",
                 value: """
-                    conic-gradient(from \(gradient.startAngle.degrees + 90)deg \
-                    at \(gradient.center.x * 100)% \(gradient.center.y * 100)%, \
-                    \(stops.joined(separator: ", ")))
+                    conic-gradient(from \(startDegrees)deg \
+                    at \(centerXPercent)% \(centerYPercent)%, \
+                    \(stops))
                     """
             )
         )
@@ -109,10 +120,12 @@ extension GtkBackend {
             let red = resolved.red * 255
             let green = resolved.green * 255
             let blue = resolved.blue * 255
+            let location = $0.location * 100
+            
             return
                 """
                 rgba(\(red), \(green), \(blue), \
-                \(resolved.opacity)) \($0.location * 100)%
+                \(resolved.opacity)) \(location)%
                 """
         }
     }
