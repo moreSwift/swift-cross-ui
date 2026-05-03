@@ -9,7 +9,13 @@ public struct VStack<Content: View>: View {
     /// The alignment of the stack's children in the horizontal direction.
     private var alignment: HorizontalAlignment
 
-    /// Creates a horizontal stack with the given spacing.
+    /// Creates a vertical stack with the given spacing and alignment.
+    ///
+    /// - Parameters:
+    ///   - alignment: The alignment of the stack's children in the horizontal
+    ///     direction.
+    ///   - spacing: The amount of spacing to apply between children.
+    ///   - content: The content of the stack.
     public init(
         alignment: HorizontalAlignment = .center,
         spacing: Int? = nil,
@@ -18,6 +24,13 @@ public struct VStack<Content: View>: View {
         self.init(alignment: alignment, spacing: spacing, content: content())
     }
 
+    /// Creates a vertical stack with the given spacing and alignment.
+    ///
+    /// - Parameters:
+    ///   - alignment: The alignment of the stack's children in the horizontal
+    ///     direction.
+    ///   - spacing: The amount of spacing to apply between children.
+    ///   - content: The content of the stack.
     init(
         alignment: HorizontalAlignment = .center,
         spacing: Int? = nil,
@@ -28,7 +41,7 @@ public struct VStack<Content: View>: View {
         self.alignment = alignment
     }
 
-    public func asWidget<Backend: AppBackend>(
+    public func asWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {
@@ -39,7 +52,7 @@ public struct VStack<Content: View>: View {
         return vStack
     }
 
-    public func computeLayout<Backend: AppBackend>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -58,7 +71,7 @@ public struct VStack<Content: View>: View {
                 ]
             )
         }
-        var cache = (children as? TupleViewChildren)?.stackLayoutCache ?? StackLayoutCache()
+        var cache = (children as? TupleViewChildren)?.stackLayoutCache ?? StackLayoutCache.initial
         let result = LayoutSystem.computeStackLayout(
             container: widget,
             children: layoutableChildren(backend: backend, children: children),
@@ -75,14 +88,14 @@ public struct VStack<Content: View>: View {
         return result
     }
 
-    public func commit<Backend: AppBackend>(
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        var cache = (children as? TupleViewChildren)?.stackLayoutCache ?? StackLayoutCache()
+        var cache = (children as? TupleViewChildren)?.stackLayoutCache ?? StackLayoutCache.initial
         LayoutSystem.commitStackLayout(
             container: widget,
             children: layoutableChildren(backend: backend, children: children),

@@ -5,6 +5,10 @@ identifier = 'dev.swiftcrossui.ControlsExample'
 product = 'ControlsExample'
 version = '0.1.0'
 
+[[apps.ControlsExample.overlays]]
+condition = 'platform(macCatalyst)'
+interface_idiom = 'mac'
+
 [apps.CounterExample]
 identifier = 'dev.swiftcrossui.CounterExample'
 product = 'CounterExample'
@@ -34,6 +38,10 @@ version = '0.1.0'
 identifier = 'dev.swiftcrossui.SplitExample'
 product = 'SplitExample'
 version = '0.1.0'
+
+[[apps.SplitExample.overlays]]
+condition = "platform(macCatalyst)"
+interface_idiom = "mac"
 
 [apps.SpreadsheetExample]
 identifier = 'dev.swiftcrossui.SpreadsheetExample'
@@ -79,6 +87,12 @@ version = '0.1.0'
 identifier = 'dev.swiftcrossui.ColorsExample'
 product = 'ColorsExample'
 version = '0.1.0'
+
+[apps.MusicPlayerExample]
+identifier = 'dev.swiftcrossui.MusicPlayerExample'
+product = 'MusicPlayerExample'
+version = '0.1.0'
+icon = 'Icons/MusicPlayerExample.png'
 
 [apps.GradientsExample]
 identifier = 'dev.swiftcrossui.GradientsExample'

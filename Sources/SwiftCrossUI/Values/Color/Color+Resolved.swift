@@ -1,13 +1,13 @@
 extension Color {
     /// A resolved RGBA color.
     public struct Resolved: Sendable, Equatable, Hashable, Codable {
-        /// The red component.
+        /// The red component (from 0 to 1).
         public var red: Float
-        /// The green component.
+        /// The green component (from 0 to 1).
         public var green: Float
-        /// The blue component.
+        /// The blue component (from 0 to 1).
         public var blue: Float
-        /// The alpha component (aka the opacity).
+        /// The alpha component (aka the opacity, from 0 to 1).
         public var opacity: Float
 
         /// Creates an instance.
@@ -48,10 +48,42 @@ extension Color {
                     }
 
                 case .system(let systemColor):
-                    environment.backend.resolveAdaptiveColor(systemColor, in: environment)
+                    if let backend = environment.backend as? any BackendFeatures.Colors {
+                        backend.resolveAdaptiveColor(
+                            systemColor,
+                            in: environment
+                        )
+                    } else {
+                        Color.defaultResolveAdaptiveColor(
+                            systemColor,
+                            in: environment
+                        )
+                    }
             }
 
         resolvedColor.opacity *= Float(self.opacityMultiplier)
         return resolvedColor
+    }
+
+    // NB: Also used in the default implementation for
+    // `BackendFeatures.Colors.resolveAdaptiveColor(_:in:)`.
+    @MainActor
+    internal static func defaultResolveAdaptiveColor(
+        _ adaptiveColor: Color.SystemAdaptive,
+        in environment: EnvironmentValues
+    ) -> Color.Resolved {
+        let color: Color =
+            switch adaptiveColor.kind {
+                case .blue: .blue
+                case .brown: .brown
+                case .gray: .gray
+                case .green: .green
+                case .orange: .orange
+                case .purple: .purple
+                case .red: .red
+                case .yellow: .yellow
+            }
+
+        return color.resolve(in: environment)
     }
 }

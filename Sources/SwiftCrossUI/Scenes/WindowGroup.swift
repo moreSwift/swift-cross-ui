@@ -44,7 +44,7 @@ public final class WindowGroupNode<Content: View>: SceneGraphNode {
     /// The underlying scene.
     private var scene: WindowGroup<Content>
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: WindowGroup<Content>,
         backend: Backend,
         environment: EnvironmentValues
@@ -70,15 +70,21 @@ public final class WindowGroupNode<Content: View>: SceneGraphNode {
         }
     }
 
-    public func update<Backend: AppBackend>(
-        _ newScene: WindowGroup<Content>?,
-        backend: Backend,
+    public func updateNode(
+        _ newScene: NodeScene?,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
+    ) -> SceneNodeUpdateResult {
         if let newScene {
             self.scene = newScene
         }
 
+        return .leafScene()
+    }
+
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
         if let id = scene.id {
             environment.openWindowFunctionsByID.value[id] = { [weak self] in
                 guard let self else { return }
@@ -92,7 +98,7 @@ public final class WindowGroupNode<Content: View>: SceneGraphNode {
                 )
                 windowReferences[windowID] = reference
 
-                _ = reference.update(
+                reference.update(
                     nil,
                     backend: backend,
                     environment: environment
@@ -100,13 +106,12 @@ public final class WindowGroupNode<Content: View>: SceneGraphNode {
             }
         }
 
-        let results = windowReferences.values.map { windowReference in
+        for windowReference in windowReferences.values {
             windowReference.update(
-                newScene,
+                scene,
                 backend: backend,
                 environment: environment
             )
         }
-        return SceneUpdateResult(childResults: results)
     }
 }

@@ -1,5 +1,6 @@
 import Foundation
 
+/// A web view.
 @available(tvOS, unavailable)
 public struct WebView: ElementaryView {
     /// The ideal size of a WebView.
@@ -8,15 +9,19 @@ public struct WebView: ElementaryView {
     @State var currentURL: URL?
     @Binding var url: URL
 
+    /// Creates a web view.
+    ///
+    /// - Parameter url: A binding to the web view's URL.
     public init(_ url: Binding<URL>) {
         _url = url
     }
 
-    func asWidget<Backend: AppBackend>(backend: Backend) -> Backend.Widget {
-        backend.createWebView()
+    @CastBackend<BackendFeatures.WebViews>(returnsWidget: true)
+    func asWidget<Backend: BaseAppBackend>(backend: Backend) -> Backend.Widget {
+        return backend.createWebView()
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -26,7 +31,8 @@ public struct WebView: ElementaryView {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    func commit<Backend: AppBackend>(
+    @CastBackend<BackendFeatures.WebViews>
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

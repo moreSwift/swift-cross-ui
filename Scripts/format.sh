@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"/../
 
 if [ -z "$1" ]; then
-  swift format format --in-place --recursive --configuration .swift-format Sources Examples/Sources
+  swiftformat .
 else
-  swift format format --in-place --recursive --configuration .swift-format $1
+  swiftformat $1
 fi

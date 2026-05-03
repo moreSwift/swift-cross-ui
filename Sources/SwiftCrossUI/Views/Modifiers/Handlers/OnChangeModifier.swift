@@ -1,4 +1,10 @@
 extension View {
+    /// A view modifier that runs an action whenever a piece of state changes.
+    ///
+    /// - Parameters:
+    ///   - value: The value to observe for changes. Must be `Equatable`.
+    ///   - initial: Whether to call `action` when the view first appears.
+    ///   - action: The action to perform.
     public func onChange<Value: Equatable>(
         of value: Value,
         initial: Bool = false,
@@ -25,7 +31,7 @@ struct OnChangeModifier<Value: Equatable, Content: View>: View {
     var initial: Bool
 
     // TODO: Should this go in computeLayout or commit?
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,

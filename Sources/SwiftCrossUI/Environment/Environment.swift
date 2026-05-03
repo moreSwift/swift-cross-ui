@@ -1,8 +1,10 @@
-/// A property wrapper used to access environment values within a `View` or
-/// `App`. Must not be used before the view graph accesses the view or app's
-/// `body` (i.e. don't access it from an initializer).
+/// A property wrapper used to access environment values within a ``View`` or
+/// ``App``.
 ///
-/// ```
+/// Must not be used before the view graph accesses the view or app's `body`
+/// (so, don't access it from an initializer).
+///
+/// ```swift
 /// struct ContentView: View {
 ///     @Environment(\.colorScheme) var colorScheme
 ///
@@ -16,7 +18,7 @@
 /// The environment also contains UI-related actions, such as the
 /// ``EnvironmentValues/chooseFile`` action used to present 'Open file' dialogs.
 ///
-/// ```
+/// ```swift
 /// struct ContentView: View {
 ///     @Environment(\.chooseFile) var chooseFile
 ///
@@ -37,6 +39,9 @@
 @propertyWrapper
 public struct Environment<Value>: DynamicProperty {
     private var mode: Mode
+    /// The underlying value.
+    ///
+    /// `nil` if ``update(with:previousValue:)`` has not yet been called.
     private var value: Box<Value?>
 
     public func update(
@@ -53,6 +58,7 @@ public struct Environment<Value>: DynamicProperty {
         }
     }
 
+    /// The environment value that this property refers to.
     public var wrappedValue: Value {
         guard let value = value.value else {
             fatalError(
@@ -66,6 +72,9 @@ public struct Environment<Value>: DynamicProperty {
         return value
     }
 
+    /// Initializes an ``Environment`` property wrapper.
+    ///
+    /// - Parameter keyPath: A key path to the enviornment value to access.
     public init(_ keyPath: KeyPath<EnvironmentValues, Value>) {
         self.value = Box(nil)
         self.mode = .keyPath(keyPath)
@@ -77,7 +86,9 @@ public struct Environment<Value>: DynamicProperty {
     }
 
     private enum Mode {
+        /// A key path to the enviornment value to access.
         case keyPath(KeyPath<EnvironmentValues, Value>)
+        /// An observable object.
         case observableObject
 
         var pathDescription: String {

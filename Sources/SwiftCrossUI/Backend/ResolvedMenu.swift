@@ -8,18 +8,26 @@ public struct ResolvedMenu {
     /// The menu's items.
     public var items: [Item]
 
-    /// Memberwise initializer.
+    /// Creates a ``ResolvedMenu`` instance.
+    ///
+    /// - Parameter items: The menu's items.
     public init(items: [ResolvedMenu.Item]) {
         self.items = items
     }
 
     /// A menu item.
     public enum Item {
-        /// A button. A `nil` action means that the button is disabled.
+        /// A button.
+        ///
+        /// - Parameters:
+        ///   - label: The button's label.
+        ///   - action: The action to perform when the button is activated. `nil`
+        ///     means the button is disabled.
         case button(_ label: String, _ action: (@MainActor () -> Void)?)
         /// A toggle that manages boolean state.
         ///
         /// Usually appears as a checkbox.
+        ///
         /// - Parameters:
         ///   - label: The toggle's label.
         ///   - value: The toggle's current state.
@@ -29,6 +37,16 @@ public struct ResolvedMenu {
         case separator
         /// A named submenu.
         case submenu(Submenu)
+        /// A wrapper for a menu item that modifies its environment.
+        ///
+        /// - Parameters:
+        ///   - item: The item to modify the environment of.
+        ///   - modification: A function that modifies a given
+        ///     `EnvironmentValues` instance.
+        indirect case modifiedEnvironment(
+            _ item: Item,
+            _ modification: (EnvironmentValues) -> EnvironmentValues
+        )
     }
 
     /// A named submenu.
@@ -38,7 +56,11 @@ public struct ResolvedMenu {
         /// The menu displayed when the submenu gets activated.
         public var content: ResolvedMenu
 
-        /// Memberwise initializer.
+        /// Creates a ``Submenu`` instance.
+        ///
+        /// - Parameters:
+        ///   - label: The label of the submenu's entry in its parent menu.
+        ///   - content: The menu displayed when the submenu gets activated.
         public init(label: String, content: ResolvedMenu) {
             self.label = label
             self.content = content

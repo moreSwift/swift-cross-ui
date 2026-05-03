@@ -6,7 +6,8 @@ import WinAppSDK
 import WinSDK
 import WinUI
 import WinUIInterop
-import WindowsFoundation
+@preconcurrency import WindowsFoundation
+import Mutex
 
 // Many force tries are required for the WinUI backend but we don't really want them
 // anywhere else so just disable the lint rule at a file level.
@@ -20,15 +21,36 @@ extension App {
     }
 }
 
-class WinUIApplication: SwiftApplication {
-    static var callback: ((WinUIApplication) -> Void)?
+class WinUIApplication: SwiftApplication, @unchecked Sendable {
+    static let callback = Mutex<(@MainActor (WinUIApplication) -> Void)?>(nil)
 
     override func onLaunched(_ args: WinUI.LaunchActivatedEventArgs) {
-        Self.callback?(self)
+        Self.callback.withLock { callback in
+            // We can't explicitly hop to the main actor because we haven't set up
+            // our WinUI MainActor fix yet.
+            MainActor.assumeIsolated {
+                callback?(self)
+            }
+        }
     }
 }
 
-public final class WinUIBackend: AppBackend {
+public final class WinUIBackend:
+    BaseAppBackend,
+    BackendFeatures.ApplicationMenus,
+    BackendFeatures.ExternalURLs,
+    BackendFeatures.IncomingURLs,
+    BackendFeatures.FileDialogs,
+    BackendFeatures.Alerts,
+    BackendFeatures.CornerRadius,
+    BackendFeatures.Gestures,
+    BackendFeatures.AttachedMenus,
+    BackendFeatures.Paths,
+    BackendFeatures.Tooltips,
+    BackendFeatures.Colors,
+    BackendFeatures.DatePickers,
+    BackendFeatures.Windowing
+{
     // Logging
     private struct LogLocation: Hashable, Equatable {
         let file: String
@@ -54,39 +76,38 @@ public final class WinUIBackend: AppBackend {
 
     public typealias Window = CustomWindow
     public typealias Widget = WinUI.FrameworkElement
-    public typealias Menu = Void
+    public typealias Menu = WinUI.MenuFlyout
     public typealias Alert = WinUI.ContentDialog
     public typealias Path = GeometryGroupHolder
-    public typealias Sheet = CustomWindow  // Only for protocol conformance. WinUI doesn't currently support it.
 
     public let defaultTableRowContentHeight = 20
     public let defaultTableCellVerticalPadding = 4
     public let defaultPaddingAmount = 10
     public let requiresToggleSwitchSpacer = false
     public let requiresImageUpdateOnScaleFactorChange = false
-    public let menuImplementationStyle = MenuImplementationStyle.dynamicPopover
-    public let canRevealFiles = false
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
     public let supportedDatePickerStyles: [DatePickerStyle] = [
         .automatic, .graphical, .compact, .wheel,
     ]
+    public let supportedPickerStyles: [BackendPickerStyle] = [.menu, .radioGroup]
+    public let canOverrideWindowColorScheme = true
 
     public var scrollBarWidth: Int {
         12
     }
 
-    private class InternalState {
+    class InternalState {
         var buttonClickActions: [ObjectIdentifier: () -> Void] = [:]
         var toggleClickActions: [ObjectIdentifier: (Bool) -> Void] = [:]
         var switchClickActions: [ObjectIdentifier: (Bool) -> Void] = [:]
         var sliderChangeActions: [ObjectIdentifier: (Double) -> Void] = [:]
         var textFieldChangeActions: [ObjectIdentifier: (String) -> Void] = [:]
         var textFieldSubmitActions: [ObjectIdentifier: () -> Void] = [:]
-        var themeChangeAction: (() -> Void)?
     }
+    private var rootEnvironmentChangeHandler: (@Sendable @MainActor () -> Void)?
 
-    private var internalState: InternalState
+    var internalState: InternalState
     nonisolated(unsafe) private var dispatcherQueue: WinAppSDK.DispatcherQueue?
     /// WinUI only allows one dialog at a time (subsequent dialogs throw
     /// exceptions), so we limit ourselves.
@@ -126,30 +147,34 @@ public final class WinUIBackend: AppBackend {
         // Ensure that the app's windows adapt to DPI changes at runtime
         SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)
 
-        WinUIApplication.callback = { application in
-            // Toggle Switch has annoying default 'internal margins' (not Control
-            // margins that we can set directly) that we can luckily get rid of by
-            // overriding the relevant resource values.
-            _ = application.resources.insert("ToggleSwitchPreContentMargin", 0.0 as Double)
-            _ = application.resources.insert("ToggleSwitchPostContentMargin", 0.0 as Double)
+        WinUIApplication.callback.withLock { launchCallback in
+            launchCallback = { application in
+                // Toggle Switch has annoying default 'internal margins' (not Control
+                // margins that we can set directly) that we can luckily get rid of by
+                // overriding the relevant resource values.
+                _ = application.resources.insert("ToggleSwitchPreContentMargin", 0.0 as Double)
+                _ = application.resources.insert("ToggleSwitchPostContentMargin", 0.0 as Double)
 
-            // Handle theme changes
-            UWP.UISettings().colorValuesChanged.addHandler { _, _ in
-                self.internalState.themeChangeAction?()
+                // Handle theme changes
+                UWP.UISettings().colorValuesChanged.addHandler { _, _ in
+                    Task { @MainActor in
+                        self.rootEnvironmentChangeHandler?()
+                    }
+                }
+
+                // TODO: Read in previously hardcoded values from the application's
+                // resources dictionary for future-proofing. Example code for getting
+                // property values;
+                //   let iinspectable =
+                //       application.resources.lookup("ToggleSwitchPreContentMargin")!
+                //       as! WindowsFoundation.IInspectable
+                //   let pv: __ABI_Windows_Foundation.IPropertyValue = try! iinspectable.QueryInterface()
+                //   let value = try! pv.GetDoubleImpl()
+
+                self.measurementTextBlock = (self.createTextView() as! TextBlock)
+
+                callback()
             }
-
-            // TODO: Read in previously hardcoded values from the application's
-            // resources dictionary for future-proofing. Example code for getting
-            // property values;
-            //   let iinspectable =
-            //       application.resources.lookup("ToggleSwitchPreContentMargin")!
-            //       as! WindowsFoundation.IInspectable
-            //   let pv: __ABI_Windows_Foundation.IPropertyValue = try! iinspectable.QueryInterface()
-            //   let value = try! pv.GetDoubleImpl()
-
-            self.measurementTextBlock = (self.createTextView() as! TextBlock)
-
-            callback()
         }
         WinUIApplication.main()
     }
@@ -199,6 +224,21 @@ public final class WinUIBackend: AppBackend {
         return window
     }
 
+    public func updateWindow(_ window: Window, environment: EnvironmentValues) {
+        window.menuBar.requestedTheme = switch environment.colorScheme {
+            case .light: .light
+            case .dark: .dark
+        }
+
+        let backgroundColor: SwiftCrossUI.Color = switch environment.colorScheme {
+            case .light: .white
+            case .dark: .black
+        }
+        let brush = WinUI.SolidColorBrush()
+        brush.color = backgroundColor.resolve(in: environment).uwpColor
+        window.grid.background = brush
+    }
+
     public func size(ofWindow window: Window) -> SIMD2<Int> {
         let size = window.appWindow.clientSize
         let scaleFactor = window.scaleFactor
@@ -206,7 +246,7 @@ public final class WinUIBackend: AppBackend {
         let height = Double(size.height) / scaleFactor
         let out = SIMD2(
             Int(width.rounded(.towardZero)),
-            Int(height.rounded(.towardZero)) - CustomWindow.menuBarHeight
+            Int(height.rounded(.towardZero)) - window.contentHeightAdjustment
         )
         return out
     }
@@ -219,7 +259,7 @@ public final class WinUIBackend: AppBackend {
     public func setSize(ofWindow window: Window, to newSize: SIMD2<Int>) {
         let scaleFactor = window.scaleFactor
         let width = scaleFactor * Double(newSize.x)
-        let height = scaleFactor * Double(newSize.y + CustomWindow.menuBarHeight)
+        let height = scaleFactor * Double(newSize.y + window.contentHeightAdjustment)
         let size = UWP.SizeInt32(
             width: Int32(width.rounded(.towardZero)),
             height: Int32(height.rounded(.towardZero))
@@ -242,7 +282,7 @@ public final class WinUIBackend: AppBackend {
         window.sizeChanged.addHandler { _, args in
             let size = SIMD2(
                 Int(args!.size.width.rounded(.awayFromZero)),
-                Int(args!.size.height.rounded(.awayFromZero)) - CustomWindow.menuBarHeight
+                Int(args!.size.height.rounded(.awayFromZero)) - window.contentHeightAdjustment
             )
             action(size)
         }
@@ -275,7 +315,9 @@ public final class WinUIBackend: AppBackend {
         window.setChild(widget)
         try! widget.updateLayout()
         widget.actualThemeChanged.addHandler { _, _ in
-            self.internalState.themeChangeAction?()
+            Task { @MainActor in
+                self.rootEnvironmentChangeHandler?()
+            }
         }
     }
 
@@ -312,44 +354,56 @@ public final class WinUIBackend: AppBackend {
 
     public func show(widget _: Widget) {}
 
-    private func renderItems(_ items: [ResolvedMenu.Item]) -> [MenuFlyoutItemBase] {
-        items.map { item in
-            switch item {
-                case .button(let label, let action):
-                    let widget = MenuFlyoutItem()
-                    widget.text = label
-                    widget.click.addHandler { _, _ in
-                        action?()
-                    }
-                    return widget
-                case .toggle(let label, let value, let onChange):
-                    let widget = ToggleMenuFlyoutItem()
-                    widget.text = label
-                    widget.isChecked = value
-                    widget.click.addHandler { [weak widget] _, _ in
-                        guard let widget else { return }
-                        onChange(widget.isChecked)
-                    }
-                    return widget
-                case .separator:
-                    return MenuFlyoutSeparator()
-                case .submenu(let submenu):
-                    let widget = MenuFlyoutSubItem()
-                    widget.text = submenu.label
-                    for subitem in renderItems(submenu.content.items) {
-                        widget.items.append(subitem)
-                    }
-                    return widget
-            }
+    private func renderMenuItem(
+        _ item: ResolvedMenu.Item,
+        environment: EnvironmentValues
+    ) -> MenuFlyoutItemBase {
+        switch item {
+            case .button(let label, let action):
+                let widget = MenuFlyoutItem()
+                widget.text = label
+                widget.click.addHandler { _, _ in
+                    action?()
+                }
+                widget.isEnabled = environment.isEnabled
+                return widget
+            case .toggle(let label, let value, let onChange):
+                let widget = ToggleMenuFlyoutItem()
+                widget.text = label
+                widget.isChecked = value
+                widget.click.addHandler { [weak widget] _, _ in
+                    guard let widget else { return }
+                    onChange(widget.isChecked)
+                }
+                widget.isEnabled = environment.isEnabled
+                return widget
+            case .separator:
+                return MenuFlyoutSeparator()
+            case .submenu(let submenu):
+                let widget = MenuFlyoutSubItem()
+                widget.text = submenu.label
+                for subitem in submenu.content.items {
+                    widget.items.append(
+                        renderMenuItem(subitem, environment: environment)
+                    )
+                }
+                return widget
+            case .modifiedEnvironment(let item, let modification):
+                return renderMenuItem(item, environment: modification(environment))
         }
     }
 
-    public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
+    public func setApplicationMenu(
+        _ submenus: [ResolvedMenu.Submenu],
+        environment: EnvironmentValues
+    ) {
         let items = submenus.map { submenu in
             let item = MenuBarItem()
             item.title = submenu.label
-            for subitem in renderItems(submenu.content.items) {
-                item.items.append(subitem)
+            for subitem in submenu.content.items {
+                item.items.append(
+                    renderMenuItem(subitem, environment: environment)
+                )
             }
             return item
         }
@@ -359,6 +413,8 @@ public final class WinUIBackend: AppBackend {
             for item in items {
                 window.menuBar.items.append(item)
             }
+            window.setMenuBarVisible(!items.isEmpty)
+            window.menuBar.requestedTheme = .dark
         }
     }
 
@@ -376,10 +432,13 @@ public final class WinUIBackend: AppBackend {
         return
             defaultEnvironment
             .with(\.colorScheme, isLight ? .light : .dark)
+            .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
-        internalState.themeChangeAction = action
+    public func setRootEnvironmentChangeHandler(
+        to action: @escaping @Sendable @MainActor () -> Void
+    ) {
+        self.rootEnvironmentChangeHandler = action
     }
 
     public func computeWindowEnvironment(
@@ -389,13 +448,25 @@ public final class WinUIBackend: AppBackend {
         // TODO: Compute window scale factor (easy enough, but we would also have to keep
         //   it up-to-date then, which is kinda annoying for now)
         rootEnvironment
+            .with(\.scenePhase, window.isActive ? .active : .inactive)
     }
 
     public func setWindowEnvironmentChangeHandler(
         of window: Window,
-        to action: @escaping () -> Void
+        to action: @escaping @Sendable @MainActor () -> Void
     ) {
         // TODO: Notify when window scale factor changes
+
+        // NB: This event fires when the window is activated _or_ deactivated.
+        window.activated.addHandler { _, _ in
+            if let rootHandler = self.rootEnvironmentChangeHandler {
+                rootHandler()
+                // Don't bother calling `action` since this window's environment
+                // will be recomputed anyway.
+            } else {
+                action()
+            }
+        }
     }
 
     public func setIncomingURLHandler(to action: @escaping (URL) -> Void) {
@@ -626,22 +697,19 @@ public final class WinUIBackend: AppBackend {
                 11 + 11 + 2,
                 5 + 6 + 2
             )
-        } else if let textField = widget as? WinUI.TextBox, textField.padding == noPadding {
+        } else if let textField = widget as? TextBoxProtocol, textField.padding == noPadding {
             // The default padding applied to text boxes can be found here:
             // https://github.com/microsoft/microsoft-ui-xaml/blob/650b2c1bad272393400403ca323b3cb8745f95d0/src/controls/dev/CommonStyles/Common_themeresources.xaml#L12
             // However, text fields return 0x0 before rendering so our adjustment
             // just has to be the entire size of the text field. I've currently just
             // hardcoded a value obtained from one of my example apps.
-            adjustment = SIMD2(
-                64,
-                32
-            )
+            adjustment = SIMD2(64, 32)
         } else if widget is CalendarView {
             // I don't actually know why this is necessary, but without it the abbreviations for the
             // weekdays wrap, making it taller than it says it is. Value was derived by trial and
             // error.
             adjustment = SIMD2(20, 0)
-        } else if computedSize.width == 0 && computedSize.width == 0 && widget is CalendarDatePicker
+        } else if computedSize.width == 0 && computedSize.height == 0 && widget is CalendarDatePicker
         {
             // I can't find any source on what the size of CalendarDatePicker is, but it reports 0x0
             // in at least some cases before initial render. In these cases, use a size derived
@@ -657,6 +725,16 @@ public final class WinUIBackend: AppBackend {
         widget.width = Double(size.x)
         widget.height = Double(size.y)
     }
+    
+    public func createTooltipContainer(wrapping child: Widget) -> Widget {
+        // TODO(bbrk24): Look into removing the container, like on AppKit
+        TooltipContainer(child: child)
+    }
+
+    public func updateTooltipContainer(_ widget: Widget, tooltip: String) {
+        let widget = widget as! TooltipContainer
+        widget.tooltip.content = tooltip
+    }
 
     public func size(
         of text: String,
@@ -666,24 +744,31 @@ public final class WinUIBackend: AppBackend {
         environment: EnvironmentValues
     ) -> SIMD2<Int> {
         // Update the text view's environment and measure its desired line height
-        updateTextView(measurementTextBlock, content: "a", environment: environment)
-        let lineHeight = Self.measure(
-            measurementTextBlock,
-            proposedWidth: nil,
-            proposedHeight: nil
-        ).y
+        updateTextView(measurementTextBlock, content: text, environment: environment)
 
         // Measure the text's size
-        measurementTextBlock.text = text
         var size = Self.measure(
             measurementTextBlock,
             proposedWidth: proposedWidth,
             proposedHeight: proposedHeight
         )
 
+        var usedHeight = size.y
+        let lineHeight = environment.resolvedFont.lineHeight
+
+        if let lineLimitSettings = environment.lineLimitSettings {
+            let height = Int(
+                Double(max(lineLimitSettings.limit, 1)) * lineHeight
+            )
+
+            if height < usedHeight || lineLimitSettings.reservesSpace {
+                usedHeight = height
+            }
+        }
+
         // Make sure the text doesn't get shorter than a single line of text even if
         // it's empty.
-        size.y = max(size.y, lineHeight)
+        size.y = max(usedHeight, Int(lineHeight))
         return size
     }
 
@@ -709,6 +794,7 @@ public final class WinUIBackend: AppBackend {
         let textBlock = TextBlock()
         textBlock.textWrapping = .wrap
         textBlock.textTrimming = .characterEllipsis
+        textBlock.lineStackingStrategy = .blockLineHeight
         return textBlock
     }
 
@@ -748,6 +834,38 @@ public final class WinUIBackend: AppBackend {
         internalState.buttonClickActions[ObjectIdentifier(button)] = action
     }
 
+    public func createPopoverMenu() -> Menu {
+        let flyout = MenuFlyout()
+        flyout.placement = .bottomEdgeAlignedLeft
+        return flyout
+    }
+
+    public func updatePopoverMenu(
+        _ menu: Menu,
+        content: ResolvedMenu,
+        environment: EnvironmentValues
+    ) {
+        menu.items.clear()
+        for item in content.items {
+            menu.items.append(renderMenuItem(item, environment: environment))
+        }
+    }
+
+    public func updateButton(
+        _ button: Widget,
+        label: String,
+        menu: Menu,
+        environment: EnvironmentValues
+    ) {
+        let button = button as! WinUI.Button
+        let block = TextBlock()
+        block.text = label
+        button.content = block
+        environment.apply(to: block)
+        environment.apply(to: button)
+        button.flyout = menu
+    }
+
     public func createScrollContainer(for child: Widget) -> Widget {
         let scrollViewer = WinUI.ScrollViewer()
         scrollViewer.content = child
@@ -756,12 +874,13 @@ public final class WinUIBackend: AppBackend {
         return scrollViewer
     }
 
-    public func updateScrollContainer(_ scrollView: Widget, environment: EnvironmentValues) {}
-
-    public func setScrollBarPresence(
-        ofScrollContainer scrollView: Widget,
-        hasVerticalScrollBar: Bool,
-        hasHorizontalScrollBar: Bool
+    public func updateScrollContainer(
+        _ scrollView: Widget,
+        environment: EnvironmentValues,
+        bounceHorizontally: Bool,
+        bounceVertically: Bool,
+        hasHorizontalScrollBar: Bool,
+        hasVerticalScrollBar: Bool
     ) {
         let scrollViewer = scrollView as! WinUI.ScrollViewer
 
@@ -795,6 +914,14 @@ public final class WinUIBackend: AppBackend {
             listView.selectionHandler?(selection)
         }
         return listView
+    }
+
+    public func updateSelectableListView(
+        _ selectableListView: Widget,
+        environment: EnvironmentValues
+    ) {
+        let listView = selectableListView as! CustomListView
+        listView.isEnabled = environment.isEnabled
     }
 
     public func baseItemPadding(ofSelectableListView listView: Widget) -> EdgeInsets {
@@ -885,8 +1012,12 @@ public final class WinUIBackend: AppBackend {
 
     public func createSlider() -> Widget {
         let slider = Slider()
-        slider.valueChanged.addHandler { [weak internalState] _, event in
-            guard let internalState else { return }
+        slider.valueChanged.addHandler { [weak internalState, weak slider] _, event in
+            guard
+                let internalState,
+                let slider
+            else { return }
+
             internalState.sliderChangeActions[ObjectIdentifier(slider)]?(
                 Double(event?.newValue ?? 0)
             )
@@ -915,26 +1046,44 @@ public final class WinUIBackend: AppBackend {
         slider.value = value
     }
 
-    public func createPicker() -> Widget {
-        let picker = CustomComboBox()
-        picker.selectionChanged.addHandler { [weak picker] _, _ in
-            guard let picker else { return }
-            picker.onChangeSelection?(Int(picker.selectedIndex))
-        }
+    public func createPicker(style: BackendPickerStyle) -> Widget {
+        switch style {
+            case .menu:
+                let picker = CustomComboBox()
+                picker.selectionChanged.addHandler { [weak picker] _, _ in
+                    guard let picker else { return }
+                    picker.onChangeSelection?(Int(picker.selectedIndex))
+                }
 
-        // When hovering over a picker, its foreground changes to black,
-        // when the pointer exits the picker the foreground color remains
-        // black instead of returning to its regular value. I've tried various
-        // variations of the solution below and it seems like the only thing
-        // that works is fully recreating the brush.
-        picker.pointerExited.addHandler { [weak picker] _, _ in
-            guard let picker else { return }
-            let brush = SolidColorBrush()
-            brush.color = picker.actualForegroundColor
-            picker.foreground = brush
-        }
+                // When hovering over a picker, its foreground changes to black,
+                // when the pointer exits the picker the foreground color remains
+                // black instead of returning to its regular value. I've tried various
+                // variations of the solution below and it seems like the only thing
+                // that works is fully recreating the brush.
+                picker.pointerExited.addHandler { [weak picker] _, _ in
+                    guard let picker else { return }
+                    let brush = SolidColorBrush()
+                    brush.color = picker.actualForegroundColor
+                    picker.foreground = brush
+                }
 
-        return picker
+                return picker
+            case .radioGroup:
+                let picker = CustomRadioButtons()
+
+                picker.selectionChanged.addHandler { [weak picker] _, _ in
+                    guard let picker else { return }
+                    picker.onChangeSelection?(
+                        picker.selectedIndex == -1 ? nil : Int(picker.selectedIndex)
+                    )
+                }
+
+                return picker
+            default:
+                let message = "unsupported picker style \(style)"
+                logger.critical("\(message)")
+                fatalError(message)
+        }
     }
 
     public func updatePicker(
@@ -943,104 +1092,93 @@ public final class WinUIBackend: AppBackend {
         environment: EnvironmentValues,
         onChange: @escaping (Int?) -> Void
     ) {
-        let picker = picker as! CustomComboBox
+        if let picker = picker as? CustomComboBox {
+            picker.onChangeSelection = onChange
+            environment.apply(to: picker)
+            picker.actualForegroundColor =
+                environment.suggestedForegroundColor.resolve(in: environment).uwpColor
 
-        picker.onChangeSelection = onChange
-        environment.apply(to: picker)
-        picker.actualForegroundColor =
-            environment.suggestedForegroundColor.resolve(in: environment).uwpColor
+            // Only update options past this point, otherwise the early return
+            // will cause issues.
+            guard options.count > 0 else {
+                picker.options = []
+                return
+            }
 
-        // Only update options past this point, otherwise the early return
-        // will cause issues.
-        guard options.count > 0 else {
-            picker.options = []
-            return
-        }
-
-        if options.count == picker.items.count {
-            // for i in 0 ..< options.count {
-            // TODO: Understands how to get ComboBox items in WinUI
-            // if picker.items.getAt(UInt32(i)) as? String != options[i] {
-            // picker.items.setAt(UInt32(1), options[i])
-            // }
-            // }
-        } else if options.count > picker.items.count {
-            if !picker.items.isEmpty {
-                for i in 0..<picker.items.count {
+            if options.count == picker.items.count {
+                // for i in 0 ..< options.count {
+                // TODO: Understands how to get ComboBox items in WinUI
+                // if picker.items.getAt(UInt32(i)) as? String != options[i] {
+                // picker.items.setAt(UInt32(1), options[i])
+                // }
+                // }
+            } else if options.count > picker.items.count {
+                if !picker.items.isEmpty {
+                    for i in 0..<picker.items.count {
+                        // if picker.items.getAt(UInt32(i)) as? String != options[i] {
+                        picker.items.setAt(UInt32(i), options[i])
+                        // }
+                    }
+                }
+                for i in picker.items.count..<options.count {
+                    picker.items.append(options[i])
+                }
+            } else {
+                for i in 0..<options.count {
                     // if picker.items.getAt(UInt32(i)) as? String != options[i] {
                     picker.items.setAt(UInt32(i), options[i])
                     // }
                 }
+                for i in options.count..<picker.items.count {
+                    picker.items.removeAt(UInt32(i))
+                }
             }
-            for i in picker.items.count..<options.count {
-                picker.items.append(options[i])
+
+            // TODO: Proper picker updating logic
+            // TODO: Picker font handling
+
+            picker.options = options
+        } else if let picker = picker as? CustomRadioButtons {
+            for i in 0..<min(picker.items.count, options.count) {
+                (picker.items[i] as! TextBlock).text = options[i]
             }
-        } else {
-            for i in 0..<options.count {
-                // if picker.items.getAt(UInt32(i)) as? String != options[i] {
-                picker.items.setAt(UInt32(i), options[i])
-                // }
+
+            if picker.items.count > options.count {
+                for i in (options.count..<picker.items.count).reversed() {
+                    _ = picker.items.remove(at: i)
+                }
+            } else {
+                for option in options[picker.items.count...] {
+                    let block = TextBlock()
+                    block.text = option
+                    environment.apply(to: block)
+                    picker.items.append(block)
+                }
             }
-            for i in options.count..<picker.items.count {
-                picker.items.removeAt(UInt32(i))
-            }
+
+            picker.onChangeSelection = onChange
         }
-
-        // TODO: Proper picker updating logic
-        // TODO: Picker font handling
-
-        picker.options = options
     }
 
     public func setSelectedOption(ofPicker picker: Widget, to selectedOption: Int?) {
-        let picker = picker as! ComboBox
-        picker.selectedIndex = Int32(selectedOption ?? 0)
-    }
-
-    public func createTextField() -> Widget {
-        let textField = TextBox()
-        textField.textChanged.addHandler { [weak internalState] _, _ in
-            guard let internalState else { return }
-            internalState.textFieldChangeActions[ObjectIdentifier(textField)]?(textField.text)
+        if let picker = picker as? ComboBox {
+            picker.selectedIndex = Int32(selectedOption ?? 0)
+        } else if let picker = picker as? RadioButtons {
+            picker.selectedIndex = Int32(selectedOption ?? -1)
         }
-        textField.keyUp.addHandler { [weak internalState] _, event in
-            guard let internalState else { return }
-
-            if event?.key == .enter {
-                internalState.textFieldSubmitActions[ObjectIdentifier(textField)]?()
-            }
-        }
-        return textField
-    }
-
-    public func updateTextField(
-        _ textField: Widget,
-        placeholder: String,
-        environment: EnvironmentValues,
-        onChange: @escaping (String) -> Void,
-        onSubmit: @escaping () -> Void
-    ) {
-        let textField = (textField as! TextBox)
-        textField.placeholderText = placeholder
-        internalState.textFieldChangeActions[ObjectIdentifier(textField)] = onChange
-        internalState.textFieldSubmitActions[ObjectIdentifier(textField)] = onSubmit
-        environment.apply(to: textField)
-
-        updateInputScope(of: textField, textContentType: environment.textContentType)
-    }
-
-    public func setContent(ofTextField textField: Widget, to content: String) {
-        (textField as! TextBox).text = content
-    }
-
-    public func getContent(ofTextField textField: Widget) -> String {
-        (textField as! TextBox).text
     }
 
     public func createTextEditor() -> Widget {
         let textEditor = TextBox()
-        textEditor.textChanged.addHandler { [weak internalState] _, _ in
-            guard let internalState else { return }
+        textEditor.textChanged.addHandler { [weak internalState, weak textEditor] _, _ in
+            guard
+                let internalState,
+                let textEditor
+            else { return }
+            guard !textEditor.shouldBlockNextChangedSignal else {
+                textEditor.shouldBlockNextChangedSignal = false
+                return
+            }
             // Reuse this storage because it's the same widget type as a text field
             internalState.textFieldChangeActions[ObjectIdentifier(textEditor)]?(textEditor.text)
         }
@@ -1076,34 +1214,41 @@ public final class WinUIBackend: AppBackend {
     }
 
     public func setContent(ofTextEditor textEditor: Widget, to content: String) {
-        (textEditor as! TextBox).text = content
+        let textEditor = textEditor as! TextBox
+        textEditor.shouldBlockNextChangedSignal = true
+        textEditor.text = content
     }
 
     public func getContent(ofTextEditor textEditor: Widget) -> String {
         (textEditor as! TextBox).text
     }
 
-    private func updateInputScope(
-        of textField: TextBox,
+    func updateInputScope(
+        of textField: some TextBoxProtocol,
         textContentType: TextContentType
     ) {
-        let inputScope: InputScopeNameValue =
-            switch textContentType {
-                case .decimal(_):
-                    .number
-                case .digits(_):
-                    .digits
-                case .emailAddress:
-                    .emailSmtpAddress
-                case .name:
-                    .personalFullName
-                case .phoneNumber:
-                    .telephoneNumber
-                case .text:
-                    .default
-                case .url:
-                    .url
+
+        let inputScope: InputScopeNameValue? =
+            switch textField {
+                case is TextBox:
+                    switch textContentType {
+                        case .decimal(_): .number
+                        case .digits(_): .digits
+                        case .emailAddress: .emailSmtpAddress
+                        case .name: .personalFullName
+                        case .phoneNumber: .telephoneNumber
+                        case .text: .default
+                        case .url: .url
+                    }
+                case is PasswordBox:
+                    switch textContentType {
+                        case .digits(_): .numericPin
+                        case .text: .password
+                        default: nil
+                    }
+                default: nil
             }
+        guard let inputScope else { return }
 
         let inputScopeName = InputScopeName(inputScope)
 
@@ -1242,7 +1387,8 @@ public final class WinUIBackend: AppBackend {
     }
 
     public func setState(ofToggle toggle: Widget, to state: Bool) {
-        (toggle as! ToggleButton).isChecked = state
+        let toggle = toggle as! ToggleButton
+        toggle.isChecked = state
     }
 
     public func createSwitch() -> Widget {
@@ -1388,6 +1534,10 @@ public final class WinUIBackend: AppBackend {
         }
     }
 
+    public func dismissAlert(_ alert: Alert, window: Window?) {
+        try! alert.hide()
+    }
+
     public func showOpenDialog(
         fileDialogOptions: FileDialogOptions,
         openDialogOptions: OpenDialogOptions,
@@ -1406,34 +1556,32 @@ public final class WinUIBackend: AppBackend {
         if openDialogOptions.allowMultipleSelections {
             let promise = try! picker.pickMultipleFilesAsync()!
             promise.completed = { operation, status in
-                guard
-                    status == .completed,
-                    let operation,
-                    let result = try? operation.getResults()
-                else {
-                    handleResult(.cancelled)
-                    return
+                let result: DialogResult<[URL]> = Self.handleAsyncOperationCompletion(
+                    operation,
+                    status
+                ) { result in
+                    let files = Array(result).compactMap { $0 }
+                        .map(\.path)
+                        .map(URL.init(fileURLWithPath:))
+                    return .success(files)
+                } onFailure: {
+                    return .cancelled
                 }
-
-                let files = Array(result).compactMap { $0 }
-                    .map(\.path)
-                    .map(URL.init(fileURLWithPath:))
-                handleResult(.success(files))
+                handleResult(result)
             }
         } else {
             let promise = try! picker.pickSingleFileAsync()!
             promise.completed = { operation, status in
-                guard
-                    status == .completed,
-                    let operation,
-                    let result = try? operation.getResults()
-                else {
-                    handleResult(.cancelled)
-                    return
+                let result: DialogResult<[URL]> = Self.handleAsyncOperationCompletion(
+                    operation,
+                    status
+                ) { result in
+                    let file = URL(fileURLWithPath: result.path)
+                    return .success([file])
+                } onFailure: {
+                    return .cancelled
                 }
-
-                let file = URL(fileURLWithPath: result.path)
-                handleResult(.success([file]))
+                handleResult(result)
             }
         }
     }
@@ -1454,18 +1602,63 @@ public final class WinUIBackend: AppBackend {
         _ = picker.fileTypeChoices.insert("Text", [".txt"].toVector())
         let promise = try! picker.pickSaveFileAsync()!
         promise.completed = { operation, status in
-            guard
-                status == .completed,
-                let operation,
-                let result = try? operation.getResults()
-            else {
-                handleResult(.cancelled)
-                return
+            let result: DialogResult<URL> = Self.handleAsyncOperationCompletion(
+                operation,
+                status
+            ) { result in
+                let file = URL(fileURLWithPath: result.path)
+                return .success(file)
+            } onFailure: {
+                return .cancelled
             }
-
-            let file = URL(fileURLWithPath: result.path)
-            handleResult(.success(file))
+            handleResult(result)
         }
+    }
+
+    /// A helper method that abstracts out the common failure case handling code
+    /// from all of our file dialog related async operation completion handlers.
+    private static func handleAsyncOperationCompletion<T, R>(
+        _ operation: AnyIAsyncOperation<T?>?,
+        _ status: AsyncStatus,
+        onSuccess handleSuccess: (T) -> R,
+        onFailure handleFailure: () -> R
+    ) -> R {
+        guard let operation else {
+            logger.warning(
+                "operation parameter unexpectedly nil",
+                metadata: [
+                    "function": #function
+                ]
+            )
+            return handleFailure()
+        }
+
+        guard
+            status == .completed,
+            let result = try? operation.getResults()
+        else {
+            if status == .error {
+                logger.error(
+                    "\(WindowsFoundation.Error(hr: operation.errorCode))",
+                    metadata: [
+                        "function": #function
+                    ]
+                )
+
+                if UInt32(bitPattern: operation.errorCode) == 0x80004005 {
+                    // https://github.com/microsoft/WindowsAppSDK/issues/4625#issuecomment-2281358235
+                    logger.warning(
+                        """
+                        This may indicate that you're attempting to launch a \
+                        file picker from an app launched as administrator
+                        """
+                    )
+                }
+            }
+            return handleFailure()
+        }
+
+        return handleSuccess(result)
     }
 
     public func createTapGestureTarget(wrapping child: Widget, gesture: TapGesture) -> Widget {
@@ -1960,6 +2153,8 @@ extension EnvironmentValues {
         textBlock.fontSize = resolvedFont.pointSize
         textBlock.fontWeight.weight = resolvedFont.winUIFontWeight
         textBlock.foreground = winUIForegroundBrush
+        textBlock.lineHeight = resolvedFont.lineHeight
+
         if resolvedFont.isItalic {
             textBlock.fontStyle = .italic
         }
@@ -1997,6 +2192,10 @@ final class CustomComboBox: ComboBox {
     var actualForegroundColor: UWP.Color = UWP.Color(a: 255, r: 0, g: 0, b: 0)
 }
 
+final class CustomRadioButtons: RadioButtons {
+    var onChangeSelection: ((Int?) -> Void)?
+}
+
 final class CustomSplitView: SplitView {
     var sidebarResizeHandler: (() -> Void)?
 }
@@ -2010,6 +2209,21 @@ final class HoverGestureTarget: WinUI.Canvas {
     var enterHandler: (() -> Void)?
     var exitHandler: (() -> Void)?
     var child: WinUI.FrameworkElement?
+}
+
+final class TooltipContainer: WinUI.Canvas {
+    var child: WinUI.FrameworkElement
+    var tooltip: ToolTip
+
+    init(child: WinUI.FrameworkElement) {
+        self.child = child
+        self.tooltip = ToolTip()
+        
+        super.init()
+
+        children.append(child)
+        ToolTipService.setToolTip(self, tooltip)
+    }
 }
 
 class SwiftIInitializeWithWindow: WindowsFoundation.IUnknown {
@@ -2031,13 +2245,22 @@ class SwiftIInitializeWithWindow: WindowsFoundation.IUnknown {
 
 public class CustomWindow: WinUI.Window {
     /// Hardcoded menu bar height from MenuBar_themeresources.xaml in the
-    /// microsoft-ui-xaml repository.
-    static let menuBarHeight = 0
+    /// microsoft-ui-xaml repository (the MenuBarHeight property)
+    private static let menuBarHeight = 40
 
     var menuBar = WinUI.MenuBar()
     var child: WinUIBackend.Widget?
     var grid: WinUI.Grid
     var cachedAppWindow: WinAppSDK.AppWindow!
+    var isActive = false
+
+    private(set) var menuBarIsVisible = false
+
+    /// The amount of height to subtract off the window height to obtain the
+    /// window's available content height.
+    var contentHeightAdjustment: Int {
+        menuBarIsVisible ? Self.menuBarHeight : 0
+    }
 
     var scaleFactor: Double {
         // I'm leaving this code here for future travellers. Be warned that this always
@@ -2072,10 +2295,6 @@ public class CustomWindow: WinUI.Window {
         super.init()
 
         let menuBarRowDefinition = WinUI.RowDefinition()
-        menuBarRowDefinition.height = WinUI.GridLength(
-            value: Double(Self.menuBarHeight),
-            gridUnitType: .pixel
-        )
         let contentRowDefinition = WinUI.RowDefinition()
         grid.rowDefinitions.append(menuBarRowDefinition)
         grid.rowDefinitions.append(contentRowDefinition)
@@ -2083,9 +2302,36 @@ public class CustomWindow: WinUI.Window {
         WinUI.Grid.setRow(menuBar, 0)
         self.content = grid
 
+        // NB: This event fires when the window is activated _or_ deactivated.
+        self.activated.addHandler { [weak self] _, args in
+            switch args?.windowActivationState {
+                case .codeActivated, .pointerActivated: self?.isActive = true
+                case .deactivated: self?.isActive = false
+
+                // NB: The compiler apparently thinks we didn't exhaustively switch
+                // over this enum without this `default` (even after adding a `case nil`).
+                // Might be because it doesn't treat the underlying C enum as a Swift enum?
+                default: break
+            }
+        }
+
         // Caching appWindow is apparently a good idea in terms of performance:
         // https://github.com/thebrowsercompany/swift-winrt/issues/199#issuecomment-2611006020
         cachedAppWindow = appWindow
+
+        // Default to not showing the menu bar; we only want to show it when it's non-empty
+        setMenuBarVisible(menuBarIsVisible)
+    }
+
+    /// Sets whether the menu bar of the current window is visible. The menu bar
+    /// is what holds the in-window app menu, it's not the title bar (the one with
+    /// the window controls).
+    public func setMenuBarVisible(_ visible: Bool) {
+        grid.rowDefinitions[0]!.height = WinUI.GridLength(
+            value: visible ? Double(Self.menuBarHeight) : 0,
+            gridUnitType: .pixel
+        )
+        menuBarIsVisible = visible
     }
 
     public func setChild(_ child: WinUIBackend.Widget) {
@@ -2375,6 +2621,19 @@ final class CustomDatePicker: StackPanel {
                 x: max(timeViewSize.x, dateViewSize.x),
                 y: timeViewSize.y + dateViewSize.y + Int(self.spacing)
             )
+        }
+    }
+}
+
+extension WinUI.FrameworkElement {
+    var shouldBlockNextChangedSignal: Bool {
+        get {
+            (self.tag as? [String: Any])?["shouldBlockNextChangedSignal"] as? Bool ?? false
+        }
+        set {
+            var value = self.tag as? [String: Any] ?? [:]
+            value["shouldBlockNextChangedSignal"] = newValue
+            self.tag = value
         }
     }
 }

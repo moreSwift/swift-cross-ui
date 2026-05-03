@@ -1,6 +1,10 @@
 import Foundation
 
-package typealias DefaultAppStorageProvider = UserDefaultsAppStorageProvider
+/// The default app storage provider for apps which don't specify a
+/// custom one.
+///
+/// This uses `UserDefaults` on all platforms.
+public typealias DefaultAppStorageProvider = UserDefaultsAppStorageProvider
 
 /// A type that can be used to persist ``AppStorage`` values to disk.
 public protocol AppStorageProvider: Sendable {

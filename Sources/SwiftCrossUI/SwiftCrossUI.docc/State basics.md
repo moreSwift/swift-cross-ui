@@ -17,10 +17,19 @@ For situations where you need data to trickle back up again, use ``Binding``
 
 - ``State``
 - ``Binding``
-- ``AppStorage``
-- ``AppStorageKey``
-- ``AppStorageProvider``
 - ``ObservableObject``
+- ``ObservableObject()``
+- ``ObservationIgnored()``
 - ``Published``
 - ``Publisher``
 - ``Cancellable``
+
+### App Storage
+
+- ``AppStorage``
+- ``AppStorageKey``
+- ``AppStorageValues``
+- ``AppStorageProvider``
+- ``DefaultAppStorageProvider``
+- ``UserDefaultsAppStorageProvider``
+- ``View/appStorageProvider(_:)``

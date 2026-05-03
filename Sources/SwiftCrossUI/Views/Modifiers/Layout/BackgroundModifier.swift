@@ -1,6 +1,24 @@
 extension View {
+    /// Sets the background of this view to another view.
+    ///
+    /// - Parameter background: The view to place behind this view.
     public func background<Background: View>(_ background: Background) -> some View {
         BackgroundModifier(background: background, foreground: self)
+    }
+
+    /// Layers views that you specify behind this view.
+    ///
+    /// - Parameter alignment: The alignment used to align the implicit ``ZStack``
+    ///   the stacks the background views.
+    /// - Parameter content: A builder which declares views to display behind this
+    ///   view. The builder is implicitly the body of a ``ZStack``, leading to the
+    ///   views in the builder stacking in the Z direction.
+    public func background<V: View>(
+        alignment: Alignment = .center,
+        @ViewBuilder content: () -> V
+    ) -> some View {
+        let zstack = ZStack(alignment: alignment, content: content)
+        return BackgroundModifier(background: zstack, foreground: self)
     }
 }
 
@@ -13,7 +31,7 @@ struct BackgroundModifier<Background: View, Foreground: View>: TypeSafeView {
         body = TupleView2(background, foreground)
     }
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -21,20 +39,20 @@ struct BackgroundModifier<Background: View, Foreground: View>: TypeSafeView {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: TupleView2<Background, Foreground>.Children
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: TupleView2<Background, Foreground>.Children, backend: Backend
     ) -> Backend.Widget {
         body.asWidget(children, backend: backend)
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: TupleView2<Background, Foreground>.Children,
         proposedSize: ProposedViewSize,
@@ -67,7 +85,7 @@ struct BackgroundModifier<Background: View, Foreground: View>: TypeSafeView {
         )
     }
 
-    public func commit<Backend: AppBackend>(
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: TupleView2<Background, Foreground>.Children,
         layout: ViewLayoutResult,

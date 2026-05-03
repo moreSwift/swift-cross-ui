@@ -2,7 +2,18 @@ import Logging
 import SwiftCrossUI
 import UIKit
 
-public final class UIKitBackend: AppBackend {
+public final class UIKitBackend:
+    BaseAppBackend,
+    BackendFeatures.ExternalURLs,
+    BackendFeatures.IncomingURLs,
+    BackendFeatures.Alerts,
+    BackendFeatures.Sheets,
+    BackendFeatures.CornerRadius,
+    BackendFeatures.Paths,
+    BackendFeatures.Tooltips,
+    BackendFeatures.Colors
+{
+    static var onWindowEnvironmentChange: (() -> Void)?
     static var onBecomeActive: (() -> Void)?
     static var onReceiveURL: ((URL) -> Void)?
     static var queuedURLs: [URL] = []
@@ -16,7 +27,6 @@ public final class UIKitBackend: AppBackend {
     public let scrollBarWidth = 0
     public let defaultPaddingAmount = 15
     public let requiresToggleSwitchSpacer = true
-    public let menuImplementationStyle = MenuImplementationStyle.menuButton
 
     // TODO: When tables are supported, update these
     public let defaultTableRowContentHeight = -1
@@ -24,8 +34,8 @@ public final class UIKitBackend: AppBackend {
 
     public let requiresImageUpdateOnScaleFactorChange = false
 
-    public let canRevealFiles = false
     public let supportsMultipleWindows = false
+    public let canOverrideWindowColorScheme = true
 
     public var deviceClass: DeviceClass {
         switch UIDevice.current.userInterfaceIdiom {
@@ -46,16 +56,32 @@ public final class UIKitBackend: AppBackend {
         }
     }
 
-    public nonisolated var supportedDatePickerStyles: [DatePickerStyle] {
+    public var defaultPickerStyle: BackendPickerStyle {
         #if os(tvOS)
-            []
+            .segmented
+        #elseif os(visionOS)
+            .menu
         #else
             if #available(iOS 14, macCatalyst 14, *) {
-                [.automatic, .graphical, .compact, .wheel]
-            } else if #available(iOS 13.4, macCatalyst 13.4, *) {
-                [.automatic, .compact, .wheel]
+                .menu
             } else {
-                [.automatic]
+                .wheel
+            }
+        #endif
+    }
+
+    public var supportedPickerStyles: [BackendPickerStyle] {
+        #if os(tvOS)
+            if #available(tvOS 17, *) {
+                [.menu, .segmented]
+            } else {
+                [.segmented]
+            }
+        #else
+            if #available(iOS 14, macCatalyst 14, *) {
+                [.menu, .segmented, .wheel]
+            } else {
+                [.segmented, .wheel]
             }
         #endif
     }
@@ -144,10 +170,25 @@ public final class UIKitBackend: AppBackend {
                 break
         }
 
+        switch UIApplication.shared.applicationState {
+            case .active: environment.appPhase = .active
+            case .inactive: environment.appPhase = .inactive
+            case .background: environment.appPhase = .background
+            @unknown default:
+                logger.warning(
+                    """
+                    UIApplication.applicationState returned unknown state
+                    '\(UIApplication.shared.applicationState)'; ignoring and returning
+                    'active' instead
+                    """
+                )
+                environment.appPhase = .active
+        }
+
         return environment
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
+    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
         onTraitCollectionChange = action
         if timeZoneObserver == nil {
             timeZoneObserver = NotificationCenter.default.addObserver(
@@ -160,6 +201,22 @@ public final class UIKitBackend: AppBackend {
                 }
             }
         }
+
+        let notifications = [
+            UIApplication.willEnterForegroundNotification,
+            UIApplication.didBecomeActiveNotification,
+            UIApplication.willResignActiveNotification,
+            UIApplication.didEnterBackgroundNotification,
+        ]
+        for notification in notifications {
+            NotificationCenter.default.addObserver(
+                forName: notification,
+                object: nil,
+                queue: .main
+            ) { _ in
+                action()
+            }
+        }
     }
 
     public func computeWindowEnvironment(
@@ -168,13 +225,16 @@ public final class UIKitBackend: AppBackend {
     ) -> EnvironmentValues {
         // TODO: Record window scale factor in here
         rootEnvironment
+            .with(\.scenePhase, window.isKeyWindow ? .active : .inactive)
     }
 
     public func setWindowEnvironmentChangeHandler(
         of window: Window,
-        to action: @escaping () -> Void
+        to action: @escaping @Sendable @MainActor () -> Void
     ) {
         // TODO: Notify when window scale factor changes
+
+        Self.onWindowEnvironmentChange = action
     }
 
     public func runInMainThread(action: @escaping @MainActor () -> Void) {
@@ -186,6 +246,25 @@ public final class UIKitBackend: AppBackend {
 
     public func openExternalURL(_ url: URL) throws {
         UIApplication.shared.open(url)
+    }
+
+    // MARK: - Unimplemented Features
+
+    public func createToggle() -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updateToggle(
+        _ toggle: Widget,
+        label: String,
+        environment: EnvironmentValues,
+        onChange: @escaping (Bool) -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setState(ofToggle toggle: Widget, to state: Bool) {
+        fatalError("\(Self.self): \(#function) not implemented")
     }
 }
 
@@ -233,6 +312,7 @@ open class ApplicationDelegate: UIResponder, UIApplicationDelegate {
     }
 
     var menu: [ResolvedMenu.Submenu] = []
+    var environment: EnvironmentValues?
 
     public required override init() {
         super.init()
@@ -246,7 +326,7 @@ open class ApplicationDelegate: UIResponder, UIApplicationDelegate {
     open func applicationDidBecomeActive(_ application: UIApplication) {
         UIKitBackend.onBecomeActive?()
 
-        // We only want to notify the first time. Otherwise the app's view
+        // We only want to notify the first time. Otherwise the app's scene
         // graph gets regenerated every time the app gets foregrounded,
         // causing very strange results.
         UIKitBackend.onBecomeActive = nil
@@ -325,7 +405,11 @@ open class ApplicationDelegate: UIResponder, UIApplicationDelegate {
         for submenu in menu {
             let menuIdentifier = mapMenuIdentifier(submenu.label)
             let menu = UIKitBackend.buildMenu(
-                content: submenu.content, label: submenu.label, identifier: menuIdentifier)
+                content: submenu.content,
+                label: submenu.label,
+                identifier: menuIdentifier,
+                environment: environment!
+            )
 
             if builder.menu(for: menuIdentifier) == nil {
                 builder.insertChild(menu, atEndOfMenu: .root)
@@ -363,7 +447,7 @@ open class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         UIKitBackend.onBecomeActive?()
 
-        // We only want to notify the first time. Otherwise the app's view
+        // We only want to notify the first time. Otherwise the app's scene
         // graph gets regenerated every time the app gets foregrounded,
         // causing very strange results.
         UIKitBackend.onBecomeActive = nil
@@ -381,5 +465,21 @@ open class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         {
             onReceiveURL(url)
         }
+    }
+
+    open func sceneDidBecomeActive(_ scene: UIScene) {
+        UIKitBackend.onWindowEnvironmentChange?()
+    }
+
+    open func sceneWillResignActive(_ scene: UIScene) {
+        UIKitBackend.onWindowEnvironmentChange?()
+    }
+
+    open func sceneWillEnterForeground(_ scene: UIScene) {
+        UIKitBackend.onWindowEnvironmentChange?()
+    }
+
+    open func sceneDidEnterBackground(_ scene: UIScene) {
+        UIKitBackend.onWindowEnvironmentChange?()
     }
 }

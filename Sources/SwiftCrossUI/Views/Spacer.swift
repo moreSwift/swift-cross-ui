@@ -10,15 +10,17 @@ public struct Spacer: ElementaryView, View {
 
     /// Creates a spacer with a given minimum length along its axis or axes
     /// of expansion.
+    ///
+    /// - Parameter minLength: The spacer's minimum length.
     public init(minLength: Int? = nil) {
         self.minLength = minLength
     }
 
-    func asWidget<Backend: AppBackend>(backend: Backend) -> Backend.Widget {
+    func asWidget<Backend: BaseAppBackend>(backend: Backend) -> Backend.Widget {
         return backend.createContainer()
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -31,10 +33,15 @@ public struct Spacer: ElementaryView, View {
             proposedLength ?? Self.idealLength
         )
 
-        return ViewLayoutResult.leafView(size: size)
+        return ViewLayoutResult(
+            size: size,
+            participateInStackLayoutsWhenEmpty: true,
+            preferences: PreferenceValues.default
+                .with(\.layoutPriority, -Double.infinity)
+        )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

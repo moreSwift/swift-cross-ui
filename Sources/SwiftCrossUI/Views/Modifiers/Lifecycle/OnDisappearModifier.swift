@@ -4,6 +4,8 @@ extension View {
     /// `onDisappear` actions on outermost views are called first and propagate
     /// down to the leaf views due to essentially relying on the `deinit` of the
     /// modifier view's ``ViewGraphNode``.
+    ///
+    /// - Parameter action: The action to perform when this view disappears.
     public func onDisappear(perform action: @escaping @Sendable @MainActor () -> Void) -> some View
     {
         OnDisappearModifier(body: TupleView1(self), action: action)
@@ -14,7 +16,7 @@ struct OnDisappearModifier<Content: View>: TypeSafeView {
     var body: TupleView1<Content>
     var action: @Sendable @MainActor () -> Void
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -29,7 +31,7 @@ struct OnDisappearModifier<Content: View>: TypeSafeView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: OnDisappearModifierChildren
     ) -> [LayoutSystem.LayoutableChild] {
@@ -39,14 +41,14 @@ struct OnDisappearModifier<Content: View>: TypeSafeView {
         )
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: OnDisappearModifierChildren,
         backend: Backend
     ) -> Backend.Widget {
         defaultAsWidget(children.wrappedChildren, backend: backend)
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: OnDisappearModifierChildren,
         proposedSize: ProposedViewSize,
@@ -62,7 +64,7 @@ struct OnDisappearModifier<Content: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: OnDisappearModifierChildren,
         layout: ViewLayoutResult,

@@ -1,0 +1,95 @@
+@Tutorial {
+    @Intro(title: "Setting up a development environment on macOS") {
+        Detailed set up instructions for macOS-based development environments.
+        
+        In this article we'll focus on developing SwiftCrossUI apps with Swift Bundler, but much of
+        the information should still apply if you choose to use a different build system.
+    }
+    
+    @Section(title: "Installing Xcode") {
+        @ContentAndMedia {
+            Even if you don't use the editor, you still need to have
+            [Xcode](https://developer.apple.com/xcode/) installed on your system since it bundles
+            the macOS and iOS SDKs.
+            
+            If you already have a reasonably up-to-date copy of Xcode, you can skip this section.
+        }
+        
+        @Steps {
+            Installing Xcode from the App Store is trivial:
+            
+            @Step {
+                Visit Xcode's [App Store page](https://apps.apple.com/us/app/xcode/id497799835?mt=12/)
+                and click Get.
+                @Image(source: macOS-01-01, alt: "An App Store window showing Xcode's page.")
+            }
+            
+            For more flexibility, you can also choose to install Xcode manually. Doing it like this
+            also lets you install directly to an external storage device, which can come in handy if
+            you're running low on storage.
+            
+            @Step {
+                Locate your desired Xcode release on [xcodereleases.com](https://xcodereleases.com).
+                @Image(source: macOS-01-02, alt: "A browser window showing xcodereleases.com.")
+            }
+            
+            @Step {
+                Click Download and wait for it to finish (Xcode is pretty huge, so it'll take a
+                while). Sign in with your Apple Account if prompted.
+            }
+            
+            @Step {
+                Unzip the `.xip` file.
+                
+                Archive Utility works fine in a pinch, but we recommend using
+                [unxip](https://github.com/saagarjha/unxip) instead; it's faster and it doesn't use
+                temporary storage on your internal drive (which is useful if you're low on storage).
+            }
+            
+            @Step {
+                Move `Xcode.app` to wherever you want it, usually either `/Applications` or some
+                external location.
+            }
+            
+            @Step {
+                Open Xcode, accept the license agreement if it prompts you, and select the SDKs you
+                need when it prompts you to install optional components.
+            }
+            
+            @Step {
+                If you put Xcode in a location other than `/Applications/Xcode.app`, run
+                `xcode-select --switch /path/to/Xcode.app`.
+                @Code(name: "XcodeSelect.shell", file: macOS-01-07.shell)
+            }
+        }
+    }
+            
+    @Section(title: "Installing Swift Bundler") {
+        @ContentAndMedia {
+            [Swift Bundler](https://swiftbundler.dev) unifies your cross platform development
+            experience with a consistent CLI interface and configuration format.
+        }
+        
+        @Steps {
+            @Step {
+                Install Swift Bundler via whatever means you prefer.
+                
+                Swift Bundler's [documentation](https://swiftbundler.dev/documentation/swift-bundler/installation)
+                lists a wide variety of installation methods, but if you have Mint installed it's as
+                easy as running `mint install moreSwift/swift-bundler@main`.
+            }
+            
+            @Step {
+                Once installed, run `swift-bundler --version` as a quick sanity check.
+                @Code(name: "SwiftBundler.shell", file: swift-bundler-version.shell)
+            }
+            
+            And that's it! If you're only using <doc:AppKitBackend> and <doc:UIKitBackend> when
+            targeting Apple platforms, then you're good to go.
+            
+            If you'd like to test your app with <doc:GtkBackend> or <doc:Gtk3Backend> without
+            leaving your Mac, visit the backends' respective documentation pages for detailed
+            dependency installation instructions.
+        }
+    }
+}

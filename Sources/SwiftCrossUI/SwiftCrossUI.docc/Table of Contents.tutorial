@@ -1,0 +1,60 @@
+@Tutorials(name: "SwiftCrossUI") {
+    @Intro(title: "Meet SwiftCrossUI") {
+        Native UI without the fuss.
+    }
+    
+    @Chapter(name: "Quick start") {
+        Create _truly_ cross-platform apps that are native everywhere.
+        @TutorialReference(tutorial: "doc:Quick-start")
+    }
+    
+    @Chapter(name: "Setup") {
+        Get set up to create cross-platform apps with SwiftCrossUI and Swift Bundler.
+        
+        Building a cross-platform app requires testing your app in a variety of environments.
+        Setting up development environments can come with many platform-specific challenges. These
+        tutorials give an overview of the steps involved and touch on the most common pain-points
+        for each platform.
+        
+        @TutorialReference(tutorial: "doc:Setting-up-a-virtual-development-environment")
+        @TutorialReference(tutorial: "doc:macOS-development")
+        @TutorialReference(tutorial: "doc:Linux-development")
+        @TutorialReference(tutorial: "doc:Windows-development")
+    }
+    
+    @Resources {
+        Explore more SwiftCrossUI resources.
+        
+        @Forums(destination: "https://moreswift.dev/discord") {
+            Join the moreSwift Discord server for all the details on what we're up to.
+        }
+        
+        @Documentation(destination: "https://docs.swiftcrossui.dev/documentation/swiftcrossui/") {
+            Explore more resources for building apps in SwiftCrossUI.
+            
+            - <doc:View-fundamentals>
+            - <doc:Controls>
+            - <doc:State-basics>
+        }
+        
+        @SampleCode(destination: "https://github.com/moreSwift/swift-cross-ui/tree/main/Examples") {
+            View example SwiftCrossUI apps to get a feel for the library.
+            
+            - [AdvancedCustomizationExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/AdvancedCustomizationExample)
+            - [ColorsExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/ColorsExample)
+            - [ControlsExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/ControlsExample)
+            - [ForEachExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/ForEachExample)
+            - [GreetingGeneratorExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/GreetingGeneratorExample)
+            - [HoverExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/HoverExample)
+            - [NavigationExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/NavigationExample)
+            - [NotesExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/NotesExample)
+            - [PathsExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/PathsExample)
+            - [RandomNumberGeneratorExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/RandomNumberGeneratorExample)
+            - [SplitExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/SplitExample)
+            - [SpreadsheetExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/SpreadsheetExample)
+            - [StressTestExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/StressTestExample)
+            - [WebViewExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/WebViewExample)
+            - [WindowingExample](https://github.com/moreSwift/swift-cross-ui/tree/main/Examples/Sources/WindowingExample)
+        }
+    }
+}

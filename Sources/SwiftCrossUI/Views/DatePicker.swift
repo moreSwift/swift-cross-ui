@@ -11,17 +11,15 @@ public struct DatePickerComponents: OptionSet, Sendable {
         self.rawValue = 0
     }
 
-    /*
-     * These magic numbers are the same as SwiftUI. It's actually a bitfield:
-     *
-     *                        smhdMy--
-     *                   date 00011100
-     *          hourAndMinute 01100000
-     *    hourMinuteAndSecond 11100000
-     *
-     * Like SwiftUI, not all combinations are valid (SwiftUI fatalErrors if you try to get creative
-     * with your choice of flags), and hourMinuteAndSecond intentionally includes hourAndMinute.
-     */
+    // These magic numbers are the same as SwiftUI. It's actually a bitfield:
+    //
+    //                        smhdMy--
+    //                   date 00011100
+    //          hourAndMinute 01100000
+    //    hourMinuteAndSecond 11100000
+    //
+    // Like SwiftUI, not all combinations are valid (SwiftUI fatalErrors if you try to get creative
+    // with your choice of flags), and hourMinuteAndSecond intentionally includes hourAndMinute.
 
     public static let date = DatePickerComponents(rawValue: 0x1C)
     public static let hourAndMinute = DatePickerComponents(rawValue: 0x60)
@@ -126,11 +124,13 @@ internal struct DatePickerImplementation: ElementaryView {
 
     let body = EmptyView()
 
-    func asWidget<Backend: AppBackend>(backend: Backend) -> Backend.Widget {
+    @CastBackend<BackendFeatures.DatePickers>(returnsWidget: true)
+    func asWidget<Backend: BaseAppBackend>(backend: Backend) -> Backend.Widget {
         backend.createDatePicker()
     }
 
-    func computeLayout<Backend: AppBackend>(
+    @CastBackend<BackendFeatures.DatePickers>
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -150,7 +150,7 @@ internal struct DatePickerImplementation: ElementaryView {
         return ViewLayoutResult.leafView(size: ViewSize(naturalSize))
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

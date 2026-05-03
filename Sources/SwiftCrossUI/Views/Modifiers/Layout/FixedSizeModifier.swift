@@ -1,8 +1,28 @@
 extension View {
+    /// Locks this view's size on both the horizontal and vertical axes.
     public func fixedSize() -> some View {
         FixedSizeModifier(self, horizontal: true, vertical: true)
     }
 
+    /// Locks this view's size on the specified axes.
+    ///
+    /// What this modifier does is propose an unspecified size along the specified
+    /// dimensions; this has the effect of making the view immune to changes in
+    /// size proposals along its 'fixed' axes. But the view's size along those
+    /// axes **may still change** if the incoming size proposal changes along a
+    /// 'non-fixed' axis. This is particularly pertinent in the case of views like
+    /// ``Text``, which have a tradeoff between width and height; a 'fixed'
+    /// horizontal size can still change if the vertical size changes, and vice
+    /// versa.
+    ///
+    /// If both `horizontal` and `vertical` are `true` (i.e. if both axes are
+    /// 'fixed'), then the child will take on its ideal size along both axes and
+    /// will _actually_ be of a fixed size. ``fixedSize()`` (with no arguments)
+    /// provides a shorthand for this.
+    ///
+    /// - Parameters:
+    ///   - horizontal: Whether to lock this view's size on the horizontal axis.
+    ///   - vertical: Whether to lock this view's size on the vertical axis.
     public func fixedSize(horizontal: Bool, vertical: Bool) -> some View {
         FixedSizeModifier(self, horizontal: horizontal, vertical: vertical)
     }
@@ -20,7 +40,7 @@ struct FixedSizeModifier<Child: View>: TypeSafeView {
         self.vertical = vertical
     }
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -28,7 +48,7 @@ struct FixedSizeModifier<Child: View>: TypeSafeView {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: TupleViewChildren1<Child>,
         backend: Backend
     ) -> Backend.Widget {
@@ -37,7 +57,7 @@ struct FixedSizeModifier<Child: View>: TypeSafeView {
         return container
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: TupleViewChildren1<Child>,
         proposedSize: ProposedViewSize,
@@ -63,7 +83,7 @@ struct FixedSizeModifier<Child: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: TupleViewChildren1<Child>,
         layout: ViewLayoutResult,

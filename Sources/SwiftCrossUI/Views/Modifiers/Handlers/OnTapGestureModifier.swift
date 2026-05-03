@@ -1,14 +1,17 @@
+/// A type of tap gesture.
 public struct TapGesture: Sendable, Hashable {
     package var kind: TapGestureKind
 
-    /// The idiomatic "primary" interaction for the device, such as a left-click with the mouse
-    /// or normal tap on a touch screen.
+    /// The idiomatic "primary" interaction for the device, such as a left-click
+    /// with the mouse or normal tap on a touch screen.
     public static let primary = TapGesture(kind: .primary)
-    /// The idiomatic "secondary" interaction for the device, such as a right-click with the
-    /// mouse or long press on a touch screen.
+    /// The idiomatic "secondary" interaction for the device, such as a
+    /// right-click with the mouse or long press on a touch screen.
     public static let secondary = TapGesture(kind: .secondary)
-    /// A long press of the same interaction type as ``primary``. May be equivalent to
-    /// ``secondary`` on some backends, particularly on mobile devices.
+    /// A long press of the same interaction type as ``primary``.
+    ///
+    /// May be equivalent to ``secondary`` on some backends, particularly on
+    /// mobile devices.
     public static let longPress = TapGesture(kind: .longPress)
 
     package enum TapGestureKind {
@@ -19,11 +22,16 @@ public struct TapGesture: Sendable, Hashable {
 extension View {
     /// Adds an action to perform when the user taps or clicks this view.
     ///
-    /// Any tappable elements within the view will no longer be tappable with the same gesture
-    /// type.
-    public func onTapGesture(gesture: TapGesture = .primary, perform action: @escaping () -> Void)
-        -> some View
-    {
+    /// Any tappable elements within the view will no longer be tappable with
+    /// the same gesture type.
+    ///
+    /// - Parameters:
+    ///   - gesture: The type of gesture to listen for.
+    ///   - action: The action to perform.
+    public func onTapGesture(
+        gesture: TapGesture = .primary,
+        perform action: @escaping () -> Void
+    ) -> some View {
         OnTapGestureModifier(body: TupleView1(self), gesture: gesture, action: action)
     }
 
@@ -42,7 +50,7 @@ struct OnTapGestureModifier<Content: View>: TypeSafeView {
     var gesture: TapGesture
     var action: () -> Void
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -54,14 +62,15 @@ struct OnTapGestureModifier<Content: View>: TypeSafeView {
         )
     }
 
-    func asWidget<Backend: AppBackend>(
+    @CastBackend<BackendFeatures.TapGestures>(returnsWidget: true)
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
         backend.createTapGestureTarget(wrapping: children.child0.widget.into(), gesture: gesture)
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -75,7 +84,8 @@ struct OnTapGestureModifier<Content: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    @CastBackend<BackendFeatures.TapGestures>
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: TupleView1<Content>.Children,
         layout: ViewLayoutResult,

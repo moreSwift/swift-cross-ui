@@ -19,9 +19,9 @@ public struct ErasedViewGraphNode {
 
     public var getWidget: () -> AnyWidget
     public var viewType: any View.Type
-    public var backendType: any AppBackend.Type
+    public var backendType: any BaseAppBackend.Type
 
-    public init<V: View, Backend: AppBackend>(
+    public init<V: View, Backend: BaseAppBackend>(
         for view: V,
         backend: Backend,
         snapshot: ViewGraphSnapshotter.NodeSnapshot? = nil,
@@ -37,7 +37,7 @@ public struct ErasedViewGraphNode {
         )
     }
 
-    public init<V: View, Backend: AppBackend>(
+    public init<V: View, Backend: BaseAppBackend>(
         wrapping node: ViewGraphNode<V, Backend>
     ) {
         self.node = node
@@ -73,14 +73,14 @@ public struct ErasedViewGraphNode {
         self.init(wrapping: node, backend: node.getBackend())
     }
 
-    private init<V: View, Backend: AppBackend>(
+    private init<V: View, Backend: BaseAppBackend>(
         wrapping node: AnyViewGraphNode<V>, backend: Backend
     ) {
         self.init(wrapping: node.node as! ViewGraphNode<V, Backend>)
     }
 
     public func transform<R>(with transformer: any ErasedViewGraphNodeTransformer<R>) -> R {
-        func helper<V: View, Backend: AppBackend>(
+        func helper<V: View, Backend: BaseAppBackend>(
             viewType: V.Type,
             backendType: Backend.Type
         ) -> R {
@@ -94,5 +94,5 @@ public struct ErasedViewGraphNode {
 public protocol ErasedViewGraphNodeTransformer<Return> {
     associatedtype Return
 
-    func transform<V: View, Backend: AppBackend>(node: ViewGraphNode<V, Backend>) -> Return
+    func transform<V: View, Backend: BaseAppBackend>(node: ViewGraphNode<V, Backend>) -> Return
 }

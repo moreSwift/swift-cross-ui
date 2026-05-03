@@ -1,0 +1,87 @@
+@Tutorial {
+    @Intro(title: "Setting up a development environment on Linux") {
+        Detailed set up instructions for Linux-based development environments.
+        
+        In this article we'll focus on developing SwiftCrossUI apps with Swift Bundler, but much of
+        the information should still apply if you choose to use a different build system.
+    }
+    
+    @Section(title: "Installing Swift") {
+        @ContentAndMedia {
+            With the release of [swiftly](https://github.com/swiftlang/swiftly), the official Swift
+            toolchain manager, installing Swift toolchains on Linux has become much easier. That
+            said, there are still a few things to watch out for when using less mainstream Linux
+            distributions. If Swiftly doesn't work for you, feel free to use an alternative
+            installation method as found in the
+            [installation instructions](https://www.swift.org/install/linux).
+            
+            If you already have Swift installed, you can skip this section.
+        }
+        
+        @Steps {
+            @Step {
+                Follow the official Swiftly-based
+                [installation instructions](https://www.swift.org/install/linux).
+            }
+            
+            @Step {
+                Restart your shell to ensure Swift is in your PATH, then double-check it's been
+                installed correctly by running `swift --version`.
+                @Code(name: "SwiftVersion.shell", file: linux-01-02)
+            }
+            
+            > Tip: If your Linux distribution isn't officially supported, check out
+            > [`xtremekforever`'s post on the Swift Forums](https://forums.swift.org/t/running-swift-on-unsupported-distributions/71741).
+            > It contains a table that tells you which distribution to select in Swiftly, or in the
+            > swift.org downloads section, in order to maximize the chance of things working on your
+            > chosen distribution. The best distribution to download isn't always the most
+            > intuitive.
+        }
+    }
+            
+    @Section(title: "Installing Swift Bundler") {
+        @ContentAndMedia {
+            [Swift Bundler](https://swiftbundler.dev) unifies your cross platform development
+            experience with a consistent CLI interface and configuration format.
+        }
+        
+        @Steps {
+            @Step {
+                Install Swift Bundler via whatever means you prefer.
+                
+                Swift Bundler's [documentation](https://swiftbundler.dev/documentation/swift-bundler/installation)
+                lists a wide variety of installation methods, but if you have Mint installed it's as
+                easy as running `mint install moreSwift/swift-bundler@main`.
+            }
+            
+            @Step {
+                Once installed, run `swift-bundler --version` as a quick sanity check.
+                
+                > Important: If you're coming from macOS, you'll have to adjust your habits because
+                > `swift bundler` with a space instead of a hyphen doesn't work on Linux.
+                
+                @Code(name: "SwiftBundler.shell", file: swift-bundler-version.shell)
+            }
+        }
+    }
+            
+    @Section(title: "Installing Gtk") {
+        @ContentAndMedia {
+            The final step is to install the dependencies for the backend you'll be using.
+            
+            On Linux you're limited to <doc:GtkBackend> and <doc:Gtk3Backend>. We recommend using
+            <doc:GtkBackend> unless you have a really good reason not to; <doc:Gtk3Backend> exists
+            solely to support older Linux distributions, and doesn't support as many features.
+        }
+        
+        @Steps {
+            > Tip: Some distributions such as Ubuntu 22.04 allow you to install both Gtk 3 and
+            Gtk 4. This can come in handy when you have to target both backends.
+            
+            @Step {
+                Check the documentation for either <doc:GtkBackend> or <doc:Gtk3Backend> for
+                detailed installation instructions.
+            }
+        }
+    }
+}

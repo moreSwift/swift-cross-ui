@@ -2,6 +2,7 @@ import AppKit
 import SwiftCrossUI
 
 /// The context associated with an instance of ``Representable``.
+@MainActor
 public struct NSViewRepresentableContext<Representable: NSViewRepresentable> {
     public let coordinator: Representable.Coordinator
     public internal(set) var environment: EnvironmentValues
@@ -60,6 +61,7 @@ public protocol NSViewRepresentable: View where Content == Never {
     ///
     /// This method is called after all AppKit lifecycle methods, such as
     /// `nsView.didMoveToSuperview()`. The default implementation does nothing.
+    ///
     /// - Parameters:
     ///   - nsView: The view being dismantled.
     ///   - coordinator: The coordinator.
@@ -114,7 +116,7 @@ extension View where Self: NSViewRepresentable {
         preconditionFailure("This should never be called")
     }
 
-    public func children<Backend: AppBackend>(
+    public func children<Backend: BaseAppBackend>(
         backend _: Backend,
         snapshots _: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment _: EnvironmentValues
@@ -122,14 +124,14 @@ extension View where Self: NSViewRepresentable {
         EmptyViewChildren()
     }
 
-    public func layoutableChildren<Backend: AppBackend>(
+    public func layoutableChildren<Backend: BaseAppBackend>(
         backend _: Backend,
         children _: any ViewGraphNodeChildren
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    public func asWidget<Backend: AppBackend>(
+    public func asWidget<Backend: BaseAppBackend>(
         _: any ViewGraphNodeChildren,
         backend _: Backend
     ) -> Backend.Widget {
@@ -140,7 +142,7 @@ extension View where Self: NSViewRepresentable {
         }
     }
 
-    public func computeLayout<Backend: AppBackend>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -152,14 +154,14 @@ extension View where Self: NSViewRepresentable {
 
         let size = representingWidget.representable.sizeThatFits(
             proposedSize,
-            nsView: representingWidget.subview,
+            nsView: representingWidget.view,
             context: representingWidget.context!
         )
 
         return ViewLayoutResult.leafView(size: size)
     }
 
-    public func commit<Backend: AppBackend>(
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,
@@ -194,26 +196,33 @@ final class RepresentingWidget<Representable: NSViewRepresentable>: NSView {
         fatalError("init(coder:) is not used for this view")
     }
 
-    lazy var subview: Representable.NSViewType = {
-        let view = representable.makeNSView(context: context!)
+    var subview: Representable.NSViewType?
 
-        self.addSubview(view)
+    var view: Representable.NSViewType {
+        if let subview {
+            return subview
+        } else {
+            let view = representable.makeNSView(context: context!)
 
-        view.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            view.topAnchor.constraint(equalTo: self.topAnchor),
-            view.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            view.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            view.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-        ])
+            self.addSubview(view)
 
-        return view
-    }()
+            view.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                view.topAnchor.constraint(equalTo: self.topAnchor),
+                view.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+                view.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+                view.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            ])
+
+            subview = view
+            return view
+        }
+    }
 
     func update(with environment: EnvironmentValues) {
         if var context {
             context.environment = environment
-            representable.updateNSView(subview, context: context)
+            representable.updateNSView(view, context: context)
             self.context = context
         } else {
             let context = Representable.Context(
@@ -221,13 +230,15 @@ final class RepresentingWidget<Representable: NSViewRepresentable>: NSView {
                 environment: environment
             )
             self.context = context
-            representable.updateNSView(subview, context: context)
+            representable.updateNSView(view, context: context)
         }
     }
 
     deinit {
-        if let context {
-            Representable.dismantleNSView(subview, coordinator: context.coordinator)
+        if let context, let subview {
+            Task { @MainActor in
+                Representable.dismantleNSView(subview, coordinator: context.coordinator)
+            }
         }
     }
 }

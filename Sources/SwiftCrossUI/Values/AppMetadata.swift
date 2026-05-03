@@ -7,6 +7,12 @@ public struct AppMetadata {
     /// Additional developer-defined metadata.
     public var additionalMetadata: [String: Any]
 
+    /// Creates an ``AppMetadata`` instance.
+    ///
+    /// - Parameters:
+    ///   - identifier: The app's reverse domain name identifier.
+    ///   - version: The app's version (generally a semantic version string).
+    ///   - additionalMetadata: Additional developer-defined metadata.
     public init(
         identifier: String,
         version: String,

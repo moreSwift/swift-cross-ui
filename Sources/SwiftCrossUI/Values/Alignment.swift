@@ -1,4 +1,4 @@
-/// The 2d alignment of a view.
+/// The 2D alignment of a view.
 public struct Alignment: Hashable, Sendable {
     /// Centered in both dimensions.
     public static let center = Self(horizontal: .center, vertical: .center)
@@ -29,12 +29,23 @@ public struct Alignment: Hashable, Sendable {
 
     /// Creates a custom alignment with the given horizontal and vertical
     /// components.
+    ///
+    /// - Parameters:
+    ///   - horizontal: The horizontal alignment component.
+    ///   - vertical: The vertical alignment component.
     public init(horizontal: HorizontalAlignment, vertical: VerticalAlignment) {
         self.horizontal = horizontal
         self.vertical = vertical
     }
 
-    /// Computes the position of a child in a parent view using the provided sizes.
+    /// Computes the position of a child in a parent view using the provided
+    /// sizes.
+    ///
+    /// - Parameters:
+    ///   - child: The size of the child, as a width/height vector.
+    ///   - parent: The size of the parent, as a width/height vector.
+    /// - Returns: The position of the child within the parent, as an x/y
+    ///   vector.
     public func position(
         ofChild child: SIMD2<Int>,
         in parent: SIMD2<Int>

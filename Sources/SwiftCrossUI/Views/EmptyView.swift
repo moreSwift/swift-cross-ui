@@ -1,15 +1,23 @@
-/// A placeholder view used by elementary ``View`` implementations which don't have bodies. Fatally
-/// crashes if rendered.
+/// A placeholder view used by elementary ``View`` implementations which don't
+/// have bodies.
+///
+/// Triggers a fatal error if rendered.
 public struct EmptyView: View, Sendable {
+    /// The nonexistent body of an ``EmptyView``.
+    ///
+    /// - Warning: Do not access this property directly; it will trigger a fatal
+    ///   error at runtime.
     public var body: Never {
         return fatalError("Rendered EmptyView")
     }
 
-    /// Creates a placeholder view (will crash if used in a ``View`` that doesn't override the default
-    /// widget creation code, not intended for regular use).
+    /// Creates an instance of ``EmptyView``.
+    ///
+    /// This will crash if used in a ``View`` that doesn't override the default
+    /// widget creation code; it's not intended for regular use.
     public nonisolated init() {}
 
-    public func children<Backend: AppBackend>(
+    public func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -17,26 +25,26 @@ public struct EmptyView: View, Sendable {
         return EmptyViewChildren()
     }
 
-    public func layoutableChildren<Backend: AppBackend>(
+    public func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: ViewGraphNodeChildren
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    public func updateChildren<Backend: AppBackend>(
+    public func updateChildren<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) {}
 
-    public func asWidget<Backend: AppBackend>(
+    public func asWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {
         backend.createContainer()
     }
 
-    public func computeLayout<Backend: AppBackend>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -46,7 +54,7 @@ public struct EmptyView: View, Sendable {
         ViewLayoutResult.leafView(size: .zero)
     }
 
-    public func commit<Backend: AppBackend>(
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,

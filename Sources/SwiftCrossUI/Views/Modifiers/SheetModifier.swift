@@ -1,5 +1,6 @@
 extension View {
-    /// Presents a conditional modal overlay. `onDismiss` gets invoked when the sheet is dismissed.
+    /// Presents a conditional modal overlay. `onDismiss` gets invoked when the
+    /// sheet is dismissed.
     ///
     /// On most platforms sheets appear as form-style modals. On tvOS, sheets
     /// appear as full screen overlays (non-opaque).
@@ -14,6 +15,7 @@ extension View {
     ///   - isPresented: A binding controlling whether the sheet is presented.
     ///   - onDismiss: An action to perform when the sheet is dismissed
     ///     by the user.
+    ///   - content: The content of the sheet
     public func sheet<SheetContent: View>(
         isPresented: Binding<Bool>,
         onDismiss: (() -> Void)? = nil,
@@ -38,7 +40,7 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
 
     var sheet: Any?
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -57,14 +59,14 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
         )
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
         children.childNode.widget.into()
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -78,8 +80,9 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend>(
-        _ widget: Backend.Widget,
+    @CastBackend<BackendFeatures.Sheets>(backendGenericName: "NewBackend")
+    func commit<Backend: BaseAppBackend>(
+        _: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,
@@ -116,11 +119,11 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
             )
             let result = children.sheetContentNode!.commit()
 
-            let window = environment.window! as! Backend.Window
+            let window = environment.window!
             let preferences = result.preferences
             backend.updateSheet(
                 sheet,
-                window: window,
+                window: window as! NewBackend.Window,
                 // We intentionally use the outer environment rather than
                 // sheetEnvironment here, because this is meant to be the sheet's
                 // environment, not that of its content.
@@ -135,10 +138,10 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
                 interactiveDismissDisabled: preferences.interactiveDismissDisabled ?? false
             )
 
-            let parentSheet = environment.sheet.map { $0 as! Backend.Sheet }
+            let parentSheet = environment.sheet.map { $0 as! NewBackend.Sheet }
             backend.presentSheet(
                 sheet,
-                window: window,
+                window: window as! NewBackend.Window,
                 parentSheet: parentSheet
             )
             children.sheet = sheet
@@ -146,9 +149,9 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
             children.parentSheet = parentSheet
         } else if !isPresented.wrappedValue && children.sheet != nil {
             backend.dismissSheet(
-                children.sheet as! Backend.Sheet,
-                window: children.window! as! Backend.Window,
-                parentSheet: children.parentSheet.map { $0 as! Backend.Sheet }
+                children.sheet as! NewBackend.Sheet,
+                window: children.window! as! NewBackend.Window,
+                parentSheet: children.parentSheet.map { $0 as! NewBackend.Sheet }
             )
             children.sheet = nil
             children.window = nil

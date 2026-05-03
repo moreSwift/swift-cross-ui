@@ -1,13 +1,14 @@
-/// A 2-D shape that can be drawn as a view.
+/// A 2D shape that can be drawn as a view.
 ///
-/// If no stroke color or fill color is specified, the default is no stroke and a fill of the
-/// current foreground color.
-public protocol Shape: View, Sendable where Content == EmptyView {
+/// If no stroke color or fill color is specified, the default is no stroke and
+/// a fill of the current foreground color.
+public protocol Shape: View, Sendable, _RemoveGlobalActorIsolation where Content == EmptyView {
     /// Draw the path for this shape.
     ///
-    /// The bounds passed to a shape that is immediately drawn as a view will always have an
-    /// origin of (0, 0). However, you may pass a different bounding box to subpaths. For example,
-    /// this code draws a rectangle in the left half of the bounds and an ellipse in the right half:
+    /// The bounds passed to a shape that is immediately drawn as a view will
+    /// always have an origin of (0, 0). However, you may pass a different
+    /// bounding box to subpaths. For example, this code draws a rectangle in
+    /// the left half of the bounds and an ellipse in the right half:
     /// ```swift
     /// func path(in bounds: Path.Rect) -> Path {
     ///     Path()
@@ -33,11 +34,16 @@ public protocol Shape: View, Sendable where Content == EmptyView {
     ///         )
     /// }
     /// ```
+    ///
+    /// - Parameter bounds: The bounds of this shape.
     func path(in bounds: Path.Rect) -> Path
+
     /// Determine the ideal size of this shape given the proposed bounds.
     ///
     /// The default implementation accepts the proposal, replacing unspecified
-    /// dimensions with `10`.
+    /// dimensions with 10.
+    ///
+    /// - Parameter proposal: The proposed bounds of this shape.
     /// - Returns: The shape's size for the given proposal.
     func size(fitting proposal: ProposedViewSize) -> ViewSize
 }
@@ -50,7 +56,7 @@ extension Shape {
     }
 
     @MainActor
-    public func children<Backend: AppBackend>(
+    public func children<Backend: BaseAppBackend>(
         backend _: Backend,
         snapshots _: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment _: EnvironmentValues
@@ -59,7 +65,8 @@ extension Shape {
     }
 
     @MainActor
-    public func asWidget<Backend: AppBackend>(
+    @CastBackend<BackendFeatures.Paths>(returnsWidget: true)
+    public func asWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren, backend: Backend
     ) -> Backend.Widget {
         let container = backend.createPathWidget()
@@ -70,7 +77,7 @@ extension Shape {
     }
 
     @MainActor
-    public func computeLayout<Backend: AppBackend>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -82,7 +89,8 @@ extension Shape {
     }
 
     @MainActor
-    public func commit<Backend: AppBackend>(
+    @CastBackend<BackendFeatures.Paths>(backendGenericName: "NewBackend")
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,
@@ -101,7 +109,7 @@ extension Shape {
         let pointsChanged = storage.oldPath?.actions != path.actions
         storage.oldPath = path
 
-        let backendPath = storage.backendPath as! Backend.Path
+        let backendPath = storage.backendPath as! NewBackend.Path
         backend.updatePath(
             backendPath,
             path,

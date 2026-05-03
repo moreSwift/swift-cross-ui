@@ -14,7 +14,7 @@ var hotReloadingDependencies: [Package.Dependency] = []
     hotReloadingDependencies = [
         .package(
             url: "https://github.com/moreSwift/swift-bundler",
-            revision: "5d2ecbc11df78e56afeab0621c43d8e898dae98e"
+            revision: "6527cb29084f79cb4d2300f98acd7c057abb4a67"
         )
     ]
     exampleDependencies.append(
@@ -28,9 +28,13 @@ var hotReloadingDependencies: [Package.Dependency] = []
 
 let package = Package(
     name: "Examples",
-    platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .macCatalyst(.v13)],
+    platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .macCatalyst(.v13), .visionOS(.v1)],
     dependencies: [
         .package(name: "swift-cross-ui", path: ".."),
+        .package(
+            url: "https://github.com/stackotter/swift-miniaudio",
+            .upToNextMinor(from: "0.1.2")
+        ),
     ] + hotReloadingDependencies,
     targets: [
         .executableTarget(
@@ -102,6 +106,12 @@ let package = Package(
         .executableTarget(
             name: "GradientsExample",
             dependencies: exampleDependencies
-        )
+        ),
+.executableTarget(
+            name: "MusicPlayerExample",
+            dependencies: [
+                .product(name: "MiniAudio", package: "swift-miniaudio")
+            ] + exampleDependencies
+        ),
     ]
 )

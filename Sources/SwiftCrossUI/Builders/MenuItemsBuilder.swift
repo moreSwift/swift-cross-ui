@@ -1,28 +1,14 @@
-/// A builder for ``[MenuItem]``.
+/// A result builder for `[MenuItem]`.
 @resultBuilder
 public struct MenuItemsBuilder {
     public static func buildBlock() -> [MenuItem] {
         []
     }
-
-    public static func buildPartialBlock(first: Button) -> [MenuItem] {
-        [.button(first)]
-    }
-
-    public static func buildPartialBlock(first: Text) -> [MenuItem] {
-        [.text(first)]
-    }
-
-    public static func buildPartialBlock(first: Toggle) -> [MenuItem] {
-        [.toggle(first)]
-    }
-
-    public static func buildPartialBlock(first: Divider) -> [MenuItem] {
-        [.separator(first)]
-    }
-
-    public static func buildPartialBlock(first: Menu) -> [MenuItem] {
-        [.submenu(first)]
+    
+    public static func buildPartialBlock(first: some View) -> [MenuItem] {
+        // For SwiftUI compatibility, we ignore any views that aren't MenuItemRepresentable.
+        guard let first = first as? any MenuItemRepresentable else { return [] }
+        return [first.asMenuItem]
     }
 
     public static func buildPartialBlock(first: Block) -> [MenuItem] {
@@ -37,35 +23,7 @@ public struct MenuItemsBuilder {
 
     public static func buildPartialBlock(
         accumulated: [MenuItem],
-        next: Button
-    ) -> [MenuItem] {
-        accumulated + buildPartialBlock(first: next)
-    }
-
-    public static func buildPartialBlock(
-        accumulated: [MenuItem],
-        next: Text
-    ) -> [MenuItem] {
-        accumulated + buildPartialBlock(first: next)
-    }
-
-    public static func buildPartialBlock(
-        accumulated: [MenuItem],
-        next: Toggle
-    ) -> [MenuItem] {
-        accumulated + buildPartialBlock(first: next)
-    }
-
-    public static func buildPartialBlock(
-        accumulated: [MenuItem],
-        next: Divider
-    ) -> [MenuItem] {
-        accumulated + buildPartialBlock(first: next)
-    }
-
-    public static func buildPartialBlock(
-        accumulated: [MenuItem],
-        next: Menu
+        next: some View
     ) -> [MenuItem] {
         accumulated + buildPartialBlock(first: next)
     }
@@ -96,7 +54,7 @@ public struct MenuItemsBuilder {
         Block(items: component)
     }
 
-    /// An implementation detail of ``MenuItemBuilder``'s support for
+    /// An implementation detail of ``MenuItemsBuilder``'s support for
     /// `if`/`else if`/`else` blocks.
     public struct Block {
         var items: [MenuItem]

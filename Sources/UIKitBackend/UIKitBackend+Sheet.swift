@@ -108,7 +108,7 @@ extension UIKitBackend {
         sheet.dismissProgrammatically()
     }
 
-    public func sizeOf(_ sheet: CustomSheet) -> SIMD2<Int> {
+    public func size(ofSheet sheet: CustomSheet) -> SIMD2<Int> {
         let size = sheet.view.frame.size
         return SIMD2(x: Int(size.width), y: Int(size.height))
     }

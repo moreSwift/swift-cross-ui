@@ -13,6 +13,14 @@ extension UIKitBackend {
         return WrapperWidget(child: listView)
     }
 
+    public func updateSelectableListView(
+        _ selectableListView: Widget,
+        environment: EnvironmentValues
+    ) {
+        let listView = (selectableListView as! WrapperWidget<UICustomTableView>).child
+        listView.customDelegate.allowSelections = environment.isEnabled
+    }
+
     public func baseItemPadding(
         ofSelectableListView listView: Widget
     ) -> SwiftCrossUI.EdgeInsets {

@@ -1,7 +1,8 @@
-/// A cache for dynamic property updaters. The keys are the ObjectIdentifiers of
-/// various Base types that we have already computed dynamic property updaters
-/// for, and the elements are corresponding cached instances of
-/// DynamicPropertyUpdater<Base>.
+/// A cache for dynamic property updaters.
+///
+/// The keys are the `ObjectIdentifier`s of various `Base` types that we have
+/// already computed dynamic property updaters for, and the elements are
+/// corresponding cached instances of `DynamicPropertyUpdater<Base>`.
 ///
 /// From some basic testing, this caching seems to reduce layout times by 5-10%
 /// (at the time of implementation).
@@ -9,16 +10,18 @@
 var updaterCache: [ObjectIdentifier: Any] = [:]
 
 /// A helper for updating the dynamic properties of a stateful struct (e.g.
-/// a View or App conforming struct). Dynamic properties are those that conform
-/// to ``DynamicProperty``, e.g. properties annotated with `@State`.
+/// a struct conforming to ``View`` or ``App``).
 ///
-/// At initialisation the updater will attempt to determine the byte offset of
+/// Dynamic properties are those that conform to ``DynamicProperty``, e.g. those
+/// annotated with the ``State`` property wrapper.
+///
+/// At initialisation, the updater will attempt to determine the byte offset of
 /// each stateful property in the struct. This is guaranteed to succeed if every
 /// dynamic property in the provided struct instance contains internal mutable
 /// storage, because the storage pointers will provide unique byte sequences.
 /// Otherwise, offset discovery will fail when two dynamic properties share the
 /// same pattern in memory. When offset discovery fails the updater will fall
-/// back to using Mirrors each time `update` gets called, which can be 1500x
+/// back to using `Mirror`s each time `update` gets called, which can be 1500x
 /// times slower when the view has 0 state properties, and 9x slower when the
 /// view has 4 properties, with the factor slowly dropping as the number of
 /// properties increases.
@@ -29,14 +32,19 @@ struct DynamicPropertyUpdater<Base> {
         _ environment: EnvironmentValues
     ) -> Void
 
-    /// The updaters for each of Base's dynamic properties. If `nil`, then we
-    /// failed to compute
+    /// The updaters for each of `Base`'s dynamic properties.
+    ///
+    /// If `nil`, then we failed to compute the updaters.
     let propertyUpdaters: [PropertyUpdater]?
 
     /// Creates a new dynamic property updater which can efficiently update
-    /// all dynamic properties on any value of type Base without creating
-    /// any mirrors after the initial creation of the updater. Pass in a
-    /// `mirror` of base if you already have one to save us creating another one.
+    /// all dynamic properties on any value of type `Base` without creating
+    /// any mirrors after the initial creation of the updater.
+    ///
+    /// - Parameters:
+    ///   - base: The base value to update the dynamic properties of.
+    ///   - mirror: An existing mirror of `base`. If not provided, a mirror will
+    ///     be created.
     @MainActor
     init(for base: Base, mirror: Mirror? = nil) {
         // Unlikely shortcut, but worthwhile when we can.

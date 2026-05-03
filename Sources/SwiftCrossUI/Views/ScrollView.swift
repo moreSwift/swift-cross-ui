@@ -1,18 +1,25 @@
 import Foundation
 
-/// A view that is scrollable when it would otherwise overflow available space. Use the
-/// ``View/frame`` modifier to constrain height if necessary.
+/// A view that is scrollable when it would otherwise overflow available space.
+///
+/// Use the ``View/frame(width:height:alignment:)-(Double?,_,_)`` modifier to
+/// constrain width or height if necessary.
 public struct ScrollView<Content: View>: TypeSafeView, View {
     public var body: VStack<Content>
     public var axes: Axis.Set
 
     /// Wraps a view in a scrollable container.
+    ///
+    /// - Parameters:
+    ///   - axes: The axes of to enable scrolling on. Defaults to
+    ///     ``Axis/Set/vertical``.
+    ///   - content: The content of the scroll view.
     public init(_ axes: Axis.Set = .vertical, @ViewBuilder _ content: () -> Content) {
         self.axes = axes
         body = VStack(content: content())
     }
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -29,21 +36,21 @@ public struct ScrollView<Content: View>: TypeSafeView, View {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: TupleViewChildren1<VStack<Content>>
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: ScrollViewChildren<Content>,
         backend: Backend
     ) -> Backend.Widget {
         return backend.createScrollContainer(for: children.innerContainer.into())
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: ScrollViewChildren<Content>,
         proposedSize: ProposedViewSize,
@@ -143,7 +150,7 @@ public struct ScrollView<Content: View>: TypeSafeView, View {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: ScrollViewChildren<Content>,
         layout: ViewLayoutResult,
@@ -154,14 +161,55 @@ public struct ScrollView<Content: View>: TypeSafeView, View {
         let finalContentSize = children.child.commit().size
 
         backend.setSize(of: widget, to: scrollViewSize.vector)
-        backend.setSize(of: children.innerContainer.into(), to: finalContentSize.vector)
-        backend.setPosition(ofChildAt: 0, in: children.innerContainer.into(), to: .zero)
-        backend.setScrollBarPresence(
-            ofScrollContainer: widget,
-            hasVerticalScrollBar: children.hasVerticalScrollBar,
-            hasHorizontalScrollBar: children.hasHorizontalScrollBar
+        backend.setSize(
+            of: children.innerContainer.into(),
+            to: SIMD2(
+                max(finalContentSize.vector.x, scrollViewSize.vector.x),
+                max(finalContentSize.vector.y, scrollViewSize.vector.y)
+            )
         )
-        backend.updateScrollContainer(widget, environment: environment)
+
+        let contentX: Double
+        if finalContentSize.width < scrollViewSize.width {
+            let alignment = axes.contains(.vertical)
+                ? HorizontalAlignment.center : HorizontalAlignment.leading
+            contentX = alignment.position(
+                ofChild: finalContentSize.width,
+                in: scrollViewSize.width
+            )
+        } else {
+            contentX = 0
+        }
+
+        let contentY: Double
+        if finalContentSize.height < scrollViewSize.height {
+            let alignment = axes.contains(.horizontal)
+                ? VerticalAlignment.center : VerticalAlignment.top
+            contentY = alignment.position(
+                ofChild: finalContentSize.height,
+                in: scrollViewSize.height
+            )
+        } else {
+            contentY = 0
+        }
+        
+        backend.setPosition(
+            ofChildAt: 0,
+            in: children.innerContainer.into(),
+            to: SIMD2(
+                LayoutSystem.roundSize(contentX),
+                LayoutSystem.roundSize(contentY)
+            )
+        )
+
+        backend.updateScrollContainer(
+            widget,
+            environment: environment,
+            bounceHorizontally: axes.contains(.horizontal),
+            bounceVertically: axes.contains(.vertical),
+            hasHorizontalScrollBar: children.hasHorizontalScrollBar,
+            hasVerticalScrollBar: children.hasVerticalScrollBar
+        )
     }
 }
 
@@ -186,7 +234,7 @@ class ScrollViewChildren<Content: View>: ViewGraphNodeChildren {
         children.erasedNodes
     }
 
-    init<Backend: AppBackend>(
+    init<Backend: BaseAppBackend>(
         wrapping children: TupleView1<VStack<Content>>.Children,
         backend: Backend
     ) {

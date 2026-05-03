@@ -2,6 +2,7 @@ import SwiftCrossUI
 import UIKit
 
 /// The context associated with an instance of ``Representable``.
+@MainActor
 public struct UIViewControllerRepresentableContext<
     Representable: UIViewControllerRepresentable
 > {
@@ -93,7 +94,7 @@ extension View where Self: UIViewControllerRepresentable {
         preconditionFailure("This should never be called")
     }
 
-    public func children<Backend: AppBackend>(
+    public func children<Backend: BaseAppBackend>(
         backend _: Backend,
         snapshots _: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment _: EnvironmentValues
@@ -101,14 +102,14 @@ extension View where Self: UIViewControllerRepresentable {
         EmptyViewChildren()
     }
 
-    public func layoutableChildren<Backend: AppBackend>(
+    public func layoutableChildren<Backend: BaseAppBackend>(
         backend _: Backend,
         children _: any ViewGraphNodeChildren
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    public func asWidget<Backend: AppBackend>(
+    public func asWidget<Backend: BaseAppBackend>(
         _: any ViewGraphNodeChildren,
         backend _: Backend
     ) -> Backend.Widget {
@@ -119,7 +120,7 @@ extension View where Self: UIViewControllerRepresentable {
         }
     }
 
-    public func computeLayout<Backend: AppBackend>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children _: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -138,7 +139,7 @@ extension View where Self: UIViewControllerRepresentable {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    public func commit<Backend: AppBackend>(
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,
@@ -163,24 +164,31 @@ final class ControllerRepresentingWidget<
     var representable: Representable
     var context: Representable.Context?
 
-    lazy var subcontroller: Representable.UIViewControllerType = {
-        let subcontroller = representable.makeUIViewController(context: context!)
+    var _subcontroller: Representable.UIViewControllerType?
 
-        view.addSubview(subcontroller.view)
-        addChild(subcontroller)
+    var subcontroller: Representable.UIViewControllerType {
+        if let _subcontroller {
+            return _subcontroller
+        } else {
+            let subcontroller = representable.makeUIViewController(context: context!)
 
-        subcontroller.view.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            subcontroller.view.topAnchor.constraint(equalTo: view.topAnchor),
-            subcontroller.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            subcontroller.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            subcontroller.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
+            view.addSubview(subcontroller.view)
+            addChild(subcontroller)
 
-        subcontroller.didMove(toParent: self)
+            subcontroller.view.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                subcontroller.view.topAnchor.constraint(equalTo: view.topAnchor),
+                subcontroller.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                subcontroller.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                subcontroller.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            ])
 
-        return subcontroller
-    }()
+            subcontroller.didMove(toParent: self)
+
+            _subcontroller = subcontroller
+            return subcontroller
+        }
+    }
 
     func update(with environment: EnvironmentValues) {
         if context == nil {
@@ -200,11 +208,13 @@ final class ControllerRepresentingWidget<
     }
 
     deinit {
-        if let context {
-            Representable.dismantleUIViewController(
-                subcontroller,
-                coordinator: context.coordinator
-            )
+        if let context, let _subcontroller {
+            Task { @MainActor in
+                Representable.dismantleUIViewController(
+                    _subcontroller,
+                    coordinator: context.coordinator
+                )
+            }
         }
     }
 }

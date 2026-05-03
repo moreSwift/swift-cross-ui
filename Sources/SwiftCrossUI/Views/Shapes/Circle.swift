@@ -1,7 +1,12 @@
-public struct Circle: Shape {
-    /// The ideal diameter of a Circle.
+/// A circle.
+///
+/// Circles have equal widths and heights; the `Circle` shape will take on the
+/// minimum of its proposed width and height.
+public struct Circle: InsettableShape {
+    /// The ideal diameter of a ``Circle``.
     nonisolated static let idealDiameter = 10.0
 
+    /// Creates a ``Circle`` instance.
     public nonisolated init() {}
 
     public nonisolated func path(in bounds: Path.Rect) -> Path {
@@ -18,5 +23,9 @@ public struct Circle: Shape {
         }
 
         return ViewSize(diameter, diameter)
+    }
+
+    public nonisolated func inset(by amount: Double) -> some InsettableShape {
+        InsettableShapeImpl(inset: amount, base: self)
     }
 }

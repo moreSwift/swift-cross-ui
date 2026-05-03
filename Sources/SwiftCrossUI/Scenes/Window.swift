@@ -35,12 +35,12 @@ public final class WindowNode<Content: View>: SceneGraphNode {
     /// the window's view graph.
     ///
     /// `nil` if the window is closed.
-    private var windowReference: WindowReference<Window<Content>>? = nil
+    var windowReference: WindowReference<Window<Content>>? = nil
 
     /// The underlying scene.
     private var scene: Window<Content>
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: Window<Content>,
         backend: Backend,
         environment: EnvironmentValues
@@ -63,15 +63,21 @@ public final class WindowNode<Content: View>: SceneGraphNode {
         }
     }
 
-    public func update<Backend: AppBackend>(
-        _ newScene: Window<Content>?,
-        backend: Backend,
+    public func updateNode(
+        _ newScene: NodeScene?,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
+    ) -> SceneNodeUpdateResult {
         if let newScene {
             self.scene = newScene
         }
 
+        return .leafScene()
+    }
+
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
         environment.openWindowFunctionsByID.value[scene.id] = { [weak self] in
             guard let self else { return }
 
@@ -88,7 +94,7 @@ public final class WindowNode<Content: View>: SceneGraphNode {
                 )
                 windowReference = reference
 
-                _ = reference.update(
+                reference.update(
                     nil,
                     backend: backend,
                     environment: environment
@@ -96,10 +102,10 @@ public final class WindowNode<Content: View>: SceneGraphNode {
             }
         }
 
-        return windowReference?.update(
-            newScene,
+        windowReference?.update(
+            scene,
             backend: backend,
             environment: environment
-        ) ?? .leafScene()
+        )
     }
 }

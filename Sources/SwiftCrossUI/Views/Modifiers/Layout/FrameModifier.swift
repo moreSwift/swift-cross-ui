@@ -1,8 +1,30 @@
 extension View {
-    /// Positions this view within an invisible frame having the specified minimum size constraints.
+    /// Positions this view within an invisible frame having the specified
+    /// minimum size constraints.
+    ///
+    /// - Parameters:
+    ///   - width: The frame's exact width. `nil` lets the view choose its own
+    ///     width instead.
+    ///   - height: The frame's exact height. `nil` lets the view choose its own
+    ///     height instead.
+    ///   - alignment: How to align the view within its container.
+    @available(*, deprecated, renamed: "frame(width:height:alignment:)")
+    @_disfavoredOverload
     public func frame(
         width: Int? = nil,
         height: Int? = nil,
+        alignment: Alignment = .center
+    ) -> some View {
+        return frame(
+            width: width.map(Double.init),
+            height: height.map(Double.init),
+            alignment: alignment
+        )
+    }
+
+    public func frame(
+        width: Double? = nil,
+        height: Double? = nil,
         alignment: Alignment = .center
     ) -> some View {
         return StrictFrameView(
@@ -13,13 +35,51 @@ extension View {
         )
     }
 
-    /// Positions this view within an invisible frame having the specified minimum size constraints.
+    /// Positions this view within an invisible frame having the specified
+    /// minimum size constraints.
+    ///
+    /// - Parameters:
+    ///   - minWidth: The frame's minimum width. `nil` means the frame inherits
+    ///     the minimum width of its content
+    ///   - idealWidth: The frame's ideal width. `nil` lets the frame choose its
+    ///     own ideal width instead.
+    ///   - maxWidth: The frame's maximum width. `nil` means the frame inherits
+    ///     the maximum width of its content
+    ///   - minHeight: The frame's minimum height. `nil` means the frame inherits
+    ///     the minimum height of its content
+    ///   - idealHeight: The frame's ideal height. `nil` lets the frame choose its
+    ///     own ideal height instead.
+    ///   - maxHeight: The frame's maximum height. `nil` means the frame inherits
+    ///     the maximum height of its content
+    ///   - alignment: How to align the view within its container.
+    @available(*, deprecated, renamed: "frame(minWidth:idealWidth:maxWidth:minHeight:idealHeight:maxHeight:alignment:)")
+    @_disfavoredOverload
     public func frame(
         minWidth: Int? = nil,
         idealWidth: Int? = nil,
         maxWidth: Double? = nil,
         minHeight: Int? = nil,
         idealHeight: Int? = nil,
+        maxHeight: Double? = nil,
+        alignment: Alignment = .center
+    ) -> some View {
+        return frame(
+            minWidth: minWidth.map(Double.init),
+            idealWidth: idealWidth.map(Double.init),
+            maxWidth: maxWidth,
+            minHeight: minHeight.map(Double.init),
+            idealHeight: idealHeight.map(Double.init),
+            maxHeight: maxHeight,
+            alignment: alignment
+        )
+    }
+
+    public func frame(
+        minWidth: Double? = nil,
+        idealWidth: Double? = nil,
+        maxWidth: Double? = nil,
+        minHeight: Double? = nil,
+        idealHeight: Double? = nil,
         maxHeight: Double? = nil,
         alignment: Alignment = .center
     ) -> some View {
@@ -41,21 +101,21 @@ struct StrictFrameView<Child: View>: TypeSafeView {
     var body: TupleView1<Child>
 
     /// The exact width to make the view.
-    var width: Int?
+    var width: Double?
     /// The exact height to make the view.
-    var height: Int?
+    var height: Double?
     /// The alignment of the child within the frame.
     var alignment: Alignment
 
     /// Wraps a child view with size constraints.
-    init(_ child: Child, width: Int?, height: Int?, alignment: Alignment) {
+    init(_ child: Child, width: Double?, height: Double?, alignment: Alignment) {
         body = TupleView1(child)
         self.width = width
         self.height = height
         self.alignment = alignment
     }
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -63,7 +123,7 @@ struct StrictFrameView<Child: View>: TypeSafeView {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: TupleViewChildren1<Child>,
         backend: Backend
     ) -> Backend.Widget {
@@ -72,15 +132,15 @@ struct StrictFrameView<Child: View>: TypeSafeView {
         return container
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: TupleViewChildren1<Child>,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
-        let width = width.map(Double.init)
-        let height = height.map(Double.init)
+        let width = width
+        let height = height
 
         let childResult = children.child0.computeLayout(
             with: body.view0,
@@ -103,7 +163,7 @@ struct StrictFrameView<Child: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: TupleViewChildren1<Child>,
         layout: ViewLayoutResult,
@@ -126,11 +186,11 @@ struct StrictFrameView<Child: View>: TypeSafeView {
 struct FlexibleFrameView<Child: View>: TypeSafeView {
     var body: TupleView1<Child>
 
-    var minWidth: Int?
-    var idealWidth: Int?
+    var minWidth: Double?
+    var idealWidth: Double?
     var maxWidth: Double?
-    var minHeight: Int?
-    var idealHeight: Int?
+    var minHeight: Double?
+    var idealHeight: Double?
     var maxHeight: Double?
     /// The alignment of the child within the frame.
     var alignment: Alignment
@@ -138,11 +198,11 @@ struct FlexibleFrameView<Child: View>: TypeSafeView {
     /// Wraps a child view with size constraints.
     init(
         _ child: Child,
-        minWidth: Int?,
-        idealWidth: Int?,
+        minWidth: Double?,
+        idealWidth: Double?,
         maxWidth: Double?,
-        minHeight: Int?,
-        idealHeight: Int?,
+        minHeight: Double?,
+        idealHeight: Double?,
         maxHeight: Double?,
         alignment: Alignment
     ) {
@@ -156,7 +216,7 @@ struct FlexibleFrameView<Child: View>: TypeSafeView {
         self.alignment = alignment
     }
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -164,7 +224,7 @@ struct FlexibleFrameView<Child: View>: TypeSafeView {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: TupleViewChildren1<Child>,
         backend: Backend
     ) -> Backend.Widget {
@@ -183,7 +243,7 @@ struct FlexibleFrameView<Child: View>: TypeSafeView {
     func clampHeight(_ height: Double) -> Double {
         LayoutSystem.clamp(
             height,
-            minimum: minHeight.map(Double.init),
+            minimum: minHeight,
             maximum: maxHeight
         )
     }
@@ -191,12 +251,12 @@ struct FlexibleFrameView<Child: View>: TypeSafeView {
     func clampWidth(_ width: Double) -> Double {
         LayoutSystem.clamp(
             width,
-            minimum: minWidth.map(Double.init),
+            minimum: minWidth,
             maximum: maxWidth
         )
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: TupleViewChildren1<Child>,
         proposedSize: ProposedViewSize,
@@ -214,11 +274,11 @@ struct FlexibleFrameView<Child: View>: TypeSafeView {
         }
 
         if let idealWidth, proposedSize.width == nil {
-            proposedFrameSize.width = Double(idealWidth)
+            proposedFrameSize.width = idealWidth
         }
 
         if let idealHeight, proposedSize.height == nil {
-            proposedFrameSize.height = Double(idealHeight)
+            proposedFrameSize.height = idealHeight
         }
 
         let childResult = children.child0.computeLayout(
@@ -243,7 +303,7 @@ struct FlexibleFrameView<Child: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: TupleViewChildren1<Child>,
         layout: ViewLayoutResult,

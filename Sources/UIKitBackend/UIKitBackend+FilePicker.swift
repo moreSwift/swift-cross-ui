@@ -2,7 +2,7 @@
     import SwiftCrossUI
     import UIKit
 
-    extension UIKitBackend {
+    extension UIKitBackend: BackendFeatures.FileOpenDialogs {
         final class FilePickerDelegate: NSObject, UIDocumentPickerDelegate {
             var resultHandler: ((DialogResult<[URL]>) -> Void)
 

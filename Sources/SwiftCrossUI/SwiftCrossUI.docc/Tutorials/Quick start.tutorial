@@ -1,0 +1,108 @@
+@Tutorial {
+    @Intro(title: "Quick start") {
+        Create a cross-platform SwiftCrossUI app with Swift Bundler.
+    }
+    
+    @Section(title: "Setup") {
+        @ContentAndMedia {
+            Get started by installing needed dependencies.
+            
+            This quick start guide uses [Swift Bundler](https://github.com/moreSwift/swift-bundler).
+            Although not strictly required, it simplifies many aspects of cross-platform distribution
+            and provides a platform-agnostic configuration format for specifying things such as app
+            icons and custom URL schemes.
+        }
+        
+        @Steps {
+            @Step {
+                Install Swift Bundler by following the [installation instructions]. `mint` is the
+                preferred installation method on macOS and Linux as of the last update to this quick
+                start guide.
+                
+                [installation instructions]: https://github.com/moreSwift/swift-bundler?tab=readme-ov-file#installation-
+                
+                @Code(name: "InstallSwiftBundler.shell", file: quick-start-01-01.shell)
+            }
+            
+            @Step {
+                Install any system dependencies you might need.
+                
+                Each backend has different requirements. In this guide we'll use
+                <doc:DefaultBackend> which uses <doc:AppKitBackend> on macOS, <doc:GtkBackend> on
+                Linux, <doc:WinUIBackend> on Windows, and <doc:UIKitBackend> on iOS/tvOS/visionOS.
+                Click through the backend relevant to your machine for detailed installation
+                requirements. <doc:AppKitBackend> and <doc:UIKitBackend> have no system
+                dependencies.
+            }
+            
+            @Step {
+                Restart your shell to ensure you're using the updated PATH.
+            }
+        }
+    }
+    
+    @Section(title: "Creating and running an app") {
+        @ContentAndMedia {
+            Create a new app project, run it, and edit it.
+        }
+            
+        @Steps {
+            @Step {
+                Create a new Swift Bundler project using the `SwiftCrossUI` template.
+                
+                The `SwiftCrossUI` template uses `DefaultBackend` to select the most appropriate
+                backend at compile time.
+                
+                @Code(name: "CreateProject.shell", file: quick-start-02-01.shell)
+            }
+            
+            @Step {
+                Open up `Sources/HelloWorld/HelloWorldApp.swift` in your editor of choice.
+                
+                Notice how, aside from the two imports at the top of the file, this looks
+                just like a small SwiftUI app. SwiftCrossUI shares much of its API surface
+                with SwiftUI, so you don't have to learn any new concepts to get started.
+                
+                @Code(name: "HelloWorldApp.swift", file: quick-start-02-02.swift)
+            }
+            
+            @Step {
+                Return to your terminal and run the app.
+                
+                It will take a few minutes the first time around as Swift Bundler pulls in
+                SwiftCrossUI's dependencies and builds the library. Subsequent builds will be
+                much faster.
+                
+                @Code(name: "CreateProject.shell", file: quick-start-02-03.shell, previousFile: quick-start-02-01.shell) {
+                    @Image(source: quick-start-02-03-preview, alt: "A macOS window containing the text \"Hello, World!\".")
+                }
+            }
+            
+            @Step {
+                If you're on macOS, you can provide the `--device` or `--simulator` options to run
+                the app on an iOS, tvOS, or visionOS device or simulator.
+                
+                @Code(name: "CreateProject.shell", file: quick-start-02-04.shell) {
+                    @Image(source: quick-start-02-04-preview, alt: "An iPhone simulator window containing the text \"Hello, World!\".")
+                }
+            }
+            
+            @Step {
+                In your editor, change `"Hello, World!"` to `"Hello, Earth!"`. Run the app again to
+                verify that your changes are reflected.
+                
+                @Code(name: "HelloWorldApp.swift", file: quick-start-02-05.swift, previousFile: quick-start-02-02.swift) {
+                    @Image(source: quick-start-02-05-preview, alt: "A macOS window containing the text \"Hello, Earth!\".")
+                }
+            }
+        }
+    }
+        
+    @Section(title: "All done!") {
+        You're good to go! If you make something cool with SwiftCrossUI, let us know so we can add
+        your project to our showcase! And be sure to join the [Discord server](https://moreswift.dev/discord)
+        to get all the details on what we're up to.
+        
+        @Steps {}
+    }
+}

@@ -1,4 +1,5 @@
 import CGtk3
+import Gtk3CHelpers
 import Foundation
 import Gtk3
 import SwiftCrossUI
@@ -11,12 +12,26 @@ extension App {
     }
 }
 
-public final class Gtk3Backend: AppBackend {
+public final class Gtk3Backend:
+    BaseAppBackend,
+    BackendFeatures.IncomingURLs,
+    BackendFeatures.ExternalURLs,
+    BackendFeatures.RevealFiles,
+    BackendFeatures.ApplicationMenus,
+    BackendFeatures.FileDialogs,
+    BackendFeatures.Alerts,
+    BackendFeatures.CornerRadius,
+    BackendFeatures.TapGestures,
+    BackendFeatures.PopoverMenus,
+    BackendFeatures.Paths,
+    BackendFeatures.Tooltips,
+    BackendFeatures.Colors,
+    BackendFeatures.Windowing
+{
     public typealias Window = Gtk3.ApplicationWindow
     public typealias Widget = Gtk3.Widget
     public typealias Menu = Gtk3.Menu
     public typealias Alert = Gtk3.MessageDialog
-    public typealias Sheet = Gtk3.Window
 
     public final class Path {
         var path: SwiftCrossUI.Path?
@@ -29,15 +44,14 @@ public final class Gtk3Backend: AppBackend {
     public let requiresToggleSwitchSpacer = false
     public let scrollBarWidth = 0
     public let requiresImageUpdateOnScaleFactorChange = true
-    public let menuImplementationStyle = MenuImplementationStyle.dynamicPopover
-    public let canRevealFiles = true
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
-    public let supportedDatePickerStyles: [DatePickerStyle] = []
+    public let supportedPickerStyles: [BackendPickerStyle] = []
+    public let canOverrideWindowColorScheme = false
 
     var gtkApp: Application
 
-    /// A window to be returned on the next call to ``GtkBackend/createWindow``.
+    /// A window to be returned on the next call to ``Gtk3Backend/createWindow``.
     /// This is necessary because Gtk creates a root window no matter what, and
     /// this needs to be returned on the first call to `createWindow`.
     var precreatedWindow: Window?
@@ -45,6 +59,8 @@ public final class Gtk3Backend: AppBackend {
     /// All current windows associated with the application. Doesn't include the
     /// precreated window until it gets 'created' via `createWindow`.
     var windows: [Window] = []
+
+    private var rootEnvironmentChangeHandler: (() -> Void)?
 
     private struct LogLocation: Hashable, Equatable {
         let file: String
@@ -68,7 +84,7 @@ public final class Gtk3Backend: AppBackend {
         #endif
     }
 
-    // A separate initializer to satisfy ``AppBackend``'s requirements.
+    // A separate initializer to satisfy `BackendFeatures.Core`'s requirements.
     public convenience init() {
         self.init(appIdentifier: nil)
     }
@@ -78,7 +94,7 @@ public final class Gtk3Backend: AppBackend {
     public init(appIdentifier: String?) {
         gtkApp = Application(
             applicationId: appIdentifier ?? "com.example.SwiftCrossUIApp",
-            flags: G_APPLICATION_HANDLES_OPEN
+            flags: SHIM_G_APPLICATION_HANDLES_OPEN
         )
         gtkApp.registerSession = true
     }
@@ -86,7 +102,6 @@ public final class Gtk3Backend: AppBackend {
     public func runMainLoop(_ callback: @escaping @MainActor () -> Void) {
         gtkApp.run { window in
             self.precreatedWindow = window
-            callback()
 
             let provider = CSSProvider()
             provider.loadCss(
@@ -137,6 +152,8 @@ public final class Gtk3Backend: AppBackend {
             #if !os(macOS)
                 Self.mainRunLoopTicklingLoop()
             #endif
+
+            callback()
         }
     }
 
@@ -171,7 +188,15 @@ public final class Gtk3Backend: AppBackend {
             )
         }
 
+        window.notifyIsActive = { _ in
+            self.rootEnvironmentChangeHandler?()
+        }
+
         return window
+    }
+
+    public func updateWindow(_ window: Window, environment: EnvironmentValues) {
+        // TODO(stackotter): Support preferredColorScheme
     }
 
     public func setTitle(ofWindow window: Window, to title: String) {
@@ -265,7 +290,8 @@ public final class Gtk3Backend: AppBackend {
         _ menu: ResolvedMenu,
         actionMap: any GActionMap,
         actionNamespace: String,
-        actionPrefix: String?
+        actionPrefix: String?,
+        environment: EnvironmentValues
     ) -> GMenu {
         var currentSection = GMenu()
         var previousSections: [GMenu] = []
@@ -278,41 +304,49 @@ public final class Gtk3Backend: AppBackend {
                     "\(i)"
                 }
 
-            switch item {
-                case .button(let label, let action):
-                    if let action {
-                        actionMap.addAction(GSimpleAction(name: actionName, action: action))
-                    }
+            render(item: item, environment: environment)
+            func render(item: ResolvedMenu.Item, environment: EnvironmentValues) {
+                switch item {
+                    case .button(let label, let action):
+                        if let action {
+                            let gAction = GSimpleAction(name: actionName, action: action)
+                            gAction.enabled = environment.isEnabled
+                            actionMap.addAction(gAction)
+                        }
 
-                    currentSection.appendItem(
-                        label: label,
-                        actionName: "\(actionNamespace).\(actionName)"
-                    )
-                case .toggle(let label, let value, let onChange):
-                    actionMap.addAction(
-                        GSimpleAction(name: actionName, state: value, action: onChange)
-                    )
-
-                    currentSection.appendItem(
-                        label: label,
-                        actionName: "\(actionNamespace).\(actionName)"
-                    )
-                case .separator:
-                    // GTK[3] doesn't have explicit separators per se, but instead deals with
-                    // sections (actually quite similar to what you can do in SwiftUI with the
-                    // Section view). It'll automatically draw separators between sections.
-                    previousSections.append(currentSection)
-                    currentSection = GMenu()
-                case .submenu(let submenu):
-                    currentSection.appendSubmenu(
-                        label: submenu.label,
-                        content: renderMenu(
-                            submenu.content,
-                            actionMap: actionMap,
-                            actionNamespace: actionNamespace,
-                            actionPrefix: actionName
+                        currentSection.appendItem(
+                            label: label,
+                            actionName: "\(actionNamespace).\(actionName)"
                         )
-                    )
+                    case .toggle(let label, let value, let onChange):
+                        let gAction = GSimpleAction(name: actionName, state: value, action: onChange)
+                        gAction.enabled = environment.isEnabled
+                        actionMap.addAction(gAction)
+
+                        currentSection.appendItem(
+                            label: label,
+                            actionName: "\(actionNamespace).\(actionName)"
+                        )
+                    case .separator:
+                        // GTK[3] doesn't have explicit separators per se, but instead deals with
+                        // sections (actually quite similar to what you can do in SwiftUI with the
+                        // Section view). It'll automatically draw separators between sections.
+                        previousSections.append(currentSection)
+                        currentSection = GMenu()
+                    case .submenu(let submenu):
+                        currentSection.appendSubmenu(
+                            label: submenu.label,
+                            content: renderMenu(
+                                submenu.content,
+                                actionMap: actionMap,
+                                actionNamespace: actionNamespace,
+                                actionPrefix: actionName,
+                                environment: environment
+                            )
+                        )
+                    case .modifiedEnvironment(let item, let modification):
+                        render(item: item, environment: modification(environment))
+                }
             }
         }
 
@@ -328,7 +362,10 @@ public final class Gtk3Backend: AppBackend {
         }
     }
 
-    private func renderMenuBar(_ submenus: [ResolvedMenu.Submenu]) -> GMenu {
+    private func renderMenuBar(
+        _ submenus: [ResolvedMenu.Submenu],
+        environment: EnvironmentValues
+    ) -> GMenu {
         let model = GMenu()
         for (i, submenu) in submenus.enumerated() {
             model.appendSubmenu(
@@ -337,7 +374,8 @@ public final class Gtk3Backend: AppBackend {
                     submenu.content,
                     actionMap: gtkApp,
                     actionNamespace: "app",
-                    actionPrefix: "\(i)"
+                    actionPrefix: "\(i)",
+                    environment: environment
                 )
             )
         }
@@ -345,8 +383,11 @@ public final class Gtk3Backend: AppBackend {
         return model
     }
 
-    public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
-        let model = renderMenuBar(submenus)
+    public func setApplicationMenu(
+        _ submenus: [ResolvedMenu.Submenu],
+        environment: EnvironmentValues
+    ) {
+        let model = renderMenuBar(submenus, environment: environment)
         gtkApp.menuBarModel = model
 
         let showMenuBar = !submenus.isEmpty
@@ -470,7 +511,7 @@ public final class Gtk3Backend: AppBackend {
 
     private static func runInMainThread(
         afterMilliseconds delay: Int,
-        action: @escaping () -> Void
+        action: @escaping @MainActor () -> Void
     ) {
         let action = ThreadActionContext(action: action)
         g_timeout_add_full(
@@ -497,10 +538,12 @@ public final class Gtk3Backend: AppBackend {
 
     public func computeRootEnvironment(defaultEnvironment: EnvironmentValues) -> EnvironmentValues {
         defaultEnvironment
+            .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping () -> Void) {
+    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
         // TODO: React to theme changes
+        self.rootEnvironmentChangeHandler = action
     }
 
     public func computeWindowEnvironment(
@@ -508,12 +551,14 @@ public final class Gtk3Backend: AppBackend {
         rootEnvironment: EnvironmentValues
     ) -> EnvironmentValues {
         let windowScaleFactor = Int(gtk_widget_get_scale_factor(window.widgetPointer))
-        return rootEnvironment.with(\.windowScaleFactor, Double(windowScaleFactor))
+        return rootEnvironment
+            .with(\.windowScaleFactor, Double(windowScaleFactor))
+            .with(\.scenePhase, window.isActive ? .active : .inactive)
     }
 
     public func setWindowEnvironmentChangeHandler(
         of window: Window,
-        to action: @escaping () -> Void
+        to action: @escaping @Sendable @MainActor () -> Void
     ) {
         window.notifyScaleFactor = { _ in
             action()
@@ -649,12 +694,13 @@ public final class Gtk3Backend: AppBackend {
         return scrollView
     }
 
-    public func updateScrollContainer(_ scrollView: Widget, environment: EnvironmentValues) {}
-
-    public func setScrollBarPresence(
-        ofScrollContainer scrollView: Widget,
-        hasVerticalScrollBar: Bool,
-        hasHorizontalScrollBar: Bool
+    public func updateScrollContainer(
+        _ scrollView: Widget,
+        environment: EnvironmentValues,
+        bounceHorizontally: Bool,
+        bounceVertically: Bool,
+        hasHorizontalScrollBar: Bool,
+        hasVerticalScrollBar: Bool
     ) {
         let scrollView = scrollView as! ScrolledWindow
         scrollView.setScrollBarPresence(
@@ -667,6 +713,14 @@ public final class Gtk3Backend: AppBackend {
         let listView = ListBox()
         listView.selectionMode = .single
         return listView
+    }
+
+    public func updateSelectableListView(
+        _ selectableListView: Widget,
+        environment: EnvironmentValues
+    ) {
+        let listView = selectableListView as! ListBox
+        listView.sensitive = environment.isEnabled
     }
 
     public func baseItemPadding(
@@ -714,6 +768,15 @@ public final class Gtk3Backend: AppBackend {
             listView.unselectAll()
         }
         listView.rowSelected = handler
+    }
+
+    public func createTooltipContainer(wrapping child: Widget) -> Widget {
+        TooltipContainer(child)
+    }
+
+    public func updateTooltipContainer(_ widget: Widget, tooltip: String) {
+        let widget = widget as! TooltipContainer
+        widget.setTooltip(text: tooltip)
     }
 
     // MARK: Passive views
@@ -993,7 +1056,7 @@ public final class Gtk3Backend: AppBackend {
     }
 
     public func createTextField() -> Widget {
-        return Entry()
+        Entry()
     }
 
     public func updateTextField(
@@ -1022,7 +1085,37 @@ public final class Gtk3Backend: AppBackend {
     }
 
     public func getContent(ofTextField textField: Widget) -> String {
-        return (textField as! Entry).text
+        (textField as! Entry).text
+    }
+
+    public func createSecureField() -> Widget {
+        let entry = Entry()
+        entry.visibility = false
+        return entry
+    }
+
+    public func updateSecureField(
+        _ secureField: Widget,
+        placeholder: String,
+        environment: EnvironmentValues,
+        onChange: @escaping (String) -> Void,
+        onSubmit: @escaping () -> Void
+    ) {
+        updateTextField(
+            secureField,
+            placeholder: placeholder,
+            environment: environment,
+            onChange: onChange,
+            onSubmit: onSubmit
+        )
+    }
+
+    public func setContent(ofSecureField secureField: Widget, to content: String) {
+        setContent(ofTextField: secureField, to: content)
+    }
+
+    public func getContent(ofSecureField secureField: Widget) -> String {
+        getContent(ofTextField: secureField)
     }
 
     public func createTextEditor() -> Widget {
@@ -1155,7 +1248,8 @@ public final class Gtk3Backend: AppBackend {
             content,
             actionMap: actionGroup,
             actionNamespace: "menu",
-            actionPrefix: nil
+            actionPrefix: nil,
+            environment: environment
         )
         menu.bindModel(model)
         menu.insertActionGroup("menu", actionGroup)
@@ -1617,6 +1711,28 @@ public final class Gtk3Backend: AppBackend {
 
         return properties
     }
+
+    // MARK: - Unimplemented Features
+
+    public func createPicker(style: BackendPickerStyle) -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func updatePicker(
+        _ picker: Widget,
+        options: [String],
+        environment: EnvironmentValues,
+        onChange: @escaping (Int?) -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setSelectedOption(
+        ofPicker picker: Widget,
+        to selectedOption: Int?
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
 }
 
 extension UnsafeMutablePointer {
@@ -1663,5 +1779,44 @@ class CustomLabel: Label {
             layout,
             Int32((Double(height) * Double(PANGO_SCALE)).rounded(.towardZero))
         )
+    }
+}
+
+final class TooltipContainer: Fixed {
+    private var tooltip: UnsafeMutableBufferPointer<CChar>
+
+    init(_ child: Widget) {
+        self.tooltip = UnsafeMutableBufferPointer(start: nil, count: 0)
+        super.init()
+        self.put(child, x: 0, y: 0)
+    }
+
+    deinit {
+        deallocateText()
+    }
+
+    func setTooltip(text: String) {
+        text.utf8CString.withUnsafeBufferPointer { buf in
+            // TODO(bbrk24): Should this be `>=` or `==`?
+            if tooltip.count >= buf.count {
+                strcpy(tooltip.baseAddress!, buf.baseAddress!)
+            } else {
+                deallocateText()
+
+                tooltip = .allocate(capacity: buf.count)
+                tooltip.initialize(from: buf)
+            }
+        }
+
+        gtk_widget_set_tooltip_text(widgetPointer, tooltip.baseAddress)
+    }
+
+    private func deallocateText() {
+        if tooltip.count > 0 {
+            tooltip.deinitialize()
+            tooltip.deallocate()
+        }
+
+        tooltip = UnsafeMutableBufferPointer(start: nil, count: 0)
     }
 }

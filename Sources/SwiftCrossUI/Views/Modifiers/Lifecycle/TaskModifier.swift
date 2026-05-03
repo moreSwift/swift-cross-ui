@@ -6,6 +6,11 @@ extension View {
     /// This variant of `task` can be useful when the lifetime of the task
     /// must be linked to a value with a potentially shorter lifetime than the
     /// view.
+    ///
+    /// - Parameters:
+    ///   - id: The ID of the task.
+    ///   - priority: The priority of the task.
+    ///   - action: The action to perform within the task.
     public nonisolated func task<Id: Equatable>(
         id: Id,
         priority: TaskPriority = .userInitiated,
@@ -21,6 +26,10 @@ extension View {
 
     /// Starts a task before a view appears (but after ``View/body`` has been
     /// accessed), and cancels the task when the view disappears.
+    ///
+    /// - Parameters:
+    ///   - priority: The priority of the task.
+    ///   - action: The action to perform within the task.
     public nonisolated func task(
         priority: TaskPriority = .userInitiated,
         _ action: @escaping () async -> Void

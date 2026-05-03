@@ -1,0 +1,285 @@
+@Tutorial {
+    @Intro(title: "Setting up a virtual development environment") {        
+        Most developers only have access to one or two of the major operating systems for
+        development. Setting up virtual machines is an important part of developing and testing
+        cross-platform apps, especially for smaller less-specialized teams.
+        
+        This tutorial covers VM creation on macOS using UTM. If you prefer to use something else
+        (such as Parallels), you can do that too. 
+    }
+    
+    @Section(title: "Windows guests") {
+        @ContentAndMedia {
+            These instructions apply to both Windows 10 and Windows 11; choose which version you
+            want to install before you get started. We recommend Windows 11 because it's better
+            supported by UTM, especially on Apple Silicon.
+            
+            - [Windows 11 x64 ISO](https://www.microsoft.com/en-us/software-download/windows11)
+            - [Windows 11 arm64 ISO](https://www.microsoft.com/en-us/software-download/windows11arm64)
+            - [Windows 10 x64 ISO](https://www.microsoft.com/en-au/software-download/windows10iso)
+            - Windows 10 arm64 doesn't support VM hypervisors.
+        }
+        
+        @Steps {
+            @Step {
+                Install UTM from [its website](https://mac.getutm.app/).
+            }
+                
+            @Step {
+                Download the installer ISO for your chosen Windows version. **Make sure it matches
+                the architecture of your host machine** (x64 on Intel-based Macs, arm64 on Apple
+                silicon).
+                @Image(source: vm-01-02, alt: "A browser window on the Windows download page.")
+            }
+            
+            @Step {
+                Open UTM and click the plus button.
+                @Image(source: vm-01-03, alt: "A UTM window with the pointer hovering over the plus button.")
+            }
+            
+            @Step {
+                Click Virtualize.
+                @Image(source: vm-01-04, alt: "A UTM window with the pointer hovering over the Virtualize button.")
+            }
+            
+            @Step {
+                Click Windows.
+                @Image(source: vm-01-05, alt: "A UTM window with the pointer hovering over the Windows button.")
+            }
+            
+            @Step {
+                Adjust the RAM and CPU cores allocated to the VM if necessary, then click Continue.
+                
+                Linking `swift-winui` and `swift-uwp`, dependencies of WinUIBackend, can be
+                extremely memory-intensive; we recommend allocating as much RAM as you can without
+                compromising your macOS experience.
+                @Image(source: vm-01-06, alt: "A UTM window with the pointer hovering over the Continue button.")
+            }
+            
+            @Step {
+                Click Browse and select your downloaded ISO file.
+                @Image(source: vm-01-07, alt: "A UTM window with the pointer hovering over the Open button in a file picker.")
+            }
+            
+            @Step {
+                Ensure that "Install Windows 10 or higher" and "Install drivers and SPICE tools" are
+                both checked, then click Continue.
+                @Image(source: vm-01-08, alt: "A UTM window with the pointer hovering over the Continue button.")
+            }
+            
+            @Step {
+                Configure the amount of storage to allocate, then click Continue.
+                
+                Unless you plan on using this VM for more than just SwiftCrossUI app development,
+                you probably won't need more than 64 GB.
+                @Image(source: vm-01-09, alt: "A UTM window with the pointer hovering over the Continue button.")
+            }
+            
+            @Step {
+                Click Continue. We'll set up a shared folder later.
+                @Image(source: vm-01-10, alt: "A UTM window with the pointer hovering over the Continue button.")
+            }
+            
+            @Step {
+                Name your VM, then click Save.
+                @Image(source: vm-01-11, alt: "A UTM window with the pointer hovering over the Save button.")
+            }
+            
+            @Step {
+                Click Run. A new window will open for the VM.
+                @Image(source: vm-01-12, alt: "A UTM window with the pointer hovering over the Run button.")
+            }
+            
+            @Step {
+                When prompted, press a key to boot to the Windows installer. Proceed through
+                installation as you would on any other machine. Either the Home or Pro editions
+                are fine.
+                
+                > Tip: You can choose "I don't have a product key" when asked for one to skip
+                > activation.
+                @Image(source: vm-01-13, alt: "A UTM window running the Windows installer.")
+            }
+            
+            @Step {
+                Proceed through the Windows setup flow like normal. 
+                
+                > Tip: If you want to disable at least _some_ of Windows's incessant tracking,
+                > select a country in the European Union during setup. You can change it to your
+                > actual home country once you've reached the desktop.
+                @Image(source: vm-01-14, alt: "A UTM window with the pointer hovering over the Ireland country option.")
+            }
+            
+            @Step {
+                Once you're at the desktop, the UTM Guest Tools installer window should open
+                automatically. Install the tools and reboot if prompted.
+                @Image(source: vm-01-15, alt: "A UTM window on the Windows desktop.")
+            }
+            
+            Now we'll set up a shared folder. These steps are optional, but recommended if you
+            want to edit project files with your preferred editor on your host machine.
+            
+            @Step {
+                Shut down the VM.
+                @Image(source: vm-01-16, alt: "A UTM window with the pointer hovering over the Shut Down button in the start menu.")
+            }
+            
+            @Step {
+                Back in the main UTM window, click the edit button in the toolbar.
+                @Image(source: vm-01-17, alt: "A UTM window with the pointer hovering over the edit button.")
+            }
+            
+            @Step {
+                Navigate to the Sharing tab and click Browse.
+                @Image(source: vm-01-18, alt: "A UTM window with the pointer hovering over the Browse button.")
+            }
+            
+            @Step {
+                Select the directory you want to share. This should contain all the projects you'll
+                be editing/testing on Windows.
+                @Image(source: vm-01-19, alt: "A UTM window with the pointer hovering over the Open button.")
+            }
+            
+            @Step {
+                Ensure the directory share mode is set to SPICE WebDAV, then click Save.
+                @Image(source: vm-01-20, alt: "A UTM window with the pointer hovering over the SPICE WebDAV button.")
+            }
+            
+            @Step {
+                Boot the VM and log in. The shared directory should show up as a network drive in
+                File Explorer, usually `Z:\`.
+                @Image(source: vm-01-21, alt: "A UTM window with a File Explorer window showing the Z drive.")
+            }
+            
+            You're now ready to begin setting up a SwiftCrossUI development environment inside your
+            Windows VM. Head over to <doc:Windows-development> to continue.
+        }
+    }
+    
+    @Section(title: "Linux guests") {
+        @ContentAndMedia {
+            You must choose a Linux distribution before creating a VM. We recommend Ubuntu 24.04
+            because it has the best Swift support. Fedora is also great, but the latest version that
+            Swift officially supports is a year and a half old.
+            
+            - [Ubuntu Desktop 24.04 x64](https://ubuntu.com/download/desktop)
+            - [Ubuntu Server 24.04 arm64](https://ubuntu.com/download/server/arm); Ubuntu doesn't
+              provide stable arm64 desktop ISO downloads, but it only takes one extra step to
+              install the Ubuntu desktop environment.
+            - [Ubuntu Desktop 24.04 arm64 (daily build)](https://cdimage.ubuntu.com/daily-live/20240421/); **unstable**, your mileage may vary
+        }
+        
+        @Steps {
+            @Step {
+                Install UTM from [its website](https://mac.getutm.app/).
+            }
+                
+            @Step {
+                Download the installer ISO for your chosen Linux distribution. **Make sure it matches
+                the architecture of your host machine** (x64 on Intel-based Macs, arm64 on Apple
+                silicon).
+            }
+            
+            @Step {
+                Open UTM and click the plus button.
+                @Image(source: vm-01-03, alt: "A UTM window with the pointer hovering over the plus button.")
+            }
+            
+            @Step {
+                Click Virtualize.
+                @Image(source: vm-01-04, alt: "A UTM window with the pointer hovering over the Virtualize button.")
+            }
+            
+            @Step {
+                Click Linux.
+                @Image(source: vm-02-05, alt: "A UTM window with the pointer hovering over the Linux button.")
+            }
+            
+            @Step {
+                Adjust the RAM and CPU cores allocated to the VM if necessary, then click Continue.
+                
+                You can probably get away with the default settings here, but you can increase them
+                later if you need to.
+                @Image(source: vm-02-06, alt: "A UTM window with the pointer hovering over the Continue button.")
+            }
+            
+            @Step {
+                Click Browse and select your downloaded ISO file.
+                @Image(source: vm-02-07, alt: "A UTM window with the pointer hovering over the Open button in a file picker.")
+            }
+            
+            @Step {
+                Click Continue.
+                @Image(source: vm-02-08, alt: "A UTM window with the pointer hovering over the Continue button.")
+            }
+            
+            @Step {
+                Configure the amount of storage to allocate, then click Continue.
+                
+                Unless you plan on using this VM for more than just SwiftCrossUI app development,
+                you probably won't need more than 64 GB.
+                @Image(source: vm-02-09, alt: "A UTM window with the pointer hovering over the Continue button.")
+            }
+            
+            @Step {
+                Select a shared folder if you want, then click Continue.
+                @Image(source: vm-02-10, alt: "A UTM window with the pointer hovering over the Continue button.")
+            }
+            
+            @Step {
+                Name your VM, then click Save.
+                @Image(source: vm-02-11, alt: "A UTM window with the pointer hovering over the Save button.")
+            }
+            
+            @Step {
+                Click Run. A new window will open for the VM.
+                @Image(source: vm-02-12, alt: "A UTM window with the pointer hovering over the Run button.")
+            }
+            
+            @Step {
+                Install your Linux distro like you would on any other machine.
+                @Image(source: vm-02-13, alt: "A UTM window running the Ubuntu Server installer.")
+            }
+            
+            @Step {
+                If you used an Ubuntu Server installer, run the commands shown to install a
+                graphical environment.
+                @Code(name: "InstallDesktop.shell", file: vm-02-14)
+            }
+            
+            @Step {
+                Run the commands shown to enable clipboard sharing and dynamic display resizing.
+                
+                If you're on an RPM-based distro such as Fedora, replace the `apt` command with
+                `yum`.
+                @Code(name: "EnableIntegrations.shell", file: vm-02-15)
+            }
+            
+            If you selected a shared directory while creating the VM, you now need to set it up such
+            that it will automatically be mounted on boot.
+            
+            @Step {
+                Add these two lines to the bottom of `/etc/fstab`, replacing `USER` with your Linux
+                username, and `HOST_USER_ID` with your **macOS** user ID. To find your user ID, run
+                `id -u` from macOS; if you're the only user on the machine, your ID will most likely
+                be 501.
+                
+                > Tip: You can edit `fstab` using `sudo nano /etc/fstab`. 
+                @Code(name: "/etc/fstab", file: vm-02-16)
+            }
+            
+            @Step {
+                Run these commands to install required dependencies, create your mount destinations,
+                and reboot so that your changes take effect.
+                @Code(name: "SetUpMount.shell", file: vm-02-17)
+            }
+            
+            @Step {
+                After rebooting, you should find your directory mounted at `~/utm`.
+                @Image(source: vm-02-18, alt: "A UTM window showing the \"utm\" directory in Nautilus.")
+            }
+            
+            You're now ready to begin setting up a SwiftCrossUI development environment inside your
+            Linux VM. Head over to <doc:Linux-development> to continue.
+        }
+    }
+}

@@ -22,11 +22,19 @@ public struct NavigationSplitView<Sidebar: View, MiddleBar: View, Detail: View>:
         )
     }
 
+    /// The sidebar content.
     public var sidebar: Sidebar
+    /// The middle content.
     public var content: MiddleBar
+    /// The detail content.
     public var detail: Detail
 
     /// Creates a three column split view.
+    ///
+    /// - Parameters:
+    ///   - sidebar: The sidebar content.
+    ///   - content: The middle content.
+    ///   - detail: The detail content.
     public init(
         @ViewBuilder sidebar: () -> Sidebar,
         @ViewBuilder content: () -> MiddleBar,
@@ -40,6 +48,10 @@ public struct NavigationSplitView<Sidebar: View, MiddleBar: View, Detail: View>:
 
 extension NavigationSplitView where MiddleBar == EmptyView {
     /// Creates a two column split view.
+    ///
+    /// - Parameters:
+    ///   - sidebar: The sidebar content.
+    ///   - detail: The detail content.
     public init(
         @ViewBuilder sidebar: () -> Sidebar,
         @ViewBuilder detail: () -> Detail

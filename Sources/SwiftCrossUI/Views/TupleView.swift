@@ -27,7 +27,7 @@ protocol TupleView: TypeSafeView {}
 
 extension TupleView {
     @MainActor
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
@@ -36,7 +36,7 @@ extension TupleView {
     }
 
     @MainActor
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -54,7 +54,7 @@ extension TupleView {
     }
 
     @MainActor
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,
@@ -94,7 +94,7 @@ extension TupleView1: View {
 extension TupleView1: TupleView {
     typealias Children = TupleViewChildren1<View0>
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -105,7 +105,7 @@ extension TupleView1: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -139,7 +139,7 @@ extension TupleView2: View {
 extension TupleView2: TupleView {
     typealias Children = TupleViewChildren2<View0, View1>
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -150,7 +150,7 @@ extension TupleView2: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -187,7 +187,7 @@ extension TupleView3: View {
 extension TupleView3: TupleView {
     typealias Children = TupleViewChildren3<View0, View1, View2>
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -198,7 +198,7 @@ extension TupleView3: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -238,7 +238,7 @@ extension TupleView4: View {
 extension TupleView4: TupleView {
     typealias Children = TupleViewChildren4<View0, View1, View2, View3>
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -249,7 +249,7 @@ extension TupleView4: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -292,7 +292,7 @@ extension TupleView5: View {
 extension TupleView5: TupleView {
     typealias Children = TupleViewChildren5<View0, View1, View2, View3, View4>
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -303,7 +303,7 @@ extension TupleView5: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -354,7 +354,7 @@ extension TupleView6: View {
 extension TupleView6: TupleView {
     typealias Children = TupleViewChildren6<View0, View1, View2, View3, View4, View5>
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -365,7 +365,7 @@ extension TupleView6: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -419,7 +419,7 @@ extension TupleView7: View {
 extension TupleView7: TupleView {
     typealias Children = TupleViewChildren7<View0, View1, View2, View3, View4, View5, View6>
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -430,7 +430,7 @@ extension TupleView7: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -488,7 +488,7 @@ extension TupleView8: View {
 extension TupleView8: TupleView {
     typealias Children = TupleViewChildren8<View0, View1, View2, View3, View4, View5, View6, View7>
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -499,7 +499,7 @@ extension TupleView8: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -562,7 +562,7 @@ extension TupleView9: TupleView {
         View0, View1, View2, View3, View4, View5, View6, View7, View8
     >
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -573,7 +573,7 @@ extension TupleView9: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -639,7 +639,7 @@ extension TupleView10: TupleView {
         View0, View1, View2, View3, View4, View5, View6, View7, View8, View9
     >
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -650,7 +650,7 @@ extension TupleView10: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -720,7 +720,7 @@ extension TupleView11: TupleView {
         View0, View1, View2, View3, View4, View5, View6, View7, View8, View9, View10
     >
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -731,7 +731,7 @@ extension TupleView11: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -804,7 +804,7 @@ extension TupleView12: TupleView {
         View0, View1, View2, View3, View4, View5, View6, View7, View8, View9, View10, View11
     >
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -815,7 +815,7 @@ extension TupleView12: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -891,7 +891,7 @@ extension TupleView13: TupleView {
         View0, View1, View2, View3, View4, View5, View6, View7, View8, View9, View10, View11, View12
     >
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -903,7 +903,7 @@ extension TupleView13: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -983,7 +983,7 @@ extension TupleView14: TupleView {
         View12, View13
     >
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -995,7 +995,7 @@ extension TupleView14: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -1079,7 +1079,7 @@ extension TupleView15: TupleView {
         View12, View13, View14
     >
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -1091,7 +1091,7 @@ extension TupleView15: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -1179,7 +1179,7 @@ extension TupleView16: TupleView {
         View12, View13, View14, View15
     >
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -1191,7 +1191,7 @@ extension TupleView16: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -1282,7 +1282,7 @@ extension TupleView17: TupleView {
         View12, View13, View14, View15, View16
     >
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -1294,7 +1294,7 @@ extension TupleView17: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -1388,7 +1388,7 @@ extension TupleView18: TupleView {
         View12, View13, View14, View15, View16, View17
     >
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -1400,7 +1400,7 @@ extension TupleView18: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -1497,7 +1497,7 @@ extension TupleView19: TupleView {
         View12, View13, View14, View15, View16, View17, View18
     >
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -1509,7 +1509,7 @@ extension TupleView19: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {
@@ -1609,7 +1609,7 @@ extension TupleView20: TupleView {
         View12, View13, View14, View15, View16, View17, View18, View19
     >
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -1621,7 +1621,7 @@ extension TupleView20: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {

@@ -89,7 +89,7 @@ struct ObservableTests {
         )
     }
     
-    @Test("Private and static  properties are ignored")
+    @Test("Private and static properties are ignored")
     func testPrivateAndStaticAreIgnored() {
         assertMacroExpansion(
             """
@@ -153,6 +153,30 @@ struct ObservableTests {
             expandedSource: """
             class ViewModel {
                 var a, b: String
+            }
+            
+            extension ViewModel: SwiftCrossUI.ObservableObject {
+            }
+            """,
+            macroSpecs: testMacros,
+            failureHandler: { spec in
+                Issue.record(spec.issueComment)
+            }
+        )
+    }
+    
+    @Test("Namespaced ObservationIgnored blocks application")
+    func namespacedObservationIgnoredBlocksApplication() async throws {
+        assertMacroExpansion(
+            """
+            @ObservableObject
+            class ViewModel {
+                @SwiftCrossUI.ObservationIgnored var skipMe = false
+            }
+            """,
+            expandedSource: """
+            class ViewModel {
+                @SwiftCrossUI.ObservationIgnored var skipMe = false
             }
             
             extension ViewModel: SwiftCrossUI.ObservableObject {

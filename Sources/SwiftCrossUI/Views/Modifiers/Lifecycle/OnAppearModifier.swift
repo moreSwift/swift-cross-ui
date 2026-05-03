@@ -6,6 +6,8 @@ extension View {
     /// view's ``View/body`` and before the view appears on screen. Currently,
     /// if these docs have been kept up to date, the action gets called just
     /// before creating the view's widget.
+    ///
+    /// - Parameter action: The action to perform when this view appears.
     public func onAppear(perform action: @escaping @MainActor () -> Void) -> some View {
         OnAppearModifier(body: TupleView1(self), action: action)
     }
@@ -15,7 +17,7 @@ struct OnAppearModifier<Content: View>: View {
     var body: TupleView1<Content>
     var action: @MainActor () -> Void
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {

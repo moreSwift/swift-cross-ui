@@ -251,4 +251,3 @@ struct EntryMacroTests {
     
     // TODO: Add test for raw identifiers after SwiftSyntax version bump to 602.0.0+
 }
-

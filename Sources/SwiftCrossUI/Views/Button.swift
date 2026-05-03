@@ -8,6 +8,10 @@ public struct Button: Sendable {
     var width: Int?
 
     /// Creates a button that displays a custom label.
+    ///
+    /// - Parameters:
+    ///   - label: The label to show on the button.
+    ///   - action: The action to be performed when the button is clicked.
     public init(_ label: String, action: @escaping @MainActor @Sendable () -> Void = {}) {
         self.label = label
         self.action = action
@@ -24,11 +28,11 @@ public struct Button: Sendable {
 extension Button: View {}
 
 extension Button: ElementaryView {
-    public func asWidget<Backend: AppBackend>(backend: Backend) -> Backend.Widget {
+    public func asWidget<Backend: BaseAppBackend>(backend: Backend) -> Backend.Widget {
         return backend.createButton()
     }
 
-    public func computeLayout<Backend: AppBackend>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -59,7 +63,7 @@ extension Button: ElementaryView {
         return ViewLayoutResult.leafView(size: ViewSize(size))
     }
 
-    public func commit<Backend: AppBackend>(
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,

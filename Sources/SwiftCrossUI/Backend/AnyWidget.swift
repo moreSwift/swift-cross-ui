@@ -8,18 +8,24 @@
 /// a concrete type before use (removing the need to type-erase specific
 /// methods or anything like that).
 public class AnyWidget {
-    /// The wrapped widget
+    /// The wrapped widget.
     var widget: Any
 
     /// Erases the specific type of a widget (to allow storage without propagating
     /// the selected backend type through the whole type system).
+    ///
+    /// - Parameter widget: The widget to type-erase.
     public init(_ widget: Any) {
         self.widget = widget
     }
 
-    /// Converts the widget back to its original concrete type. If the requested
-    /// type doesn't match its original type then the method will crash.
-    public func concreteWidget<Backend: AppBackend>(
+    /// Converts the widget back to its original concrete type.
+    ///
+    /// - Precondition: `backend` is the same backend used to create the widget.
+    ///
+    /// - Parameter backend: The backend to use to convert the widget.
+    /// - Returns: The widget as the backend's widget type.
+    public func concreteWidget<Backend: BaseAppBackend>(
         for backend: Backend.Type
     ) -> Backend.Widget {
         guard let widget = widget as? Backend.Widget else {
@@ -30,9 +36,13 @@ public class AnyWidget {
         return widget
     }
 
-    /// Converts the widget back to its original concrete type. If the requested
-    /// type doesn't match its original type then the method will crash. Often
-    /// more concise than using ``AnyWidget/concreteWidget(for:)``.
+    /// Converts the widget back to its original concrete type.
+    ///
+    /// Often more concise than using ``AnyWidget/concreteWidget(for:)``.
+    ///
+    /// - Precondition: The underlying widget is of type `T`.
+    ///
+    /// - Returns: The converted widget.
     public func into<T>() -> T {
         guard let widget = widget as? T else {
             fatalError(

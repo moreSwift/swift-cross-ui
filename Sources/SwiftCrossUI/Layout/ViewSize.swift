@@ -9,12 +9,20 @@ public struct ViewSize: Hashable, Sendable {
     public var height: Double
 
     /// Creates a view size.
+    ///
+    /// - Parameters:
+    ///   - width: The view's width.
+    ///   - height: The view's height.
     public init(_ width: Double, _ height: Double) {
         self.width = width
         self.height = height
     }
 
     /// Creates a view size from an integer vector.
+    ///
+    /// - Parameter vector: The vector to create the view size from. The
+    ///   X component becomes the width, and the Y component becomes the
+    ///   height.
     init(_ vector: SIMD2<Int>) {
         width = Double(vector.x)
         height = Double(vector.y)
@@ -29,6 +37,9 @@ public struct ViewSize: Hashable, Sendable {
     }
 
     /// The size component associated with the given orientation.
+    ///
+    /// - Parameter orientation: The orientation.
+    /// - Returns: The component corresponding to `orientation`.
     public subscript(component orientation: Orientation) -> Double {
         get {
             switch orientation {
@@ -49,6 +60,9 @@ public struct ViewSize: Hashable, Sendable {
     }
 
     /// The size component associated with the given axis.
+    ///
+    /// - Parameter axis: The axis.
+    /// - Returns: The component corresponding to `axis`.
     public subscript(component axis: Axis) -> Double {
         get {
             self[component: axis.orientation]

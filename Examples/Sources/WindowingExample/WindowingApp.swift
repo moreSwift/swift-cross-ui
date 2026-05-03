@@ -194,10 +194,13 @@ struct TertiaryWindowView: View {
 
 struct SingletonWindowView: View {
     @Environment(\.dismissWindow) private var dismissWindow
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         VStack {
             Text("This a singleton window!")
+
+            Text("Window scene phase: \(scenePhase)")
 
             Button("Close window") {
                 dismissWindow()
@@ -218,6 +221,22 @@ struct WindowingApp: App {
     @State var closable = true
     @State var minimizable = true
 
+    @Environment(\.appPhase) var appPhase
+
+    var bannerImage: URL {
+        // TODO(stackotter): Update SwiftBundlerRuntime to support fetching
+        //   resources in a cross platform manner.
+        #if os(macOS)
+            return Bundle.main.bundleURL.appendingPathComponent(
+                "Contents/Resources/Banner.png"
+            )
+        #elseif os(iOS) || os(Linux) || os(Windows)
+            return Bundle.main.bundleURL.appendingPathComponent(
+                "Examples_WindowingExample.bundle/Banner.png"
+            )
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup(title) {
             #hotReloadable {
@@ -227,6 +246,8 @@ struct WindowingApp: App {
                         TextField("My window", text: $title)
                     }
 
+                    Text("App phase: \(appPhase)")
+
                     Toggle("Enable resizing", isOn: $resizable)
                         .windowResizeBehavior(resizable ? .enabled : .disabled)
                     Toggle("Enable closing", isOn: $closable)
@@ -234,7 +255,7 @@ struct WindowingApp: App {
                     Toggle("Enable minimizing", isOn: $minimizable)
                         .preferredWindowMinimizeBehavior(minimizable ? .enabled : .disabled)
 
-                    Image(Bundle.module.bundleURL.appendingPathComponent("Banner.png"))
+                    Image(bannerImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
 
@@ -267,13 +288,15 @@ struct WindowingApp: App {
         .commands {
             CommandMenu("Demo menu") {
                 Button("Menu item") {}
-                Toggle("Toggle", active: $toggle)
+                Toggle("Toggle", isOn: $toggle)
 
                 Divider()
 
                 Menu("Submenu") {
                     Button("Item 1") {}
                     Button("Item 2") {}
+                    Button("Disabled item") {}
+                        .disabled()
                 }
             }
         }

@@ -1,0 +1,132 @@
+@Tutorial {
+    @Intro(title: "Setting up a development environment on Windows") {
+        Detailed set up instructions for Windows-based development environments.
+        
+        In this article we'll focus on developing SwiftCrossUI apps with Swift Bundler, but much of
+        the information should still apply if you choose to use a different build system.
+    }
+    
+    @Section(title: "Installing Swift") {
+        @ContentAndMedia {
+            The [Swift installation instructions page](https://www.swift.org/install/windows/)
+            lists various installation methods; the easiest is the WinGet-based method.
+            
+            If you already have Swift installed, you can skip this section.
+        }
+        
+        @Steps {
+            > Note: The Visual Studio version Swift depends on may change in the future.
+            
+            @Step {
+                Visit the [Swift installation instructions page](https://www.swift.org/install/windows/)
+                and follow the instructions for installing Swift via WinGet.
+                @Image(source: windows-01-01, alt: "A browser window showing Swift's Windows installation instructions.")
+            }
+            
+            @Step {
+                Restart your command prompt to ensure Swift is in your path, then double-check it's
+                been installed correctly by running `swift --version`.
+                @Code(name: "SwiftVersion.shell", file: windows-01-02)
+            }
+        }
+    }
+            
+    @Section(title: "Installing Swift Bundler") {
+        @ContentAndMedia {
+            [Swift Bundler](https://swiftbundler.dev) unifies your cross platform development
+            experience with a consistent CLI interface and configuration format.
+        }
+        
+        @Steps {
+            Currently, the only way to install Swift Bundler on Windows is to build it
+            yourself.
+            
+            @Step {
+                Using the developer command prompt or PowerShell, clone Swift Bundler into a
+                location you don't mind keeping around.
+                @Code(name: "SwiftBundler.shell", file: windows-02-01.shell)
+            }
+            
+            @Step {
+                Build Swift Bundler for debugging.
+                
+                Building Swift Bundler for release is extremely memory-intensive on Windows and
+                likely to fail on lower memory configurations, and since Swift Bundler is mostly
+                constrained by IO and external processes, there isn't much gain to be had from
+                release optimizations. We recommend building for debugging on Windows for everyday
+                use.
+                @Code(name: "SwiftBundler.shell", file: windows-02-02.shell)
+            }
+            
+            Next, we need to add Swift Bundler to the system `Path` so it can be run from any
+            directory. The following instructions were adapted from
+            [a eukhost article](https://www.eukhost.com/kb/how-to-add-to-the-path-on-windows-10-and-windows-11/)
+            which includes additional images that some may find useful; the images depict Windows
+            10 but the guide also works on Windows 11.
+            
+            @Step {
+                Open the Start menu and search for "environment variables". Select "Edit the system
+                environment variables".
+                @Image(source: windows-02-03, alt: "Searching for \"environment variables\" in the Start menu.")
+            }
+            
+            @Step {
+                Click the "Environment Variables…" button.
+                @Image(source: windows-02-04, alt: "The pointer hovering over the Environment Variables button.")
+            }
+            
+            @Step {
+                In the System Variables section, select the row corresponding to the `Path` variable
+                and click "Edit…".
+                @Image(source: windows-02-05, alt: "The pointer hovering over the Edit button.")
+            }
+            
+            @Step {
+                Click New, and enter `absolute\path\to\swift-bundler\.build\release` (replacing
+                `absolute\path\to` with the appropriate absolute path).
+                
+                For example, if you built Swift Bundler on your desktop, you would enter
+                `C:\Users\Username\Desktop\swift-bundler\.build\release`.
+                @Image(source: windows-02-06, alt: "The pointer hovering over the New button.")
+            }
+            
+            @Step {
+                Save your changes in all open dialogs by clicking OK three times.
+                @Image(source: windows-02-07, alt: "The pointer hovering over the OK button.")
+            }
+            
+            @Step {
+                **Restart your command prompt**, then run `swift-bundler --version` as a quick
+                sanity check.
+                @Code(name: "SwiftBundler.shell", file: swift-bundler-version.shell)
+            }
+        }
+    }
+            
+    @Section(title: "Installing dependencies for WinUIBackend") {
+        @ContentAndMedia {
+            Before you can use <doc:WinUIBackend> you must install two dependencies; the former is
+            only required at compile time while the later is only required at runtime. **If you're
+            developing an app, you need both.**
+        }
+        
+        @Steps {
+            > Warning: You may run into strange Swift issues if you use Command Prompt for Swift
+            > Development. We recommend always using the Native Tools Command Prompt for VS 2022,
+            > which you can find in the Start menu.
+            
+            @Step {
+                Install Windows SDK 10.0.17763.
+                
+                Note that older versions of Windows had a typo in the version number; if WinGet
+                can't find version 17763, try 17736 instead.
+                
+                @Code(name: "InstallSDK.shell", file: windows-03-01.shell)
+            }
+            
+            @Step {
+                Install the WindowsAppSDK 1.5.240205001-preview1 variant for your architecture: [x64](https://aka.ms/windowsappsdk/1.5/1.5.240205001-preview1/windowsappruntimeinstall-x64.exe)/[arm64](https://aka.ms/windowsappsdk/1.5/1.5.240205001-preview1/windowsappruntimeinstall-arm64.exe)
+            }
+        }
+    }
+}

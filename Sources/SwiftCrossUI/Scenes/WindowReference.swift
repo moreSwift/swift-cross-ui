@@ -6,18 +6,20 @@ final class WindowReference<SceneType: WindowingScene> {
     /// The view graph of the window's root view.
     private let viewGraph: ViewGraph<SceneType.Content>
     /// The window being rendered in.
-    private let window: Any
+    let window: Any
     /// `false` after the first scene update.
     private var isFirstUpdate = true
     /// The environment most recently provided by this node's parent scene.
     private var parentEnvironment: EnvironmentValues
     /// The container used to center the root view in the window.
     private let containerWidget: AnyWidget
+    /// The window's preferred color scheme, cached from the last update.
+    private var preferredColorScheme: ColorScheme?
 
     /// - Parameters:
     ///   - closeHandler: The action to perform when the window is closed. Should
     ///     dispose of the scene's reference to this `WindowReference`.
-    init<Backend: AppBackend>(
+    init<Backend: BaseAppBackend>(
         scene: SceneType,
         backend: Backend,
         environment: EnvironmentValues,
@@ -43,11 +45,16 @@ final class WindowReference<SceneType: WindowingScene> {
         self.window = window
         parentEnvironment = environment
 
-        backend.setCloseHandler(ofWindow: window, to: closeHandler)
+        if let backend = backend as? any BackendFeatures.WindowClosing {
+            func setCloseHandler<NewBackend: BackendFeatures.WindowClosing>(backend: NewBackend) {
+                backend.setCloseHandler(ofWindow: window as! NewBackend.Window, to: closeHandler)
+            }
+            setCloseHandler(backend: backend)
+        }
 
         backend.setResizeHandler(ofWindow: window) { [weak self] newSize in
             guard let self else { return }
-            _ = self.update(
+            self.update(
                 self.scene,
                 proposedWindowSize: newSize,
                 needsWindowSizeCommit: false,
@@ -60,7 +67,7 @@ final class WindowReference<SceneType: WindowingScene> {
 
         backend.setWindowEnvironmentChangeHandler(of: window) { [weak self] in
             guard let self else { return }
-            _ = self.update(
+            self.update(
                 self.scene,
                 proposedWindowSize: backend.size(ofWindow: window),
                 needsWindowSizeCommit: false,
@@ -72,11 +79,11 @@ final class WindowReference<SceneType: WindowingScene> {
         }
     }
 
-    func update<Backend: AppBackend>(
+    func update<Backend: BaseAppBackend>(
         _ newScene: SceneType?,
         backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
+    ) {
         guard let window = window as? Backend.Window else {
             fatalError("Scene updated with a backend incompatible with the window it was given")
         }
@@ -94,7 +101,7 @@ final class WindowReference<SceneType: WindowingScene> {
             usedDefaultSize = false
         }
 
-        return update(
+        update(
             newScene,
             proposedWindowSize: proposedWindowSize,
             needsWindowSizeCommit: usedDefaultSize,
@@ -106,7 +113,7 @@ final class WindowReference<SceneType: WindowingScene> {
 
     /// Updates the `WindowReference`.
     /// - Parameters:
-    ///   - newScene: The scene. `nil` if this is the first update.
+    ///   - newScene: The scene. `nil` if reusing previous scene value.
     ///   - proposedWindowSize: The proposed window size.
     ///   - needsWindowSizeCommit: Whether the proposed window size matches the
     ///     windows current size (or imminent size in the case of a window
@@ -120,14 +127,14 @@ final class WindowReference<SceneType: WindowingScene> {
     ///   - windowSizeIsFinal: If true, no further resizes can/will be made. This
     ///     is true on platforms that don't support programmatic window resizing,
     ///     and when a window is full screen.
-    private func update<Backend: AppBackend>(
+    private func update<Backend: BaseAppBackend>(
         _ newScene: SceneType?,
         proposedWindowSize: SIMD2<Int>,
         needsWindowSizeCommit: Bool,
         backend: Backend,
         environment: EnvironmentValues,
         windowSizeIsFinal: Bool = false
-    ) -> SceneUpdateResult {
+    ) {
         guard let window = window as? Backend.Window else {
             fatalError("Scene updated with a backend incompatible with the window it was given")
         }
@@ -144,14 +151,17 @@ final class WindowReference<SceneType: WindowingScene> {
             scene = newScene
         }
 
-        let environment =
-            backend.computeWindowEnvironment(window: window, rootEnvironment: environment)
+        var environment =
+            backend.computeWindowEnvironment(
+                window: window,
+                rootEnvironment: environment.with(\.window, window)
+            )
             .with(\.onResize) { [weak self] _ in
                 guard let self else { return }
                 // TODO: Figure out whether this would still work if we didn't recompute the
                 //   scene's body. I have a vague feeling that it wouldn't work in all cases?
                 //   But I don't have the time to come up with a counterexample right now.
-                _ = self.update(
+                self.update(
                     self.scene,
                     proposedWindowSize: backend.size(ofWindow: window),
                     needsWindowSizeCommit: false,
@@ -159,28 +169,51 @@ final class WindowReference<SceneType: WindowingScene> {
                     environment: environment
                 )
             }
-            .with(\.window, window)
+        let outerColorScheme = environment.colorScheme
 
-        let minimumWindowSize = viewGraph.computeLayout(
+        // Update environment with latest cached value before first update to
+        // minimise toggling between outer color scheme and preferred color
+        // scheme where possible (could confuse people when logging the color
+        // scheme or debugging things)
+        if let preferredColorScheme {
+            environment.colorScheme = preferredColorScheme
+        }
+
+        let probingResult = viewGraph.computeLayout(
             with: newScene?.content(),
             proposedSize: .zero,
-            environment: environment.with(\.allowLayoutCaching, true)
-        ).size
+            environment: environment
+                .with(\.allowLayoutCaching, true)
+        )
+        let minimumWindowSize = probingResult.size
+        updateEnvironment(
+            &environment,
+            viewLayoutResult: probingResult,
+            outerColorScheme: outerColorScheme,
+            backend: backend
+        )
 
         // With `.contentSize`, the window's maximum size is the maximum size of its
         // content. With `.contentMinSize` (and `.automatic`), there is no maximum
         // size.
-        let maximumWindowSize: ViewSize? =
-            switch environment.windowResizability {
-                case .contentSize:
-                    viewGraph.computeLayout(
-                        with: newScene?.content(),
-                        proposedSize: .infinity,
-                        environment: environment.with(\.allowLayoutCaching, true)
-                    ).size
-                case .automatic, .contentMinSize:
-                    nil
-            }
+        let maximumWindowSize: ViewSize?
+        switch environment.windowResizability {
+            case .contentSize:
+                let result = viewGraph.computeLayout(
+                    with: newScene?.content(),
+                    proposedSize: .infinity,
+                    environment: environment.with(\.allowLayoutCaching, true)
+                )
+                updateEnvironment(
+                    &environment,
+                    viewLayoutResult: result,
+                    outerColorScheme: outerColorScheme,
+                    backend: backend
+                )
+                maximumWindowSize = result.size
+            case .automatic, .contentMinSize:
+                maximumWindowSize = nil
+        }
 
         let clampedWindowSize = ViewSize(
             min(
@@ -218,8 +251,12 @@ final class WindowReference<SceneType: WindowingScene> {
             proposedSize: ProposedViewSize(proposedWindowSize),
             environment: environment
         )
-
-        viewGraph.commit()
+        updateEnvironment(
+            &environment,
+            viewLayoutResult: finalContentResult,
+            outerColorScheme: outerColorScheme,
+            backend: backend
+        )
 
         backend.setPosition(
             ofChildAt: 0,
@@ -231,29 +268,58 @@ final class WindowReference<SceneType: WindowingScene> {
             backend.setSize(ofWindow: window, to: proposedWindowSize)
         }
 
-        backend.setBehaviors(
-            ofWindow: window,
-            closable:
-                finalContentResult.preferences.windowDismissBehavior?.isEnabled ?? true,
-            minimizable:
-                finalContentResult.preferences.preferredWindowMinimizeBehavior?.isEnabled ?? true,
-            resizable:
-                finalContentResult.preferences.windowResizeBehavior?.isEnabled ?? true
-        )
+        if let backend = backend as? any BackendFeatures.WindowBehaviors {
+            func setBehaviors<NewBackend: BackendFeatures.WindowBehaviors>(backend: NewBackend) {
+                backend.setBehaviors(
+                    ofWindow: window as! NewBackend.Window,
+                    closable:
+                        finalContentResult.preferences.windowDismissBehavior?.isEnabled ?? true,
+                    minimizable:
+                        finalContentResult.preferences.preferredWindowMinimizeBehavior?.isEnabled ?? true,
+                    resizable:
+                        finalContentResult.preferences.windowResizeBehavior?.isEnabled ?? true
+                )
+            }
+            setBehaviors(backend: backend)
+        }
+
+        // Generally just used to update the window color scheme
+        backend.updateWindow(window, environment: environment)
+
+        // Delay committing the view graph so that the View.inspectWindow(_:)
+        // modifiers can be used to overwrite certain SwiftCrossUI behaviors
+        viewGraph.commit()
 
         if isFirstUpdate {
             backend.show(window: window)
             isFirstUpdate = false
         }
-
-        return .leafScene()
     }
 
-    func activate<Backend: AppBackend>(backend: Backend) {
+    func activate<Backend: BaseAppBackend>(backend: Backend) {
         guard let window = window as? Backend.Window else {
             fatalError("Scene updated with a backend incompatible with the window it was given")
         }
 
         backend.activate(window: window)
+    }
+
+    private func updateEnvironment<Backend: BaseAppBackend>(
+        _ environment: inout EnvironmentValues,
+        viewLayoutResult: ViewLayoutResult,
+        outerColorScheme: ColorScheme,
+        backend: Backend
+    ) {
+        preferredColorScheme = viewLayoutResult.preferences.preferredColorScheme
+
+        // Update environment with preferred color scheme if provided
+        if let preferredColorScheme, backend.canOverrideWindowColorScheme {
+            environment.colorScheme = preferredColorScheme
+        } else {
+            // If the preferred color scheme just changed to nil, then we must
+            // reset the environment's color scheme to the outer color scheme
+            // provided by a higher scene or the system.
+            environment.colorScheme = outerColorScheme
+        }
     }
 }

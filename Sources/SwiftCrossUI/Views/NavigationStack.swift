@@ -2,9 +2,11 @@
 /// of a detail view.
 struct NavigationStackRootPath: Codable {}
 
-/// A view that displays a root view and enables you to present additional views over the root view.
+/// A view that displays a root view and enables you to present additional views
+/// over the root view.
 ///
-/// Use .navigationDestination(for:destination:) on this view instead of its children unlike Apples SwiftUI API.
+/// Use ``navigationDestination(for:destination:)`` on this view instead of its
+/// children, unlike Apple's SwiftUI API.
 public struct NavigationStack<Detail: View>: View {
     public var body: some View {
         if let element = elements.last {
@@ -45,9 +47,11 @@ public struct NavigationStack<Detail: View>: View {
         return [NavigationStackRootPath()] + resolvedPath
     }
 
-    /// Creates a navigation stack with heterogeneous navigation state that you can control.
+    /// Creates a navigation stack with heterogeneous navigation state that you
+    /// can control.
+    ///
     /// - Parameters:
-    ///   - path: A `Binding` to the navigation state for this stack.
+    ///   - path: A ``Binding`` to the navigation state for this stack.
     ///   - root: The view to display when the stack is empty.
     public init(
         path: Binding<NavigationPath>,
@@ -64,16 +68,19 @@ public struct NavigationStack<Detail: View>: View {
         }
     }
 
-    /// Associates a destination view with a presented data type for use within a navigation stack.
+    /// Associates a destination view with a presented data type for use within
+    /// a navigation stack.
     ///
-    /// Add this view modifer to describe the view that the stack displays when presenting a particular
-    /// kind of data. Use a `NavigationLink` to present the data. You can add more than one navigation
-    /// destination modifier to the stack if it needs to present more than one kind of data.
+    /// Add this view modifer to describe the view that the stack displays when
+    /// presenting a particular kind of data. Use a ``NavigationLink`` to
+    /// present the data. You can add more than one navigation destination
+    /// modifier to the stack if it needs to present more than one kind of data.
+    ///
     /// - Parameters:
     ///   - data: The type of data that this destination matches.
-    ///   - destination: A view builder that defines a view to display when the stack’s navigation
-    ///     state contains a value of type data. The closure takes one argument, which is the value
-    ///     of the data to present.
+    ///   - destination: A view builder that defines a view to display when the
+    ///     stack's navigation state contains a value of type data. The closure
+    ///     takes one argument, which is the value of the data to present.
     public func navigationDestination<D: Codable, C: View>(
         for data: D.Type,
         @ViewBuilder destination: @escaping (D) -> C
@@ -110,7 +117,7 @@ public struct NavigationStack<Detail: View>: View {
     /// Attempts to compute the detail view for the given element (the type of
     /// the element decides which detail is shown). Crashes if no suitable detail
     /// view is found.
-    func childOrCrash(for element: any Codable) -> Detail {
+    func childOrCrash(for element: some Codable) -> Detail {
         guard let child = child(element) else {
             fatalError(
                 "Failed to find detail view for \"\(element)\", make sure you have called .navigationDestination for this type."

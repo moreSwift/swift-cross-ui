@@ -10,9 +10,7 @@ SwiftCrossUI takes inspiration from SwiftUI, allowing you to use the basic conce
 
 ### Getting Started
 
-- <doc:Quick-start>
-- <doc:Setting-up-a-development-environment>
-- <doc:Setting-up-a-virtual-development-environment>
+- <doc:Table-of-Contents>
 - <doc:Examples>
 - <doc:Hot-reloading>
 
@@ -42,7 +40,7 @@ SwiftCrossUI takes inspiration from SwiftUI, allowing you to use the basic conce
 ### State
 
 - <doc:State-basics>
-- <doc:Environment>
+- <doc:The-environment>
 - <doc:Preferences>
 
 ### User input

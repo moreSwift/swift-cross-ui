@@ -1,19 +1,30 @@
 extension View {
-    /// Adds padding to a view. If `amount` is `nil`, then a backend-specific default value
-    /// is used. Separate from ``View/padding(_:_:)`` because overload resolution didn't
+    /// Adds padding to a view.
+    ///
+    /// Separate from ``View/padding(_:_:)`` because overload resolution didn't
     /// like the double default parameters.
+    ///
+    /// - Parameter amount: The amount of padding to use. If `nil`, a
+    ///   backend-specific default value is used.
     public func padding(_ amount: Int? = nil) -> some View {
         return padding(.all, amount)
     }
 
-    /// Adds padding to a view. If `amount` is `nil`, then a backend-specific
-    /// default value is used.
+    /// Adds padding to a view.
+    ///
+    /// - Parameters:
+    ///   - edges: The edges to apply the padding to. Defaults to
+    ///     ``Edge/Set/all``.
+    ///   - amount: The amount of padding to use. If `nil`, a backend-specific
+    ///     default value is used.
     public func padding(_ edges: Edge.Set = .all, _ amount: Int? = nil) -> some View {
         let insets = EdgeInsets.Internal(edges: edges, amount: amount)
         return PaddingModifierView(body: TupleView1(self), insets: insets)
     }
 
     /// Adds padding to a view with a different amount for each edge.
+    ///
+    /// - Parameter insets: The edge insets to use.
     public func padding(_ insets: EdgeInsets) -> some View {
         return PaddingModifierView(body: TupleView1(self), insets: EdgeInsets.Internal(insets))
     }
@@ -21,9 +32,13 @@ extension View {
 
 /// Insets for the sides of a rectangle. Generally used to represent view padding.
 public struct EdgeInsets: Equatable {
+    /// The top inset.
     public var top: Int
+    /// The bottom inset.
     public var bottom: Int
+    /// The leading inset.
     public var leading: Int
+    /// The trailing inset.
     public var trailing: Int
 
     /// The total inset along each axis.
@@ -35,6 +50,12 @@ public struct EdgeInsets: Equatable {
     }
 
     /// Constructs edge insets from individual insets.
+    ///
+    /// - Parameters:
+    ///   - top: The top inset.
+    ///   - bottom: The bottom inset.
+    ///   - leading: The leading inset.
+    ///   - trailing: The trailing inset.
     public init(top: Int = 0, bottom: Int = 0, leading: Int = 0, trailing: Int = 0) {
         self.top = top
         self.bottom = bottom
@@ -80,7 +101,7 @@ struct PaddingModifierView<Child: View>: TypeSafeView {
     /// The insets for each edge.
     var insets: EdgeInsets.Internal
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -88,7 +109,7 @@ struct PaddingModifierView<Child: View>: TypeSafeView {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: TupleViewChildren1<Child>,
         backend: Backend
     ) -> Backend.Widget {
@@ -97,7 +118,7 @@ struct PaddingModifierView<Child: View>: TypeSafeView {
         return container
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ container: Backend.Widget,
         children: TupleViewChildren1<Child>,
         proposedSize: ProposedViewSize,
@@ -134,7 +155,7 @@ struct PaddingModifierView<Child: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ container: Backend.Widget,
         children: TupleViewChildren1<Child>,
         layout: ViewLayoutResult,

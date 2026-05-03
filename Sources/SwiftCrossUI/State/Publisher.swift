@@ -10,7 +10,7 @@ public class Publisher {
     /// Human-readable tag for debugging purposes.
     private var tag: String?
 
-    /// We guard this against data races, with serialUpdateHandlingQueue, and
+    /// We guard this against data races, with `serialUpdateHandlingQueue`, and
     /// with our lives.
     private class UpdateStatistics: @unchecked Sendable {
         /// The time at which the last update merging event occurred in
@@ -68,7 +68,7 @@ public class Publisher {
         return self
     }
 
-    /// A specialized version of `observe(with:)` designed to mitigate main thread
+    /// A specialized version of ``observe(with:)`` designed to mitigate main thread
     /// starvation issues observed on weaker systems when using the Gtk3Backend.
     ///
     /// If observations are produced faster than the update handler (`closure`) can
@@ -85,7 +85,7 @@ public class Publisher {
     /// update handler is still running constantly (since there's always going to
     /// be a new update waiting before the the running update completes). In this
     /// situation we introduce a sleep after handling each update to give the backend
-    /// time to catch up. Hueristically I've found that a delay of 1.5x the length of
+    /// time to catch up. Heuristically I've found that a delay of 1.5x the length of
     /// the update is required on my old Linux laptop using ``Gtk3Backend``, so I'm
     /// going with that for now. Importantly, this delay is only used whenever updates
     /// start running back-to-back with no gap so it shouldn't affect fast systems
@@ -94,7 +94,7 @@ public class Publisher {
     /// If the provided backend has the notion of a main thread, then the update
     /// handler will end up on that thread, but regardless of backend it's
     /// guaranteed that updates will always run serially.
-    func observeAsUIUpdater<Backend: AppBackend>(
+    func observeAsUIUpdater<Backend: BaseAppBackend>(
         backend: Backend,
         action: @escaping @MainActor @Sendable () -> Void
     ) -> Cancellable {

@@ -2,6 +2,7 @@ import SwiftCrossUI
 import UIKit
 
 /// The context associated with an instance of ``Representable``.
+@MainActor
 public struct UIViewRepresentableContext<Representable: UIViewRepresentable> {
     public let coordinator: Representable.Coordinator
     public internal(set) var environment: EnvironmentValues
@@ -114,7 +115,7 @@ extension View where Self: UIViewRepresentable {
         preconditionFailure("This should never be called")
     }
 
-    public func children<Backend: AppBackend>(
+    public func children<Backend: BaseAppBackend>(
         backend _: Backend,
         snapshots _: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment _: EnvironmentValues
@@ -122,14 +123,14 @@ extension View where Self: UIViewRepresentable {
         EmptyViewChildren()
     }
 
-    public func layoutableChildren<Backend: AppBackend>(
+    public func layoutableChildren<Backend: BaseAppBackend>(
         backend _: Backend,
         children _: any ViewGraphNodeChildren
     ) -> [LayoutSystem.LayoutableChild] {
         []
     }
 
-    public func asWidget<Backend: AppBackend>(
+    public func asWidget<Backend: BaseAppBackend>(
         _: any ViewGraphNodeChildren,
         backend _: Backend
     ) -> Backend.Widget {
@@ -140,7 +141,7 @@ extension View where Self: UIViewRepresentable {
         }
     }
 
-    public func computeLayout<Backend: AppBackend>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children _: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -159,7 +160,7 @@ extension View where Self: UIViewRepresentable {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    public func commit<Backend: AppBackend>(
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,
@@ -183,22 +184,29 @@ final class ViewRepresentingWidget<Representable: UIViewRepresentable>: BaseView
     var context: Representable.Context?
     var subviewConstraints: [NSLayoutConstraint] = []
 
-    lazy var subview: Representable.UIViewType = {
-        let view = representable.makeUIView(context: context!)
+    var cachedSubview: Representable.UIViewType?
 
-        self.addSubview(view)
+    var subview: Representable.UIViewType {
+        if let cachedSubview {
+            return cachedSubview
+        } else {
+            let view = representable.makeUIView(context: context!)
 
-        view.translatesAutoresizingMaskIntoConstraints = false
-        subviewConstraints = [
-            view.topAnchor.constraint(equalTo: self.topAnchor),
-            view.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            view.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            view.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-        ]
-        NSLayoutConstraint.activate(subviewConstraints)
+            self.addSubview(view)
 
-        return view
-    }()
+            view.translatesAutoresizingMaskIntoConstraints = false
+            subviewConstraints = [
+                view.topAnchor.constraint(equalTo: self.topAnchor),
+                view.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+                view.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+                view.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            ]
+            NSLayoutConstraint.activate(subviewConstraints)
+
+            cachedSubview = view
+            return view
+        }
+    }
 
     func update(with environment: EnvironmentValues) {
         if var context {
@@ -221,8 +229,10 @@ final class ViewRepresentingWidget<Representable: UIViewRepresentable>: BaseView
     }
 
     deinit {
-        if let context {
-            Representable.dismantleUIView(subview, coordinator: context.coordinator)
+        if let context, let cachedSubview {
+            Task { @MainActor in
+                Representable.dismantleUIView(cachedSubview, coordinator: context.coordinator)
+            }
         }
     }
 }

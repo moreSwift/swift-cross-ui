@@ -1,0 +1,4 @@
+[~/]$ sudo apt install bindfs
+[~/]$ sudo mkdir /mnt/utm
+[~/]$ mkdir ~/utm
+[~/]$ sudo reboot -h now

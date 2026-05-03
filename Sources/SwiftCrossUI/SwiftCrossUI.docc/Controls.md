@@ -8,16 +8,19 @@ Employ controls to receive user input.
 
 - ``Button``
 - ``TextField``
+- ``SecureField``
+- ``TextEditor``
 - ``Slider``
 - ``Toggle``
 - ``Picker``
+- ``DatePicker``
 - ``Menu``
 - ``List``
 
 ### Related
 
-- ``DoubleConvertible``
 - ``MenuItem``
 - ``MenuItemsBuilder``
 - ``ToggleStyle``
 - ``TextContentType``
+- ``DatePickerStyle``

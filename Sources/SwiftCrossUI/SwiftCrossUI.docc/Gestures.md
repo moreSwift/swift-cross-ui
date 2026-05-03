@@ -4,3 +4,4 @@
 
 - ``View/onTapGesture(gesture:perform:)``
 - ``TapGesture``
+- ``View/onHover(perform:)``

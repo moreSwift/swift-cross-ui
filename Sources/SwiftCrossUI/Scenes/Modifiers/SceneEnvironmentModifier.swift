@@ -51,7 +51,7 @@ final class SceneEnvironmentModifierNode<Content: Scene>: SceneGraphNode {
     var modification: (EnvironmentValues) -> EnvironmentValues
     var contentNode: Content.Node
 
-    init<Backend: AppBackend>(
+    init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -64,17 +64,25 @@ final class SceneEnvironmentModifierNode<Content: Scene>: SceneGraphNode {
         )
     }
 
-    func update<Backend: AppBackend>(
+    func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
+    ) -> SceneNodeUpdateResult {
         if let newScene {
             self.modification = newScene.modification
         }
 
-        return contentNode.update(
+        return contentNode.updateNode(
             newScene?.content,
+            environment: modification(environment)
+        )
+    }
+
+    func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        contentNode.update(
             backend: backend,
             environment: modification(environment)
         )

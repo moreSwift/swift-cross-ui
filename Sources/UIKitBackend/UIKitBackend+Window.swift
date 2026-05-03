@@ -63,7 +63,7 @@ final class RootViewController: UIViewController {
     }
 }
 
-extension UIKitBackend {
+extension UIKitBackend: BackendFeatures.WindowBehaviors {
     public typealias Window = UIWindow
 
     public func createWindow(withDefaultSize _: SIMD2<Int>?) -> Window {
@@ -87,6 +87,14 @@ extension UIKitBackend {
 
         window.rootViewController = RootViewController(backend: self)
         return window
+    }
+
+    public func updateWindow(_ window: Window, environment: EnvironmentValues) {
+        // TODO(stackotter): Support preferredColorScheme
+        window.backgroundColor = switch environment.colorScheme {
+            case .light: .white
+            case .dark: .black
+        }
     }
 
     public func setTitle(ofWindow window: Window, to title: String) {
@@ -126,17 +134,6 @@ extension UIKitBackend {
 
     public func activate(window: Window) {
         window.makeKeyAndVisible()
-    }
-
-    public func close(window: Window) {
-        logger.notice("UIKitBackend: ignoring \(#function) call")
-    }
-
-    public func setCloseHandler(
-        ofWindow window: Window,
-        to action: @escaping () -> Void
-    ) {
-        logger.notice("UIKitBackend: ignoring \(#function) call")
     }
 
     public func isWindowProgrammaticallyResizable(_ window: Window) -> Bool {
@@ -188,7 +185,7 @@ extension UIKitBackend {
             if let maximumSize {
                 CGSize(width: maximumSize.x, height: maximumSize.y)
             } else {
-                CGSize(width: Double.infinity, height: .infinity)
+                CGSize(width: Double.greatestFiniteMagnitude, height: .greatestFiniteMagnitude)
             }
     }
 }

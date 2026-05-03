@@ -2,33 +2,40 @@ import Foundation
 
 /// A type-erased list of data representing the content of a navigation stack.
 ///
-/// If you are persisting a path using the ``Codable`` implementation, you must
+/// If you are persisting a path using the `Codable` implementation, you must
 /// not change type definitions in a non-backwards compatible way. Otherwise,
 /// the path may fail to decode.
 public struct NavigationPath {
-    /// A storage class used so that we have control over exactly which changes are published (to
-    /// avoid infinite loops).
+    /// A storage class used so that we have control over exactly which changes
+    /// are published (to avoid infinite loops).
     private class Storage {
-        /// An entry that will be decoded next time it is used by a ``NavigationStack`` (we need to
-        /// wait until we know what concrete entry types are available).
+        /// An entry that will be decoded next time it is used by a
+        /// ``NavigationStack`` (we need to wait until we know what concrete
+        /// entry types are available).
         struct EncodedEntry: Codable {
             var type: String
             var value: Data
         }
 
-        /// The current path. If both this and `encodedEntries` are non-empty, the elements in path
-        /// were added before the navigation path was even used to render a view. By design they
-        /// come after the encodedEntries (because they can only be the result of appending and
-        /// maybe popping).
+        /// The current path.
+        ///
+        /// If both this and ``encodedEntries`` are non-empty, the elements in
+        /// `path` were added before the navigation path was even used to render
+        /// a view. By design they come after the `encodedEntries` (because they
+        /// can only be the result of appending and maybe popping).
         var path: [any Codable] = []
-        /// Entries that will be encoded when this navigation path is first used by a
-        /// ``NavigationStack``. It is not possible to decode the entries without first knowing
-        /// what types the path can possibly contain (which only the ``NavigationStack`` will know).
+        /// Entries that will be decoded when this navigation path is first used
+        /// by a ``NavigationStack``.
+        ///
+        /// It is not possible to decode the entries without first knowing what
+        /// types the path can possibly contain (which only the
+        /// ``NavigationStack`` will know).
         var encodedEntries: [EncodedEntry] = []
     }
 
-    /// The path and any elements waiting to be decoded are stored in a class so that changes are
-    /// triggered from within NavigationStack when decoding the elements (which causes an infinite
+    /// The path and any elements waiting to be decoded are stored in a class so
+    /// that changes are triggered from within ``NavigationStack`` instead of
+    /// ``NavigationPath`` when decoding the elements (which avoids an infinite
     /// loop of updates).
     private var storage = Storage()
 
@@ -46,13 +53,17 @@ public struct NavigationPath {
     public init() {}
 
     /// Appends a new value to the end of the path.
-    public mutating func append<C: Codable>(_ component: C) {
+    ///
+    /// - Parameter component: The component to append.
+    public mutating func append(_ component: some Codable) {
         storage.path.append(component)
     }
 
     /// Removes values from the end of this path.
     ///
-    /// - Parameter k: The number of elements to remove from the path. ``k`` must be greater than or equal to zero.
+    /// - Precondition: `k >= 0`.
+    ///
+    /// - Parameter k: The number of elements to remove from the path.
     public mutating func removeLast(_ k: Int = 1) {
         precondition(k >= 0, "`k` must be greater than or equal to zero")
         if k < storage.path.count {
@@ -71,11 +82,17 @@ public struct NavigationPath {
         storage.encodedEntries.removeAll()
     }
 
-    /// Gets the path's current entries. If the path was decoded from a stored representation and
-    /// has not been used by a ``NavigationStack`` yet, the ``destinationTypes`` will be used to
-    /// decode all elements in the path. Without knowing the ``destinationTypes``, the entries
-    /// cannot be decoded (after macOS 11 they can be decoded by using `_typeByName`, but we can't
-    /// use that because of backwards compatibility).
+    /// Gets the path's current entries.
+    ///
+    /// If the path was decoded from a stored representation and has not been
+    /// used by a ``NavigationStack`` yet, the `destinationTypes` will be used
+    /// to decode all elements in the path. Without knowing the
+    /// `destinationTypes`, the entries cannot be decoded (after macOS 11 they
+    /// can be decoded by using `_typeByName`, but we can't use that because of
+    /// backwards compatibility).
+    ///
+    /// - Parameter destinationTypes: The types to use to decode the entries.
+    /// - Returns: The decoded entries.
     func path(destinationTypes: [any Codable.Type]) -> [any Codable] {
         guard !storage.encodedEntries.isEmpty else {
             return storage.path

@@ -19,7 +19,7 @@ public final class TupleSceneNode2<Scene0: Scene, Scene1: Scene>: SceneGraphNode
     var node0: Scene0.Node
     var node1: Scene1.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -28,20 +28,26 @@ public final class TupleSceneNode2<Scene0: Scene, Scene1: Scene>: SceneGraphNode
         node1 = Scene1.Node(from: scene.scene1, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene3<Scene0: Scene, Scene1: Scene, Scene2: Scene>: Scene {
     public typealias Node = TupleSceneNode3<Scene0, Scene1, Scene2>
 
@@ -63,7 +69,7 @@ public final class TupleSceneNode3<Scene0: Scene, Scene1: Scene, Scene2: Scene>:
     var node1: Scene1.Node
     var node2: Scene2.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -73,21 +79,28 @@ public final class TupleSceneNode3<Scene0: Scene, Scene1: Scene, Scene2: Scene>:
         node2 = Scene2.Node(from: scene.scene2, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene4<Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene>: Scene {
     public typealias Node = TupleSceneNode4<Scene0, Scene1, Scene2, Scene3>
 
@@ -114,7 +127,7 @@ public final class TupleSceneNode4<Scene0: Scene, Scene1: Scene, Scene2: Scene, 
     var node2: Scene2.Node
     var node3: Scene3.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -125,22 +138,30 @@ public final class TupleSceneNode4<Scene0: Scene, Scene1: Scene, Scene2: Scene, 
         node3 = Scene3.Node(from: scene.scene3, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene5<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene
 >: Scene {
@@ -174,7 +195,7 @@ public final class TupleSceneNode5<
     var node3: Scene3.Node
     var node4: Scene4.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -186,23 +207,32 @@ public final class TupleSceneNode5<
         node4 = Scene4.Node(from: scene.scene4, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene6<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene
 >: Scene {
@@ -240,7 +270,7 @@ public final class TupleSceneNode6<
     var node4: Scene4.Node
     var node5: Scene5.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -253,24 +283,34 @@ public final class TupleSceneNode6<
         node5 = Scene5.Node(from: scene.scene5, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene7<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
     Scene6: Scene
@@ -313,7 +353,7 @@ public final class TupleSceneNode7<
     var node5: Scene5.Node
     var node6: Scene6.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -327,25 +367,36 @@ public final class TupleSceneNode7<
         node6 = Scene6.Node(from: scene.scene6, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
-                node6.update(newScene?.scene6, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
+                node6.updateNode(newScene?.scene6, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+        node6.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene8<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
     Scene6: Scene, Scene7: Scene
@@ -395,7 +446,7 @@ public final class TupleSceneNode8<
     var node6: Scene6.Node
     var node7: Scene7.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -410,26 +461,38 @@ public final class TupleSceneNode8<
         node7 = Scene7.Node(from: scene.scene7, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
-                node6.update(newScene?.scene6, backend: backend, environment: environment),
-                node7.update(newScene?.scene7, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
+                node6.updateNode(newScene?.scene6, environment: environment),
+                node7.updateNode(newScene?.scene7, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+        node6.update(backend: backend, environment: environment)
+        node7.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene9<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
     Scene6: Scene, Scene7: Scene, Scene8: Scene
@@ -482,7 +545,7 @@ public final class TupleSceneNode9<
     var node7: Scene7.Node
     var node8: Scene8.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -498,27 +561,40 @@ public final class TupleSceneNode9<
         node8 = Scene8.Node(from: scene.scene8, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
-                node6.update(newScene?.scene6, backend: backend, environment: environment),
-                node7.update(newScene?.scene7, backend: backend, environment: environment),
-                node8.update(newScene?.scene8, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
+                node6.updateNode(newScene?.scene6, environment: environment),
+                node7.updateNode(newScene?.scene7, environment: environment),
+                node8.updateNode(newScene?.scene8, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+        node6.update(backend: backend, environment: environment)
+        node7.update(backend: backend, environment: environment)
+        node8.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene10<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
     Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene
@@ -574,7 +650,7 @@ public final class TupleSceneNode10<
     var node8: Scene8.Node
     var node9: Scene9.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -591,28 +667,42 @@ public final class TupleSceneNode10<
         node9 = Scene9.Node(from: scene.scene9, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
-                node6.update(newScene?.scene6, backend: backend, environment: environment),
-                node7.update(newScene?.scene7, backend: backend, environment: environment),
-                node8.update(newScene?.scene8, backend: backend, environment: environment),
-                node9.update(newScene?.scene9, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
+                node6.updateNode(newScene?.scene6, environment: environment),
+                node7.updateNode(newScene?.scene7, environment: environment),
+                node8.updateNode(newScene?.scene8, environment: environment),
+                node9.updateNode(newScene?.scene9, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+        node6.update(backend: backend, environment: environment)
+        node7.update(backend: backend, environment: environment)
+        node8.update(backend: backend, environment: environment)
+        node9.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene11<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
     Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene
@@ -672,7 +762,7 @@ public final class TupleSceneNode11<
     var node9: Scene9.Node
     var node10: Scene10.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -690,29 +780,44 @@ public final class TupleSceneNode11<
         node10 = Scene10.Node(from: scene.scene10, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
-                node6.update(newScene?.scene6, backend: backend, environment: environment),
-                node7.update(newScene?.scene7, backend: backend, environment: environment),
-                node8.update(newScene?.scene8, backend: backend, environment: environment),
-                node9.update(newScene?.scene9, backend: backend, environment: environment),
-                node10.update(newScene?.scene10, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
+                node6.updateNode(newScene?.scene6, environment: environment),
+                node7.updateNode(newScene?.scene7, environment: environment),
+                node8.updateNode(newScene?.scene8, environment: environment),
+                node9.updateNode(newScene?.scene9, environment: environment),
+                node10.updateNode(newScene?.scene10, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+        node6.update(backend: backend, environment: environment)
+        node7.update(backend: backend, environment: environment)
+        node8.update(backend: backend, environment: environment)
+        node9.update(backend: backend, environment: environment)
+        node10.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene12<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
     Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene
@@ -777,7 +882,7 @@ public final class TupleSceneNode12<
     var node10: Scene10.Node
     var node11: Scene11.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -796,30 +901,46 @@ public final class TupleSceneNode12<
         node11 = Scene11.Node(from: scene.scene11, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
-                node6.update(newScene?.scene6, backend: backend, environment: environment),
-                node7.update(newScene?.scene7, backend: backend, environment: environment),
-                node8.update(newScene?.scene8, backend: backend, environment: environment),
-                node9.update(newScene?.scene9, backend: backend, environment: environment),
-                node10.update(newScene?.scene10, backend: backend, environment: environment),
-                node11.update(newScene?.scene11, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
+                node6.updateNode(newScene?.scene6, environment: environment),
+                node7.updateNode(newScene?.scene7, environment: environment),
+                node8.updateNode(newScene?.scene8, environment: environment),
+                node9.updateNode(newScene?.scene9, environment: environment),
+                node10.updateNode(newScene?.scene10, environment: environment),
+                node11.updateNode(newScene?.scene11, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+        node6.update(backend: backend, environment: environment)
+        node7.update(backend: backend, environment: environment)
+        node8.update(backend: backend, environment: environment)
+        node9.update(backend: backend, environment: environment)
+        node10.update(backend: backend, environment: environment)
+        node11.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene13<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
     Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
@@ -889,7 +1010,7 @@ public final class TupleSceneNode13<
     var node11: Scene11.Node
     var node12: Scene12.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -909,31 +1030,48 @@ public final class TupleSceneNode13<
         node12 = Scene12.Node(from: scene.scene12, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
-                node6.update(newScene?.scene6, backend: backend, environment: environment),
-                node7.update(newScene?.scene7, backend: backend, environment: environment),
-                node8.update(newScene?.scene8, backend: backend, environment: environment),
-                node9.update(newScene?.scene9, backend: backend, environment: environment),
-                node10.update(newScene?.scene10, backend: backend, environment: environment),
-                node11.update(newScene?.scene11, backend: backend, environment: environment),
-                node12.update(newScene?.scene12, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
+                node6.updateNode(newScene?.scene6, environment: environment),
+                node7.updateNode(newScene?.scene7, environment: environment),
+                node8.updateNode(newScene?.scene8, environment: environment),
+                node9.updateNode(newScene?.scene9, environment: environment),
+                node10.updateNode(newScene?.scene10, environment: environment),
+                node11.updateNode(newScene?.scene11, environment: environment),
+                node12.updateNode(newScene?.scene12, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+        node6.update(backend: backend, environment: environment)
+        node7.update(backend: backend, environment: environment)
+        node8.update(backend: backend, environment: environment)
+        node9.update(backend: backend, environment: environment)
+        node10.update(backend: backend, environment: environment)
+        node11.update(backend: backend, environment: environment)
+        node12.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene14<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
     Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
@@ -1006,7 +1144,7 @@ public final class TupleSceneNode14<
     var node12: Scene12.Node
     var node13: Scene13.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -1027,32 +1165,50 @@ public final class TupleSceneNode14<
         node13 = Scene13.Node(from: scene.scene13, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
-                node6.update(newScene?.scene6, backend: backend, environment: environment),
-                node7.update(newScene?.scene7, backend: backend, environment: environment),
-                node8.update(newScene?.scene8, backend: backend, environment: environment),
-                node9.update(newScene?.scene9, backend: backend, environment: environment),
-                node10.update(newScene?.scene10, backend: backend, environment: environment),
-                node11.update(newScene?.scene11, backend: backend, environment: environment),
-                node12.update(newScene?.scene12, backend: backend, environment: environment),
-                node13.update(newScene?.scene13, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
+                node6.updateNode(newScene?.scene6, environment: environment),
+                node7.updateNode(newScene?.scene7, environment: environment),
+                node8.updateNode(newScene?.scene8, environment: environment),
+                node9.updateNode(newScene?.scene9, environment: environment),
+                node10.updateNode(newScene?.scene10, environment: environment),
+                node11.updateNode(newScene?.scene11, environment: environment),
+                node12.updateNode(newScene?.scene12, environment: environment),
+                node13.updateNode(newScene?.scene13, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+        node6.update(backend: backend, environment: environment)
+        node7.update(backend: backend, environment: environment)
+        node8.update(backend: backend, environment: environment)
+        node9.update(backend: backend, environment: environment)
+        node10.update(backend: backend, environment: environment)
+        node11.update(backend: backend, environment: environment)
+        node12.update(backend: backend, environment: environment)
+        node13.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene15<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
     Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
@@ -1129,7 +1285,7 @@ public final class TupleSceneNode15<
     var node13: Scene13.Node
     var node14: Scene14.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -1151,33 +1307,52 @@ public final class TupleSceneNode15<
         node14 = Scene14.Node(from: scene.scene14, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
-                node6.update(newScene?.scene6, backend: backend, environment: environment),
-                node7.update(newScene?.scene7, backend: backend, environment: environment),
-                node8.update(newScene?.scene8, backend: backend, environment: environment),
-                node9.update(newScene?.scene9, backend: backend, environment: environment),
-                node10.update(newScene?.scene10, backend: backend, environment: environment),
-                node11.update(newScene?.scene11, backend: backend, environment: environment),
-                node12.update(newScene?.scene12, backend: backend, environment: environment),
-                node13.update(newScene?.scene13, backend: backend, environment: environment),
-                node14.update(newScene?.scene14, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
+                node6.updateNode(newScene?.scene6, environment: environment),
+                node7.updateNode(newScene?.scene7, environment: environment),
+                node8.updateNode(newScene?.scene8, environment: environment),
+                node9.updateNode(newScene?.scene9, environment: environment),
+                node10.updateNode(newScene?.scene10, environment: environment),
+                node11.updateNode(newScene?.scene11, environment: environment),
+                node12.updateNode(newScene?.scene12, environment: environment),
+                node13.updateNode(newScene?.scene13, environment: environment),
+                node14.updateNode(newScene?.scene14, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+        node6.update(backend: backend, environment: environment)
+        node7.update(backend: backend, environment: environment)
+        node8.update(backend: backend, environment: environment)
+        node9.update(backend: backend, environment: environment)
+        node10.update(backend: backend, environment: environment)
+        node11.update(backend: backend, environment: environment)
+        node12.update(backend: backend, environment: environment)
+        node13.update(backend: backend, environment: environment)
+        node14.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene16<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
     Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
@@ -1257,7 +1432,7 @@ public final class TupleSceneNode16<
     var node14: Scene14.Node
     var node15: Scene15.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -1280,34 +1455,54 @@ public final class TupleSceneNode16<
         node15 = Scene15.Node(from: scene.scene15, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
-                node6.update(newScene?.scene6, backend: backend, environment: environment),
-                node7.update(newScene?.scene7, backend: backend, environment: environment),
-                node8.update(newScene?.scene8, backend: backend, environment: environment),
-                node9.update(newScene?.scene9, backend: backend, environment: environment),
-                node10.update(newScene?.scene10, backend: backend, environment: environment),
-                node11.update(newScene?.scene11, backend: backend, environment: environment),
-                node12.update(newScene?.scene12, backend: backend, environment: environment),
-                node13.update(newScene?.scene13, backend: backend, environment: environment),
-                node14.update(newScene?.scene14, backend: backend, environment: environment),
-                node15.update(newScene?.scene15, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
+                node6.updateNode(newScene?.scene6, environment: environment),
+                node7.updateNode(newScene?.scene7, environment: environment),
+                node8.updateNode(newScene?.scene8, environment: environment),
+                node9.updateNode(newScene?.scene9, environment: environment),
+                node10.updateNode(newScene?.scene10, environment: environment),
+                node11.updateNode(newScene?.scene11, environment: environment),
+                node12.updateNode(newScene?.scene12, environment: environment),
+                node13.updateNode(newScene?.scene13, environment: environment),
+                node14.updateNode(newScene?.scene14, environment: environment),
+                node15.updateNode(newScene?.scene15, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+        node6.update(backend: backend, environment: environment)
+        node7.update(backend: backend, environment: environment)
+        node8.update(backend: backend, environment: environment)
+        node9.update(backend: backend, environment: environment)
+        node10.update(backend: backend, environment: environment)
+        node11.update(backend: backend, environment: environment)
+        node12.update(backend: backend, environment: environment)
+        node13.update(backend: backend, environment: environment)
+        node14.update(backend: backend, environment: environment)
+        node15.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene17<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
     Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
@@ -1390,7 +1585,7 @@ public final class TupleSceneNode17<
     var node15: Scene15.Node
     var node16: Scene16.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -1414,35 +1609,56 @@ public final class TupleSceneNode17<
         node16 = Scene16.Node(from: scene.scene16, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
-                node6.update(newScene?.scene6, backend: backend, environment: environment),
-                node7.update(newScene?.scene7, backend: backend, environment: environment),
-                node8.update(newScene?.scene8, backend: backend, environment: environment),
-                node9.update(newScene?.scene9, backend: backend, environment: environment),
-                node10.update(newScene?.scene10, backend: backend, environment: environment),
-                node11.update(newScene?.scene11, backend: backend, environment: environment),
-                node12.update(newScene?.scene12, backend: backend, environment: environment),
-                node13.update(newScene?.scene13, backend: backend, environment: environment),
-                node14.update(newScene?.scene14, backend: backend, environment: environment),
-                node15.update(newScene?.scene15, backend: backend, environment: environment),
-                node16.update(newScene?.scene16, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
+                node6.updateNode(newScene?.scene6, environment: environment),
+                node7.updateNode(newScene?.scene7, environment: environment),
+                node8.updateNode(newScene?.scene8, environment: environment),
+                node9.updateNode(newScene?.scene9, environment: environment),
+                node10.updateNode(newScene?.scene10, environment: environment),
+                node11.updateNode(newScene?.scene11, environment: environment),
+                node12.updateNode(newScene?.scene12, environment: environment),
+                node13.updateNode(newScene?.scene13, environment: environment),
+                node14.updateNode(newScene?.scene14, environment: environment),
+                node15.updateNode(newScene?.scene15, environment: environment),
+                node16.updateNode(newScene?.scene16, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+        node6.update(backend: backend, environment: environment)
+        node7.update(backend: backend, environment: environment)
+        node8.update(backend: backend, environment: environment)
+        node9.update(backend: backend, environment: environment)
+        node10.update(backend: backend, environment: environment)
+        node11.update(backend: backend, environment: environment)
+        node12.update(backend: backend, environment: environment)
+        node13.update(backend: backend, environment: environment)
+        node14.update(backend: backend, environment: environment)
+        node15.update(backend: backend, environment: environment)
+        node16.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene18<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
     Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
@@ -1528,7 +1744,7 @@ public final class TupleSceneNode18<
     var node16: Scene16.Node
     var node17: Scene17.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -1553,36 +1769,58 @@ public final class TupleSceneNode18<
         node17 = Scene17.Node(from: scene.scene17, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
-                node6.update(newScene?.scene6, backend: backend, environment: environment),
-                node7.update(newScene?.scene7, backend: backend, environment: environment),
-                node8.update(newScene?.scene8, backend: backend, environment: environment),
-                node9.update(newScene?.scene9, backend: backend, environment: environment),
-                node10.update(newScene?.scene10, backend: backend, environment: environment),
-                node11.update(newScene?.scene11, backend: backend, environment: environment),
-                node12.update(newScene?.scene12, backend: backend, environment: environment),
-                node13.update(newScene?.scene13, backend: backend, environment: environment),
-                node14.update(newScene?.scene14, backend: backend, environment: environment),
-                node15.update(newScene?.scene15, backend: backend, environment: environment),
-                node16.update(newScene?.scene16, backend: backend, environment: environment),
-                node17.update(newScene?.scene17, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
+                node6.updateNode(newScene?.scene6, environment: environment),
+                node7.updateNode(newScene?.scene7, environment: environment),
+                node8.updateNode(newScene?.scene8, environment: environment),
+                node9.updateNode(newScene?.scene9, environment: environment),
+                node10.updateNode(newScene?.scene10, environment: environment),
+                node11.updateNode(newScene?.scene11, environment: environment),
+                node12.updateNode(newScene?.scene12, environment: environment),
+                node13.updateNode(newScene?.scene13, environment: environment),
+                node14.updateNode(newScene?.scene14, environment: environment),
+                node15.updateNode(newScene?.scene15, environment: environment),
+                node16.updateNode(newScene?.scene16, environment: environment),
+                node17.updateNode(newScene?.scene17, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+        node6.update(backend: backend, environment: environment)
+        node7.update(backend: backend, environment: environment)
+        node8.update(backend: backend, environment: environment)
+        node9.update(backend: backend, environment: environment)
+        node10.update(backend: backend, environment: environment)
+        node11.update(backend: backend, environment: environment)
+        node12.update(backend: backend, environment: environment)
+        node13.update(backend: backend, environment: environment)
+        node14.update(backend: backend, environment: environment)
+        node15.update(backend: backend, environment: environment)
+        node16.update(backend: backend, environment: environment)
+        node17.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene19<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
     Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
@@ -1674,7 +1912,7 @@ public final class TupleSceneNode19<
     var node17: Scene17.Node
     var node18: Scene18.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -1700,37 +1938,60 @@ public final class TupleSceneNode19<
         node18 = Scene18.Node(from: scene.scene18, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
-                node6.update(newScene?.scene6, backend: backend, environment: environment),
-                node7.update(newScene?.scene7, backend: backend, environment: environment),
-                node8.update(newScene?.scene8, backend: backend, environment: environment),
-                node9.update(newScene?.scene9, backend: backend, environment: environment),
-                node10.update(newScene?.scene10, backend: backend, environment: environment),
-                node11.update(newScene?.scene11, backend: backend, environment: environment),
-                node12.update(newScene?.scene12, backend: backend, environment: environment),
-                node13.update(newScene?.scene13, backend: backend, environment: environment),
-                node14.update(newScene?.scene14, backend: backend, environment: environment),
-                node15.update(newScene?.scene15, backend: backend, environment: environment),
-                node16.update(newScene?.scene16, backend: backend, environment: environment),
-                node17.update(newScene?.scene17, backend: backend, environment: environment),
-                node18.update(newScene?.scene18, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
+                node6.updateNode(newScene?.scene6, environment: environment),
+                node7.updateNode(newScene?.scene7, environment: environment),
+                node8.updateNode(newScene?.scene8, environment: environment),
+                node9.updateNode(newScene?.scene9, environment: environment),
+                node10.updateNode(newScene?.scene10, environment: environment),
+                node11.updateNode(newScene?.scene11, environment: environment),
+                node12.updateNode(newScene?.scene12, environment: environment),
+                node13.updateNode(newScene?.scene13, environment: environment),
+                node14.updateNode(newScene?.scene14, environment: environment),
+                node15.updateNode(newScene?.scene15, environment: environment),
+                node16.updateNode(newScene?.scene16, environment: environment),
+                node17.updateNode(newScene?.scene17, environment: environment),
+                node18.updateNode(newScene?.scene18, environment: environment),
             ]
         )
     }
-}
 
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+        node6.update(backend: backend, environment: environment)
+        node7.update(backend: backend, environment: environment)
+        node8.update(backend: backend, environment: environment)
+        node9.update(backend: backend, environment: environment)
+        node10.update(backend: backend, environment: environment)
+        node11.update(backend: backend, environment: environment)
+        node12.update(backend: backend, environment: environment)
+        node13.update(backend: backend, environment: environment)
+        node14.update(backend: backend, environment: environment)
+        node15.update(backend: backend, environment: environment)
+        node16.update(backend: backend, environment: environment)
+        node17.update(backend: backend, environment: environment)
+        node18.update(backend: backend, environment: environment)
+    }
+}
 public struct TupleScene20<
     Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
     Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
@@ -1825,7 +2086,7 @@ public final class TupleSceneNode20<
     var node18: Scene18.Node
     var node19: Scene19.Node
 
-    public init<Backend: AppBackend>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
@@ -1852,34 +2113,59 @@ public final class TupleSceneNode20<
         node19 = Scene19.Node(from: scene.scene19, backend: backend, environment: environment)
     }
 
-    public func update<Backend: AppBackend>(
+    public func updateNode(
         _ newScene: NodeScene?,
-        backend: Backend,
         environment: EnvironmentValues
-    ) -> SceneUpdateResult {
-        return SceneUpdateResult(
+    ) -> SceneNodeUpdateResult {
+        return SceneNodeUpdateResult(
             childResults: [
-                node0.update(newScene?.scene0, backend: backend, environment: environment),
-                node1.update(newScene?.scene1, backend: backend, environment: environment),
-                node2.update(newScene?.scene2, backend: backend, environment: environment),
-                node3.update(newScene?.scene3, backend: backend, environment: environment),
-                node4.update(newScene?.scene4, backend: backend, environment: environment),
-                node5.update(newScene?.scene5, backend: backend, environment: environment),
-                node6.update(newScene?.scene6, backend: backend, environment: environment),
-                node7.update(newScene?.scene7, backend: backend, environment: environment),
-                node8.update(newScene?.scene8, backend: backend, environment: environment),
-                node9.update(newScene?.scene9, backend: backend, environment: environment),
-                node10.update(newScene?.scene10, backend: backend, environment: environment),
-                node11.update(newScene?.scene11, backend: backend, environment: environment),
-                node12.update(newScene?.scene12, backend: backend, environment: environment),
-                node13.update(newScene?.scene13, backend: backend, environment: environment),
-                node14.update(newScene?.scene14, backend: backend, environment: environment),
-                node15.update(newScene?.scene15, backend: backend, environment: environment),
-                node16.update(newScene?.scene16, backend: backend, environment: environment),
-                node17.update(newScene?.scene17, backend: backend, environment: environment),
-                node18.update(newScene?.scene18, backend: backend, environment: environment),
-                node19.update(newScene?.scene19, backend: backend, environment: environment),
+                node0.updateNode(newScene?.scene0, environment: environment),
+                node1.updateNode(newScene?.scene1, environment: environment),
+                node2.updateNode(newScene?.scene2, environment: environment),
+                node3.updateNode(newScene?.scene3, environment: environment),
+                node4.updateNode(newScene?.scene4, environment: environment),
+                node5.updateNode(newScene?.scene5, environment: environment),
+                node6.updateNode(newScene?.scene6, environment: environment),
+                node7.updateNode(newScene?.scene7, environment: environment),
+                node8.updateNode(newScene?.scene8, environment: environment),
+                node9.updateNode(newScene?.scene9, environment: environment),
+                node10.updateNode(newScene?.scene10, environment: environment),
+                node11.updateNode(newScene?.scene11, environment: environment),
+                node12.updateNode(newScene?.scene12, environment: environment),
+                node13.updateNode(newScene?.scene13, environment: environment),
+                node14.updateNode(newScene?.scene14, environment: environment),
+                node15.updateNode(newScene?.scene15, environment: environment),
+                node16.updateNode(newScene?.scene16, environment: environment),
+                node17.updateNode(newScene?.scene17, environment: environment),
+                node18.updateNode(newScene?.scene18, environment: environment),
+                node19.updateNode(newScene?.scene19, environment: environment),
             ]
         )
+    }
+
+    public func update<Backend: BaseAppBackend>(
+        backend: Backend,
+        environment: EnvironmentValues
+    ) {
+        node0.update(backend: backend, environment: environment)
+        node1.update(backend: backend, environment: environment)
+        node2.update(backend: backend, environment: environment)
+        node3.update(backend: backend, environment: environment)
+        node4.update(backend: backend, environment: environment)
+        node5.update(backend: backend, environment: environment)
+        node6.update(backend: backend, environment: environment)
+        node7.update(backend: backend, environment: environment)
+        node8.update(backend: backend, environment: environment)
+        node9.update(backend: backend, environment: environment)
+        node10.update(backend: backend, environment: environment)
+        node11.update(backend: backend, environment: environment)
+        node12.update(backend: backend, environment: environment)
+        node13.update(backend: backend, environment: environment)
+        node14.update(backend: backend, environment: environment)
+        node15.update(backend: backend, environment: environment)
+        node16.update(backend: backend, environment: environment)
+        node17.update(backend: backend, environment: environment)
+        node18.update(backend: backend, environment: environment)
+        node19.update(backend: backend, environment: environment)
     }
 }

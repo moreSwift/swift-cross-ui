@@ -1,11 +1,16 @@
 import Foundation
 
+/// A two-column split view.
 struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
     typealias Children = SplitViewChildren<EnvironmentModifier<Sidebar>, Detail>
 
     var body: TupleView2<EnvironmentModifier<Sidebar>, Detail>
 
-    /// Creates a two column split view.
+    /// Creates a two-column split view.
+    ///
+    /// - Parameters:
+    ///   - sidebar: The sidebar content.
+    ///   - detail: The detail content.
     init(@ViewBuilder sidebar: () -> Sidebar, @ViewBuilder detail: () -> Detail) {
         body = TupleView2(
             EnvironmentModifier(sidebar()) { $0.with(\.listStyle, .sidebar) },
@@ -13,7 +18,7 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
         )
     }
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -28,7 +33,7 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
         )
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
@@ -38,7 +43,7 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
         )
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -109,7 +114,7 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,
@@ -163,7 +168,7 @@ class SplitViewChildren<Sidebar: View, Detail: View>: ViewGraphNodeChildren {
     var minimumLeadingWidth: Double
     var minimumTrailingWidth: Double
 
-    init<Backend: AppBackend>(
+    init<Backend: BaseAppBackend>(
         wrapping children: TupleView2<Sidebar, Detail>.Children,
         backend: Backend
     ) {

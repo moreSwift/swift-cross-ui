@@ -2,6 +2,15 @@ import Gtk3
 import SwiftCrossUI
 
 extension View {
+    /// Inspects the native window that backs the window scene enclosing this view.
+    public func inspectWindow(
+        _ action: @escaping @MainActor @Sendable (Gtk3.ApplicationWindow) -> Void
+    ) -> some View {
+        InspectWindowView(child: self, action: action)
+    }
+}
+
+extension View {
     public func inspect(
         _ inspectionPoints: InspectionPoints = .onCreate,
         _ action: @escaping @MainActor @Sendable (Gtk3.Widget) -> Void

@@ -1,7 +1,15 @@
+/// A container that lays its views on top of each other.
 public struct ZStack<Content: View>: View {
+    /// The stack's alignment.
     public var alignment: Alignment
+    /// The stack's content.
     public var body: Content
 
+    /// Creates a ``ZStack``.
+    ///
+    /// - Parameters:
+    ///   - alignment: The stack's alignment.
+    ///   - content: The stack's content.
     public init(
         alignment: Alignment = .center,
         @ViewBuilder content: () -> Content
@@ -17,7 +25,7 @@ public struct ZStack<Content: View>: View {
         body = content
     }
 
-    public func asWidget<Backend: AppBackend>(
+    public func asWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {
@@ -28,7 +36,7 @@ public struct ZStack<Content: View>: View {
         return zStack
     }
 
-    public func computeLayout<Backend: AppBackend>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -51,7 +59,7 @@ public struct ZStack<Content: View>: View {
         return ViewLayoutResult(size: size, childResults: childResults)
     }
 
-    public func commit<Backend: AppBackend>(
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,

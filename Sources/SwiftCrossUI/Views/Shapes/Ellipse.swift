@@ -1,4 +1,6 @@
-public struct Ellipse: Shape {
+/// An ellipse.
+public struct Ellipse: InsettableShape {
+    /// Creates an ``Ellipse`` instance.
     public nonisolated init() {}
 
     public nonisolated func path(in bounds: Path.Rect) -> Path {
@@ -15,5 +17,9 @@ public struct Ellipse: Shape {
                     translation: bounds.center
                 )
             )
+    }
+
+    public nonisolated func inset(by amount: Double) -> some InsettableShape {
+        InsettableShapeImpl(inset: amount, base: self)
     }
 }

@@ -1,4 +1,5 @@
 import CGtk3
+import Gtk3CHelpers
 
 public class GSimpleAction: GAction, GObjectRepresentable {
     public var actionPointer: OpaquePointer
@@ -7,7 +8,7 @@ public class GSimpleAction: GAction, GObjectRepresentable {
         UnsafeMutablePointer<CGtk3.GObject>(actionPointer)
     }
 
-    @GObjectProperty(named: "enabled") var enabled: Bool
+    @GObjectProperty(named: "enabled") public var enabled: Bool
 
     private class Box<T> {
         var value: T
@@ -65,7 +66,7 @@ public class GSimpleAction: GAction, GObjectRepresentable {
             { data, _ in
                 Unmanaged<AnyObject>.fromOpaque(data!).release()
             },
-            G_CONNECT_AFTER
+            SHIM_G_CONNECT_AFTER
         )
     }
 }

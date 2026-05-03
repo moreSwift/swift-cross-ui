@@ -4,6 +4,8 @@ extension View {
     /// handlers get called before inner `onSubmit` handlers. To prevent
     /// submissions from propagating upwards, use ``View/submitScope()`` after
     /// adding the handler.
+    ///
+    /// - Parameter action: The action to perform.
     public func onSubmit(perform action: @escaping () -> Void) -> some View {
         EnvironmentModifier(self) { environment in
             environment.with(\.onSubmit) {

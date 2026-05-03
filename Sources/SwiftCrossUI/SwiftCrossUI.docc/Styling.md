@@ -5,7 +5,7 @@
 ### Fonts
 
 - ``View/font(_:)``
-- ``View/bold()``
+- ``View/emphasized()``
 - ``Font``
 
 ### Color
@@ -17,3 +17,14 @@
 ### Corner radius
 
 - ``View/cornerRadius(_:)``
+
+### Picker styles
+
+- ``PickerStyle``
+- ``DefaultPickerStyle``
+- ``InlinePickerStyle``
+- ``MenuPickerStyle``
+- ``PalettePickerStyle``
+- ``SegmentedPickerStyle``
+- ``RadioGroupPickerStyle``
+- ``WheelPickerStyle``

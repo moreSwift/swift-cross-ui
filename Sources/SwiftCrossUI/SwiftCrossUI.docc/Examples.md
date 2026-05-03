@@ -6,11 +6,12 @@ An overview of the examples included with SwiftCrossUI.
 
 A few examples are included with SwiftCrossUI to demonstrate some of its basic features;
 
+- `MusicPlayerExample`, an offline music player that lets users create and persist their own playlists of audio files.
 - `CounterExample`, a simple app with buttons to increase and decrease a count.
 - `RandomNumberGeneratorExample`, a simple app to generate random numbers between a minimum and maximum.
 - `WindowingExample`, a simple app showcasing how ``WindowGroup`` is used to make multi-window apps and
   control the properties of each window. It also demonstrates the use of modals
-  such as alerts and file pickers.
+  such as alerts, sheets, and file pickers.
 - `GreetingGeneratorExample`, a simple app demonstrating dynamic state and the ``ForEach`` view.
 - `NavigationExample`, an app showcasing ``NavigationStack`` and related concepts.
 - `SplitExample`, an app showcasing ``NavigationSplitView``-based hierarchical navigation.

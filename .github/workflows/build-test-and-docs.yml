@@ -37,6 +37,9 @@ jobs:
         upload: true
         working-directory: ./Examples
 
+    - name: Test
+      run: SCUI_TEST_GTK3BACKEND=1 ./Scripts/test.sh
+
     - name: Build other targets and examples
       run: |
         swift build --target GtkCodeGen && \
@@ -58,10 +61,9 @@ jobs:
         swift build --target NotesExample && \
         swift build --target PathsExample && \
         swift build --target WebViewExample && \
-        swift build --target AdvancedCustomizationExample
-
-    - name: Test
-      run: swift test --test-product swift-cross-uiPackageTests
+        swift build --target HoverExample && \
+        swift build --target AdvancedCustomizationExample && \
+        swift build --target MusicPlayerExample
 
   uikit:
     runs-on: macos-15
@@ -98,7 +100,7 @@ jobs:
 
             buildtarget () {
               # Use the same derived data path as DocC compilation so that we don't duplicate work.
-              xcodebuild -derivedDataPath /tmp/data -skipMacroValidation -scheme "$1" -destination "id=$deviceid" build | xcbeautify --renderer github-actions
+              xcodebuild -derivedDataPath /tmp/data -skipMacroValidation -scheme "$1" -destination "id=$deviceid" -usePackageSupportBuiltinSCM build | xcbeautify --renderer github-actions
             }
 
             buildtarget SwiftCrossUI
@@ -113,12 +115,15 @@ jobs:
             buildtarget NotesExample
             buildtarget PathsExample
             buildtarget WebViewExample
+            buildtarget HoverExample
             buildtarget AdvancedCustomizationExample
+            buildtarget ControlsExample
 
             if [ $device_type != TV ]; then
               # Slider is not implemented for tvOS
-              buildtarget ControlsExample
               buildtarget RandomNumberGeneratorExample
+              # EnvironmentValues.chooseFile is not implemented for tvOS
+              buildtarget MusicPlayerExample
             fi
 
             if [ $device_type = iPad ]; then
@@ -143,7 +148,7 @@ jobs:
   uikit-catalyst:
     runs-on: macos-15
     steps:
-    - name: Setup Xcode 16.4 (Swift 6.1)
+    - name: Setup Xcode 16.4 (Swift 6.1.2)
       uses: maxim-lobanov/setup-xcode@v1.6.0
       with:
         xcode-version: '16.4'
@@ -161,7 +166,7 @@ jobs:
         set -uxo pipefail
         buildtarget () {
           # Use the same derived data path as DocC compilation so that we don't duplicate work.
-          xcodebuild -derivedDataPath /tmp/data -skipMacroValidation -scheme "$1" -destination "variant=Mac Catalyst,arch=arm64,platform=macOS" build | xcbeautify --renderer github-actions
+          xcodebuild -derivedDataPath /tmp/data -skipMacroValidation -scheme "$1" -destination "variant=Mac Catalyst,arch=arm64,platform=macOS" -usePackageSupportBuiltinSCM build | xcbeautify --renderer github-actions
         }
 
         buildtarget SwiftCrossUI
@@ -178,7 +183,10 @@ jobs:
         buildtarget ControlsExample
         buildtarget RandomNumberGeneratorExample
         buildtarget WebViewExample
+        buildtarget HoverExample
         buildtarget AdvancedCustomizationExample
+        buildtarget SplitExample
+        buildtarget MusicPlayerExample
         # TODO test whether this works on Catalyst
         # buildtarget SplitExample
 
@@ -273,7 +281,10 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt update && \
-        sudo apt install -y libgtk-4-dev libgtk-3-dev clang
+        # Gtk 3/4 dependencies
+        sudo apt install -y libgtk-4-dev libgtk-3-dev clang && \
+        # Headless testing dependencies
+        sudo apt-get install -y xvfb x11-xserver-utils
 
     - name: Build GtkCodeGen
       run: swift build --target GtkCodeGen
@@ -306,6 +317,10 @@ jobs:
       run: swift build --target Gtk3Backend
       working-directory: ./Examples
 
+    - name: Test
+      # Use xvfb to get a virtual x11 context for the Gtk3Backend tests
+      run: SCUI_TEST_GTK3BACKEND=1 xvfb-run --auto-servernum ./Scripts/test.sh
+
     - name: Build examples
       working-directory: ./Examples
       run: |
@@ -323,18 +338,13 @@ jobs:
         swift build --target SpreadsheetExample && \
         swift build --target NotesExample && \
         swift build --target PathsExample && \
-        swift build --target AdvancedCustomizationExample
+        swift build --target HoverExample && \
+        swift build --target AdvancedCustomizationExample && \
+        swift build --target MusicPlayerExample
 
-    - name: Test
-      run: swift test --test-product swift-cross-uiPackageTests
-
-  update-docs:
+  assemble-docs:
     runs-on: macos-15
     needs: [macos, uikit, windows, linux]
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
-
-    permissions:
-      contents: write
 
     steps:
     - name: Setup Xcode version
@@ -385,18 +395,9 @@ jobs:
         target: WinUIBackend
         use-symbol-graph-artifact: true
 
-    - name: Clone gh-pages branch
-      run: |
-        set -eux
-        git config user.email "stackotter@stackotter.dev"
-        git config user.name "stackotter"
-
-        git fetch
-        git worktree add --checkout gh-pages origin/gh-pages
-
     - name: Merge DocC archives
       run: |
-        rm -rf gh-pages/docs
+        mkdir DocsBuild
         xcrun docc merge \
           SwiftCrossUI.doccarchive \
           AppKitBackend.doccarchive \
@@ -404,24 +405,34 @@ jobs:
           GtkBackend.doccarchive \
           Gtk3Backend.doccarchive \
           WinUIBackend.doccarchive \
-          --output-path gh-pages/docs
+          --output-path DocsBuild
 
-    - name: Update docs if changed
+    - name: Assemble GitHub Pages artifact
       run: |
         set -eux
 
-        CURRENT_COMMIT_HASH=`git rev-parse --short HEAD`
+        cp Pages/google5d79e0866e2627dd.html DocsBuild/google5d79e0866e2627dd.html
+        cp Pages/CNAME DocsBuild/CNAME
+        cp Pages/index.html DocsBuild/index.html
 
-        cd gh-pages
-        cp google5d79e0866e2627dd.html docs/google5d79e0866e2627dd.html
-        cp CNAME docs/CNAME
-        cp index.html docs/index.html
-        git add docs
+    - name: Upload GitHub Pages artifact
+      id: deployment
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: DocsBuild/
 
-        if [ -n "$(git status --porcelain)" ]; then
-            echo "Documentation changes found."
-            git commit -m "Update GitHub Pages documentation site to '$CURRENT_COMMIT_HASH'."
-            git push origin HEAD:gh-pages
-        else
-          echo "No documentation changes found."
-        fi
+  deploy-docs:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
+    needs: assemble-docs
+
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

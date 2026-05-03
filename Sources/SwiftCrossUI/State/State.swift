@@ -4,6 +4,8 @@ import Foundation
 // - It supports value types
 // - It supports ObservableObject
 // - It supports Optional<ObservableObject>
+
+/// A property wrapper that acts as a source of truth for view state.
 @propertyWrapper
 public struct State<Value>: ObservableProperty {
     private final class Storage: StateStorageProtocol {
@@ -21,13 +23,18 @@ public struct State<Value>: ObservableProperty {
 
     public var didChange: Publisher { storage.didChange }
 
+    /// Accesses the underlying value of this `State`.
     public var wrappedValue: Value {
         get { implementation.wrappedValue }
         nonmutating set { implementation.wrappedValue = newValue }
     }
 
+    /// Returns a ``Binding`` to this state.
     public var projectedValue: Binding<Value> { implementation.projectedValue }
 
+    /// Creates a `State` given an initial value.
+    ///
+    /// - Parameter initialValue: The state's initial value.
     public init(wrappedValue initialValue: Value) {
         implementation = StateImpl(initialStorage: Storage(initialValue))
     }

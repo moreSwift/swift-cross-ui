@@ -1,16 +1,20 @@
 /// A control for editing multiline text.
 public struct TextEditor: ElementaryView {
+    /// The editor's content.
     @Binding var text: String
 
+    /// Creates a text editor.
+    ///
+    /// - Parameter text: The editor's content.
     public init(text: Binding<String>) {
         _text = text
     }
 
-    func asWidget<Backend: AppBackend>(backend: Backend) -> Backend.Widget {
+    func asWidget<Backend: BaseAppBackend>(backend: Backend) -> Backend.Widget {
         backend.createTextEditor()
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -46,7 +50,7 @@ public struct TextEditor: ElementaryView {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,
@@ -56,6 +60,23 @@ public struct TextEditor: ElementaryView {
         let content = self.text
 
         backend.updateTextEditor(widget, environment: environment) { newValue in
+            // We perform this check in debug mode to catch backends that cause
+            // unnecessary binding writes, but avoid doing so in release mode
+            // because comparing text may often be more expensive than just
+            // avoiding the additional write at the backend level. These
+            // additional writes are often the result of the handler being
+            // triggered when we call backend.setContent(ofTextEditor:to:)
+            #if DEBUG
+                if text == newValue {
+                    logger.warning(
+                        """
+                        Unnecessary write to text Binding of TextEditor detected, \
+                        please open an issue at \(Meta.issueReportingURL) \
+                        so we can fix it for \(type(of: backend)).
+                        """
+                    )
+                }
+            #endif
             self.text = newValue
         }
         if text != backend.getContent(ofTextEditor: widget) {

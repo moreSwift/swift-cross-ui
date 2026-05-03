@@ -30,7 +30,7 @@ protocol TupleView: TypeSafeView {}
 
 extension TupleView {
     @MainActor
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
@@ -39,7 +39,7 @@ extension TupleView {
     }
 
     @MainActor
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -57,7 +57,7 @@ extension TupleView {
     }
 
     @MainActor
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,
@@ -107,7 +107,7 @@ extension ${view}: View {
 extension ${view}: TupleView {
     typealias Children = TupleViewChildren${i + 1}<${children_type_parameters}>
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -118,7 +118,7 @@ extension ${view}: TupleView {
         )
     }
 
-    func layoutableChildren<Backend: AppBackend>(
+    func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: Children
     ) -> [LayoutSystem.LayoutableChild] {

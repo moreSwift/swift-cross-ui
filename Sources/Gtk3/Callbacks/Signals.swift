@@ -3,6 +3,7 @@
 //
 
 import CGtk3
+import Gtk3CHelpers
 
 enum ConnectFlags {
     case after
@@ -11,9 +12,9 @@ enum ConnectFlags {
     func toGConnectFlags() -> GConnectFlags {
         switch self {
             case .after:
-                return G_CONNECT_AFTER
+                return SHIM_G_CONNECT_AFTER
             case .swapped:
-                return G_CONNECT_SWAPPED
+                return SHIM_G_CONNECT_SWAPPED
         }
     }
 }

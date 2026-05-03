@@ -5,7 +5,7 @@ public struct Slider: ElementaryView, View {
 
     /// A binding to the current value.
     private var value: Binding<Double>?
-    /// The slider's range of values.
+    /// The slider's selectable range of values.
     private var range: ClosedRange<Double>
     /// The number of decimal places used when displaying the value.
     private var decimalPlaces: Int
@@ -20,7 +20,11 @@ public struct Slider: ElementaryView, View {
         self.init(value: value, in: minimum...maximum)
     }
 
-    /// Creates a slider to select a value between a minimum and maximum value.
+    /// Creates a slider to select a value in a range.
+    ///
+    /// - Parameters:
+    ///   - value: A binding to the current value.
+    ///   - range: The slider's selectable range of values.
     public init<T: BinaryInteger>(value: Binding<T>? = nil, in range: ClosedRange<T>) {
         if let value {
             self.value = Binding<Double>(
@@ -36,7 +40,11 @@ public struct Slider: ElementaryView, View {
         decimalPlaces = 0
     }
 
-    /// Creates a slider to select a value between a minimum and maximum value.
+    /// Creates a slider to select a value in a range.
+    ///
+    /// - Parameters:
+    ///   - value: A binding to the current value.
+    ///   - range: The slider's range of values.
     public init<T: BinaryFloatingPoint>(value: Binding<T>? = nil, in range: ClosedRange<T>) {
         if let value {
             self.value = Binding<Double>(
@@ -52,18 +60,18 @@ public struct Slider: ElementaryView, View {
         decimalPlaces = 2
     }
 
-    func asWidget<Backend: AppBackend>(backend: Backend) -> Backend.Widget {
+    func asWidget<Backend: BaseAppBackend>(backend: Backend) -> Backend.Widget {
         return backend.createSlider()
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
-        // TODO: Don't rely on naturalSize for minimum size so that we can get
-        //   Slider sizes without relying on the widget.
+        // TODO: Don't rely on naturalSize for minimum size so that we can get Slider sizes without
+        //   relying on the widget.
         let naturalSize = backend.naturalSize(of: widget)
 
         let size = ViewSize(
@@ -75,7 +83,7 @@ public struct Slider: ElementaryView, View {
         return ViewLayoutResult.leafView(size: size)
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,
@@ -88,7 +96,7 @@ public struct Slider: ElementaryView, View {
             decimalPlaces: decimalPlaces,
             environment: environment
         ) { newValue in
-            if let value {
+            if let value, value.wrappedValue != newValue {
                 value.wrappedValue = newValue
             }
         }

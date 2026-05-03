@@ -1,14 +1,25 @@
+/// A view that displays a selectable list of views.
 public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View {
     typealias Children = ListViewChildren<PaddingModifierView<RowView>>
 
     public let body = EmptyView()
 
+    /// The current selection, if any.
     var selection: Binding<SelectionValue?>
     var rowContent: (Int) -> RowView
     var associatedSelectionValue: (Int) -> SelectionValue
     var find: (SelectionValue) -> Int?
     var rowCount: Int
 
+    /// Creates a list view.
+    ///
+    /// - Parameters:
+    ///   - data: A collection of `Identifiable` values to construct the list
+    ///     from.
+    ///   - selection: A binding to the ID of the value that is currently
+    ///     selected.
+    ///   - rowContent: A view builder that renders a single row of the list.
+    ///     Receives an element of `data`.
     public init<Data: RandomAccessCollection>(
         _ data: Data,
         selection: Binding<SelectionValue?>,
@@ -17,6 +28,14 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         self.init(data, id: \.id, selection: selection, rowContent: rowContent)
     }
 
+    /// Creates a list view that renders `Text` views based on the elements of
+    /// `data`.
+    ///
+    /// - Parameters:
+    ///   - data: A collection of `Identifiable` values to construct the list
+    ///     from.
+    ///   - selection: A binding to the ID of the value that is currently
+    ///     selected.
     public init<Data: RandomAccessCollection>(
         _ data: Data,
         selection: Binding<SelectionValue?>
@@ -32,6 +51,15 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         }
     }
 
+    /// Creates a list view that renders `Text` views based on the elements of
+    /// `data`.
+    ///
+    /// - Parameters:
+    ///   - data: A collection of values to construct the list from.
+    ///   - id: A closure that returns the ID to use for a given element of
+    ///     `data`.
+    ///   - selection: A binding to the ID of the value that is currently
+    ///     selected.
     public init<Data: RandomAccessCollection>(
         _ data: Data,
         id: @escaping (Data.Element) -> SelectionValue,
@@ -42,6 +70,14 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         }
     }
 
+    /// Creates a list view that renders `Text` views based on the elements of
+    /// `data`.
+    ///
+    /// - Parameters:
+    ///   - data: A collection of values to construct the list from.
+    ///   - id: A key path to the ID to use for an element of `data`.
+    ///   - selection: A binding to the ID of the value that is currently
+    ///     selected.
     public init<Data: RandomAccessCollection>(
         _ data: Data,
         id: KeyPath<Data.Element, SelectionValue>,
@@ -52,6 +88,15 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         }
     }
 
+    /// Creates a list view.
+    ///
+    /// - Parameters:
+    ///   - data: A collection of values to construct the list from.
+    ///   - id: A key path to the ID to use for an element of `data`.
+    ///   - selection: A binding to the ID of the value that is currently
+    ///     selected.
+    ///   - rowContent: A view builder that renders a single row of the list.
+    ///     Receives an element of `data`.
     public init<Data: RandomAccessCollection>(
         _ data: Data,
         id: KeyPath<Data.Element, SelectionValue>,
@@ -61,6 +106,16 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         self.init(data, id: { $0[keyPath: id] }, selection: selection, rowContent: rowContent)
     }
 
+    /// Creates a list view.
+    ///
+    /// - Parameters:
+    ///   - data: A collection of values to construct the list from.
+    ///   - id: A closure that returns the ID to use for a given element of
+    ///     `data`.
+    ///   - selection: A binding to the ID of the value that is currently
+    ///     selected.
+    ///   - rowContent: A view builder that renders a single row of the list.
+    ///     Receives an element of `data`.
     public init<Data: RandomAccessCollection>(
         _ data: Data,
         id: @escaping (Data.Element) -> SelectionValue,
@@ -82,7 +137,7 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         rowCount = data.count
     }
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -91,14 +146,14 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         Children()
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
         backend.createSelectableListView()
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -179,7 +234,7 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         )
     }
 
-    func commit<Backend: AppBackend>(
+    func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         layout: ViewLayoutResult,
@@ -211,6 +266,7 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         }
 
         backend.setSelectedItem(ofSelectableListView: widget, toItemAt: selectedIndex)
+        backend.updateSelectableListView(widget, environment: environment)
     }
 }
 

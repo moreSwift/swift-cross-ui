@@ -41,7 +41,7 @@ struct AlertModifierView<Child: View>: TypeSafeView {
     var isPresented: Binding<Bool>
     var actions: [AlertAction]
 
-    func children<Backend: AppBackend>(
+    func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -58,14 +58,14 @@ struct AlertModifierView<Child: View>: TypeSafeView {
         )
     }
 
-    func asWidget<Backend: AppBackend>(
+    func asWidget<Backend: BaseAppBackend>(
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
         children.childNode.widget.into()
     }
 
-    func computeLayout<Backend: AppBackend>(
+    func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
@@ -79,8 +79,9 @@ struct AlertModifierView<Child: View>: TypeSafeView {
         )
     }
 
-    func commit<Backend: AppBackend>(
-        _ widget: Backend.Widget,
+    @CastBackend<BackendFeatures.Alerts>(backendGenericName: "NewBackend")
+    func commit<Backend: BaseAppBackend>(
+        _: Backend.Widget,
         children: AlertModifierViewChildren<Child>,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,
@@ -98,7 +99,7 @@ struct AlertModifierView<Child: View>: TypeSafeView {
             )
             backend.showAlert(
                 alert,
-                window: .some(environment.window! as! Backend.Window)
+                window: .some(environment.window! as! NewBackend.Window)
             ) { responseId in
                 children.alert = nil
                 isPresented.wrappedValue = false
@@ -107,8 +108,8 @@ struct AlertModifierView<Child: View>: TypeSafeView {
             children.alert = alert
         } else if isPresented.wrappedValue == false && children.alert != nil {
             backend.dismissAlert(
-                children.alert as! Backend.Alert,
-                window: .some(environment.window! as! Backend.Window)
+                children.alert as! NewBackend.Alert,
+                window: .some(environment.window! as! NewBackend.Window)
             )
             children.alert = nil
         }

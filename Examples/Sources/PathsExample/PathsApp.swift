@@ -1,5 +1,5 @@
 import DefaultBackend
-import Foundation  // for sin, cos
+import Foundation // for sin, cos
 import SwiftCrossUI
 
 struct ArcShape: StyledShape {
@@ -64,6 +64,8 @@ struct PathsApp: App {
             HStack {
                 ZStack {
                     RoundedRectangle(cornerRadius: 12)
+                        .inset(by: 2)
+                        .stroke(.red, style: .init(width: 4))
                         .fill(.gray)
 
                     HStack {
