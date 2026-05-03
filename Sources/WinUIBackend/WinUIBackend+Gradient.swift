@@ -26,7 +26,7 @@ extension WinUIBackend {
                 g: UInt8(color.green * 255),
                 b: UInt8(color.blue * 255)
             )
-            winUIstop.offset = $0.location
+            winUIstop.offset = stop.location
 
             collection.append(winUIstop)
         }
@@ -62,7 +62,7 @@ extension WinUIBackend {
                 g: UInt8(color.green * 255),
                 b: UInt8(color.blue * 255)
             )
-            winUIstop.offset = $0.location
+            winUIstop.offset = stop.location
 
             brush.gradientStops.append(winUIstop)
         }
