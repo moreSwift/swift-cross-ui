@@ -75,12 +75,11 @@ extension App {
 // TODO: Implement the rest of `BaseAppBackend` so we can move off of `BaseStubs`
 
 public final class AndroidBackend: BackendFeatures.BaseStubs {
-    public typealias Window = Void
+    public final class Window {
+        var content: Widget?
+    }
+
     public typealias Widget = AndroidKit.View
-    //    public typealias Menu = Never
-    //    public typealias Alert = Never
-    //    public typealias Path = Never
-    //    public typealias Sheet = Never
 
     static let stdoutPipe = Pipe()
     static let stderrPipe = Pipe()
@@ -88,17 +87,13 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
     // TODO(stackotter): Dynamically determine the device class
     public let deviceClass = DeviceClass.phone
 
-    //    public let defaultTableRowContentHeight = 0
-    //    public let defaultTableCellVerticalPadding = 0
     public let defaultPaddingAmount = 10
     public let scrollBarWidth = 0
     public let requiresToggleSwitchSpacer = false
     public let defaultToggleStyle = ToggleStyle.checkbox
     public let requiresImageUpdateOnScaleFactorChange = false
-    //    public let menuImplementationStyle = MenuImplementationStyle.menuButton
     public let supportsMultipleWindows = false
     public let canOverrideWindowColorScheme = false
-    //    public nonisolated let supportedDatePickerStyles: [DatePickerStyle] = [.automatic]
 
     /// A reference used to keep the tickler alive.
     var tickler: MainRunLoopTickler?
@@ -128,10 +123,20 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
 
     public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
         // TODO(stackotter): Properly support multiple calls to createWindow
+        return Window()
     }
 
     public func updateWindow(_ window: Window, environment: EnvironmentValues) {
         // TODO(stackotter): Update window theme?
+        updateInsets(ofWindow: window)
+    }
+
+    public func setSizeLimits(
+        ofWindow window: Window,
+        minimum: SIMD2<Int>,
+        maximum: SIMD2<Int>?
+    ) {
+        // Doesn't mean anything on Android until we support split screen
     }
 
     //    public func setCloseHandler(ofWindow window: Window, to action: @escaping () -> Void) {
@@ -145,7 +150,22 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
     public func setResizability(ofWindow window: Window, to resizable: Bool) {}
 
     public func setChild(ofWindow window: Window, to child: Widget) {
-        Self.activity.setContentView(child)
+        let container = createContainer()
+        insert(child, into: container, at: 0)
+        Self.activity.setContentView(container)
+        window.content = container
+        updateInsets(ofWindow: window)
+    }
+
+    private func updateInsets(ofWindow window: Window) {
+        guard let container = window.content else {
+            logger.warning("Attempted to update insets of window without content")
+            return
+        }
+
+        let leftInset = Int(helpers.getSafeAreaLeftInset(Self.activity))
+        let topInset = Int(helpers.getSafeAreaTopInset(Self.activity))
+        setPosition(ofChildAt: 0, in: container, to: SIMD2(leftInset, topInset))
     }
 
     public func size(ofWindow window: Window) -> SIMD2<Int> {

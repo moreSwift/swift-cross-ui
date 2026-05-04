@@ -17,4 +17,18 @@ class AndroidBackendHelpers {
                 .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
         return windowMetrics.getBounds().height() - insets.top - insets.bottom
     }
+
+    fun getSafeAreaLeftInset(activity: Activity): Int {
+        val windowMetrics = activity.getWindowManager().getCurrentWindowMetrics()
+        val insets = windowMetrics.getWindowInsets()
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+        return insets.left
+    }
+
+    fun getSafeAreaTopInset(activity: Activity): Int {
+        val windowMetrics = activity.getWindowManager().getCurrentWindowMetrics()
+        val insets = windowMetrics.getWindowInsets()
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+        return insets.top
+    }
 }

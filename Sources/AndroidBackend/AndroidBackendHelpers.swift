@@ -14,4 +14,10 @@ class AndroidBackendHelpers: JavaObject {
 
     @JavaMethod
     func getWindowHeight(_ activity: Activity?) -> Int32
+
+    @JavaMethod
+    func getSafeAreaLeftInset(_ activity: Activity?) -> Int32
+
+    @JavaMethod
+    func getSafeAreaTopInset(_ activity: Activity?) -> Int32
 }
