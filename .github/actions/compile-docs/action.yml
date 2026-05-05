@@ -36,25 +36,6 @@ runs:
         USE_SYMBOL_GRAPH_ARTIFACT: ${{ inputs.use-symbol-graph-artifact }}
         DOCC_CATALOG: ${{ inputs.docc-catalog }}
 
-    - name: Compile documentation (with SwiftPM)
-      if: ${{ inputs.use-swiftpm == 'true' }} # Compare to constant to treat empty input as false
-      run: |
-        set -ex
-        swift package \
-          --allow-writing-to-directory . \
-          generate-documentation \
-          --target "$TARGET" \
-          --disable-indexing \
-          --transform-for-static-hosting \
-          --output-path "$TARGET.doccarchive" \
-          --source-service github \
-          --source-service-base-url https://github.com/moreSwift/swift-cross-ui/blob/main \
-          --checkout-path $(pwd) \
-          --verbose
-      shell: bash
-      env:
-        TARGET: ${{ inputs.target }}
-
     - name: Download symbol graphs (from artifact)
       if: ${{ inputs.use-symbol-graph-artifact == 'true' }}
       uses: actions/download-artifact@v4
@@ -95,6 +76,27 @@ runs:
       with:
         path: ./docc
         key: ${{ steps.restore-docc-cache.outputs.cache-primary-key }}
+
+    - name: Compile documentation (with SwiftPM)
+      if: ${{ inputs.use-swiftpm == 'true' }} # Compare to constant to treat empty input as false
+      run: |
+        set -ex
+        export DOCC_HTML_DIR="$(dirname -- $(xcrun --find docc))/../share/docc/render"
+        export DOCC_EXEC=./docc
+        swift package \
+          --allow-writing-to-directory . \
+          generate-documentation \
+          --target "$TARGET" \
+          --disable-indexing \
+          --transform-for-static-hosting \
+          --output-path "$TARGET.doccarchive" \
+          --source-service github \
+          --source-service-base-url https://github.com/moreSwift/swift-cross-ui/blob/main \
+          --checkout-path $(pwd) \
+          --verbose
+      shell: bash
+      env:
+        TARGET: ${{ inputs.target }}
 
     - name: Compile documentation (with DocC)
       if: ${{ inputs.use-swiftpm != 'true' }}
