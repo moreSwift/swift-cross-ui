@@ -163,7 +163,9 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
 
         let leftInset = Int(helpers.getSafeAreaLeftInset(Self.activity))
         let topInset = Int(helpers.getSafeAreaTopInset(Self.activity))
+        let windowSize = size(ofWindow: window)
         setPosition(ofChildAt: 0, in: container, to: SIMD2(leftInset, topInset))
+        setSize(of: container, to: windowSize)
     }
 
     public func size(ofWindow window: Window) -> SIMD2<Int> {
@@ -247,17 +249,17 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
     public func show(widget: Widget) {}
 
     public func createContainer() -> Widget {
-        RelativeLayout(Self.activity, environment: Self.env)
+        CustomContainer(Self.activity, environment: Self.env)
             .as(AndroidKit.View.self)!
     }
 
     public func removeAllChildren(of container: Widget) {
-        let container = container.as(ViewGroup.self)!
+        let container = container.as(CustomContainer.self)!
         container.removeAllViews()
     }
 
     public func insert(_ child: Widget, into container: Widget, at index: Int) {
-        let container = container.as(ViewGroup.self)!
+        let container = container.as(CustomContainer.self)!
         container.addView(child, Int32(index))
     }
 
@@ -266,23 +268,23 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         in container: Widget,
         to position: SIMD2<Int>
     ) {
-        let container = container.as(ViewGroup.self)!
+        let container = container.as(CustomContainer.self)!
         let child = container.getChildAt(Int32(index))!
         
-        let layoutParams = child.getLayoutParams().as(RelativeLayout.LayoutParams.self)!
-        layoutParams.leftMargin = Int32(position.x)
-        layoutParams.topMargin = Int32(position.y)
+        let layoutParams = child.getLayoutParams().as(CustomContainer.LayoutParams.self)!
+        layoutParams.setX(Int32(position.x))
+        layoutParams.setY(Int32(position.y))
         
         child.setLayoutParams(layoutParams.as(ViewGroup.LayoutParams.self))
     }
 
     public func remove(childAt index: Int, from container: Widget) {
-        let container = container.as(RelativeLayout.self)!
+        let container = container.as(CustomContainer.self)!
         container.removeViewAt(Int32(index))
     }
 
     public func swap(childAt firstIndex: Int, withChildAt secondIndex: Int, in container: Widget) {
-        let container = container.as(ViewGroup.self)!
+        let container = container.as(CustomContainer.self)!
         let largerIndex = Int32(max(firstIndex, secondIndex))
         let smallerIndex = Int32(min(firstIndex, secondIndex))
         let view1 = container.getChildAt(smallerIndex)

@@ -263,6 +263,10 @@ final class WindowReference<SceneType: WindowingScene> {
             in: containerWidget.into(),
             to: (proposedWindowSize &- finalContentResult.size.vector) / 2
         )
+        backend.setSize(
+            of: containerWidget.into(),
+            to: proposedWindowSize
+        )
 
         if needsWindowSizeCommit {
             backend.setSize(ofWindow: window, to: proposedWindowSize)

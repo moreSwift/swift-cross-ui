@@ -38,5 +38,6 @@ struct ToggleSwitch: ElementaryView, View {
             }
         }
         backend.setState(ofSwitch: widget, to: active.wrappedValue)
+        backend.setSize(of: widget, to: layout.size.vector)
     }
 }
