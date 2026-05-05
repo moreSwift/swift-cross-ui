@@ -2,8 +2,8 @@ name: Build, test, and docs
 
 on:
   push:
-    branches-ignore:
-      - 'gh-pages'
+    branches:
+      - 'main'
   pull_request:
     branches-ignore:
       - 'gh-pages'
