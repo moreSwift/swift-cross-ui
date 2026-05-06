@@ -34,7 +34,7 @@ struct ColorsApp: App {
         HStack(spacing: 5) {
             ForEach(colors, id: \.self) { color in
                 VStack {
-                    color.aspectRatio(1, contentMode: .fill)
+                    color.aspectRatio(1, contentMode: .fit)
 
                     #if os(tvOS)
                         // Add something focusable so we can scroll on tvOS.
