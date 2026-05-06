@@ -135,11 +135,11 @@ struct GradientTests {
         #expect(result[1].location ~= 1.0)
     }
     
-    @Test("Radial: negative range returns original stops")
-    func radialNegativeRangeReturnsOriginalStops() async throws {
+    @Test("Radial: negative range returns inverted stops")
+    func radialNegativeRangeReturnsInvertedStops() async throws {
         let gradient = RadialGradient(
             stops: [
-                .init(color: .red, location: 0),
+                .init(color: .red, location: 0.25),
                 .init(color: .blue, location: 1)
             ],
             center: .center,
@@ -148,8 +148,12 @@ struct GradientTests {
         )
         
         let result = gradient.adjustedStops
+        let expectedResult: [Gradient.Stop] = [
+            .init(color: .blue, location: 0),
+            .init(color: .red, location: 0.75)
+        ]
         
-        #expect(result == gradient.gradient.stops)
+        #expect(result == expectedResult)
     }
     
     @Test("Radial: starting at 0 returns original stops")

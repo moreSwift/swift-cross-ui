@@ -149,7 +149,7 @@ final class RadialGradientView: BaseViewWidget {
             startRadius: gradient.startRadius,
             endCenter: center,
             endRadius: gradient.endRadius,
-            options: [.drawsAfterEndLocation]
+            options: [.drawsBeforeStartLocation, .drawsAfterEndLocation]
         )
 
         context.restoreGState()

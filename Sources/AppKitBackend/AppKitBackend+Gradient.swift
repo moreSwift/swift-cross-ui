@@ -138,7 +138,7 @@ final class RadialGradientView: NSView {
             radius: gradient.startRadius,
             toCenter: center,
             radius: gradient.endRadius,
-            options: .drawsAfterEndingLocation
+            options: [.drawsBeforeStartingLocation, .drawsAfterEndingLocation]
         )
     }
 

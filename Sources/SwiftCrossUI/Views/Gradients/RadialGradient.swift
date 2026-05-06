@@ -12,9 +12,9 @@ public struct RadialGradient: ElementaryView {
     public let endRadius: Double
     /// The normalized center point of the gradient in its coordinate space.
     public let center: UnitPoint
-
+    
     private static let idealSize = ViewSize(10, 10)
-
+    
     /// Creates a radial gradient from a base gradient.
     public init(
         gradient: Gradient,
@@ -37,7 +37,7 @@ public struct RadialGradient: ElementaryView {
     ) -> Backend.Widget {
         backend.createRadialGradient()
     }
-
+    
     public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
@@ -81,7 +81,7 @@ extension RadialGradient {
             endRadius: endRadius
         )
     }
-
+    
     /// Creates a radial gradient from a collection of color stops.
     public init(
         colors: [Color],
@@ -96,26 +96,33 @@ extension RadialGradient {
             endRadius: endRadius
         )
     }
-
+    
     /// Stops adjusted to accomodate startRadius on backends without native support.
     public var adjustedStops: [Gradient.Stop] {
         guard startRadius != 0 else { return gradient.stops }
         
         let range = endRadius - startRadius
-
+        
         if range < 0 {
-            logger.warning(
-                """
-                The difference between endRadius and startRadius \
-                must be >= 0 on 'RadialGradient'.
-                """
-            )
-            return gradient.stops
+            let dividableRange = abs(range) / startRadius
+            let innerCircle = (startRadius - abs(range)) / startRadius
+            
+            var invertedStops = gradient.stops.reversed().map { stop in
+                Gradient.Stop(
+                    color: stop.color,
+                    location: innerCircle + (1.0 - stop.location) * dividableRange
+                )
+            }
+            print("\n\n-----Inverted------")
+            print(invertedStops)
+            print("\n\n----Inverted End---")
+            
+            return invertedStops
         }
-
+        
         let dividableRange = range / endRadius
         let innerCircle = (endRadius - range) / endRadius
-
+        
         return gradient.stops.map { stop in
             Gradient.Stop(
                 color: stop.color,
