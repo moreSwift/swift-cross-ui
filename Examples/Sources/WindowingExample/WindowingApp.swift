@@ -223,19 +223,21 @@ struct WindowingApp: App {
 
     @Environment(\.appPhase) var appPhase
 
-    var bannerImage: URL {
-        // TODO(stackotter): Update SwiftBundlerRuntime to support fetching
-        //   resources in a cross platform manner.
-        #if os(macOS)
-            return Bundle.main.bundleURL.appendingPathComponent(
-                "Contents/Resources/Banner.png"
-            )
-        #elseif os(iOS) || os(Linux) || os(Windows)
-            return Bundle.main.bundleURL.appendingPathComponent(
-                "Examples_WindowingExample.bundle/Banner.png"
-            )
-        #endif
-    }
+    #if !os(Android)
+        var bannerImage: URL {
+            // TODO(stackotter): Update SwiftBundlerRuntime to support fetching
+            //   resources in a cross platform manner.
+            #if os(macOS)
+                return Bundle.main.bundleURL.appendingPathComponent(
+                    "Contents/Resources/Banner.png"
+                )
+            #elseif os(iOS) || os(Linux) || os(Windows)
+                return Bundle.main.bundleURL.appendingPathComponent(
+                    "Examples_WindowingExample.bundle/Banner.png"
+                )
+            #endif
+        }
+    #endif
 
     var body: some Scene {
         WindowGroup(title) {
@@ -243,25 +245,30 @@ struct WindowingApp: App {
                 VStack {
                     HStack {
                         Text("Window title:")
-                        TextField("My window", text: $title)
+
+                        #if !os(Android)
+                            TextField("My window", text: $title)
+                        #endif
                     }
 
                     Text("App phase: \(appPhase)")
 
-                    Toggle("Enable resizing", isOn: $resizable)
-                        .windowResizeBehavior(resizable ? .enabled : .disabled)
-                    Toggle("Enable closing", isOn: $closable)
-                        .windowDismissBehavior(closable ? .enabled : .disabled)
-                    Toggle("Enable minimizing", isOn: $minimizable)
-                        .preferredWindowMinimizeBehavior(minimizable ? .enabled : .disabled)
+                    #if !os(Android)
+                        Toggle("Enable resizing", isOn: $resizable)
+                            .windowResizeBehavior(resizable ? .enabled : .disabled)
+                        Toggle("Enable closing", isOn: $closable)
+                            .windowDismissBehavior(closable ? .enabled : .disabled)
+                        Toggle("Enable minimizing", isOn: $minimizable)
+                            .preferredWindowMinimizeBehavior(minimizable ? .enabled : .disabled)
 
-                    Image(bannerImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        Image(bannerImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
 
-                    Divider()
+                        Divider()
+                    #endif
 
-                    #if !os(tvOS)
+                    #if !os(tvOS) && !os(Android)
                         FileDialogDemo()
 
                         Divider()
@@ -272,14 +279,16 @@ struct WindowingApp: App {
                         isAlertSceneShown = true
                     }
 
-                    Divider()
+                    #if !os(Android)
+                        Divider()
 
-                    SheetDemo()
+                        SheetDemo()
 
-                    Divider()
+                        Divider()
 
-                    OpenWindowDemo()
-                        .padding(.bottom, 20)
+                        OpenWindowDemo()
+                            .padding(.bottom, 20)
+                    #endif
                 }
                 .padding(20)
             }
@@ -303,7 +312,7 @@ struct WindowingApp: App {
 
         AlertScene("Alert scene", isPresented: $isAlertSceneShown) {}
 
-        #if !(os(iOS) || os(tvOS))
+        #if !(os(iOS) || os(tvOS) || os(Android))
             WindowGroup("Secondary window", id: "secondary-window") {
                 #hotReloadable {
                     VStack {

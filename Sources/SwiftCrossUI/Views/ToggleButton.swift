@@ -46,5 +46,6 @@ struct ToggleButton: ElementaryView, View {
         backend: Backend
     ) {
         backend.setState(ofToggle: widget, to: active.wrappedValue)
+        backend.setSize(of: widget, to: layout.size.vector)
     }
 }

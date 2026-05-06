@@ -56,6 +56,11 @@ extension BackendFeatures {
 
         /// Sets the size of a widget.
         ///
+        /// In general, View and Scene implementations must call ``setSize(of:to:)``
+        /// at least once for any given widget before it appears. Backends such as
+        /// AndroidBackend don't handle missing widget sizes very well (often because
+        /// of custom container implementations such as AndroidBackend's CustomContainer).
+        ///
         /// - Parameters:
         ///   - widget: The widget to set the size of.
         ///   - size: The new size.

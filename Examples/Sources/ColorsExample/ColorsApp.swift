@@ -34,7 +34,7 @@ struct ColorsApp: App {
         HStack(spacing: 5) {
             ForEach(colors, id: \.self) { color in
                 VStack {
-                    color.aspectRatio(1, contentMode: .fill)
+                    color.aspectRatio(1, contentMode: .fit)
 
                     #if os(tvOS)
                         // Add something focusable so we can scroll on tvOS.
@@ -57,14 +57,23 @@ struct ColorsApp: App {
                         otherwise SCUI's built-in colors will be shown
                         """
                     )
-
-                    ScrollView(.horizontal) {
+                    
+                    #if canImport(AndroidBackend)
+                        // TODO(bbrk24): Update this once AndroidBackend supports scrolling
                         VStack(spacing: 5) {
                             colorStack.colorScheme(.dark)
                             colorStack.colorScheme(.light)
                             colorStack
                         }
-                    }
+                    #else
+                        ScrollView(.horizontal) {
+                            VStack(spacing: 5) {
+                                colorStack.colorScheme(.dark)
+                                colorStack.colorScheme(.light)
+                                colorStack
+                            }
+                        }
+                    #endif
                 }
                 .padding()
             }

@@ -75,12 +75,11 @@ extension App {
 // TODO: Implement the rest of `BaseAppBackend` so we can move off of `BaseStubs`
 
 public final class AndroidBackend: BackendFeatures.BaseStubs {
-    public typealias Window = Void
+    public final class Window {
+        var content: Widget?
+    }
+
     public typealias Widget = AndroidKit.View
-    //    public typealias Menu = Never
-    //    public typealias Alert = Never
-    //    public typealias Path = Never
-    //    public typealias Sheet = Never
 
     static let stdoutPipe = Pipe()
     static let stderrPipe = Pipe()
@@ -88,17 +87,11 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
     // TODO(stackotter): Dynamically determine the device class
     public let deviceClass = DeviceClass.phone
 
-    //    public let defaultTableRowContentHeight = 0
-    //    public let defaultTableCellVerticalPadding = 0
     public let defaultPaddingAmount = 10
     public let scrollBarWidth = 0
-    public let requiresToggleSwitchSpacer = false
-    public let defaultToggleStyle = ToggleStyle.checkbox
     public let requiresImageUpdateOnScaleFactorChange = false
-    //    public let menuImplementationStyle = MenuImplementationStyle.menuButton
     public let supportsMultipleWindows = false
     public let canOverrideWindowColorScheme = false
-    //    public nonisolated let supportedDatePickerStyles: [DatePickerStyle] = [.automatic]
 
     /// A reference used to keep the tickler alive.
     var tickler: MainRunLoopTickler?
@@ -128,10 +121,20 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
 
     public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
         // TODO(stackotter): Properly support multiple calls to createWindow
+        return Window()
     }
 
     public func updateWindow(_ window: Window, environment: EnvironmentValues) {
         // TODO(stackotter): Update window theme?
+        updateInsets(ofWindow: window)
+    }
+
+    public func setSizeLimits(
+        ofWindow window: Window,
+        minimum: SIMD2<Int>,
+        maximum: SIMD2<Int>?
+    ) {
+        // Doesn't mean anything on Android until we support split screen
     }
 
     //    public func setCloseHandler(ofWindow window: Window, to action: @escaping () -> Void) {
@@ -145,7 +148,24 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
     public func setResizability(ofWindow window: Window, to resizable: Bool) {}
 
     public func setChild(ofWindow window: Window, to child: Widget) {
-        Self.activity.setContentView(child)
+        let container = createContainer()
+        insert(child, into: container, at: 0)
+        Self.activity.setContentView(container)
+        window.content = container
+        updateInsets(ofWindow: window)
+    }
+
+    private func updateInsets(ofWindow window: Window) {
+        guard let container = window.content else {
+            logger.warning("Attempted to update insets of window without content")
+            return
+        }
+
+        let leftInset = Int(helpers.getSafeAreaLeftInset(Self.activity))
+        let topInset = Int(helpers.getSafeAreaTopInset(Self.activity))
+        let windowSize = size(ofWindow: window)
+        setPosition(ofChildAt: 0, in: container, to: SIMD2(leftInset, topInset))
+        setSize(of: container, to: windowSize)
     }
 
     public func size(ofWindow window: Window) -> SIMD2<Int> {
@@ -229,17 +249,17 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
     public func show(widget: Widget) {}
 
     public func createContainer() -> Widget {
-        RelativeLayout(Self.activity, environment: Self.env)
+        CustomContainer(Self.activity, environment: Self.env)
             .as(AndroidKit.View.self)!
     }
 
     public func removeAllChildren(of container: Widget) {
-        let container = container.as(ViewGroup.self)!
+        let container = container.as(CustomContainer.self)!
         container.removeAllViews()
     }
 
     public func insert(_ child: Widget, into container: Widget, at index: Int) {
-        let container = container.as(ViewGroup.self)!
+        let container = container.as(CustomContainer.self)!
         container.addView(child, Int32(index))
     }
 
@@ -248,23 +268,23 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         in container: Widget,
         to position: SIMD2<Int>
     ) {
-        let container = container.as(ViewGroup.self)!
+        let container = container.as(CustomContainer.self)!
         let child = container.getChildAt(Int32(index))!
         
-        let layoutParams = child.getLayoutParams().as(RelativeLayout.LayoutParams.self)!
-        layoutParams.leftMargin = Int32(position.x)
-        layoutParams.topMargin = Int32(position.y)
+        let layoutParams = child.getLayoutParams().as(CustomContainer.LayoutParams.self)!
+        layoutParams.setX(Int32(position.x))
+        layoutParams.setY(Int32(position.y))
         
         child.setLayoutParams(layoutParams.as(ViewGroup.LayoutParams.self))
     }
 
     public func remove(childAt index: Int, from container: Widget) {
-        let container = container.as(RelativeLayout.self)!
+        let container = container.as(CustomContainer.self)!
         container.removeViewAt(Int32(index))
     }
 
     public func swap(childAt firstIndex: Int, withChildAt secondIndex: Int, in container: Widget) {
-        let container = container.as(ViewGroup.self)!
+        let container = container.as(CustomContainer.self)!
         let largerIndex = Int32(max(firstIndex, secondIndex))
         let smallerIndex = Int32(min(firstIndex, secondIndex))
         let view1 = container.getChildAt(smallerIndex)
@@ -394,8 +414,32 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         return SIMD2(Int(width), Int(height))
     }
 }
+
+extension AndroidBackend: BackendFeatures.WebViews {
+    public func createWebView() -> Widget {
+        CustomWebView(Self.activity, environment: Self.env).as(AndroidKit.View.self)!
+    }
     
-// MARK: Picker
+    public func updateWebView(
+        _ webView: Widget,
+        environment: EnvironmentValues,
+        onNavigate: @escaping (URL) -> Void
+    ) {
+        let webView = webView.as(CustomWebView.self)!
+        webView.setOnNavigate(SwiftAction(environment: Self.env) {
+            if let javaString = webView.getLoadingUrl(),
+               let url = URL(string: javaString.toString()) {
+                onNavigate(url)
+            }
+        })
+    }
+    
+    public func navigateWebView(_ webView: Widget, to url: URL) {
+        let webView = webView.as(CustomWebView.self)!
+        webView.loadUrl(url.absoluteString)
+    }
+}
+
 extension AndroidBackend: BackendFeatures.Pickers {
     public var supportedPickerStyles: [BackendPickerStyle] {
         [.menu, .radioGroup, .wheel]
@@ -475,5 +519,203 @@ extension AndroidBackend: BackendFeatures.Pickers {
         } else {
             fatalError("Unexpected picker class")
         }
+    }
+}
+
+extension AndroidBackend: BackendFeatures.Alerts {
+    public typealias Alert = AlertFragment
+    
+    public func createAlert() -> AlertFragment {
+        AlertFragment(environment: Self.env)
+    }
+    
+    public func updateAlert(
+        _ alert: AlertFragment,
+        title: String,
+        actionLabels: [String],
+        environment: EnvironmentValues
+    ) {
+        alert.update(title, actionLabels)
+    }
+    
+    public func showAlert(
+        _ alert: AlertFragment,
+        window: Window?,
+        responseHandler handleResponse: @escaping (Int) -> Void
+    ) {
+        let action = SwiftAction(environment: Self.env) {
+            let index = alert.getButtonIndex()
+            handleResponse(Int(index))
+        }
+        
+        alert.setAction(action)
+        alert.show(Self.activity)
+    }
+    
+    public func dismissAlert(_ alert: AlertFragment, window: Window?) {
+        alert.dismiss()
+    }
+}
+      
+extension AndroidBackend: BackendFeatures.ToggleButtons, BackendFeatures.Checkboxes, BackendFeatures.Switches {
+    public var requiresToggleSwitchSpacer: Bool { false }
+
+    public func createToggle() -> Widget {
+        AndroidKit.ToggleButton(
+            Self.activity,
+            environment: Self.env
+        )
+    }
+
+    public func createCheckbox() -> Widget {
+        AndroidKit.CheckBox(
+            Self.activity,
+            environment: Self.env
+        )
+    }
+
+    public func createSwitch() -> Widget {
+        AndroidKit.Switch(
+            Self.activity,
+            environment: Self.env
+        )
+    }
+
+    private func updateCompoundButton(
+        _ button: AndroidKit.CompoundButton,
+        environment: EnvironmentValues,
+        onChange: @escaping (Bool) -> Void
+    ) {
+        button.setEnabled(environment.isEnabled)
+
+        let action = SwiftAction(environment: Self.env) {
+            let checked = button.isChecked()
+            onChange(checked)
+        }
+        let listener = CustomOnCheckedChangeListener(action, environment: Self.env)
+
+        button.setOnCheckedChangeListener(
+            listener.as(AndroidKit.CompoundButton.OnCheckedChangeListener.self)!
+        )
+    }
+
+    public func updateToggle(
+        _ toggle: Widget,
+        label: String,
+        environment: EnvironmentValues,
+        onChange: @escaping (Bool) -> Void
+    ) {
+        let toggle = toggle.as(AndroidKit.ToggleButton.self)!
+        updateCompoundButton(toggle, environment: environment, onChange: onChange)
+
+        let charSequence = charSequence(from: label)
+        toggle.setTextOn(charSequence)
+        toggle.setTextOff(charSequence)
+    }
+
+    public func updateCheckbox(
+        _ checkboxWidget: Widget,
+        environment: EnvironmentValues,
+        onChange: @escaping (Bool) -> Void
+    ) {
+        let checkboxWidget = checkboxWidget.as(AndroidKit.CompoundButton.self)!
+        updateCompoundButton(checkboxWidget, environment: environment, onChange: onChange)
+    }
+
+    public func updateSwitch(
+        _ switchWidget: Widget,
+        environment: EnvironmentValues,
+        onChange: @escaping (Bool) -> Void
+    ) {
+        let switchWidget = switchWidget.as(AndroidKit.CompoundButton.self)!
+        updateCompoundButton(switchWidget, environment: environment, onChange: onChange)
+    }
+
+    public func setState(ofToggle toggle: Widget, to state: Bool) {
+        let toggle = toggle.as(AndroidKit.CompoundButton.self)!
+        toggle.setChecked(state)
+    }
+
+    public func setState(ofCheckbox checkboxWidget: Widget, to state: Bool) {
+        let checkboxWidget = checkboxWidget.as(AndroidKit.CompoundButton.self)!
+        checkboxWidget.setChecked(state)
+    }
+
+    public func setState(ofSwitch switchWidget: Widget, to state: Bool) {
+        let switchWidget = switchWidget.as(AndroidKit.CompoundButton.self)!
+        switchWidget.setChecked(state)
+    }
+}
+
+extension SwiftCrossUI.Color.Resolved {
+    func asColorInt() -> Int32 {
+        let alpha = UInt32(opacity * 255.0 + 0.5)
+        let red = UInt32(red * 255.0 + 0.5)
+        let green = UInt32(green * 255.0 + 0.5)
+        let blue = UInt32(blue * 255.0 + 0.5)
+
+        let combined = (alpha << 24) | (red << 16) | (green << 8) | blue
+
+        return Int32(bitPattern: combined)
+    }
+    
+    init(fromColorInt int: Int32) {
+        let uint = UInt32(bitPattern: int)
+
+        let alpha = Float(uint >> 24) / 255.0
+        let red = Float((uint & 0x00FF0000) >> 16) / 255.0
+        let green = Float((uint & 0x0000FF00) >> 8) / 255.0
+        let blue = Float(uint & 0x000000FF) / 255.0
+
+        self.init(
+            red: red,
+            green: green,
+            blue: blue,
+            opacity: alpha
+        )
+    }
+}
+
+extension AndroidBackend: BackendFeatures.Colors {
+    public func createColorableRectangle() -> Widget {
+        AndroidKit.View(Self.activity, environment: Self.env)
+    }
+    
+    public func setColor(
+        ofColorableRectangle widget: Widget,
+        to color: SwiftCrossUI.Color.Resolved
+    ) {
+        widget.setBackgroundColor(color.asColorInt())
+    }
+    
+    public func resolveAdaptiveColor(
+        _ adaptiveColor: SwiftCrossUI.Color.SystemAdaptive,
+        in environment: EnvironmentValues
+    ) -> SwiftCrossUI.Color.Resolved {
+        let Rcolor = try! JavaClass<AndroidKit.R.color>()
+
+        let resId: Int32? =
+            switch (adaptiveColor, environment.colorScheme) {
+                case (.blue, .light): Rcolor.holo_blue_dark
+                case (.blue, .dark): Rcolor.holo_blue_light
+                case (.gray, _): Rcolor.darker_gray
+                case (.green, .light): Rcolor.holo_green_dark
+                case (.green, .dark): Rcolor.holo_green_light
+                case (.orange, .light): Rcolor.holo_orange_dark
+                case (.orange, .dark): Rcolor.holo_orange_light
+                case (.red, .light): Rcolor.holo_red_dark
+                case (.red, .dark): Rcolor.holo_red_light
+                case (.purple, _): Rcolor.holo_purple
+                default: // brown, yellow
+                    nil
+            }
+        
+        guard let resId else {
+            return SwiftCrossUI.Color.defaultResolveAdaptiveColor(adaptiveColor, in: environment)
+        }
+        
+        let colorInt = Self.activity.getColor(resId)
+        
+        return SwiftCrossUI.Color.Resolved(fromColorInt: colorInt)
     }
 }

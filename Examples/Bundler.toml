@@ -67,6 +67,7 @@ version = '0.1.0'
 identifier = 'dev.swiftcrossui.WebViewExample'
 product = 'WebViewExample'
 version = '0.1.0'
+android.permissions = ['INTERNET']
 
 [apps.HoverExample]
 identifier = 'dev.swiftcrossui.HoverExample'

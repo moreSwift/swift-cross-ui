@@ -2,11 +2,12 @@ name: Lint
 
 on:
   push:
-    branches-ignore:
-      - 'gh-pages'
+    branches:
+      - 'main'
   pull_request:
     branches-ignore:
       - 'gh-pages'
+  workflow_dispatch:
 
 jobs:
   swift-lint:

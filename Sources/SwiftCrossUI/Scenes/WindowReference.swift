@@ -9,6 +9,8 @@ final class WindowReference<SceneType: WindowingScene> {
     let window: Any
     /// `false` after the first scene update.
     private var isFirstUpdate = true
+    /// The cached window size. Nil on first run or after a window is resized.
+    private var cachedWindowSize: SIMD2<Int>?
     /// The environment most recently provided by this node's parent scene.
     private var parentEnvironment: EnvironmentValues
     /// The container used to center the root view in the window.
@@ -97,7 +99,7 @@ final class WindowReference<SceneType: WindowingScene> {
             proposedWindowSize = environment.defaultWindowSize
             usedDefaultSize = true
         } else {
-            proposedWindowSize = backend.size(ofWindow: window)
+            proposedWindowSize = cachedWindowSize ?? backend.size(ofWindow: window)
             usedDefaultSize = false
         }
 
@@ -158,6 +160,7 @@ final class WindowReference<SceneType: WindowingScene> {
             )
             .with(\.onResize) { [weak self] _ in
                 guard let self else { return }
+                self.cachedWindowSize = nil
                 // TODO: Figure out whether this would still work if we didn't recompute the
                 //   scene's body. I have a vague feeling that it wouldn't work in all cases?
                 //   But I don't have the time to come up with a counterexample right now.
@@ -263,10 +266,15 @@ final class WindowReference<SceneType: WindowingScene> {
             in: containerWidget.into(),
             to: (proposedWindowSize &- finalContentResult.size.vector) / 2
         )
+        backend.setSize(
+            of: containerWidget.into(),
+            to: proposedWindowSize
+        )
 
         if needsWindowSizeCommit {
             backend.setSize(ofWindow: window, to: proposedWindowSize)
         }
+        cachedWindowSize = proposedWindowSize
 
         if let backend = backend as? any BackendFeatures.WindowBehaviors {
             func setBehaviors<NewBackend: BackendFeatures.WindowBehaviors>(backend: NewBackend) {

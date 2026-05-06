@@ -75,30 +75,32 @@ struct ControlsApp: App {
                                     }
                                 }
                             }
+                        #endif
 
-                            #if !canImport(UIKitBackend)
-                                VStack {
-                                    Text("Toggle button")
-                                    Toggle("Toggle me!", isOn: $exampleButtonState)
-                                        .toggleStyle(.button)
-                                    Text("Currently enabled: \(exampleButtonState)")
-                                }
-                            #endif
-
+                        #if !canImport(UIKitBackend)
                             VStack {
-                                Text("Toggle switch")
-                                Toggle("Toggle me:", isOn: $exampleSwitchState)
-                                    .toggleStyle(.switch)
-                                Text("Currently enabled: \(exampleSwitchState)")
+                                Text("Toggle button")
+                                Toggle("Toggle me!", isOn: $exampleButtonState)
+                                    .toggleStyle(.button)
+                                Text("Currently enabled: \(exampleButtonState)")
                             }
+                        #endif
 
-                            VStack {
-                                Text("Checkbox")
-                                Toggle("Toggle me:", isOn: $exampleCheckboxState)
-                                    .toggleStyle(.checkbox)
-                                Text("Currently enabled: \(exampleCheckboxState)")
-                            }
+                        VStack {
+                            Text("Toggle switch")
+                            Toggle("Toggle me:", isOn: $exampleSwitchState)
+                                .toggleStyle(.switch)
+                            Text("Currently enabled: \(exampleSwitchState)")
+                        }
 
+                        VStack {
+                            Text("Checkbox")
+                            Toggle("Toggle me:", isOn: $exampleCheckboxState)
+                                .toggleStyle(.checkbox)
+                            Text("Currently enabled: \(exampleCheckboxState)")
+                        }
+
+                        #if !canImport(AndroidBackend)
                             #if !os(tvOS)
                                 VStack {
                                     Text("Slider")
@@ -184,10 +186,8 @@ struct ControlsApp: App {
                         #endif
                     }.padding().disabled(!enabled)
 
-                    #if !canImport(AndroidBackend)
-                        Toggle(enabled ? "Disable all" : "Enable all", isOn: $enabled)
-                            .padding()
-                    #endif
+                    Toggle(enabled ? "Disable all" : "Enable all", isOn: $enabled)
+                        .padding()
                 }
             }
         }.defaultSize(width: 400, height: 600)
