@@ -113,9 +113,6 @@ extension RadialGradient {
                     location: innerCircle + (1.0 - stop.location) * dividableRange
                 )
             }
-            print("\n\n-----Inverted------")
-            print(invertedStops)
-            print("\n\n----Inverted End---")
             
             return invertedStops
         }
