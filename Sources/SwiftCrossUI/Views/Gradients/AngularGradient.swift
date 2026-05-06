@@ -1,4 +1,4 @@
-/// An angular gradient, often also referred to as a conic gradient.
+/// An angular gradient, often referred to as a conic gradient.
 ///
 /// Currently unsupported on WinUIBackend.
 public struct AngularGradient: ElementaryView {
@@ -29,7 +29,7 @@ public struct AngularGradient: ElementaryView {
 
     /// Creates an angular gradient that completes a partial rotation.
     ///
-    /// Stops are expected to be in 360° unit space.
+    /// For ``Gradient.Stop`` location of 0 corresponds to 0° and 1 to 360°.
     public init(
         gradient: Gradient,
         center: UnitPoint,
@@ -42,14 +42,11 @@ public struct AngularGradient: ElementaryView {
         self.endAngle = endAngle
     }
     
-    @CastBackend<BackendFeatures.AngularGradients>(
-        backendGenericName: "NewBackend",
-        returnsWidget: true
-    )
+    @CastBackend<BackendFeatures.AngularGradients>(returnsWidget: true)
     public func asWidget<Backend: BaseAppBackend>(
         backend: Backend
     ) -> Backend.Widget {
-        backend.createAngularGradient()
+        backend.createAngularGradientWidget()
     }
 
     public func computeLayout<Backend: BaseAppBackend>(
@@ -63,7 +60,7 @@ public struct AngularGradient: ElementaryView {
         )
     }
     
-    @CastBackend<BackendFeatures.AngularGradients>(backendGenericName: "NewBackend")
+    @CastBackend<BackendFeatures.AngularGradients>
     public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
@@ -71,7 +68,7 @@ public struct AngularGradient: ElementaryView {
         backend: Backend
     ) {
         backend.setSize(of: widget, to: layout.size.vector)
-        backend.updateAngularGradient(
+        backend.updateAngularGradientWidget(
             widget,
             gradient: self,
             withSize: layout.size.vector,
@@ -138,8 +135,9 @@ extension AngularGradient {
             endAngle: endAngle
         )
     }
-
-    public var adjustedStops: [Gradient.Stop] {
+    
+    /// Stops adjusted to accomodate endAngle on backends without native support.
+    package var adjustedStops: [Gradient.Stop] {
         guard let endAngle else { return gradient.stops }
 
         var stops = gradient.stops

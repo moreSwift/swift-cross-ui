@@ -2,11 +2,11 @@ import AppKit
 import SwiftCrossUI
 
 extension AppKitBackend {
-    public func createLinearGradient() -> Widget {
+    public func createLinearGradientWidget() -> Widget {
         LinearGradientView()
     }
 
-    public func updateLinearGradient(
+    public func updateLinearGradientWidget(
         _ widget: Widget,
         gradient: LinearGradient,
         withSize size: SIMD2<Int>,
@@ -17,11 +17,11 @@ extension AppKitBackend {
         widget.lastEnvironment = environment
     }
 
-    public func createRadialGradient() -> NSView {
+    public func createRadialGradientWidget() -> NSView {
         RadialGradientView()
     }
 
-    public func updateRadialGradient(
+    public func updateRadialGradientWidget(
         _ widget: NSView,
         gradient: RadialGradient,
         withSize size: SIMD2<Int>,
@@ -32,11 +32,11 @@ extension AppKitBackend {
         widget.lastEnvironment = environment
     }
 
-    public func createAngularGradient() -> NSView {
+    public func createAngularGradientWidget() -> NSView {
         GradientView()
     }
 
-    public func updateAngularGradient(
+    public func updateAngularGradientWidget(
         _ widget: NSView,
         gradient: AngularGradient,
         withSize size: SIMD2<Int>,

@@ -1,7 +1,7 @@
 import Foundation
 
 /// A geometric angle whose value you access in either radians or degrees.
-public struct Angle {
+public struct Angle: Hashable, Sendable {
     /// An angle in degrees
     public var degrees: Double {
         get {
@@ -37,7 +37,7 @@ public struct Angle {
     }
 
     /// The factor for converting an angle in degrees to the same angle in radians.
-    public static let conversionFactor = Double.pi / 180
+    private static let conversionFactor = Double.pi / 180
 
     /// Adds two angles together.
     public static func + (lhs: Self, rhs: Self) -> Self {

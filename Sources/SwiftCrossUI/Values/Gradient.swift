@@ -5,7 +5,8 @@ public struct Gradient: Sendable, Hashable {
 
     /// Creates a gradient from an array of color stops ordered by location.
     ///
-    /// If no stop is passed, the gradient will be fully transparent.
+    /// - Parameters:
+    ///   - stops: The stops of the Gradient. If no stop is passed, the gradient will be fully transparent.
     init(stops: [Gradient.Stop]) {
         guard let first = stops.first else {
             let invisible = Color.black.opacity(0)
@@ -33,10 +34,9 @@ public struct Gradient: Sendable, Hashable {
     }
 
     /// Creates a gradient from an array of colors.
-    ///
-    /// The gradient synthesizes its location values to evenly space the colors along the gradient.
-    ///
-    /// If no color is passed, the gradient will be fully transparent.
+    /// - Parameters:
+    ///   - colors: The colors of the gradient. The gradient synthesizes its location values to evenly
+    ///   space the colors along the gradient. If no color is passed, the gradient will be fully transparent.
     init(colors: [Color]) {
         guard let first = colors.first else {
             let invisible = Color.black.opacity(0)
@@ -73,6 +73,9 @@ public struct Gradient: Sendable, Hashable {
     /// One color stop in a gradient.
     public struct Stop: Sendable, Equatable, Hashable {
         /// Creates a color stop with a color and location.
+        /// - Parameters:
+        ///   - color: The color that should be placed at this stop.
+        ///   - location: The location of this stop. 0 corresponds to the start and 1 to the end.
         public init(color: Color, location: Double) {
             self.color = color
             self.location = location

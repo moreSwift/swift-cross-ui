@@ -2,7 +2,7 @@
 public struct LinearGradient: ElementaryView {
     /// The gradient represented as an array of color stops, each having a parametric location value.
     public let gradient: Gradient
-    /// The normalized point where the gradient begins, defined in the views coordinate space.
+    /// The normalized point where the gradient begins, defined in the view's coordinate space.
     ///
     /// Use values like `.top`, `.leading`, or custom `UnitPoint(x:y:)` offsets.
     public let startPoint: UnitPoint
@@ -24,14 +24,11 @@ public struct LinearGradient: ElementaryView {
         self.endPoint = endPoint
     }
     
-    @CastBackend<BackendFeatures.LinearGradients>(
-        backendGenericName: "NewBackend",
-        returnsWidget: true
-    )
+    @CastBackend<BackendFeatures.LinearGradients>(returnsWidget: true)
     public func asWidget<Backend: BaseAppBackend>(
         backend: Backend
     ) -> Backend.Widget {
-        backend.createLinearGradient()
+        backend.createLinearGradientWidget()
     }
 
     public func computeLayout<Backend: BaseAppBackend>(
@@ -45,7 +42,7 @@ public struct LinearGradient: ElementaryView {
         )
     }
     
-    @CastBackend<BackendFeatures.LinearGradients>(backendGenericName: "NewBackend")
+    @CastBackend<BackendFeatures.LinearGradients>
     public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
@@ -53,7 +50,7 @@ public struct LinearGradient: ElementaryView {
         backend: Backend
     ) {
         backend.setSize(of: widget, to: layout.size.vector)
-        backend.updateLinearGradient(
+        backend.updateLinearGradientWidget(
             widget,
             gradient: self,
             withSize: layout.size.vector,

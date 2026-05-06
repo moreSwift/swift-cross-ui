@@ -16,63 +16,63 @@ struct GradientsApp: App {
         Gradient.Stop(color: .purple, location: 1),
     ]
     
-    @State var gradientType: GradientType = .linear
+    @State var gradientType: GradientType? = .linear
     
     var body: some Scene {
         WindowGroup("Gradients Example") {
-#if !canImport(UIKitBackend)
-            NavigationSplitView {
-                ForEach(GradientType.allCases, id: \.rawValue) { type in
-                    Button(type.rawValue) {
-                        gradientType = type
-                    }
-                    .disabled(gradientType == type)
-                }
-            } detail: {
-                ScrollView {
-                    switch gradientType {
-                        case .linear:
-                            LinearGradientView()
-                        case .radial:
-                            RadialGradientView()
-                        case .angular:
-#if !canImport(WinUIBackend)
-                            ScrollView(.horizontal) {
-                                AngularGradientView()
-                            }
-#endif
-                    }
-                }
-            }
-#else
-            VStack {
-                HStack {
+            #if !canImport(UIKitBackend)
+                NavigationSplitView {
+                    // TODO: replace with List once bug described in #556 is fixed
                     ForEach(GradientType.allCases, id: \.rawValue) { type in
                         Button(type.rawValue) {
                             gradientType = type
                         }
                         .disabled(gradientType == type)
                     }
+                } detail: {
+                    scrollViewWithGradient()
                 }
-                ScrollView {
-                    switch gradientType {
-                        case .linear:
-                            LinearGradientView()
-                        case .radial:
-                            RadialGradientView()
-                        case .angular:
-                            ScrollView(.horizontal) {
-                                AngularGradientView()
+            #else
+                VStack {
+                    HStack {
+                        ForEach(GradientType.allCases, id: \.rawValue) { type in
+                            Button(type.rawValue) {
+                                gradientType = type
                             }
+                            .disabled(gradientType == type)
+                        }
                     }
+                    scrollViewWithGradient()
                 }
+            #endif
+        }
+    }
+    
+    @ViewBuilder
+    func scrollViewWithGradient() -> some View {
+        ScrollView {
+            switch gradientType {
+                case .linear:
+                    LinearGradientView()
+                case .radial:
+                    RadialGradientView()
+                case .angular:
+                    #if !canImport(WinUIBackend) && !canImport(GtkBackend)
+                        ScrollView(.horizontal) {
+                            AngularGradientView()
+                        }
+                    #else
+                        Text("Angular Gradients are not supported on \(App.Backend)")
+                    #endif
+                case .none:
+                    Text("Please select a gradient type.")
             }
-#endif
         }
     }
 }
 
-enum GradientType: String, CaseIterable {
+enum GradientType: String, CaseIterable, Identifiable {
+    var id: Self { self }
     case linear
     case radial
     case angular
@@ -250,8 +250,7 @@ struct AngularGradientView: View {
                     angle: .degrees(230)
                 )
                 .frame(width: 300)
-            }
-            .frame(height: 300)
+            }.frame(height: 100)
         }
     }
 }

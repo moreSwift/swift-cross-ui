@@ -30,8 +30,7 @@ public final class GtkBackend:
     BackendFeatures.DatePickers,
     BackendFeatures.Windowing,
     BackendFeatures.LinearGradients,
-    BackendFeatures.RadialGradients,
-    BackendFeatures.AngularGradients
+    BackendFeatures.RadialGradients
 {
     public typealias Window = Gtk.ApplicationWindow
     public typealias Widget = Gtk.Widget

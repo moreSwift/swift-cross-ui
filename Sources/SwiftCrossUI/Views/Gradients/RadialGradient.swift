@@ -4,7 +4,7 @@ public struct RadialGradient: ElementaryView {
     public let gradient: Gradient
     /// The radius at which the first gradient stop will be placed.
     ///
-    /// All space outside inside radius gets filled with the color of the first gradient stop.
+    /// All space inside radius gets filled with the color of the first gradient stop.
     public let startRadius: Double
     /// The radius at which the last gradient stop will be placed.
     ///
@@ -28,14 +28,11 @@ public struct RadialGradient: ElementaryView {
         self.endRadius = endRadius
     }
     
-    @CastBackend<BackendFeatures.RadialGradients>(
-        backendGenericName: "NewBackend",
-        returnsWidget: true
-    )
+    @CastBackend<BackendFeatures.RadialGradients>(returnsWidget: true)
     public func asWidget<Backend: BaseAppBackend>(
         backend: Backend
     ) -> Backend.Widget {
-        backend.createRadialGradient()
+        backend.createRadialGradientWidget()
     }
     
     public func computeLayout<Backend: BaseAppBackend>(
@@ -49,7 +46,7 @@ public struct RadialGradient: ElementaryView {
         )
     }
     
-    @CastBackend<BackendFeatures.RadialGradients>(backendGenericName: "NewBackend")
+    @CastBackend<BackendFeatures.RadialGradients>
     public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         layout: ViewLayoutResult,
@@ -57,7 +54,7 @@ public struct RadialGradient: ElementaryView {
         backend: Backend
     ) {
         backend.setSize(of: widget, to: layout.size.vector)
-        backend.updateRadialGradient(
+        backend.updateRadialGradientWidget(
             widget,
             gradient: self,
             withSize: layout.size.vector,
@@ -98,7 +95,7 @@ extension RadialGradient {
     }
     
     /// Stops adjusted to accomodate startRadius on backends without native support.
-    public var adjustedStops: [Gradient.Stop] {
+    package var adjustedStops: [Gradient.Stop] {
         guard startRadius != 0 else { return gradient.stops }
         
         let range = endRadius - startRadius
@@ -107,7 +104,7 @@ extension RadialGradient {
             let dividableRange = abs(range) / startRadius
             let innerCircle = (startRadius - abs(range)) / startRadius
             
-            var invertedStops = gradient.stops.reversed().map { stop in
+            let invertedStops = gradient.stops.reversed().map { stop in
                 Gradient.Stop(
                     color: stop.color,
                     location: innerCircle + (1.0 - stop.location) * dividableRange

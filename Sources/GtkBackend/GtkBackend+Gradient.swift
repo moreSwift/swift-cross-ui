@@ -3,11 +3,11 @@ import Gtk
 import SwiftCrossUI
 
 extension GtkBackend {
-    public func createLinearGradient() -> Widget {
+    public func createLinearGradientWidget() -> Widget {
         Box()
     }
 
-    public func updateLinearGradient(
+    public func updateLinearGradientWidget(
         _ widget: Widget,
         gradient: LinearGradient,
         withSize size: SIMD2<Int>,
@@ -42,11 +42,11 @@ extension GtkBackend {
         )
     }
 
-    public func createRadialGradient() -> Widget {
+    public func createRadialGradientWidget() -> Widget {
         Box()
     }
 
-    public func updateRadialGradient(
+    public func updateRadialGradientWidget(
         _ widget: Widget,
         gradient: RadialGradient,
         withSize size: SIMD2<Int>,
@@ -74,47 +74,6 @@ extension GtkBackend {
             )
         )
     }
-
-    public func createAngularGradient() -> Widget {
-        Box()
-    }
-
-    public func updateAngularGradient(
-        _ widget: Widget,
-        gradient: AngularGradient,
-        withSize size: SIMD2<Int>,
-        in environment: EnvironmentValues
-    ) {
-        let widget = widget as! Box
-
-        let adjustedStops = gradient.adjustedStops
-
-        let stops = adjustedStops.map { stop in
-            let resolved = stop.color.resolve(in: environment)
-            let red = resolved.red * 255
-            let green = resolved.green * 255
-            let blue = resolved.blue * 255
-            
-            let location = stop.location * 360
-            
-            return "rgba(\(red), \(green), \(blue), \(resolved.opacity)) \(location)deg"
-        }.joined(separator: ", ")
-        
-        let startDegrees = gradient.startAngle.degrees + 90
-        let centerXPercent = gradient.center.x * 100
-        let centerYPercent = gradient.center.y * 100
-
-        widget.css.set(
-            property: .init(
-                key: "background",
-                value: """
-                    conic-gradient(from \(startDegrees)deg \
-                    at \(centerXPercent)% \(centerYPercent)%, \
-                    \(stops))
-                    """
-            )
-        )
-    }
     
     private func invertedStops(stops: [Gradient.Stop]) -> [Gradient.Stop] {
         return stops.reversed().map { stop in
@@ -126,12 +85,12 @@ extension GtkBackend {
     }
 
     private func cssStops(stops: [Gradient.Stop], environment: EnvironmentValues) -> [String] {
-        return stops.map {
-            let resolved = $0.color.resolve(in: environment)
+        return stops.map { stop in
+            let resolved = stop.color.resolve(in: environment)
             let red = resolved.red * 255
             let green = resolved.green * 255
             let blue = resolved.blue * 255
-            let location = $0.location * 100
+            let location = stop.location * 100
             
             return
                 """
