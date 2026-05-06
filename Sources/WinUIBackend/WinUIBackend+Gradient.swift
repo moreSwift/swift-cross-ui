@@ -4,11 +4,11 @@ import WindowsFoundation
 import UWP
 
 extension WinUIBackend {
-    public func createLinearGradient() -> Widget {
+    public func createLinearGradientWidget() -> Widget {
         WinUI.Rectangle()
     }
     
-    public func updateLinearGradient(
+    public func updateLinearGradientWidget(
         _ widget: Widget,
         gradient: LinearGradient,
         withSize size: SIMD2<Int>,
@@ -40,11 +40,11 @@ extension WinUIBackend {
         widget.fill = brush
     }
     
-    public func createRadialGradient() -> Widget {
+    public func createRadialGradientWidget() -> Widget {
         WinUI.Rectangle()
     }
     
-    public func updateRadialGradient(
+    public func updateRadialGradientWidget(
         _ widget: Widget,
         gradient: RadialGradient,
         withSize size: SIMD2<Int>,
