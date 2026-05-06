@@ -7,12 +7,12 @@ public struct AppStorageValues {
         self.provider = provider
     }
 
-    public func getValue<T: Codable & Sendable>(_ key: any AppStorageKey<T>.Type) -> T {
+    public func getValue<Key: AppStorageKey>(_ key: Key.Type) -> Key.Value {
         guard let provider else { return key.defaultValue }
         return provider.getValue(key: key.name, defaultValue: key.defaultValue)
     }
 
-    public func setValue<T: Codable & Sendable>(_ key: any AppStorageKey<T>.Type, newValue: T) {
+    public func setValue<Key: AppStorageKey>(_ key: Key.Type, newValue: Key.Value) {
         provider?.setValue(key: key.name, newValue: newValue)
     }
 }

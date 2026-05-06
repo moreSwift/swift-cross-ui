@@ -94,6 +94,11 @@ class _App<AppRoot: App> {
                 )
                 self.refreshSceneGraph()
             }
+            environment.appStorageProvider.listenToChanges { [weak self] key in
+                // invalidate the cached value, then update the views
+                appStorageCache.withLock { $0[key] = nil }
+                self?.refreshSceneGraph()
+            }
 
             let result = rootNode.updateNode(nil, environment: environment)
 
