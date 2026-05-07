@@ -14,7 +14,7 @@ var hotReloadingDependencies: [Package.Dependency] = []
     hotReloadingDependencies = [
         .package(
             url: "https://github.com/moreSwift/swift-bundler",
-            revision: "6527cb29084f79cb4d2300f98acd7c057abb4a67"
+            revision: "496c0638dc2c6750c7873832a08c36c74631aed4"
         )
     ]
     exampleDependencies.append(

@@ -27,10 +27,18 @@ public struct HotReloadableExprMacro: ExpressionMacro {
                     let viewId = Self.hotReloadingExprIds[location]!
                     if let hotReloadingImportedEntryPoint {
                         return withUnsafePointer(to: self) { pointer in
-                            return hotReloadingImportedEntryPoint(
+                            let rawViewPointer = hotReloadingImportedEntryPoint(
                                 pointer,
                                 viewId
-                            ) as! SwiftCrossUI.HotReloadableView
+                            )
+                            let viewPointer = UnsafeMutableBufferPointer<SwiftCrossUI.HotReloadableView>(
+                                start: rawViewPointer.bindMemory(to: SwiftCrossUI.HotReloadableView.self, capacity: 1),
+                                count: 1
+                            )
+                            defer {
+                                viewPointer.deallocate()
+                            }
+                            return viewPointer.moveElement(from: 0)
                         }
                     } else {
                         return self.entryPoint(viewId: viewId)

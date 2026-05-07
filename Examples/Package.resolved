@@ -1,5 +1,5 @@
 {
-  "originHash" : "26c4a5cd6310de25488df1aa13727991b14437f7cc1b48c068fc1aca149860e9",
+  "originHash" : "4c307864878e040a9f629f6c205b2cd1401625502dfa5bda8edbfb8b1d4d1617",
   "pins" : [
     {
       "identity" : "aexml",
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stackotter/ErrorKit",
       "state" : {
-        "revision" : "1c30f90abe4118773e89b819d6b5db91432a81a5",
-        "version" : "1.2.2"
+        "revision" : "8144f39785e845f9a4048bdf67825f8ae53c54ac",
+        "version" : "2.1.0"
       }
     },
     {
@@ -62,6 +62,15 @@
       "state" : {
         "revision" : "de38230104cf63ef4843cb569ba11c13f8165685",
         "version" : "0.26.2"
+      }
+    },
+    {
+      "identity" : "h",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rarestype/h",
+      "state" : {
+        "revision" : "aa3626829160917d4378330617971977cbd78f5b",
+        "version" : "1.0.1"
       }
     },
     {
@@ -177,7 +186,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/moreSwift/swift-bundler",
       "state" : {
-        "revision" : "6527cb29084f79cb4d2300f98acd7c057abb4a67"
+        "revision" : "496c0638dc2c6750c7873832a08c36c74631aed4"
       }
     },
     {
@@ -203,8 +212,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto",
       "state" : {
-        "revision" : "95ba0316a9b733e92bb6b071255ff46263bbe7dc",
-        "version" : "3.15.1"
+        "revision" : "1b6b2e274e85105bfa155183145a1dcfd63331f1",
+        "version" : "4.5.0"
       }
     },
     {
