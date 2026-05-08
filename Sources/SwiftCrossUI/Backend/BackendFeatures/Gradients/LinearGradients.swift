@@ -1,5 +1,5 @@
 extension BackendFeatures {
-    /// Backend Methods for Linear Gradients.
+    /// Backend methods for linear gradients.
     ///
     /// Used by ``LinearGradient``.
     public protocol LinearGradients: Core {

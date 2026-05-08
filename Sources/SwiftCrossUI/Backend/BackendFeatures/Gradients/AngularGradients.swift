@@ -1,5 +1,5 @@
 extension BackendFeatures {
-    /// Backend Methods for Angular (conic) Gradients.
+    /// Backend methods for angular (conic) gradients.
     ///
     /// Used by ``AngularGradient``.
     public protocol AngularGradients: Core {
