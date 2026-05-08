@@ -15,7 +15,9 @@ public struct TapGesture: Sendable, Hashable {
     public static let longPress = TapGesture(kind: .longPress)
 
     package enum TapGestureKind {
-        case primary, secondary, longPress
+        case primary
+        case secondary
+        case longPress
     }
 }
 

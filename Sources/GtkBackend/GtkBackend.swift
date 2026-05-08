@@ -126,17 +126,17 @@ public final class GtkBackend:
                     list {
                         background: none;
                     }
-
+                    
                     list > row {
                         padding: 0;
                         min-height: 0;
                     }
-
+                    
                     .navigation-sidebar {
                         margin: 0;
                         padding: 0;
                     }
-
+                    
                     .navigation-sidebar > row { margin: 0;
                         padding: 0;
                     }
@@ -319,7 +319,8 @@ public final class GtkBackend:
             )
             let process = Process()
             process.arguments = [
-                "dbus-send", "--print-reply",
+                "dbus-send",
+                "--print-reply",
                 "--dest=org.freedesktop.FileManager1",
                 "/org/freedesktop/FileManager1",
                 "org.freedesktop.FileManager1.ShowItems",
@@ -378,7 +379,11 @@ public final class GtkBackend:
                             actionName: "\(actionNamespace).\(actionName)"
                         )
                     case .toggle(let label, let value, let onChange):
-                        let gAction = GSimpleAction(name: actionName, state: value, action: onChange)
+                        let gAction = GSimpleAction(
+                            name: actionName,
+                            state: value,
+                            action: onChange
+                        )
                         gAction.enabled = environment.isEnabled
                         actionMap.addAction(gAction)
 
@@ -519,7 +524,9 @@ public final class GtkBackend:
             .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
+    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor ()
+        -> Void)
+    {
         // TODO: React to theme changes
         self.rootEnvironmentChangeHandler = action
     }
@@ -639,7 +646,7 @@ public final class GtkBackend:
         to action: @escaping () -> Void
     ) {
         let splitView = splitView as! Paned
-        splitView.notifyPosition = { splitView in
+        splitView.notifyPosition = { _ in
             action()
         }
     }
@@ -1345,7 +1352,8 @@ public final class GtkBackend:
                 contents modelbutton {
                     color: \(CSSProperty.rgba(foreground));
                 }
-                """)
+                """
+        )
     }
 
     public func showPopoverMenu(
@@ -1545,7 +1553,7 @@ public final class GtkBackend:
                     tapGestureTarget.eventControllers.first {
                         $0 is GestureClick
                             && gtk_gesture_single_get_button($0.opaquePointer)
-                                == GDK_BUTTON_SECONDARY
+                            == GDK_BUTTON_SECONDARY
                     } as! GestureClick
                 gesture.pressed = { _, nPress, _, _ in
                     guard environment.isEnabled, nPress == 1 else {
@@ -1556,7 +1564,7 @@ public final class GtkBackend:
             case .longPress:
                 let gesture =
                     tapGestureTarget.eventControllers.lazy.compactMap { $0 as? GestureLongPress }
-                    .first!
+                        .first!
                 gesture.pressed = { _, _, _ in
                     guard environment.isEnabled else {
                         return
@@ -1578,7 +1586,7 @@ public final class GtkBackend:
     ) {
         let gesture =
             hoverTarget.eventControllers.first { $0 is EventControllerMotion }
-            as! EventControllerMotion
+                as! EventControllerMotion
         gesture.enter = { _, _, _ in
             guard environment.isEnabled else { return }
             action(true)
@@ -1727,9 +1735,12 @@ public final class GtkBackend:
                     let control2 = (end + 2 * control) / 3
                     cairo_curve_to(
                         cairo,
-                        control1.x, control1.y,
-                        control2.x, control2.y,
-                        end.x, end.y
+                        control1.x,
+                        control1.y,
+                        control2.x,
+                        control2.y,
+                        end.x,
+                        end.y
                     )
                 case .cubicCurve(let control1, let control2, let end):
                     if index == 0 {
@@ -1737,25 +1748,30 @@ public final class GtkBackend:
                     }
                     cairo_curve_to(
                         cairo,
-                        control1.x, control1.y,
-                        control2.x, control2.y,
-                        end.x, end.y
+                        control1.x,
+                        control1.y,
+                        control2.x,
+                        control2.y,
+                        end.x,
+                        end.y
                     )
                 case .rectangle(let rect):
                     cairo_rectangle(
                         cairo,
-                        rect.origin.x, rect.origin.y,
-                        rect.size.x, rect.size.y
+                        rect.origin.x,
+                        rect.origin.y,
+                        rect.size.x,
+                        rect.size.y
                     )
                 case .circle(let center, let radius):
                     cairo_arc(cairo, center.x, center.y, radius, 0, 2 * .pi)
                 case .arc(
-                    let center,
-                    let radius,
-                    let startAngle,
-                    let endAngle,
-                    let clockwise
-                ):
+                let center,
+                let radius,
+                let startAngle,
+                let endAngle,
+                let clockwise
+            ):
                     let arcFunc = clockwise ? cairo_arc : cairo_arc_negative
                     arcFunc(
                         cairo,
@@ -2030,7 +2046,8 @@ class CustomLabel: Label {
             layout,
             Int32(
                 (Double(height) * Double(PANGO_SCALE))
-                    .rounded(.towardZero))
+                    .rounded(.towardZero)
+            )
         )
     }
 }
@@ -2184,7 +2201,7 @@ final class TimePicker: Box {
         minutePicker.text = "\(components.minute!)"
         minutePicker.valueChanged = { [unowned self] minutePicker in
             guard let value = Int(exactly: minutePicker.value),
-                let newDate = calendar.date(bySetting: .minute, value: value, of: date)
+                  let newDate = calendar.date(bySetting: .minute, value: value, of: date)
             else {
                 return
             }
@@ -2222,7 +2239,7 @@ final class TimePicker: Box {
             "\(TimePicker.transformToRange(components.hour!, hourCycle: self.hourCycle))"
         hourPicker.valueChanged = { [unowned self] hourPicker in
             guard let value = Int(exactly: hourPicker.value),
-                let newDate = calendar.date(bySetting: .hour, value: value, of: date)
+                  let newDate = calendar.date(bySetting: .hour, value: value, of: date)
             else {
                 return
             }

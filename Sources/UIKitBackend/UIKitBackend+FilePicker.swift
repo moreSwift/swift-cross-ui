@@ -49,7 +49,7 @@
 
             pickerController.shouldShowFileExtensions =
                 fileDialogOptions.allowOtherContentTypes
-                || fileDialogOptions.allowedContentTypes.count > 1
+                    || fileDialogOptions.allowedContentTypes.count > 1
 
             let delegate = FilePickerDelegate(resultHandler: handleResult)
             pickerController.delegate = delegate

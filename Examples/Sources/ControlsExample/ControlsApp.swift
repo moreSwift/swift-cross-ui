@@ -7,7 +7,12 @@ import SwiftCrossUI
 #endif
 
 enum BuiltInPickerStyle: CaseIterable, Equatable {
-    case automatic, inline, menu, radioGroup, segmented, wheel
+    case automatic
+    case inline
+    case menu
+    case radioGroup
+    case segmented
+    case wheel
 
     var asPickerStyle: any PickerStyle {
         switch self {
@@ -126,7 +131,8 @@ struct ControlsApp: App {
                                 VStack {
                                     Toggle(
                                         "Enable ProgressView resizability",
-                                        isOn: $isProgressViewResizable)
+                                        isOn: $isProgressViewResizable
+                                    )
                                     Slider(value: $progressViewSize, in: 10...100)
                                     ProgressView()
                                         .resizable(isProgressViewResizable)

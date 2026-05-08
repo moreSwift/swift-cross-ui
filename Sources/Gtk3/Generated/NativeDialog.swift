@@ -22,9 +22,9 @@ open class NativeDialog: GObject {
 
         let handler0:
             @convention(c) (UnsafeMutableRawPointer, Int, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<Int>.run(data, value1)
-                }
+            { _, value1, data in
+                SignalBox1<Int>.run(data, value1)
+            }
 
         addSignal(name: "response", handler: gCallback(handler0)) { [weak self] (param0: Int) in
             guard let self else { return }
@@ -32,10 +32,11 @@ open class NativeDialog: GObject {
         }
 
         let handler1:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::modal", handler: gCallback(handler1)) {
             [weak self] (param0: OpaquePointer) in
@@ -44,10 +45,11 @@ open class NativeDialog: GObject {
         }
 
         let handler2:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::title", handler: gCallback(handler2)) {
             [weak self] (param0: OpaquePointer) in
@@ -56,10 +58,11 @@ open class NativeDialog: GObject {
         }
 
         let handler3:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::transient-for", handler: gCallback(handler3)) {
             [weak self] (param0: OpaquePointer) in
@@ -68,10 +71,11 @@ open class NativeDialog: GObject {
         }
 
         let handler4:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::visible", handler: gCallback(handler4)) {
             [weak self] (param0: OpaquePointer) in

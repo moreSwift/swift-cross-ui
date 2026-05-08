@@ -110,34 +110,34 @@ public final class Gtk3Backend:
                         padding-top: 11px;
                         margin-bottom: -10px;
                     }
-
+                    
                     @binding-set DisableEscape {
                         unbind "Escape";
                     }
-
+                    
                     messagedialog {
                         -gtk-key-bindings: DisableEscape;
                     }
-
+                    
                     list {
                         background: none;
                     }
-
+                    
                     list > row {
                         padding: 0;
                         min-height: 0;
                     }
-
+                    
                     .navigation-sidebar {
                         margin: 0;
                         padding: 0;
                     }
-
+                    
                     .navigation-sidebar > row {
                         margin: 0;
                         padding: 0;
                     }
-
+                    
                     textview text {
                         background: none;
                     }
@@ -319,7 +319,11 @@ public final class Gtk3Backend:
                             actionName: "\(actionNamespace).\(actionName)"
                         )
                     case .toggle(let label, let value, let onChange):
-                        let gAction = GSimpleAction(name: actionName, state: value, action: onChange)
+                        let gAction = GSimpleAction(
+                            name: actionName,
+                            state: value,
+                            action: onChange
+                        )
                         gAction.enabled = environment.isEnabled
                         actionMap.addAction(gAction)
 
@@ -453,7 +457,8 @@ public final class Gtk3Backend:
             )
             let process = Process()
             process.arguments = [
-                "dbus-send", "--print-reply",
+                "dbus-send",
+                "--print-reply",
                 "--dest=org.freedesktop.FileManager1",
                 "/org/freedesktop/FileManager1",
                 "org.freedesktop.FileManager1.ShowItems",
@@ -541,7 +546,9 @@ public final class Gtk3Backend:
             .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
+    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor ()
+        -> Void)
+    {
         // TODO: React to theme changes
         self.rootEnvironmentChangeHandler = action
     }
@@ -666,7 +673,7 @@ public final class Gtk3Backend:
         to action: @escaping () -> Void
     ) {
         let splitView = splitView as! Paned
-        splitView.notifyPosition = { splitView in
+        splitView.notifyPosition = { _ in
             action()
         }
     }
@@ -1443,8 +1450,8 @@ public final class Gtk3Backend:
             guard
                 environment.isEnabled,
                 eventType == GDK_BUTTON_PRESS
-                    || eventType == GDK_2BUTTON_PRESS
-                    || eventType == GDK_3BUTTON_PRESS
+                || eventType == GDK_2BUTTON_PRESS
+                || eventType == GDK_3BUTTON_PRESS
             else {
                 return
             }
@@ -1592,9 +1599,12 @@ public final class Gtk3Backend:
                     let control2 = (end + 2 * control) / 3
                     cairo_curve_to(
                         cairo,
-                        control1.x, control1.y,
-                        control2.x, control2.y,
-                        end.x, end.y
+                        control1.x,
+                        control1.y,
+                        control2.x,
+                        control2.y,
+                        end.x,
+                        end.y
                     )
                 case .cubicCurve(let control1, let control2, let end):
                     if index == 0 {
@@ -1602,25 +1612,30 @@ public final class Gtk3Backend:
                     }
                     cairo_curve_to(
                         cairo,
-                        control1.x, control1.y,
-                        control2.x, control2.y,
-                        end.x, end.y
+                        control1.x,
+                        control1.y,
+                        control2.x,
+                        control2.y,
+                        end.x,
+                        end.y
                     )
                 case .rectangle(let rect):
                     cairo_rectangle(
                         cairo,
-                        rect.origin.x, rect.origin.y,
-                        rect.size.x, rect.size.y
+                        rect.origin.x,
+                        rect.origin.y,
+                        rect.size.x,
+                        rect.size.y
                     )
                 case .circle(let center, let radius):
                     cairo_arc(cairo, center.x, center.y, radius, 0, 2 * .pi)
                 case .arc(
-                    let center,
-                    let radius,
-                    let startAngle,
-                    let endAngle,
-                    let clockwise
-                ):
+                let center,
+                let radius,
+                let startAngle,
+                let endAngle,
+                let clockwise
+            ):
                     let arcFunc = clockwise ? cairo_arc : cairo_arc_negative
                     arcFunc(
                         cairo,

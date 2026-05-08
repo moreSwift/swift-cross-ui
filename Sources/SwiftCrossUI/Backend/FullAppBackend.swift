@@ -24,24 +24,24 @@
 /// - ``BackendFeatures/Windowing``
 public typealias FullAppBackend =
     BaseAppBackend
-    & BackendFeatures.MenuButtons
-    & BackendFeatures.Paths
-    & BackendFeatures.Alerts
-    & BackendFeatures.Sheets
-    & BackendFeatures.IncomingURLs
-    & BackendFeatures.ExternalURLs
-    & BackendFeatures.RevealFiles
-    & BackendFeatures.ApplicationMenus
-    & BackendFeatures.FileDialogs
-    & BackendFeatures.CornerRadius
-    & BackendFeatures.WebViews
-    & BackendFeatures.Tables
-    & BackendFeatures.Gestures
-    & BackendFeatures.Tooltips
-    & BackendFeatures.Colors
-    & BackendFeatures.DatePickers
-    & BackendFeatures.Windowing
-    & BackendFeatures.Gradients
+        & BackendFeatures.MenuButtons
+        & BackendFeatures.Paths
+        & BackendFeatures.Alerts
+        & BackendFeatures.Sheets
+        & BackendFeatures.IncomingURLs
+        & BackendFeatures.ExternalURLs
+        & BackendFeatures.RevealFiles
+        & BackendFeatures.ApplicationMenus
+        & BackendFeatures.FileDialogs
+        & BackendFeatures.CornerRadius
+        & BackendFeatures.WebViews
+        & BackendFeatures.Tables
+        & BackendFeatures.Gestures
+        & BackendFeatures.Tooltips
+        & BackendFeatures.Colors
+        & BackendFeatures.DatePickers
+        & BackendFeatures.Windowing
+        & BackendFeatures.Gradients
 
 /// A typealias for ``FullAppBackend``.
 ///
@@ -54,7 +54,12 @@ public typealias FullAppBackend =
 /// After SwiftCrossUI 1.0.0, this typealias will be removed and we may choose
 /// to reuse the name `AppBackend`.
 @available(
-    *, deprecated, renamed: "FullAppBackend",
-     message: "this is now a composition of many smaller protocols; see SwiftCrossUI PR #513 for details"
+    *,
+    deprecated,
+    renamed: "FullAppBackend",
+    message: """
+        This is now a composition of many smaller protocols; see SwiftCrossUI \
+        PR #513 for details
+        """
 )
 public typealias AppBackend = FullAppBackend

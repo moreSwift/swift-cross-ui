@@ -15,7 +15,7 @@ public struct CastBackendMacro: BodyMacro {
         // Get the single generic argument.
         guard
             let newBackend = Attribute(attribute).name
-                .genericArguments?.first?._baseSyntax
+            .genericArguments?.first?._baseSyntax
         else {
             throw MacroError(
                 "@CastBackend macro expects a single type parameter"
@@ -59,8 +59,8 @@ public struct CastBackendMacro: BodyMacro {
         let widgetType: TypeSyntax?
         if
             let returnsWidgetExpr = Attribute(attribute)
-                .asMacroAttribute?.arguments
-                .first(where: { $0.label == "returnsWidget" })?.expr,
+            .asMacroAttribute?.arguments
+            .first(where: { $0.label == "returnsWidget" })?.expr,
             returnsWidgetExpr.asBooleanLiteral?.value == true
         {
             guard let returnClause = signature.returnClause else {
@@ -112,7 +112,9 @@ public struct CastBackendMacro: BodyMacro {
             }
             
             guard let \(castedBackend) = backend as? any BaseAppBackend & \(newBackend) else {
-                fatalError("'\\(\(backendParameter.type).self)' does not implement '\(newBackend.trimmed)'")
+                fatalError("'\\(\(backendParameter.type).self)' does not implement '\(
+                    newBackend.trimmed
+                )'")
             }
             return \(innerFunction)(\(castedBackend))\(raw: returnCast)
             """

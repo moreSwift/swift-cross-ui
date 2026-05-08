@@ -33,10 +33,10 @@ open class GestureLongPress: GestureSingle {
 
         let handler1:
             @convention(c) (UnsafeMutableRawPointer, Double, Double, UnsafeMutableRawPointer) ->
-                Void =
-                { _, value1, value2, data in
-                    SignalBox2<Double, Double>.run(data, value1, value2)
-                }
+            Void =
+            { _, value1, value2, data in
+                SignalBox2<Double, Double>.run(data, value1, value2)
+            }
 
         addSignal(name: "pressed", handler: gCallback(handler1)) {
             [weak self] (param0: Double, param1: Double) in
@@ -45,10 +45,11 @@ open class GestureLongPress: GestureSingle {
         }
 
         let handler2:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::delay-factor", handler: gCallback(handler2)) {
             [weak self] (param0: OpaquePointer) in

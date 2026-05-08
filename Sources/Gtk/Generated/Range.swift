@@ -21,9 +21,9 @@ open class Range: Widget, Orientable {
 
         let handler0:
             @convention(c) (UnsafeMutableRawPointer, Double, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<Double>.run(data, value1)
-                }
+            { _, value1, data in
+                SignalBox1<Double>.run(data, value1)
+            }
 
         addSignal(name: "adjust-bounds", handler: gCallback(handler0)) {
             [weak self] (param0: Double) in
@@ -33,10 +33,10 @@ open class Range: Widget, Orientable {
 
         let handler1:
             @convention(c) (UnsafeMutableRawPointer, GtkScrollType, Double, UnsafeMutableRawPointer)
-                -> Void =
-                { _, value1, value2, data in
-                    SignalBox2<GtkScrollType, Double>.run(data, value1, value2)
-                }
+            -> Void =
+            { _, value1, value2, data in
+                SignalBox2<GtkScrollType, Double>.run(data, value1, value2)
+            }
 
         addSignal(name: "change-value", handler: gCallback(handler1)) {
             [weak self] (param0: GtkScrollType, param1: Double) in
@@ -45,10 +45,11 @@ open class Range: Widget, Orientable {
         }
 
         let handler2:
-            @convention(c) (UnsafeMutableRawPointer, GtkScrollType, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<GtkScrollType>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, GtkScrollType, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<GtkScrollType>.run(data, value1)
+            }
 
         addSignal(name: "move-slider", handler: gCallback(handler2)) {
             [weak self] (param0: GtkScrollType) in
@@ -62,10 +63,11 @@ open class Range: Widget, Orientable {
         }
 
         let handler4:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::adjustment", handler: gCallback(handler4)) {
             [weak self] (param0: OpaquePointer) in
@@ -74,10 +76,11 @@ open class Range: Widget, Orientable {
         }
 
         let handler5:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::fill-level", handler: gCallback(handler5)) {
             [weak self] (param0: OpaquePointer) in
@@ -86,10 +89,11 @@ open class Range: Widget, Orientable {
         }
 
         let handler6:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::inverted", handler: gCallback(handler6)) {
             [weak self] (param0: OpaquePointer) in
@@ -98,10 +102,11 @@ open class Range: Widget, Orientable {
         }
 
         let handler7:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::restrict-to-fill-level", handler: gCallback(handler7)) {
             [weak self] (param0: OpaquePointer) in
@@ -110,10 +115,11 @@ open class Range: Widget, Orientable {
         }
 
         let handler8:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::round-digits", handler: gCallback(handler8)) {
             [weak self] (param0: OpaquePointer) in
@@ -122,10 +128,11 @@ open class Range: Widget, Orientable {
         }
 
         let handler9:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::show-fill-level", handler: gCallback(handler9)) {
             [weak self] (param0: OpaquePointer) in
@@ -134,10 +141,11 @@ open class Range: Widget, Orientable {
         }
 
         let handler10:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::orientation", handler: gCallback(handler10)) {
             [weak self] (param0: OpaquePointer) in

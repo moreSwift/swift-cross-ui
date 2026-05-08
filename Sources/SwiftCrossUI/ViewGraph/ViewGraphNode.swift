@@ -77,7 +77,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         // First create the view's child nodes and widgets
         let childSnapshots =
             snapshot?.isValid(for: NodeView.self) == true
-            ? snapshot?.children : snapshot.map { [$0] }
+                ? snapshot?.children : snapshot.map { [$0] }
 
         currentLayout = nil
         resultCache = [:]

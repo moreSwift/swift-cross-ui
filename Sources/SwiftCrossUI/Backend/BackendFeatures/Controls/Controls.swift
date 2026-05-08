@@ -17,5 +17,5 @@ extension BackendFeatures {
     /// - ``ProgressBars``
     public typealias Controls =
         Buttons & ToggleButtons & Switches & Checkboxes & Sliders & TextFields
-        & SecureFields & TextEditors & Pickers & ProgressSpinners & ProgressBars
+            & SecureFields & TextEditors & Pickers & ProgressSpinners & ProgressBars
 }

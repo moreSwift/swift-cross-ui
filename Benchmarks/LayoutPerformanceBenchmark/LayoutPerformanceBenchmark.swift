@@ -49,7 +49,11 @@ struct Benchmarks {
         #endif
 
         @MainActor
-        func benchmarkLayout<V: TestCaseView>(of viewType: V.Type, _ size: ProposedViewSize, _ label: String) {
+        func benchmarkLayout<V: TestCaseView>(
+            of viewType: V.Type,
+            _ size: ProposedViewSize,
+            _ label: String
+        ) {
             #if BENCHMARK_VIZ
                 benchmarkVisualizations.append((
                     label,
@@ -69,7 +73,11 @@ struct Benchmarks {
 
         // Register benchmarks
         benchmarkLayout(of: GridView.self, ProposedViewSize(800, 800), "grid")
-        benchmarkLayout(of: ScrollableMessageListView.self, ProposedViewSize(800, 800), "message list")
+        benchmarkLayout(
+            of: ScrollableMessageListView.self,
+            ProposedViewSize(800, 800),
+            "message list"
+        )
 
         #if BENCHMARK_VIZ
             let names = benchmarkVisualizations.map(\.name).joined(separator: " | ")

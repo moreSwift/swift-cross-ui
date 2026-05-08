@@ -19,11 +19,15 @@ open class EventControllerKey: EventController {
 
         let handler1:
             @convention(c) (
-                UnsafeMutableRawPointer, UInt, UInt, GdkModifierType, UnsafeMutableRawPointer
+                UnsafeMutableRawPointer,
+                UInt,
+                UInt,
+                GdkModifierType,
+                UnsafeMutableRawPointer
             ) -> Void =
-                { _, value1, value2, value3, data in
-                    SignalBox3<UInt, UInt, GdkModifierType>.run(data, value1, value2, value3)
-                }
+            { _, value1, value2, value3, data in
+                SignalBox3<UInt, UInt, GdkModifierType>.run(data, value1, value2, value3)
+            }
 
         addSignal(name: "key-pressed", handler: gCallback(handler1)) {
             [weak self] (param0: UInt, param1: UInt, param2: GdkModifierType) in
@@ -33,11 +37,15 @@ open class EventControllerKey: EventController {
 
         let handler2:
             @convention(c) (
-                UnsafeMutableRawPointer, UInt, UInt, GdkModifierType, UnsafeMutableRawPointer
+                UnsafeMutableRawPointer,
+                UInt,
+                UInt,
+                GdkModifierType,
+                UnsafeMutableRawPointer
             ) -> Void =
-                { _, value1, value2, value3, data in
-                    SignalBox3<UInt, UInt, GdkModifierType>.run(data, value1, value2, value3)
-                }
+            { _, value1, value2, value3, data in
+                SignalBox3<UInt, UInt, GdkModifierType>.run(data, value1, value2, value3)
+            }
 
         addSignal(name: "key-released", handler: gCallback(handler2)) {
             [weak self] (param0: UInt, param1: UInt, param2: GdkModifierType) in
@@ -47,10 +55,10 @@ open class EventControllerKey: EventController {
 
         let handler3:
             @convention(c) (UnsafeMutableRawPointer, GdkModifierType, UnsafeMutableRawPointer) ->
-                Void =
-                { _, value1, data in
-                    SignalBox1<GdkModifierType>.run(data, value1)
-                }
+            Void =
+            { _, value1, data in
+                SignalBox1<GdkModifierType>.run(data, value1)
+            }
 
         addSignal(name: "modifiers", handler: gCallback(handler3)) {
             [weak self] (param0: GdkModifierType) in

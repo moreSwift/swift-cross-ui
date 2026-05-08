@@ -52,7 +52,11 @@ extension View {
     ///   - maxHeight: The frame's maximum height. `nil` means the frame inherits
     ///     the maximum height of its content
     ///   - alignment: How to align the view within its container.
-    @available(*, deprecated, renamed: "frame(minWidth:idealWidth:maxWidth:minHeight:idealHeight:maxHeight:alignment:)")
+    @available(
+        *,
+        deprecated,
+        renamed: "frame(minWidth:idealWidth:maxWidth:minHeight:idealHeight:maxHeight:alignment:)"
+    )
     @_disfavoredOverload
     public func frame(
         minWidth: Int? = nil,

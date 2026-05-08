@@ -94,7 +94,9 @@ final class NSCustomTapGestureTarget: NSView {
         didSet {
             if leftClickHandler != nil && leftClickRecognizer == nil {
                 let gestureRecognizer = NSClickGestureRecognizer(
-                    target: self, action: #selector(leftClick))
+                    target: self,
+                    action: #selector(leftClick)
+                )
                 addGestureRecognizer(gestureRecognizer)
                 leftClickRecognizer = gestureRecognizer
             } else if leftClickHandler == nil, let leftClickRecognizer {
@@ -108,7 +110,9 @@ final class NSCustomTapGestureTarget: NSView {
         didSet {
             if rightClickHandler != nil && rightClickRecognizer == nil {
                 let gestureRecognizer = NSClickGestureRecognizer(
-                    target: self, action: #selector(rightClick))
+                    target: self,
+                    action: #selector(rightClick)
+                )
                 gestureRecognizer.buttonMask = 1 << 1
                 addGestureRecognizer(gestureRecognizer)
                 rightClickRecognizer = gestureRecognizer
@@ -123,7 +127,9 @@ final class NSCustomTapGestureTarget: NSView {
         didSet {
             if longPressHandler != nil && longPressRecognizer == nil {
                 let gestureRecognizer = NSPressGestureRecognizer(
-                    target: self, action: #selector(longPress))
+                    target: self,
+                    action: #selector(longPress)
+                )
                 // Both GTK and UIKit default to half a second for long presses
                 gestureRecognizer.minimumPressDuration = 0.5
                 addGestureRecognizer(gestureRecognizer)
@@ -199,7 +205,8 @@ final class NSCustomHoverTarget: NSView {
             rect: self.bounds,
             options: options,
             owner: self,
-            userInfo: nil)
+            userInfo: nil
+        )
         addTrackingArea(area)
         trackingArea = area
     }

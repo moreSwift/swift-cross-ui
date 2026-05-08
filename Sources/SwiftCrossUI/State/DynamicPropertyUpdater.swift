@@ -54,7 +54,7 @@ struct DynamicPropertyUpdater<Base> {
         }
 
         if let cachedUpdater = updaterCache[ObjectIdentifier(Base.self)],
-            let cachedUpdater = cachedUpdater as? Self
+           let cachedUpdater = cachedUpdater as? Self
         {
             self = cachedUpdater
             return

@@ -95,10 +95,11 @@ open class Gesture: EventController {
         super.registerSignals()
 
         let handler0:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "begin", handler: gCallback(handler0)) {
             [weak self] (param0: OpaquePointer) in
@@ -107,10 +108,11 @@ open class Gesture: EventController {
         }
 
         let handler1:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "cancel", handler: gCallback(handler1)) {
             [weak self] (param0: OpaquePointer) in
@@ -119,10 +121,11 @@ open class Gesture: EventController {
         }
 
         let handler2:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "end", handler: gCallback(handler2)) {
             [weak self] (param0: OpaquePointer) in
@@ -132,12 +135,14 @@ open class Gesture: EventController {
 
         let handler3:
             @convention(c) (
-                UnsafeMutableRawPointer, OpaquePointer, GtkEventSequenceState,
+                UnsafeMutableRawPointer,
+                OpaquePointer,
+                GtkEventSequenceState,
                 UnsafeMutableRawPointer
             ) -> Void =
-                { _, value1, value2, data in
-                    SignalBox2<OpaquePointer, GtkEventSequenceState>.run(data, value1, value2)
-                }
+            { _, value1, value2, data in
+                SignalBox2<OpaquePointer, GtkEventSequenceState>.run(data, value1, value2)
+            }
 
         addSignal(name: "sequence-state-changed", handler: gCallback(handler3)) {
             [weak self] (param0: OpaquePointer, param1: GtkEventSequenceState) in
@@ -146,10 +151,11 @@ open class Gesture: EventController {
         }
 
         let handler4:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "update", handler: gCallback(handler4)) {
             [weak self] (param0: OpaquePointer) in
@@ -158,10 +164,11 @@ open class Gesture: EventController {
         }
 
         let handler5:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::n-points", handler: gCallback(handler5)) {
             [weak self] (param0: OpaquePointer) in
@@ -170,10 +177,11 @@ open class Gesture: EventController {
         }
 
         let handler6:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::window", handler: gCallback(handler6)) {
             [weak self] (param0: OpaquePointer) in

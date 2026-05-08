@@ -105,7 +105,7 @@ extension HotReloadableAppMacro: MemberMacro {
                     #if !canImport(SwiftBundlerRuntime)
                         #error("Hot reloading requires importing SwiftBundlerRuntime from the swift-bundler package")
                     #endif
-
+                
                     if !hotReloadingHasConnectedToServer {
                         hotReloadingHasConnectedToServer = true
                         Task { @MainActor in
@@ -127,7 +127,7 @@ extension HotReloadableAppMacro: MemberMacro {
                             }
                         }
                     }
-
+                
                     \(raw: cases.map(\.description).joined(separator: "\n"))
                     fatalError("Unknown viewId \\(viewId)")
                 }

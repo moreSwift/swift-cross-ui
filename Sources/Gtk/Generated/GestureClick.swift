@@ -21,10 +21,10 @@ open class GestureClick: GestureSingle {
 
         let handler0:
             @convention(c) (UnsafeMutableRawPointer, Int, Double, Double, UnsafeMutableRawPointer)
-                -> Void =
-                { _, value1, value2, value3, data in
-                    SignalBox3<Int, Double, Double>.run(data, value1, value2, value3)
-                }
+            -> Void =
+            { _, value1, value2, value3, data in
+                SignalBox3<Int, Double, Double>.run(data, value1, value2, value3)
+            }
 
         addSignal(name: "pressed", handler: gCallback(handler0)) {
             [weak self] (param0: Int, param1: Double, param2: Double) in
@@ -34,10 +34,10 @@ open class GestureClick: GestureSingle {
 
         let handler1:
             @convention(c) (UnsafeMutableRawPointer, Int, Double, Double, UnsafeMutableRawPointer)
-                -> Void =
-                { _, value1, value2, value3, data in
-                    SignalBox3<Int, Double, Double>.run(data, value1, value2, value3)
-                }
+            -> Void =
+            { _, value1, value2, value3, data in
+                SignalBox3<Int, Double, Double>.run(data, value1, value2, value3)
+            }
 
         addSignal(name: "released", handler: gCallback(handler1)) {
             [weak self] (param0: Int, param1: Double, param2: Double) in
@@ -52,13 +52,22 @@ open class GestureClick: GestureSingle {
 
         let handler3:
             @convention(c) (
-                UnsafeMutableRawPointer, Double, Double, UInt, OpaquePointer,
+                UnsafeMutableRawPointer,
+                Double,
+                Double,
+                UInt,
+                OpaquePointer,
                 UnsafeMutableRawPointer
             ) -> Void =
-                { _, value1, value2, value3, value4, data in
-                    SignalBox4<Double, Double, UInt, OpaquePointer>.run(
-                        data, value1, value2, value3, value4)
-                }
+            { _, value1, value2, value3, value4, data in
+                SignalBox4<Double, Double, UInt, OpaquePointer>.run(
+                    data,
+                    value1,
+                    value2,
+                    value3,
+                    value4
+                )
+            }
 
         addSignal(name: "unpaired-release", handler: gCallback(handler3)) {
             [weak self] (param0: Double, param1: Double, param2: UInt, param3: OpaquePointer) in

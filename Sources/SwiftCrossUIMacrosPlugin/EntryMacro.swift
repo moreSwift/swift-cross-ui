@@ -38,13 +38,15 @@ public struct EntryMacro: AccessorMacro, PeerMacro {
                     get {
                         \(getterContent)
                     }
-                    """),
+                    """
+            ),
             AccessorDeclSyntax(
                 stringLiteral: """
                     set {
                         \(setterContent)
                     }
-                    """),
+                    """
+            ),
         ]
     }
 
@@ -85,7 +87,8 @@ public struct EntryMacro: AccessorMacro, PeerMacro {
                     private struct `__Key_\(trimmedIdentifier)`: \(enclosingType.keyName) {
                         \(defaultValueDeclaration)\(nameDeclaration)
                     } 
-                    """)
+                    """
+            )
         ]
     }
 
@@ -101,7 +104,8 @@ public struct EntryMacro: AccessorMacro, PeerMacro {
         guard
             let extensionDecl = context.lexicalContext.first?.as(ExtensionDeclSyntax.self),
             let enclosingValueType = EnclosingType(
-                rawValue: extensionDecl.extendedType.trimmedDescription)
+                rawValue: extensionDecl.extendedType.trimmedDescription
+            )
         else {
             throw MacroError(
                 "@Entry-annotated properties must be direct children of EnvironmentValues or AppStorageValues extensions."
@@ -136,8 +140,8 @@ public struct EntryMacro: AccessorMacro, PeerMacro {
         // Verify defaultValue
         let defaultValueDeclaration: String
         if patternBinding.initialValue == nil,
-            let type = patternBinding.type,
-            type.isOptional || type._syntax.trimmedDescription.hasSuffix("!")
+           let type = patternBinding.type,
+           type.isOptional || type._syntax.trimmedDescription.hasSuffix("!")
         {
             defaultValueDeclaration = "static let defaultValue\(typeDeclaration) = nil"
         } else if let initialValue = patternBinding.initialValue?._syntax.trimmedDescription {
@@ -147,7 +151,8 @@ public struct EntryMacro: AccessorMacro, PeerMacro {
         }
 
         return (
-            enclosingType: enclosingValueType, identifier: identifier,
+            enclosingType: enclosingValueType,
+            identifier: identifier,
             defaultValueDeclaration: defaultValueDeclaration
         )
     }

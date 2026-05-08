@@ -5,7 +5,9 @@ extension View {
             if let limit {
                 environment
                     .with(
-                        \.lineLimitSettings, LineLimit(limit: limit, reservesSpace: reservesSpace))
+                        \.lineLimitSettings,
+                        LineLimit(limit: limit, reservesSpace: reservesSpace)
+                    )
             } else {
                 environment.with(\.lineLimitSettings, nil)
             }

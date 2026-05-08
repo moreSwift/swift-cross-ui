@@ -19,21 +19,21 @@ struct EntryMacroTests {
             }
             """,
             expandedSource: """
-            extension EnvironmentValues {
-                var test {
-                    get {
-                        self[`__Key_test`.self]
+                extension EnvironmentValues {
+                    var test {
+                        get {
+                            self[`__Key_test`.self]
+                        }
+                        set {
+                            self[`__Key_test`.self] = newValue
+                        }
                     }
-                    set {
-                        self[`__Key_test`.self] = newValue
+                
+                    private struct `__Key_test`: SwiftCrossUI.EnvironmentKey {
+                        static let defaultValue = 22
                     }
                 }
-            
-                private struct `__Key_test`: SwiftCrossUI.EnvironmentKey {
-                    static let defaultValue = 22
-                }
-            }
-            """,
+                """,
             macroSpecs: testMacros,
             failureHandler: { spec in
                 Issue.record(spec.issueComment)
@@ -50,21 +50,21 @@ struct EntryMacroTests {
             }
             """,
             expandedSource: """
-            extension EnvironmentValues {
-                var test: UInt64 {
-                    get {
-                        self[`__Key_test`.self]
+                extension EnvironmentValues {
+                    var test: UInt64 {
+                        get {
+                            self[`__Key_test`.self]
+                        }
+                        set {
+                            self[`__Key_test`.self] = newValue
+                        }
                     }
-                    set {
-                        self[`__Key_test`.self] = newValue
+                
+                    private struct `__Key_test`: SwiftCrossUI.EnvironmentKey {
+                        static let defaultValue: UInt64 = 22
                     }
                 }
-
-                private struct `__Key_test`: SwiftCrossUI.EnvironmentKey {
-                    static let defaultValue: UInt64 = 22
-                }
-            }
-            """,
+                """,
             macroSpecs: testMacros,
             failureHandler: { spec in
                 Issue.record(spec.issueComment)
@@ -81,10 +81,10 @@ struct EntryMacroTests {
             }
             """,
             expandedSource: """
-            extension EnvironmentValues {
-                var test: UInt64
-            }
-            """,
+                extension EnvironmentValues {
+                    var test: UInt64
+                }
+                """,
             diagnostics: [
                 DiagnosticSpec(
                     message: "MacroError(message: \"@Entry requires an initial value for non-optional properties.\")",
@@ -109,33 +109,33 @@ struct EntryMacroTests {
             }
             """,
             expandedSource: """
-            extension EnvironmentValues {
-                var test: UInt64? {
-                    get {
-                        self[`__Key_test`.self]
+                extension EnvironmentValues {
+                    var test: UInt64? {
+                        get {
+                            self[`__Key_test`.self]
+                        }
+                        set {
+                            self[`__Key_test`.self] = newValue
+                        }
                     }
-                    set {
-                        self[`__Key_test`.self] = newValue
+                
+                    private struct `__Key_test`: SwiftCrossUI.EnvironmentKey {
+                        static let defaultValue: UInt64? = nil
+                    }
+                    var test1: Optional<UInt64> {
+                        get {
+                            self[`__Key_test1`.self]
+                        }
+                        set {
+                            self[`__Key_test1`.self] = newValue
+                        }
+                    }
+                
+                    private struct `__Key_test1`: SwiftCrossUI.EnvironmentKey {
+                        static let defaultValue: Optional<UInt64> = nil
                     }
                 }
-            
-                private struct `__Key_test`: SwiftCrossUI.EnvironmentKey {
-                    static let defaultValue: UInt64? = nil
-                }
-                var test1: Optional<UInt64> {
-                    get {
-                        self[`__Key_test1`.self]
-                    }
-                    set {
-                        self[`__Key_test1`.self] = newValue
-                    }
-                }
-
-                private struct `__Key_test1`: SwiftCrossUI.EnvironmentKey {
-                    static let defaultValue: Optional<UInt64> = nil
-                }
-            }
-            """,
+                """,
             diagnostics: [],
             macroSpecs: testMacros,
             failureHandler: { spec in
@@ -154,35 +154,35 @@ struct EntryMacroTests {
             }
             """,
             expandedSource: """
-            extension AppStorageValues {
-                var test: UInt64? {
-                    get {
-                        getValue(`__Key_test`.self)
+                extension AppStorageValues {
+                    var test: UInt64? {
+                        get {
+                            getValue(`__Key_test`.self)
+                        }
+                        set {
+                            setValue(`__Key_test`.self, newValue: newValue)
+                        }
                     }
-                    set {
-                        setValue(`__Key_test`.self, newValue: newValue)
+                
+                    private struct `__Key_test`: SwiftCrossUI.AppStorageKey {
+                        static let defaultValue: UInt64? = nil
+                        static let name = "test"
+                    }
+                    var name {
+                        get {
+                            getValue(`__Key_name`.self)
+                        }
+                        set {
+                            setValue(`__Key_name`.self, newValue: newValue)
+                        }
+                    }
+                
+                    private struct `__Key_name`: SwiftCrossUI.AppStorageKey {
+                        static let defaultValue = "default"
+                        static let name = "name"
                     }
                 }
-            
-                private struct `__Key_test`: SwiftCrossUI.AppStorageKey {
-                    static let defaultValue: UInt64? = nil
-                    static let name = "test"
-                }
-                var name {
-                    get {
-                        getValue(`__Key_name`.self)
-                    }
-                    set {
-                        setValue(`__Key_name`.self, newValue: newValue)
-                    }
-                }
-            
-                private struct `__Key_name`: SwiftCrossUI.AppStorageKey {
-                    static let defaultValue = "default"
-                    static let name = "name"
-                }
-            }
-            """,
+                """,
             diagnostics: [],
             macroSpecs: testMacros,
             failureHandler: { spec in
@@ -191,7 +191,9 @@ struct EntryMacroTests {
         )
     }
     
-    @Test("@Entry-annotated properties must be direct children of an EnvironmentValues or AppStorageValues extension.")
+    @Test(
+        "@Entry-annotated properties must be direct children of an EnvironmentValues or AppStorageValues extension."
+    )
     func entryOnValueWithoutDirectParentSupportedValuesExtensionFails() {
         assertMacroExpansion(
             """
@@ -202,12 +204,12 @@ struct EntryMacroTests {
             }
             """,
             expandedSource: """
-            extension EnvironmentValues {
-                struct WrongParent {
-                    var test: UInt64 = 1
+                extension EnvironmentValues {
+                    struct WrongParent {
+                        var test: UInt64 = 1
+                    }
                 }
-            }
-            """,
+                """,
             diagnostics: [
                 DiagnosticSpec(
                     message: "MacroError(message: \"@Entry-annotated properties must be direct children of EnvironmentValues or AppStorageValues extensions.\")",
@@ -231,10 +233,10 @@ struct EntryMacroTests {
             }
             """,
             expandedSource: """
-            extension EnvironmentValues {
-                let test: UInt64?
-            }
-            """,
+                extension EnvironmentValues {
+                    let test: UInt64?
+                }
+                """,
             diagnostics: [
                 DiagnosticSpec(
                     message: "MacroError(message: \"@Entry is only supported on single binding `var` declarations.\")",

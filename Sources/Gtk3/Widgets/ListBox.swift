@@ -56,10 +56,10 @@ open class ListBox: Container {
 
         let handler1:
             @convention(c) (UnsafeMutableRawPointer, GtkMovementStep, Int, UnsafeMutableRawPointer)
-                -> Void =
-                { _, value1, value2, data in
-                    SignalBox2<GtkMovementStep, Int>.run(data, value1, value2)
-                }
+            -> Void =
+            { _, value1, value2, data in
+                SignalBox2<GtkMovementStep, Int>.run(data, value1, value2)
+            }
 
         addSignal(name: "move-cursor", handler: gCallback(handler1)) {
             [weak self] (param0: GtkMovementStep, param1: Int) in
@@ -69,12 +69,13 @@ open class ListBox: Container {
 
         let handler2:
             @convention(c) (
-                UnsafeMutableRawPointer, UnsafeMutablePointer<GtkListBoxRow>,
+                UnsafeMutableRawPointer,
+                UnsafeMutablePointer<GtkListBoxRow>,
                 UnsafeMutableRawPointer
             ) -> Void =
-                { _, value1, data in
-                    SignalBox1<UnsafeMutablePointer<GtkListBoxRow>>.run(data, value1)
-                }
+            { _, value1, data in
+                SignalBox1<UnsafeMutablePointer<GtkListBoxRow>>.run(data, value1)
+            }
 
         addSignal(name: "row-activated", handler: gCallback(handler2)) {
             [weak self] (param0: UnsafeMutablePointer<GtkListBoxRow>) in
@@ -84,12 +85,13 @@ open class ListBox: Container {
 
         let handler3:
             @convention(c) (
-                UnsafeMutableRawPointer, UnsafeMutablePointer<GtkListBoxRow>?,
+                UnsafeMutableRawPointer,
+                UnsafeMutablePointer<GtkListBoxRow>?,
                 UnsafeMutableRawPointer
             ) -> Void =
-                { _, value1, data in
-                    SignalBox1<UnsafeMutablePointer<GtkListBoxRow>?>.run(data, value1)
-                }
+            { _, value1, data in
+                SignalBox1<UnsafeMutablePointer<GtkListBoxRow>?>.run(data, value1)
+            }
 
         addSignal(name: "row-selected", handler: gCallback(handler3)) {
             [weak self] (param0: UnsafeMutablePointer<GtkListBoxRow>?) in
@@ -108,10 +110,11 @@ open class ListBox: Container {
         }
 
         let handler6:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::activate-on-single-click", handler: gCallback(handler6)) {
             [weak self] (param0: OpaquePointer) in
@@ -120,10 +123,11 @@ open class ListBox: Container {
         }
 
         let handler7:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::selection-mode", handler: gCallback(handler7)) {
             [weak self] (param0: OpaquePointer) in

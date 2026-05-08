@@ -51,7 +51,8 @@ extension State {
     }
 
     @available(
-        *, deprecated,
+        *,
+        deprecated,
         message: """
             'State' does not work correctly with non-observable classes; conform \
             your class to 'ObservableObject' or use a struct instead

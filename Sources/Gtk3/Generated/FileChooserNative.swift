@@ -159,8 +159,11 @@ import CGtk3
 open class FileChooserNative: NativeDialog, FileChooser {
     /// Creates a new #GtkFileChooserNative.
     public convenience init(
-        title: String, parent: UnsafeMutablePointer<GtkWindow>!, action: GtkFileChooserAction,
-        acceptLabel: String, cancelLabel: String
+        title: String,
+        parent: UnsafeMutablePointer<GtkWindow>!,
+        action: GtkFileChooserAction,
+        acceptLabel: String,
+        cancelLabel: String
     ) {
         self.init(
             gtk_file_chooser_native_new(title, parent, action, acceptLabel, cancelLabel)
@@ -196,10 +199,11 @@ open class FileChooserNative: NativeDialog, FileChooser {
         }
 
         let handler5:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::accept-label", handler: gCallback(handler5)) {
             [weak self] (param0: OpaquePointer) in
@@ -208,10 +212,11 @@ open class FileChooserNative: NativeDialog, FileChooser {
         }
 
         let handler6:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::cancel-label", handler: gCallback(handler6)) {
             [weak self] (param0: OpaquePointer) in
@@ -220,10 +225,11 @@ open class FileChooserNative: NativeDialog, FileChooser {
         }
 
         let handler7:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::action", handler: gCallback(handler7)) {
             [weak self] (param0: OpaquePointer) in
@@ -232,10 +238,11 @@ open class FileChooserNative: NativeDialog, FileChooser {
         }
 
         let handler8:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::create-folders", handler: gCallback(handler8)) {
             [weak self] (param0: OpaquePointer) in
@@ -244,10 +251,11 @@ open class FileChooserNative: NativeDialog, FileChooser {
         }
 
         let handler9:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::do-overwrite-confirmation", handler: gCallback(handler9)) {
             [weak self] (param0: OpaquePointer) in
@@ -256,10 +264,11 @@ open class FileChooserNative: NativeDialog, FileChooser {
         }
 
         let handler10:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::extra-widget", handler: gCallback(handler10)) {
             [weak self] (param0: OpaquePointer) in
@@ -268,10 +277,11 @@ open class FileChooserNative: NativeDialog, FileChooser {
         }
 
         let handler11:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::filter", handler: gCallback(handler11)) {
             [weak self] (param0: OpaquePointer) in
@@ -280,10 +290,11 @@ open class FileChooserNative: NativeDialog, FileChooser {
         }
 
         let handler12:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::local-only", handler: gCallback(handler12)) {
             [weak self] (param0: OpaquePointer) in
@@ -292,10 +303,11 @@ open class FileChooserNative: NativeDialog, FileChooser {
         }
 
         let handler13:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::preview-widget", handler: gCallback(handler13)) {
             [weak self] (param0: OpaquePointer) in
@@ -304,10 +316,11 @@ open class FileChooserNative: NativeDialog, FileChooser {
         }
 
         let handler14:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::preview-widget-active", handler: gCallback(handler14)) {
             [weak self] (param0: OpaquePointer) in
@@ -316,10 +329,11 @@ open class FileChooserNative: NativeDialog, FileChooser {
         }
 
         let handler15:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::select-multiple", handler: gCallback(handler15)) {
             [weak self] (param0: OpaquePointer) in
@@ -328,10 +342,11 @@ open class FileChooserNative: NativeDialog, FileChooser {
         }
 
         let handler16:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::show-hidden", handler: gCallback(handler16)) {
             [weak self] (param0: OpaquePointer) in
@@ -340,10 +355,11 @@ open class FileChooserNative: NativeDialog, FileChooser {
         }
 
         let handler17:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::use-preview-label", handler: gCallback(handler17)) {
             [weak self] (param0: OpaquePointer) in

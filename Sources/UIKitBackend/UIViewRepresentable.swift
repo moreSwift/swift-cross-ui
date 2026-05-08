@@ -77,10 +77,10 @@ func defaultViewSize(proposal: ProposedViewSize, view: UIView) -> ViewSize {
 
     let idealWidth =
         intrinsicSize.width == UIView.noIntrinsicMetric
-        ? 10 : intrinsicSize.width
+            ? 10 : intrinsicSize.width
     let idealHeight =
         intrinsicSize.height == UIView.noIntrinsicMetric
-        ? 10 : intrinsicSize.height
+            ? 10 : intrinsicSize.height
 
     // When the view doesn't grow along a dimension, we use its fittingSize
     // (rather than its intrinsicContentSize), because the intrinsicContentSize

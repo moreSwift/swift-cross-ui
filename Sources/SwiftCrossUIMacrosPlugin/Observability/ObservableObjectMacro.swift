@@ -22,7 +22,7 @@ public struct ObservableObjectMacro: MemberAttributeMacro, ExtensionMacro {
 
                 return
                     kind == .keyword(.static) || kind == .keyword(.private)
-                    || kind == .keyword(.fileprivate)
+                        || kind == .keyword(.fileprivate)
             }),
             // Only include variables
             variable._syntax.bindingSpecifier.text == "var",

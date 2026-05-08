@@ -80,7 +80,7 @@ open class Widget: GObject {
         addSignal(
             name: "screen-changed",
             handler: gCallback(handler3)
-        ) { [weak self] (previousScreen: OpaquePointer) in
+        ) { [weak self] (_: OpaquePointer) in
             guard let self else { return }
             self.screenChanged?()
         }

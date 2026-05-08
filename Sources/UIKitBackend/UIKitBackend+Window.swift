@@ -38,7 +38,8 @@ final class RootViewController: UIViewController {
     }
 
     override func viewWillTransition(
-        to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator
+        to size: CGSize,
+        with coordinator: any UIViewControllerTransitionCoordinator
     ) {
         resizeHandler?(size)
         super.viewWillTransition(to: size, with: coordinator)

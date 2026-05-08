@@ -8,33 +8,33 @@ protocol CheckboxWidget: WidgetProtocol {
 }
 
 #if targetEnvironment(macCatalyst)
-@available(macCatalyst 14, *)
-final class UISwitchCheckbox: WrapperWidget<UISwitch>, CheckboxWidget {
-    private var onChange: ((Bool) -> Void)?
+    @available(macCatalyst 14, *)
+    final class UISwitchCheckbox: WrapperWidget<UISwitch>, CheckboxWidget {
+        private var onChange: ((Bool) -> Void)?
     
-    init() {
-        let child = UISwitch()
-        child.preferredStyle = .checkbox
+        init() {
+            let child = UISwitch()
+            child.preferredStyle = .checkbox
         
-        super.init(child: child)
+            super.init(child: child)
         
-        child.addTarget(self, action: #selector(switchChanged(sender:)), for: .valueChanged)
-    }
+            child.addTarget(self, action: #selector(switchChanged(sender:)), for: .valueChanged)
+        }
     
-    var state: Bool {
-        get { child.isOn }
-        set { child.isOn = newValue }
-    }
+        var state: Bool {
+            get { child.isOn }
+            set { child.isOn = newValue }
+        }
     
-    func update(environment: EnvironmentValues, onChange: @escaping (Bool) -> Void) {
-        child.isEnabled = environment.isEnabled
-        self.onChange = onChange
-    }
+        func update(environment: EnvironmentValues, onChange: @escaping (Bool) -> Void) {
+            child.isEnabled = environment.isEnabled
+            self.onChange = onChange
+        }
     
-    @objc func switchChanged(sender: UISwitch) {
-        onChange?(sender.isOn)
+        @objc func switchChanged(sender: UISwitch) {
+            onChange?(sender.isOn)
+        }
     }
-}
 #endif
 
 final class UIButtonCheckbox: WrapperWidget<UIButton>, CheckboxWidget {
@@ -49,7 +49,8 @@ final class UIButtonCheckbox: WrapperWidget<UIButton>, CheckboxWidget {
             }
             
             #if !os(tvOS)
-            child.backgroundColor = child.isEnabled && state ? .systemBlue : .secondarySystemFill
+                child.backgroundColor = child
+                    .isEnabled && state ? .systemBlue : .secondarySystemFill
             #endif
         }
     }
@@ -95,7 +96,7 @@ extension UIKitBackend {
     public func createCheckbox() -> any WidgetProtocol {
         #if targetEnvironment(macCatalyst)
             if #available(macCatalyst 14, *),
-                UIDevice.current.userInterfaceIdiom == .mac
+               UIDevice.current.userInterfaceIdiom == .mac
             {
                 return UISwitchCheckbox()
             }
@@ -104,7 +105,11 @@ extension UIKitBackend {
         return UIButtonCheckbox()
     }
     
-    public func updateCheckbox(_ checkboxWidget: any WidgetProtocol, environment: EnvironmentValues, onChange: @escaping (Bool) -> Void) {
+    public func updateCheckbox(
+        _ checkboxWidget: any WidgetProtocol,
+        environment: EnvironmentValues,
+        onChange: @escaping (Bool) -> Void
+    ) {
         let widget = checkboxWidget as! any CheckboxWidget
         widget.update(environment: environment, onChange: onChange)
     }

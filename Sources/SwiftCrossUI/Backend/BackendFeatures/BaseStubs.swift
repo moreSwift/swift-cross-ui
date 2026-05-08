@@ -39,10 +39,11 @@ extension BackendFeatures {
     /// entire backend in one go.
     #if !DEBUG
         @available(
-            *, deprecated,
+            *,
+            deprecated,
             message: """
-            'BaseStubs' should not be used in release builds, conform to 'BaseAppBackend' instead
-            """
+                'BaseStubs' should not be used in release builds, conform to 'BaseAppBackend' instead
+                """
         )
     #endif
     public protocol BaseStubs: BaseAppBackend {}
@@ -50,28 +51,28 @@ extension BackendFeatures {
 
 // This type isn't actually used anywhere, so keep it out of release builds.
 #if DEBUG
-/// A backend "implementation" solely for testing whether
-/// ``BackendFeatures/BaseStubs`` has default implementations for all required
-/// backend features.
-///
-/// Aside from empty nested structs to satisfy associated type requirements,
-/// **this struct must remain empty** -- all backend methods and properties
-/// should have default implementations provided by `BaseStubs`. If any errors
-/// show up here, and you've added empty structs for all associated types,
-/// you're missing some default implementations.
-///
-///   1. Accept all fix-mes for the errors in question.
-///   2. Move the compiler-generated declarations out of this type and into the
-///      `BaseStubs` extension just below this type in the
-///      `BackendFeatures+BaseStubs` file. (Precisely _where_ you move them is
-///      unimportant, just try to keep some semblance of a logical order.)
-///   3. **Make all declarations `public`.** This is important, and the
-///      compiler likely won't help you here because this struct is `private`.
-///   4. Write `todo()` in the bodies of every method and property.
-private struct BaseStubsTest: BackendFeatures.BaseStubs {
-    struct Window {}
-    struct Widget {}
-}
+    /// A backend "implementation" solely for testing whether
+    /// ``BackendFeatures/BaseStubs`` has default implementations for all required
+    /// backend features.
+    ///
+    /// Aside from empty nested structs to satisfy associated type requirements,
+    /// **this struct must remain empty** -- all backend methods and properties
+    /// should have default implementations provided by `BaseStubs`. If any errors
+    /// show up here, and you've added empty structs for all associated types,
+    /// you're missing some default implementations.
+    ///
+    ///   1. Accept all fix-mes for the errors in question.
+    ///   2. Move the compiler-generated declarations out of this type and into the
+    ///      `BaseStubs` extension just below this type in the
+    ///      `BackendFeatures+BaseStubs` file. (Precisely _where_ you move them is
+    ///      unimportant, just try to keep some semblance of a logical order.)
+    ///   3. **Make all declarations `public`.** This is important, and the
+    ///      compiler likely won't help you here because this struct is `private`.
+    ///   4. Write `todo()` in the bodies of every method and property.
+    private struct BaseStubsTest: BackendFeatures.BaseStubs {
+        struct Window {}
+        struct Widget {}
+    }
 #endif
 
 #if !DEBUG
@@ -385,7 +386,9 @@ extension BackendFeatures.BaseStubs {
         todo()
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
+    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor ()
+        -> Void)
+    {
         todo()
     }
 
@@ -464,7 +467,10 @@ extension BackendFeatures.BaseStubs {
         todo()
     }
 
-    public func computeWindowEnvironment(window: Window, rootEnvironment: EnvironmentValues) -> EnvironmentValues {
+    public func computeWindowEnvironment(
+        window: Window,
+        rootEnvironment: EnvironmentValues
+    ) -> EnvironmentValues {
         todo()
     }
 

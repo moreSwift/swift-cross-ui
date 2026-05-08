@@ -57,7 +57,10 @@ extension UIKitBackend {
         let listView = (listView as! WrapperWidget<UICustomTableView>).child
         if let index {
             listView.selectRow(
-                at: IndexPath(indexes: [0, index]), animated: false, scrollPosition: .none)
+                at: IndexPath(indexes: [0, index]),
+                animated: false,
+                scrollPosition: .none
+            )
         } else {
             listView.selectRow(at: nil, animated: false, scrollPosition: .none)
         }

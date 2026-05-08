@@ -34,9 +34,9 @@ open class MenuShell: Container {
 
         let handler0:
             @convention(c) (UnsafeMutableRawPointer, Bool, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<Bool>.run(data, value1)
-                }
+            { _, value1, data in
+                SignalBox1<Bool>.run(data, value1)
+            }
 
         addSignal(name: "activate-current", handler: gCallback(handler0)) {
             [weak self] (param0: Bool) in
@@ -51,10 +51,10 @@ open class MenuShell: Container {
 
         let handler2:
             @convention(c) (UnsafeMutableRawPointer, GtkDirectionType, UnsafeMutableRawPointer) ->
-                Void =
-                { _, value1, data in
-                    SignalBox1<GtkDirectionType>.run(data, value1)
-                }
+            Void =
+            { _, value1, data in
+                SignalBox1<GtkDirectionType>.run(data, value1)
+            }
 
         addSignal(name: "cycle-focus", handler: gCallback(handler2)) {
             [weak self] (param0: GtkDirectionType) in
@@ -69,10 +69,10 @@ open class MenuShell: Container {
 
         let handler4:
             @convention(c) (UnsafeMutableRawPointer, GtkWidget, Int, UnsafeMutableRawPointer) ->
-                Void =
-                { _, value1, value2, data in
-                    SignalBox2<GtkWidget, Int>.run(data, value1, value2)
-                }
+            Void =
+            { _, value1, value2, data in
+                SignalBox2<GtkWidget, Int>.run(data, value1, value2)
+            }
 
         addSignal(name: "insert", handler: gCallback(handler4)) {
             [weak self] (param0: GtkWidget, param1: Int) in
@@ -82,10 +82,10 @@ open class MenuShell: Container {
 
         let handler5:
             @convention(c) (UnsafeMutableRawPointer, GtkMenuDirectionType, UnsafeMutableRawPointer)
-                -> Void =
-                { _, value1, data in
-                    SignalBox1<GtkMenuDirectionType>.run(data, value1)
-                }
+            -> Void =
+            { _, value1, data in
+                SignalBox1<GtkMenuDirectionType>.run(data, value1)
+            }
 
         addSignal(name: "move-current", handler: gCallback(handler5)) {
             [weak self] (param0: GtkMenuDirectionType) in
@@ -95,9 +95,9 @@ open class MenuShell: Container {
 
         let handler6:
             @convention(c) (UnsafeMutableRawPointer, Int, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<Int>.run(data, value1)
-                }
+            { _, value1, data in
+                SignalBox1<Int>.run(data, value1)
+            }
 
         addSignal(name: "move-selected", handler: gCallback(handler6)) {
             [weak self] (param0: Int) in
@@ -111,10 +111,11 @@ open class MenuShell: Container {
         }
 
         let handler8:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::take-focus", handler: gCallback(handler8)) {
             [weak self] (param0: OpaquePointer) in

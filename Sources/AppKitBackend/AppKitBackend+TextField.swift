@@ -84,7 +84,7 @@ extension AppKitBackend {
             secureField.font = Self.font(for: resolvedFont)
         }
 
-        secureField.onEdit = { textField in
+        secureField.onEdit = { _ in
             onChange(secureField.stringValue)
         }
         secureField.onSubmit = onSubmit

@@ -20,11 +20,11 @@ struct StateImpl<Storage: StateStorageProtocol> {
         // to protocol Optional doesn't conform to can still succeed when the value
         // is `.some` and the wrapped type conforms to the protocol.
         if Storage.Value.self is ObservableObject.Type,
-            let value = initialStorage.value as? ObservableObject
+           let value = initialStorage.value as? ObservableObject
         {
             storage.downstreamObservation = storage.didChange.link(toUpstream: value.didChange)
         } else if let value = initialStorage.value as? OptionalObservableObject,
-            let innerDidChange = value.didChange
+                  let innerDidChange = value.didChange
         {
             // If we have an `Optional<some ObservableObject>.some`, then observe its
             // inner value's publisher.

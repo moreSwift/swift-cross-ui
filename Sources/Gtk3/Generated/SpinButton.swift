@@ -110,7 +110,9 @@ import CGtk3
 open class SpinButton: Entry, Orientable {
     /// Creates a new #GtkSpinButton.
     public convenience init(
-        adjustment: UnsafeMutablePointer<GtkAdjustment>!, climbRate: Double, digits: UInt
+        adjustment: UnsafeMutablePointer<GtkAdjustment>!,
+        climbRate: Double,
+        digits: UInt
     ) {
         self.init(
             gtk_spin_button_new(adjustment, climbRate, guint(digits))
@@ -136,10 +138,11 @@ open class SpinButton: Entry, Orientable {
         super.didMoveToParent()
 
         let handler0:
-            @convention(c) (UnsafeMutableRawPointer, GtkScrollType, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<GtkScrollType>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, GtkScrollType, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<GtkScrollType>.run(data, value1)
+            }
 
         addSignal(name: "change-value", handler: gCallback(handler0)) {
             [weak self] (param0: GtkScrollType) in
@@ -149,9 +152,9 @@ open class SpinButton: Entry, Orientable {
 
         let handler1:
             @convention(c) (UnsafeMutableRawPointer, gpointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<gpointer>.run(data, value1)
-                }
+            { _, value1, data in
+                SignalBox1<gpointer>.run(data, value1)
+            }
 
         addSignal(name: "input", handler: gCallback(handler1)) { [weak self] (param0: gpointer) in
             guard let self else { return }
@@ -174,10 +177,11 @@ open class SpinButton: Entry, Orientable {
         }
 
         let handler5:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::adjustment", handler: gCallback(handler5)) {
             [weak self] (param0: OpaquePointer) in
@@ -186,10 +190,11 @@ open class SpinButton: Entry, Orientable {
         }
 
         let handler6:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::climb-rate", handler: gCallback(handler6)) {
             [weak self] (param0: OpaquePointer) in
@@ -198,10 +203,11 @@ open class SpinButton: Entry, Orientable {
         }
 
         let handler7:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::digits", handler: gCallback(handler7)) {
             [weak self] (param0: OpaquePointer) in
@@ -210,10 +216,11 @@ open class SpinButton: Entry, Orientable {
         }
 
         let handler8:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::numeric", handler: gCallback(handler8)) {
             [weak self] (param0: OpaquePointer) in
@@ -222,10 +229,11 @@ open class SpinButton: Entry, Orientable {
         }
 
         let handler9:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::snap-to-ticks", handler: gCallback(handler9)) {
             [weak self] (param0: OpaquePointer) in
@@ -234,10 +242,11 @@ open class SpinButton: Entry, Orientable {
         }
 
         let handler10:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::update-policy", handler: gCallback(handler10)) {
             [weak self] (param0: OpaquePointer) in
@@ -246,10 +255,11 @@ open class SpinButton: Entry, Orientable {
         }
 
         let handler11:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::value", handler: gCallback(handler11)) {
             [weak self] (param0: OpaquePointer) in
@@ -258,10 +268,11 @@ open class SpinButton: Entry, Orientable {
         }
 
         let handler12:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::wrap", handler: gCallback(handler12)) {
             [weak self] (param0: OpaquePointer) in
@@ -270,10 +281,11 @@ open class SpinButton: Entry, Orientable {
         }
 
         let handler13:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::orientation", handler: gCallback(handler13)) {
             [weak self] (param0: OpaquePointer) in

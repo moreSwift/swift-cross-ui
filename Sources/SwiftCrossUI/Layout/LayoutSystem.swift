@@ -60,7 +60,7 @@ public enum LayoutSystem {
 
         public init(
             computeLayout:
-                @escaping @MainActor (ProposedViewSize, EnvironmentValues) ->
+            @escaping @MainActor (ProposedViewSize, EnvironmentValues) ->
                 ViewLayoutResult,
             commit: @escaping @MainActor () -> ViewLayoutResult,
             tag: String? = nil
@@ -165,17 +165,17 @@ public enum LayoutSystem {
                 totalReservedSpace: totalSpacing,
                 minimumLengths: [Double](repeating: 0, count: children.count),
                 redistributeSpaceOnCommit:
-                    shouldRedistributeSpaceOnCommit(
-                        proposedSize: proposedSize,
-                        orientation: orientation
-                    )
+                shouldRedistributeSpaceOnCommit(
+                    proposedSize: proposedSize,
+                    orientation: orientation
+                )
             )
 
             return ViewLayoutResult(
                 size: size,
                 childResults: results,
                 participateInStackLayoutsWhenEmpty:
-                    results.contains(where: \.participateInStackLayoutsWhenEmpty),
+                results.contains(where: \.participateInStackLayoutsWhenEmpty),
                 preferencesOverlay: nil
             )
         }
@@ -209,7 +209,7 @@ public enum LayoutSystem {
             size: size,
             childResults: renderedChildren,
             participateInStackLayoutsWhenEmpty:
-                renderedChildren.contains(where: \.participateInStackLayoutsWhenEmpty)
+            renderedChildren.contains(where: \.participateInStackLayoutsWhenEmpty)
         )
     }
 

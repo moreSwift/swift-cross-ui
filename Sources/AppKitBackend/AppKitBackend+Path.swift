@@ -29,14 +29,14 @@ extension AppKitBackend {
         path.lineWidth = CGFloat(strokeStyle.width)
 
         path.lineCapStyle =
-        switch strokeStyle.cap {
-            case .butt:
+            switch strokeStyle.cap {
+                case .butt:
                     .butt
-            case .round:
+                case .round:
                     .round
-            case .square:
+                case .square:
                     .square
-        }
+            }
 
         switch strokeStyle.join {
             case .miter(let limit):
@@ -141,12 +141,12 @@ extension AppKitBackend {
                         )
                     )
                 case .arc(
-                    let center,
-                    let radius,
-                    let startAngle,
-                    let endAngle,
-                    let clockwise
-                ):
+                let center,
+                let radius,
+                let startAngle,
+                let endAngle,
+                let clockwise
+            ):
                     path.appendArc(
                         withCenter: NSPoint(x: center.x, y: center.y),
                         radius: CGFloat(radius),

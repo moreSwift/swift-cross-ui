@@ -75,7 +75,8 @@ import CGtk3
 open class Scale: Range {
     /// Creates a new #GtkScale.
     public convenience init(
-        orientation: GtkOrientation, adjustment: UnsafeMutablePointer<GtkAdjustment>!
+        orientation: GtkOrientation,
+        adjustment: UnsafeMutablePointer<GtkAdjustment>!
     ) {
         self.init(
             gtk_scale_new(orientation, adjustment)
@@ -92,7 +93,10 @@ open class Scale: Range {
     /// is a power of ten. If the resulting precision is not suitable for your
     /// needs, use gtk_scale_set_digits() to correct it.
     public convenience init(
-        range orientation: GtkOrientation, min: Double, max: Double, step: Double
+        range orientation: GtkOrientation,
+        min: Double,
+        max: Double,
+        step: Double
     ) {
         self.init(
             gtk_scale_new_with_range(orientation, min, max, step)
@@ -103,10 +107,11 @@ open class Scale: Range {
         super.didMoveToParent()
 
         let handler0:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::digits", handler: gCallback(handler0)) {
             [weak self] (param0: OpaquePointer) in
@@ -115,10 +120,11 @@ open class Scale: Range {
         }
 
         let handler1:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::draw-value", handler: gCallback(handler1)) {
             [weak self] (param0: OpaquePointer) in
@@ -127,10 +133,11 @@ open class Scale: Range {
         }
 
         let handler2:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::has-origin", handler: gCallback(handler2)) {
             [weak self] (param0: OpaquePointer) in
@@ -139,10 +146,11 @@ open class Scale: Range {
         }
 
         let handler3:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::value-pos", handler: gCallback(handler3)) {
             [weak self] (param0: OpaquePointer) in

@@ -14,7 +14,8 @@ public struct RoundedRectangle {
     public init(cornerRadius: Double) {
         assert(
             cornerRadius >= 0.0 && cornerRadius.isFinite,
-            "Corner radius must be a positive finite value")
+            "Corner radius must be a positive finite value"
+        )
         self.cornerRadius = cornerRadius
     }
 
@@ -80,7 +81,9 @@ extension RoundedRectangle: Shape {
                 .addLine(to: SIMD2(x: bounds.maxX, y: bounds.maxY - effectiveRadius))
                 .addArc(
                     center: SIMD2(
-                        x: bounds.maxX - effectiveRadius, y: bounds.maxY - effectiveRadius),
+                        x: bounds.maxX - effectiveRadius,
+                        y: bounds.maxY - effectiveRadius
+                    ),
                     radius: effectiveRadius,
                     startAngle: 0.0,
                     endAngle: .pi * 0.5,
@@ -112,7 +115,9 @@ extension RoundedRectangle: Shape {
                     .addLine(to: SIMD2(x: bounds.maxX - effectiveRadius, y: bounds.y))
                     .addArc(
                         center: SIMD2(
-                            x: bounds.maxX - effectiveRadius, y: bounds.y + effectiveRadius),
+                            x: bounds.maxX - effectiveRadius,
+                            y: bounds.y + effectiveRadius
+                        ),
                         radius: effectiveRadius,
                         startAngle: .pi * 1.5,
                         endAngle: .pi * 1.75,
@@ -160,7 +165,9 @@ extension RoundedRectangle: Shape {
                 $0
                     .addArc(
                         center: SIMD2(
-                            x: bounds.maxX - effectiveRadius, y: bounds.y + effectiveRadius),
+                            x: bounds.maxX - effectiveRadius,
+                            y: bounds.y + effectiveRadius
+                        ),
                         radius: effectiveRadius,
                         startAngle: .pi * 1.75,
                         endAngle: 0.0,
@@ -169,7 +176,9 @@ extension RoundedRectangle: Shape {
                     .addLine(to: SIMD2(x: bounds.maxX, y: bounds.maxY - effectiveRadius))
                     .addArc(
                         center: SIMD2(
-                            x: bounds.maxX - effectiveRadius, y: bounds.maxY - effectiveRadius),
+                            x: bounds.maxX - effectiveRadius,
+                            y: bounds.maxY - effectiveRadius
+                        ),
                         radius: effectiveRadius,
                         startAngle: 0.0,
                         endAngle: .pi * 0.25,
@@ -245,7 +254,9 @@ extension RoundedRectangle: Shape {
                 $0
                     .addArc(
                         center: SIMD2(
-                            x: bounds.maxX - effectiveRadius, y: bounds.maxY - effectiveRadius),
+                            x: bounds.maxX - effectiveRadius,
+                            y: bounds.maxY - effectiveRadius
+                        ),
                         radius: effectiveRadius,
                         startAngle: .pi * 0.25,
                         endAngle: .pi * 0.5,
@@ -254,7 +265,9 @@ extension RoundedRectangle: Shape {
                     .addLine(to: SIMD2(x: bounds.x + effectiveRadius, y: bounds.maxY))
                     .addArc(
                         center: SIMD2(
-                            x: bounds.x + effectiveRadius, y: bounds.maxY - effectiveRadius),
+                            x: bounds.x + effectiveRadius,
+                            y: bounds.maxY - effectiveRadius
+                        ),
                         radius: effectiveRadius,
                         startAngle: .pi * 0.5,
                         endAngle: .pi * 0.75,
@@ -330,7 +343,9 @@ extension RoundedRectangle: Shape {
                 $0
                     .addArc(
                         center: SIMD2(
-                            x: bounds.x + effectiveRadius, y: bounds.maxY - effectiveRadius),
+                            x: bounds.x + effectiveRadius,
+                            y: bounds.maxY - effectiveRadius
+                        ),
                         radius: effectiveRadius,
                         startAngle: .pi * 0.75,
                         endAngle: .pi,

@@ -63,7 +63,7 @@ final class WindowReference<SceneType: WindowingScene> {
                 backend: backend,
                 environment: self.parentEnvironment,
                 windowSizeIsFinal:
-                    !backend.isWindowProgrammaticallyResizable(window)
+                !backend.isWindowProgrammaticallyResizable(window)
             )
         }
 
@@ -76,7 +76,7 @@ final class WindowReference<SceneType: WindowingScene> {
                 backend: backend,
                 environment: self.parentEnvironment,
                 windowSizeIsFinal:
-                    !backend.isWindowProgrammaticallyResizable(window)
+                !backend.isWindowProgrammaticallyResizable(window)
             )
         }
     }
@@ -281,11 +281,12 @@ final class WindowReference<SceneType: WindowingScene> {
                 backend.setBehaviors(
                     ofWindow: window as! NewBackend.Window,
                     closable:
-                        finalContentResult.preferences.windowDismissBehavior?.isEnabled ?? true,
+                    finalContentResult.preferences.windowDismissBehavior?.isEnabled ?? true,
                     minimizable:
-                        finalContentResult.preferences.preferredWindowMinimizeBehavior?.isEnabled ?? true,
+                    finalContentResult.preferences.preferredWindowMinimizeBehavior?
+                        .isEnabled ?? true,
                     resizable:
-                        finalContentResult.preferences.windowResizeBehavior?.isEnabled ?? true
+                    finalContentResult.preferences.windowResizeBehavior?.isEnabled ?? true
                 )
             }
             setBehaviors(backend: backend)

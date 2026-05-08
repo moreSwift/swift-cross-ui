@@ -192,7 +192,7 @@ extension ToolbarItem {
     /// nil, the item will have its natural size.
     public func frame(width: Double?) -> any ToolbarItem {
         if #available(iOS 14, macCatalyst 14, *),
-            self is Spacer || self is FixedWidthSpacerItem
+           self is Spacer || self is FixedWidthSpacerItem
         {
             FixedWidthSpacerItem(width: width)
         } else {
@@ -272,27 +272,38 @@ final class KeyboardToolbar: UIToolbar {
             case .block(let elements):
                 for (i, element) in elements.enumerated() {
                     visitItems(
-                        component: element, inside: .block(index: i, inside: container),
-                        callback: callback)
+                        component: element,
+                        inside: .block(index: i, inside: container),
+                        callback: callback
+                    )
                 }
             case .array(let elements):
                 for (i, element) in elements.enumerated() {
                     visitItems(
-                        component: element, inside: .array(index: i, inside: container),
-                        callback: callback)
+                        component: element,
+                        inside: .array(index: i, inside: container),
+                        callback: callback
+                    )
                 }
             case .optional(let element):
                 if let element {
                     visitItems(
-                        component: element, inside: .optional(inside: container), callback: callback
+                        component: element,
+                        inside: .optional(inside: container),
+                        callback: callback
                     )
                 }
             case .eitherFirst(let element):
                 visitItems(
-                    component: element, inside: .eitherFirst(inside: container), callback: callback)
+                    component: element,
+                    inside: .eitherFirst(inside: container),
+                    callback: callback
+                )
             case .eitherSecond(let element):
                 visitItems(
-                    component: element, inside: .eitherSecond(inside: container), callback: callback
+                    component: element,
+                    inside: .eitherSecond(inside: container),
+                    callback: callback
                 )
         }
     }

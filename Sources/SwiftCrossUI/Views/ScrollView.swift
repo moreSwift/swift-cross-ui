@@ -130,7 +130,7 @@ public struct ScrollView<Content: View>: TypeSafeView, View {
         if axes.contains(.horizontal) {
             outerSize.width =
                 proposedSize.width
-                ?? (finalChildResult.size.width + verticalScrollBarWidth)
+                    ?? (finalChildResult.size.width + verticalScrollBarWidth)
         } else {
             outerSize.width += verticalScrollBarWidth
         }
@@ -138,7 +138,7 @@ public struct ScrollView<Content: View>: TypeSafeView, View {
         if axes.contains(.vertical) {
             outerSize.height =
                 proposedSize.height
-                ?? (finalChildResult.size.height + horizontalScrollBarHeight)
+                    ?? (finalChildResult.size.height + horizontalScrollBarHeight)
         } else {
             outerSize.height += horizontalScrollBarHeight
         }

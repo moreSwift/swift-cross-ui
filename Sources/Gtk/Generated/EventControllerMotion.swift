@@ -21,10 +21,10 @@ open class EventControllerMotion: EventController {
 
         let handler0:
             @convention(c) (UnsafeMutableRawPointer, Double, Double, UnsafeMutableRawPointer) ->
-                Void =
-                { _, value1, value2, data in
-                    SignalBox2<Double, Double>.run(data, value1, value2)
-                }
+            Void =
+            { _, value1, value2, data in
+                SignalBox2<Double, Double>.run(data, value1, value2)
+            }
 
         addSignal(name: "enter", handler: gCallback(handler0)) {
             [weak self] (param0: Double, param1: Double) in
@@ -39,10 +39,10 @@ open class EventControllerMotion: EventController {
 
         let handler2:
             @convention(c) (UnsafeMutableRawPointer, Double, Double, UnsafeMutableRawPointer) ->
-                Void =
-                { _, value1, value2, data in
-                    SignalBox2<Double, Double>.run(data, value1, value2)
-                }
+            Void =
+            { _, value1, value2, data in
+                SignalBox2<Double, Double>.run(data, value1, value2)
+            }
 
         addSignal(name: "motion", handler: gCallback(handler2)) {
             [weak self] (param0: Double, param1: Double) in
@@ -51,10 +51,11 @@ open class EventControllerMotion: EventController {
         }
 
         let handler3:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::contains-pointer", handler: gCallback(handler3)) {
             [weak self] (param0: OpaquePointer) in
@@ -63,10 +64,11 @@ open class EventControllerMotion: EventController {
         }
 
         let handler4:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::is-pointer", handler: gCallback(handler4)) {
             [weak self] (param0: OpaquePointer) in

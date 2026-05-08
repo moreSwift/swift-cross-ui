@@ -51,7 +51,8 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
                 guard let provider else {
                     fatalError(
                         """
-                        @AppStorage value with key '\(mode.pathDescription)' used before initialization. \
+                        @AppStorage value with key '\(mode
+                            .pathDescription)' used before initialization. \
                         Don't use @AppStorage properties before SwiftCrossUI requests the \
                         body of the enclosing 'App' or 'View'.
                         """
@@ -123,7 +124,8 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
 
 extension AppStorage {
     @available(
-        *, deprecated,
+        *,
+        deprecated,
         message: "'AppStorage' does not work correctly with classes; use a struct instead"
     )
     public init(
@@ -137,7 +139,8 @@ extension AppStorage {
     }
 
     @available(
-        *, deprecated,
+        *,
+        deprecated,
         message: """
             'AppStorage' currently does not persist 'ObservableObject' types \
             to disk when published properties update

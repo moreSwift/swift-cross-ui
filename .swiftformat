@@ -11,8 +11,13 @@
 --allow-partial-wrapping false
 --wrap-arguments before-first
 --wrap-parameters before-first
---rules blockComments,consecutiveBlankLines, \
-        consecutiveSpaces,consistentSwitchCaseSpacing, \
-        docCommentsBeforeModifiers,duplicateImports, \
-        lineBreakAtEndOfFile,preferKeyPath, \
-        singlePropertyPerLine,spaceInsideComments
+--indent-strings true
+--rules blockComments, consecutiveBlankLines, \
+        consecutiveSpaces, consistentSwitchCaseSpacing, \
+        docCommentsBeforeModifiers, duplicateImports, \
+        lineBreakAtEndOfFile, preferKeyPath, \
+        singlePropertyPerLine, spaceInsideComments, \
+        wrapArguments, indent, hoistPatternLet, \
+        unusedArguments, semicolons, wrap, \
+        wrapEnumCases, wrapMultilineStatementBraces, \
+        simplifyGenericConstraints

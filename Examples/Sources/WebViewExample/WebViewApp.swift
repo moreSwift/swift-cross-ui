@@ -27,10 +27,10 @@ struct WebViewApp: App {
                 VStack {
                     HStack {
                         #if !canImport(AndroidBackend)
-                        TextField("URL", text: $urlInput)
-                            .onSubmit {
-                                go(urlInput)
-                            }
+                            TextField("URL", text: $urlInput)
+                                .onSubmit {
+                                    go(urlInput)
+                                }
                         #endif
 
                         Button("Go") {

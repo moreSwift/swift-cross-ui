@@ -332,7 +332,8 @@ extension EnvironmentValues {
     /// Backing store for ``EnvironmentValues/openWindowFunctionsByID``.
     /// Used to resolve "non-sendable type" warnings in Swift 5 and errors in Swift 6 language mode.
     @Entry private var openWindowFunctionsByIDStore = UncheckedSendable(
-        wrappedValue: Box<[String: @MainActor () -> Void]>([:]))
+        wrappedValue: Box<[String: @MainActor () -> Void]>([:])
+    )
 
     /// A mapping of window IDs to functions that open the corresponding windows.
     internal var openWindowFunctionsByID: Box<[String: @MainActor () -> Void]> {

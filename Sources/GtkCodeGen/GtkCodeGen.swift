@@ -99,7 +99,8 @@ struct GtkCodeGen {
 
         try? FileManager.default.removeItem(at: arguments.outputDirectory)
         try FileManager.default.createDirectory(
-            at: arguments.outputDirectory, withIntermediateDirectories: true
+            at: arguments.outputDirectory,
+            withIntermediateDirectories: true
         )
 
         try generateSources(
@@ -115,24 +116,45 @@ struct GtkCodeGen {
         cGtkImport: String
     ) throws {
         let allowListedClasses = [
-            "Button", "Entry", "Label", "Range", "Scale", "Image", "Switch", "Spinner",
-            "ProgressBar", "FileChooserNative", "NativeDialog", "GestureClick",
-            "GestureSingle", "Gesture", "EventController", "GestureLongPress", "GLArea",
-            "DrawingArea", "CheckButton", "Calendar", "SpinButton",
+            "Button",
+            "Entry",
+            "Label",
+            "Range",
+            "Scale",
+            "Image",
+            "Switch",
+            "Spinner",
+            "ProgressBar",
+            "FileChooserNative",
+            "NativeDialog",
+            "GestureClick",
+            "GestureSingle",
+            "Gesture",
+            "EventController",
+            "GestureLongPress",
+            "GLArea",
+            "DrawingArea",
+            "CheckButton",
+            "Calendar",
+            "SpinButton",
         ]
         let gtk3AllowListedClasses = ["MenuShell", "EventBox"]
         let gtk4AllowListedClasses = [
-            "Picture", "DropDown", "Popover", "ListBox", "EventControllerMotion",
+            "Picture",
+            "DropDown",
+            "Popover",
+            "ListBox",
+            "EventControllerMotion",
             "EventControllerKey",
         ]
 
         for class_ in gir.namespace.classes {
             guard
                 allowListedClasses.contains(class_.name)
-                    || (gir.namespace.version == "3.0"
-                        && gtk3AllowListedClasses.contains(class_.name))
-                    || (gir.namespace.version == "4.0"
-                        && gtk4AllowListedClasses.contains(class_.name))
+                || (gir.namespace.version == "3.0"
+                    && gtk3AllowListedClasses.contains(class_.name))
+                || (gir.namespace.version == "4.0"
+                    && gtk4AllowListedClasses.contains(class_.name))
             else {
                 continue
             }
@@ -185,7 +207,10 @@ struct GtkCodeGen {
         var properties: [DeclSyntax] = []
         for property in interface.properties where property.version == nil {
             if let syntax = generateProperty(
-                property, namespace: namespace, classLike: interface, forProtocol: true
+                property,
+                namespace: namespace,
+                classLike: interface,
+                forProtocol: true
             ) {
                 properties.append(syntax)
             }
@@ -210,11 +235,11 @@ struct GtkCodeGen {
         let source = SourceFileSyntax(
             """
             import \(raw: cGtkImport)
-
+            
             \(raw: docComment(interface.doc))
             public protocol \(raw: interface.name): GObjectRepresentable {
                 \(raw: properties.map(\.description).joined(separator: "\n\n"))
-
+            
                 \(raw: signalProperties.map(\.description).joined(separator: "\n\n"))
             }
             """
@@ -304,26 +329,32 @@ struct GtkCodeGen {
         let source = SourceFileSyntax(
             """
             import \(raw: cGtkImport)
-
+            
             \(raw: docComment(enumeration.doc))
             public enum \(raw: enumeration.name): GValueRepresentableEnum {
                 public typealias GtkEnum = \(raw: enumeration.cType)
-
+            
                 \(raw: cases.map(\.description).joined(separator: "\n"))
-
+            
                 \(raw: typeProperty)
-
+            
                 public init(from gtkEnum: \(raw: enumeration.cType)) {
                     switch gtkEnum {
-                        \(raw: fromGtkConversionSwitchCases.map(\.description).joined(separator: "\n"))
+                        \(
+                            raw: fromGtkConversionSwitchCases.map(\.description).joined(
+                                separator: "\n"
+                            )
+                        )
                         default:
-                            fatalError("Unsupported \(raw: enumeration.cType) enum value: \\(gtkEnum.rawValue)")
+                            fatalError("Unsupported \(raw: enumeration
+                .cType) enum value: \\(gtkEnum.rawValue)")
                     }
                 }
-
+            
                 public func toGtk() -> \(raw: enumeration.cType) {
                     switch self {
-                        \(raw: toGtkConversionSwitchCases.map(\.description).joined(separator: "\n"))
+                        \(raw: toGtkConversionSwitchCases.map(\.description)
+                .joined(separator: "\n"))
                     }
                 }
             }
@@ -351,8 +382,8 @@ struct GtkCodeGen {
         for constructor in class_.constructors {
             guard
                 constructor.deprecated != 1
-                    || constructor.cIdentifier == "gtk_dialog_new"
-                    || constructor.cIdentifier == "gtk_file_chooser_native_new"
+                || constructor.cIdentifier == "gtk_dialog_new"
+                || constructor.cIdentifier == "gtk_file_chooser_native_new"
             else {
                 continue
             }
@@ -362,10 +393,13 @@ struct GtkCodeGen {
             }
 
             let excludedParameterTypes: [String] = [
-                "GListModel*", "GFile*", "cairo_surface_t*", "GdkPixbufAnimation*",
+                "GListModel*",
+                "GFile*",
+                "cairo_surface_t*",
+                "GdkPixbufAnimation*",
             ]
             if let type = constructor.parameters?.parameters.first?.type?.cType,
-                excludedParameterTypes.contains(type)
+               excludedParameterTypes.contains(type)
             {
                 continue
             }
@@ -384,7 +418,10 @@ struct GtkCodeGen {
                 property.version == nil || property.version == "3.2" || property.version == "2.6",
                 property.name != "child",
                 let decl = generateProperty(
-                    property, namespace: namespace, classLike: classLike, forProtocol: false
+                    property,
+                    namespace: namespace,
+                    classLike: classLike,
+                    forProtocol: false
                 )
             else {
                 continue
@@ -410,13 +447,19 @@ struct GtkCodeGen {
                 (
                     classLike,
                     Signal(
-                        name: "notify::\(property.name)", when: "before",
+                        name: "notify::\(property.name)",
+                        when: "before",
                         returnValue: ReturnValue(
-                            nullable: false, doc: "", type: property.type
+                            nullable: false,
+                            doc: "",
+                            type: property.type
                         ),
                         parameters: Parameters(parameters: [
                             Parameter(
-                                nullable: false, name: "object", transferOwnership: "", doc: "",
+                                nullable: false,
+                                name: "object",
+                                transferOwnership: "",
+                                doc: "",
                                 type: GIRType.init(name: "OpaquePointer", cType: "OpaquePointer")
                             )
                         ])
@@ -425,7 +468,7 @@ struct GtkCodeGen {
             )
         }
 
-        signals = signals.filter { (classLike, signal) in
+        signals = signals.filter { (_, signal) in
             !excludedSignals.contains(signal.name)
         }
 
@@ -450,7 +493,8 @@ struct GtkCodeGen {
         }
 
         for conformance in class_.getImplementedInterfaces(
-            namespace: namespace, excludeInherited: true
+            namespace: namespace,
+            excludeInherited: true
         ) {
             conformances.append(conformance.name)
         }
@@ -485,13 +529,13 @@ struct GtkCodeGen {
         let source = SourceFileSyntax(
             """
             import \(raw: cGtkImport)
-
+            
             \(raw: docComment(class_.doc))
             open class \(raw: class_.name)\(raw: conformanceString) {
                 \(raw: initializers.map(\.description).joined(separator: "\n\n"))
-
+            
                 \(raw: methods.map(\.description).joined(separator: "\n\n"))
-
+            
                 \(raw: properties.map(\.description).joined(separator: "\n\n"))
             }
             """
@@ -571,16 +615,22 @@ struct GtkCodeGen {
                 exprs.append(
                     DeclSyntax(
                         """
-                        let handler\(raw: signalIndex): @convention(c) (UnsafeMutableRawPointer, \(raw: typeParameters), UnsafeMutableRawPointer) -> Void =
+                        let handler\(raw: signalIndex): @convention(c) (UnsafeMutableRawPointer, \(
+                            raw: typeParameters
+                        ), UnsafeMutableRawPointer) -> Void =
                             { _, \(raw: arguments), data in
-                                SignalBox\(raw: parameterCount)<\(raw: typeParameters)>.run(data, \(raw: arguments))
+                                SignalBox\(raw: parameterCount)<\(raw: typeParameters)>.run(data, \(
+                                    raw: arguments
+                                ))
                             }
                         """
                     ).description
                 )
                 expr = ExprSyntax(
                     """
-                    addSignal(name: \(literal: signal.name), handler: gCallback(handler\(raw: signalIndex))) \(raw: closure)
+                    addSignal(name: \(literal: signal.name), handler: gCallback(handler\(
+                        raw: signalIndex
+                    ))) \(raw: closure)
                     """
                 )
             }
@@ -593,7 +643,7 @@ struct GtkCodeGen {
             """
             open override func \(raw: methodName)() {
                 super.\(raw: methodName)()
-
+            
                 \(raw: exprs.joined(separator: "\n\n"))
             }
             """
@@ -746,7 +796,8 @@ struct GtkCodeGen {
             \(raw: docComment(constructor.doc))
             public convenience init(\(raw: parameters)) {
                 self.init(
-                    \(raw: constructor.cIdentifier)(\(raw: generateArguments(constructor.parameters)))
+                    \(raw: constructor
+                .cIdentifier)(\(raw: generateArguments(constructor.parameters)))
                 )
             }
             """
@@ -791,16 +842,16 @@ struct GtkCodeGen {
 
         return
             parameters
-            .map { parameter in
-                if let type = parameter.type?.cType {
-                    return "\(parameter.name): \(convertCType(type))"
-                } else if let arrayElementType = parameter.array?.type.cType {
-                    return "\(parameter.name): [\(convertCType(arrayElementType))]"
-                } else {
-                    fatalError("Missing type for '\(parameter.name)'")
+                .map { parameter in
+                    if let type = parameter.type?.cType {
+                        return "\(parameter.name): \(convertCType(type))"
+                    } else if let arrayElementType = parameter.array?.type.cType {
+                        return "\(parameter.name): [\(convertCType(arrayElementType))]"
+                    } else {
+                        fatalError("Missing type for '\(parameter.name)'")
+                    }
                 }
-            }
-            .joined(separator: ", ")
+                .joined(separator: ", ")
     }
 
     static func generateArguments(_ parameters: Parameters?) -> String {
@@ -817,7 +868,7 @@ struct GtkCodeGen {
                         .baseAddress!
                     """
             } else if let type = parameter.type?.cType,
-                let destinationType = cTypesManuallyConverted[type]
+                      let destinationType = cTypesManuallyConverted[type]
             {
                 return "\(destinationType)(\(argument))"
             }

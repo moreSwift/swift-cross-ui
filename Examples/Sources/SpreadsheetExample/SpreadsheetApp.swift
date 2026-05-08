@@ -19,12 +19,18 @@ struct Person {
 struct SpreadsheetApp: App {
     @State var data = [
         Person(
-            name: "Alice", age: 99, phone: "(+61)1234123412",
-            email: "alice@example.com", occupation: "developer"
+            name: "Alice",
+            age: 99,
+            phone: "(+61)1234123412",
+            email: "alice@example.com",
+            occupation: "developer"
         ),
         Person(
-            name: "Bob", age: 99, phone: "(+61)1234123412",
-            email: "bob@example.com", occupation: "adversary"
+            name: "Bob",
+            age: 99,
+            phone: "(+61)1234123412",
+            email: "bob@example.com",
+            occupation: "adversary"
         ),
     ]
 

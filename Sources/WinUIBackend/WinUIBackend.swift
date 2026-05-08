@@ -90,7 +90,10 @@ public final class WinUIBackend:
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
     public let supportedDatePickerStyles: [DatePickerStyle] = [
-        .automatic, .graphical, .compact, .wheel,
+        .automatic,
+        .graphical,
+        .compact,
+        .wheel,
     ]
     public let supportedPickerStyles: [BackendPickerStyle] = [.menu, .radioGroup]
     public let canOverrideWindowColorScheme = true
@@ -433,8 +436,8 @@ public final class WinUIBackend:
 
         return
             defaultEnvironment
-            .with(\.colorScheme, isLight ? .light : .dark)
-            .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
+                .with(\.colorScheme, isLight ? .light : .dark)
+                .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
     public func setRootEnvironmentChangeHandler(
@@ -692,7 +695,7 @@ public final class WinUIBackend:
                 5 + 6 + 2
             )
         } else if let toggleButton = widget as? WinUI.ToggleButton,
-            toggleButton.padding == noPadding
+                  toggleButton.padding == noPadding
         {
             // See the above comment regarding Button. Very similar situation.
             adjustment = SIMD2(
@@ -711,7 +714,9 @@ public final class WinUIBackend:
             // weekdays wrap, making it taller than it says it is. Value was derived by trial and
             // error.
             adjustment = SIMD2(20, 0)
-        } else if computedSize.width == 0 && computedSize.height == 0 && widget is CalendarDatePicker
+        }
+        else if computedSize.width == 0 && computedSize
+            .height == 0 && widget is CalendarDatePicker
         {
             // I can't find any source on what the size of CalendarDatePicker is, but it reports 0x0
             // in at least some cases before initial render. In these cases, use a size derived
@@ -904,7 +909,7 @@ public final class WinUIBackend:
     public func createSelectableListView() -> Widget {
         let listView = CustomListView()
         listView.selectionMode = .single
-        listView.selectionChanged.addHandler { [weak listView] _, args in
+        listView.selectionChanged.addHandler { [weak listView] _, _ in
             guard let listView else { return }
             guard listView.selectedRanges.count > 0 else {
                 return
@@ -1255,7 +1260,7 @@ public final class WinUIBackend:
         let inputScopeName = InputScopeName(inputScope)
 
         if let inputScope = textField.inputScope,
-            inputScope.names.count == 1
+           inputScope.names.count == 1
         {
             inputScope.names[0] = inputScopeName
         } else {
@@ -1794,7 +1799,7 @@ public final class WinUIBackend:
     ) -> PathFigure {
         var pathGeometry: PathGeometry
         if collection.size > 0,
-            let castedLast = collection.getAt(collection.size - 1) as? PathGeometry
+           let castedLast = collection.getAt(collection.size - 1) as? PathGeometry
         {
             pathGeometry = castedLast
         } else {
@@ -1827,8 +1832,8 @@ public final class WinUIBackend:
                     lastPoint = Point(x: Float(point.x), y: Float(point.y))
 
                     if geometry.size > 0,
-                        let pathGeometry = geometry.getAt(geometry.size - 1) as? PathGeometry,
-                        pathGeometry.figures.size > 0
+                       let pathGeometry = geometry.getAt(geometry.size - 1) as? PathGeometry,
+                       pathGeometry.figures.size > 0
                     {
                         let figure = pathGeometry.figures.getAt(pathGeometry.figures.size - 1)!
                         if figure.segments.size > 0 {
@@ -1888,12 +1893,12 @@ public final class WinUIBackend:
                     ellipse.center = Point(x: Float(center.x), y: Float(center.y))
                     geometry.append(ellipse)
                 case .arc(
-                    let center,
-                    let radius,
-                    let startAngle,
-                    let endAngle,
-                    let clockwise
-                ):
+                let center,
+                let radius,
+                let startAngle,
+                let endAngle,
+                let clockwise
+            ):
                     let startPoint = Point(
                         x: Float(center.x + radius * cos(startAngle)),
                         y: Float(center.y + radius * sin(startAngle))
@@ -1963,8 +1968,8 @@ public final class WinUIBackend:
                     }
 
                     if geometry.size > 0,
-                        let pathGeometry = geometry.getAt(geometry.size - 1) as? PathGeometry,
-                        pathGeometry.figures.contains(where: { ($0?.segments.size ?? 0) > 0 })
+                       let pathGeometry = geometry.getAt(geometry.size - 1) as? PathGeometry,
+                       pathGeometry.figures.contains(where: { ($0?.segments.size ?? 0) > 0 })
                     {
                         // Start a new PathGeometry so that transforms don't apply going forward
                         geometry.append(PathGeometry())
@@ -1980,7 +1985,7 @@ public final class WinUIBackend:
         // Having empty paths in the geometry group causes rendering it to silently crash
         for i in (0..<geometry.size).reversed() {
             if let pathGeo = geometry.getAt(i) as? PathGeometry,
-                pathGeo.figures.size == 0
+               pathGeo.figures.size == 0
             {
                 geometry.removeAt(i)
             }
@@ -2308,6 +2313,7 @@ public class CustomWindow: WinUI.Window {
         self.activated.addHandler { [weak self] _, args in
             switch args?.windowActivationState {
                 case .codeActivated, .pointerActivated: self?.isActive = true
+
                 case .deactivated: self?.isActive = false
 
                 // NB: The compiler apparently thinks we didn't exhaustively switch
@@ -2374,7 +2380,9 @@ final class CustomDatePicker: StackPanel {
         }
 
         enum Discriminator {
-            case calendarView, calendarDatePicker, datePicker
+            case calendarView
+            case calendarDatePicker
+            case datePicker
         }
 
         var discriminator: Discriminator {
@@ -2406,7 +2414,7 @@ final class CustomDatePicker: StackPanel {
                 guard let change else { return }
                 self.date =
                     calendar.startOfDay(for: date)
-                    + Double(change.newTime.duration) / ticksPerSecond
+                        + Double(change.newTime.duration) / ticksPerSecond
                 self.onChange?(self.date)
             }
             needsUpdate = true
@@ -2468,7 +2476,9 @@ final class CustomDatePicker: StackPanel {
 
                     guard let newDate = change?.newDate else { return }
                     self.date = componentsToFoundationDate(
-                        dateTime: newDate, timeSpan: timeView?.selectedTime)
+                        dateTime: newDate,
+                        timeSpan: timeView?.selectedTime
+                    )
                     self.onChange?(self.date)
                 }
                 needsUpdate = true
@@ -2482,7 +2492,9 @@ final class CustomDatePicker: StackPanel {
 
                     guard let selectedDate = datePicker.selectedDate else { return }
                     self.date = componentsToFoundationDate(
-                        dateTime: selectedDate, timeSpan: timeView?.selectedTime)
+                        dateTime: selectedDate,
+                        timeSpan: timeView?.selectedTime
+                    )
                     self.onChange?(self.date)
                 }
                 needsUpdate = true

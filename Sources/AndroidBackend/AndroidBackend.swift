@@ -190,7 +190,11 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         log("warning: Attempted to set size of Android window")
     }
 
-    public func setSizeLimits(ofWindow window: Void, minimum minimumSize: SIMD2<Int>, maximum maximumSize: SIMD2<Int>?) {}
+    public func setSizeLimits(
+        ofWindow window: Void,
+        minimum minimumSize: SIMD2<Int>,
+        maximum maximumSize: SIMD2<Int>?
+    ) {}
 
     //    public func setBehaviors(ofWindow window: Void, closable: Bool, minimizable: Bool, resizable: Bool) {}
 
@@ -246,7 +250,9 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         return environment
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
+    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor ()
+        -> Void)
+    {
         // TODO(stackotter): Listen for system theme changes
         // and call helpers.clearTextSizeCache()
     }
@@ -452,5 +458,6 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         let width = Double(widget.getMeasuredWidth()) / environment.windowScaleFactor
         let height = Double(widget.getMeasuredHeight()) / environment.windowScaleFactor
         return SIMD2(Int(width.rounded(.up)), Int(height.rounded(.up)))
-    }
-}
+     }
+ }
+ 

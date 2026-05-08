@@ -47,7 +47,8 @@ struct BackgroundModifier<Background: View, Foreground: View>: TypeSafeView {
     }
 
     func asWidget<Backend: BaseAppBackend>(
-        _ children: TupleView2<Background, Foreground>.Children, backend: Backend
+        _ children: TupleView2<Background, Foreground>.Children,
+        backend: Backend
     ) -> Backend.Widget {
         body.asWidget(children, backend: backend)
     }

@@ -74,7 +74,8 @@ public struct ErasedViewGraphNode {
     }
 
     private init<V: View, Backend: BaseAppBackend>(
-        wrapping node: AnyViewGraphNode<V>, backend: Backend
+        wrapping node: AnyViewGraphNode<V>,
+        backend: Backend
     ) {
         self.init(wrapping: node.node as! ViewGraphNode<V, Backend>)
     }

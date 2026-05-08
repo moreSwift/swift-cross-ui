@@ -163,7 +163,11 @@ public final class TupleSceneNode4<Scene0: Scene, Scene1: Scene, Scene2: Scene, 
     }
 }
 public struct TupleScene5<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene
 >: Scene {
     public typealias Node = TupleSceneNode5<Scene0, Scene1, Scene2, Scene3, Scene4>
 
@@ -174,7 +178,11 @@ public struct TupleScene5<
     var scene4: Scene4
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4
     ) {
         self.scene0 = scene0
         self.scene1 = scene1
@@ -185,7 +193,11 @@ public struct TupleScene5<
 }
 
 public final class TupleSceneNode5<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene5<Scene0, Scene1, Scene2, Scene3, Scene4>
 
@@ -234,7 +246,12 @@ public final class TupleSceneNode5<
     }
 }
 public struct TupleScene6<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene
 >: Scene {
     public typealias Node = TupleSceneNode6<Scene0, Scene1, Scene2, Scene3, Scene4, Scene5>
 
@@ -246,7 +263,11 @@ public struct TupleScene6<
     var scene5: Scene5
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
         _ scene5: Scene5
     ) {
         self.scene0 = scene0
@@ -259,7 +280,12 @@ public struct TupleScene6<
 }
 
 public final class TupleSceneNode6<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene6<Scene0, Scene1, Scene2, Scene3, Scene4, Scene5>
 
@@ -312,7 +338,12 @@ public final class TupleSceneNode6<
     }
 }
 public struct TupleScene7<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
     Scene6: Scene
 >: Scene {
     public typealias Node = TupleSceneNode7<Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6>
@@ -326,8 +357,13 @@ public struct TupleScene7<
     var scene6: Scene6
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
-        _ scene5: Scene5, _ scene6: Scene6
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
+        _ scene5: Scene5,
+        _ scene6: Scene6
     ) {
         self.scene0 = scene0
         self.scene1 = scene1
@@ -340,7 +376,12 @@ public struct TupleScene7<
 }
 
 public final class TupleSceneNode7<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
     Scene6: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene7<Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6>
@@ -398,11 +439,24 @@ public final class TupleSceneNode7<
     }
 }
 public struct TupleScene8<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene
 >: Scene {
     public typealias Node = TupleSceneNode8<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7
     >
 
     var scene0: Scene0
@@ -415,8 +469,14 @@ public struct TupleScene8<
     var scene7: Scene7
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
-        _ scene5: Scene5, _ scene6: Scene6, _ scene7: Scene7
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
+        _ scene5: Scene5,
+        _ scene6: Scene6,
+        _ scene7: Scene7
     ) {
         self.scene0 = scene0
         self.scene1 = scene1
@@ -430,11 +490,24 @@ public struct TupleScene8<
 }
 
 public final class TupleSceneNode8<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene8<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7
     >
 
     var node0: Scene0.Node
@@ -494,11 +567,26 @@ public final class TupleSceneNode8<
     }
 }
 public struct TupleScene9<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene
 >: Scene {
     public typealias Node = TupleSceneNode9<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8
     >
 
     var scene0: Scene0
@@ -512,8 +600,15 @@ public struct TupleScene9<
     var scene8: Scene8
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
-        _ scene5: Scene5, _ scene6: Scene6, _ scene7: Scene7, _ scene8: Scene8
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
+        _ scene5: Scene5,
+        _ scene6: Scene6,
+        _ scene7: Scene7,
+        _ scene8: Scene8
     ) {
         self.scene0 = scene0
         self.scene1 = scene1
@@ -528,11 +623,26 @@ public struct TupleScene9<
 }
 
 public final class TupleSceneNode9<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene9<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8
     >
 
     var node0: Scene0.Node
@@ -596,11 +706,28 @@ public final class TupleSceneNode9<
     }
 }
 public struct TupleScene10<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene
 >: Scene {
     public typealias Node = TupleSceneNode10<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9
     >
 
     var scene0: Scene0
@@ -615,8 +742,16 @@ public struct TupleScene10<
     var scene9: Scene9
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
-        _ scene5: Scene5, _ scene6: Scene6, _ scene7: Scene7, _ scene8: Scene8, _ scene9: Scene9
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
+        _ scene5: Scene5,
+        _ scene6: Scene6,
+        _ scene7: Scene7,
+        _ scene8: Scene8,
+        _ scene9: Scene9
     ) {
         self.scene0 = scene0
         self.scene1 = scene1
@@ -632,11 +767,28 @@ public struct TupleScene10<
 }
 
 public final class TupleSceneNode10<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene10<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9
     >
 
     var node0: Scene0.Node
@@ -704,11 +856,30 @@ public final class TupleSceneNode10<
     }
 }
 public struct TupleScene11<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene
 >: Scene {
     public typealias Node = TupleSceneNode11<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10
     >
 
     var scene0: Scene0
@@ -724,8 +895,16 @@ public struct TupleScene11<
     var scene10: Scene10
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
-        _ scene5: Scene5, _ scene6: Scene6, _ scene7: Scene7, _ scene8: Scene8, _ scene9: Scene9,
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
+        _ scene5: Scene5,
+        _ scene6: Scene6,
+        _ scene7: Scene7,
+        _ scene8: Scene8,
+        _ scene9: Scene9,
         _ scene10: Scene10
     ) {
         self.scene0 = scene0
@@ -743,11 +922,30 @@ public struct TupleScene11<
 }
 
 public final class TupleSceneNode11<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene11<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10
     >
 
     var node0: Scene0.Node
@@ -819,11 +1017,31 @@ public final class TupleSceneNode11<
     }
 }
 public struct TupleScene12<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene
 >: Scene {
     public typealias Node = TupleSceneNode12<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
         Scene11
     >
 
@@ -841,9 +1059,18 @@ public struct TupleScene12<
     var scene11: Scene11
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
-        _ scene5: Scene5, _ scene6: Scene6, _ scene7: Scene7, _ scene8: Scene8, _ scene9: Scene9,
-        _ scene10: Scene10, _ scene11: Scene11
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
+        _ scene5: Scene5,
+        _ scene6: Scene6,
+        _ scene7: Scene7,
+        _ scene8: Scene8,
+        _ scene9: Scene9,
+        _ scene10: Scene10,
+        _ scene11: Scene11
     ) {
         self.scene0 = scene0
         self.scene1 = scene1
@@ -861,11 +1088,31 @@ public struct TupleScene12<
 }
 
 public final class TupleSceneNode12<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene12<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
         Scene11
     >
 
@@ -942,13 +1189,34 @@ public final class TupleSceneNode12<
     }
 }
 public struct TupleScene13<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
     Scene12: Scene
 >: Scene {
     public typealias Node = TupleSceneNode13<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12
     >
 
     var scene0: Scene0
@@ -966,9 +1234,19 @@ public struct TupleScene13<
     var scene12: Scene12
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
-        _ scene5: Scene5, _ scene6: Scene6, _ scene7: Scene7, _ scene8: Scene8, _ scene9: Scene9,
-        _ scene10: Scene10, _ scene11: Scene11, _ scene12: Scene12
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
+        _ scene5: Scene5,
+        _ scene6: Scene6,
+        _ scene7: Scene7,
+        _ scene8: Scene8,
+        _ scene9: Scene9,
+        _ scene10: Scene10,
+        _ scene11: Scene11,
+        _ scene12: Scene12
     ) {
         self.scene0 = scene0
         self.scene1 = scene1
@@ -987,13 +1265,34 @@ public struct TupleScene13<
 }
 
 public final class TupleSceneNode13<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
     Scene12: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene13<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12
     >
 
     var node0: Scene0.Node
@@ -1073,13 +1372,36 @@ public final class TupleSceneNode13<
     }
 }
 public struct TupleScene14<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
-    Scene12: Scene, Scene13: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
+    Scene12: Scene,
+    Scene13: Scene
 >: Scene {
     public typealias Node = TupleSceneNode14<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12, Scene13
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12,
+        Scene13
     >
 
     var scene0: Scene0
@@ -1098,9 +1420,20 @@ public struct TupleScene14<
     var scene13: Scene13
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
-        _ scene5: Scene5, _ scene6: Scene6, _ scene7: Scene7, _ scene8: Scene8, _ scene9: Scene9,
-        _ scene10: Scene10, _ scene11: Scene11, _ scene12: Scene12, _ scene13: Scene13
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
+        _ scene5: Scene5,
+        _ scene6: Scene6,
+        _ scene7: Scene7,
+        _ scene8: Scene8,
+        _ scene9: Scene9,
+        _ scene10: Scene10,
+        _ scene11: Scene11,
+        _ scene12: Scene12,
+        _ scene13: Scene13
     ) {
         self.scene0 = scene0
         self.scene1 = scene1
@@ -1120,13 +1453,36 @@ public struct TupleScene14<
 }
 
 public final class TupleSceneNode14<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
-    Scene12: Scene, Scene13: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
+    Scene12: Scene,
+    Scene13: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene14<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12, Scene13
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12,
+        Scene13
     >
 
     var node0: Scene0.Node
@@ -1210,13 +1566,38 @@ public final class TupleSceneNode14<
     }
 }
 public struct TupleScene15<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
-    Scene12: Scene, Scene13: Scene, Scene14: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
+    Scene12: Scene,
+    Scene13: Scene,
+    Scene14: Scene
 >: Scene {
     public typealias Node = TupleSceneNode15<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12, Scene13, Scene14
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12,
+        Scene13,
+        Scene14
     >
 
     var scene0: Scene0
@@ -1236,9 +1617,20 @@ public struct TupleScene15<
     var scene14: Scene14
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
-        _ scene5: Scene5, _ scene6: Scene6, _ scene7: Scene7, _ scene8: Scene8, _ scene9: Scene9,
-        _ scene10: Scene10, _ scene11: Scene11, _ scene12: Scene12, _ scene13: Scene13,
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
+        _ scene5: Scene5,
+        _ scene6: Scene6,
+        _ scene7: Scene7,
+        _ scene8: Scene8,
+        _ scene9: Scene9,
+        _ scene10: Scene10,
+        _ scene11: Scene11,
+        _ scene12: Scene12,
+        _ scene13: Scene13,
         _ scene14: Scene14
     ) {
         self.scene0 = scene0
@@ -1260,13 +1652,38 @@ public struct TupleScene15<
 }
 
 public final class TupleSceneNode15<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
-    Scene12: Scene, Scene13: Scene, Scene14: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
+    Scene12: Scene,
+    Scene13: Scene,
+    Scene14: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene15<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12, Scene13, Scene14
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12,
+        Scene13,
+        Scene14
     >
 
     var node0: Scene0.Node
@@ -1354,13 +1771,40 @@ public final class TupleSceneNode15<
     }
 }
 public struct TupleScene16<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
-    Scene12: Scene, Scene13: Scene, Scene14: Scene, Scene15: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
+    Scene12: Scene,
+    Scene13: Scene,
+    Scene14: Scene,
+    Scene15: Scene
 >: Scene {
     public typealias Node = TupleSceneNode16<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12, Scene13, Scene14, Scene15
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12,
+        Scene13,
+        Scene14,
+        Scene15
     >
 
     var scene0: Scene0
@@ -1381,10 +1825,22 @@ public struct TupleScene16<
     var scene15: Scene15
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
-        _ scene5: Scene5, _ scene6: Scene6, _ scene7: Scene7, _ scene8: Scene8, _ scene9: Scene9,
-        _ scene10: Scene10, _ scene11: Scene11, _ scene12: Scene12, _ scene13: Scene13,
-        _ scene14: Scene14, _ scene15: Scene15
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
+        _ scene5: Scene5,
+        _ scene6: Scene6,
+        _ scene7: Scene7,
+        _ scene8: Scene8,
+        _ scene9: Scene9,
+        _ scene10: Scene10,
+        _ scene11: Scene11,
+        _ scene12: Scene12,
+        _ scene13: Scene13,
+        _ scene14: Scene14,
+        _ scene15: Scene15
     ) {
         self.scene0 = scene0
         self.scene1 = scene1
@@ -1406,13 +1862,40 @@ public struct TupleScene16<
 }
 
 public final class TupleSceneNode16<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
-    Scene12: Scene, Scene13: Scene, Scene14: Scene, Scene15: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
+    Scene12: Scene,
+    Scene13: Scene,
+    Scene14: Scene,
+    Scene15: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene16<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12, Scene13, Scene14, Scene15
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12,
+        Scene13,
+        Scene14,
+        Scene15
     >
 
     var node0: Scene0.Node
@@ -1504,13 +1987,42 @@ public final class TupleSceneNode16<
     }
 }
 public struct TupleScene17<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
-    Scene12: Scene, Scene13: Scene, Scene14: Scene, Scene15: Scene, Scene16: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
+    Scene12: Scene,
+    Scene13: Scene,
+    Scene14: Scene,
+    Scene15: Scene,
+    Scene16: Scene
 >: Scene {
     public typealias Node = TupleSceneNode17<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12, Scene13, Scene14, Scene15, Scene16
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12,
+        Scene13,
+        Scene14,
+        Scene15,
+        Scene16
     >
 
     var scene0: Scene0
@@ -1532,10 +2044,23 @@ public struct TupleScene17<
     var scene16: Scene16
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
-        _ scene5: Scene5, _ scene6: Scene6, _ scene7: Scene7, _ scene8: Scene8, _ scene9: Scene9,
-        _ scene10: Scene10, _ scene11: Scene11, _ scene12: Scene12, _ scene13: Scene13,
-        _ scene14: Scene14, _ scene15: Scene15, _ scene16: Scene16
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
+        _ scene5: Scene5,
+        _ scene6: Scene6,
+        _ scene7: Scene7,
+        _ scene8: Scene8,
+        _ scene9: Scene9,
+        _ scene10: Scene10,
+        _ scene11: Scene11,
+        _ scene12: Scene12,
+        _ scene13: Scene13,
+        _ scene14: Scene14,
+        _ scene15: Scene15,
+        _ scene16: Scene16
     ) {
         self.scene0 = scene0
         self.scene1 = scene1
@@ -1558,13 +2083,42 @@ public struct TupleScene17<
 }
 
 public final class TupleSceneNode17<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
-    Scene12: Scene, Scene13: Scene, Scene14: Scene, Scene15: Scene, Scene16: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
+    Scene12: Scene,
+    Scene13: Scene,
+    Scene14: Scene,
+    Scene15: Scene,
+    Scene16: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene17<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12, Scene13, Scene14, Scene15, Scene16
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12,
+        Scene13,
+        Scene14,
+        Scene15,
+        Scene16
     >
 
     var node0: Scene0.Node
@@ -1660,13 +2214,44 @@ public final class TupleSceneNode17<
     }
 }
 public struct TupleScene18<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
-    Scene12: Scene, Scene13: Scene, Scene14: Scene, Scene15: Scene, Scene16: Scene, Scene17: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
+    Scene12: Scene,
+    Scene13: Scene,
+    Scene14: Scene,
+    Scene15: Scene,
+    Scene16: Scene,
+    Scene17: Scene
 >: Scene {
     public typealias Node = TupleSceneNode18<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12, Scene13, Scene14, Scene15, Scene16, Scene17
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12,
+        Scene13,
+        Scene14,
+        Scene15,
+        Scene16,
+        Scene17
     >
 
     var scene0: Scene0
@@ -1689,10 +2274,24 @@ public struct TupleScene18<
     var scene17: Scene17
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
-        _ scene5: Scene5, _ scene6: Scene6, _ scene7: Scene7, _ scene8: Scene8, _ scene9: Scene9,
-        _ scene10: Scene10, _ scene11: Scene11, _ scene12: Scene12, _ scene13: Scene13,
-        _ scene14: Scene14, _ scene15: Scene15, _ scene16: Scene16, _ scene17: Scene17
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
+        _ scene5: Scene5,
+        _ scene6: Scene6,
+        _ scene7: Scene7,
+        _ scene8: Scene8,
+        _ scene9: Scene9,
+        _ scene10: Scene10,
+        _ scene11: Scene11,
+        _ scene12: Scene12,
+        _ scene13: Scene13,
+        _ scene14: Scene14,
+        _ scene15: Scene15,
+        _ scene16: Scene16,
+        _ scene17: Scene17
     ) {
         self.scene0 = scene0
         self.scene1 = scene1
@@ -1716,13 +2315,44 @@ public struct TupleScene18<
 }
 
 public final class TupleSceneNode18<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
-    Scene12: Scene, Scene13: Scene, Scene14: Scene, Scene15: Scene, Scene16: Scene, Scene17: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
+    Scene12: Scene,
+    Scene13: Scene,
+    Scene14: Scene,
+    Scene15: Scene,
+    Scene16: Scene,
+    Scene17: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene18<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12, Scene13, Scene14, Scene15, Scene16, Scene17
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12,
+        Scene13,
+        Scene14,
+        Scene15,
+        Scene16,
+        Scene17
     >
 
     var node0: Scene0.Node
@@ -1822,14 +2452,46 @@ public final class TupleSceneNode18<
     }
 }
 public struct TupleScene19<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
-    Scene12: Scene, Scene13: Scene, Scene14: Scene, Scene15: Scene, Scene16: Scene, Scene17: Scene,
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
+    Scene12: Scene,
+    Scene13: Scene,
+    Scene14: Scene,
+    Scene15: Scene,
+    Scene16: Scene,
+    Scene17: Scene,
     Scene18: Scene
 >: Scene {
     public typealias Node = TupleSceneNode19<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12, Scene13, Scene14, Scene15, Scene16, Scene17, Scene18
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12,
+        Scene13,
+        Scene14,
+        Scene15,
+        Scene16,
+        Scene17,
+        Scene18
     >
 
     var scene0: Scene0
@@ -1853,10 +2515,24 @@ public struct TupleScene19<
     var scene18: Scene18
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
-        _ scene5: Scene5, _ scene6: Scene6, _ scene7: Scene7, _ scene8: Scene8, _ scene9: Scene9,
-        _ scene10: Scene10, _ scene11: Scene11, _ scene12: Scene12, _ scene13: Scene13,
-        _ scene14: Scene14, _ scene15: Scene15, _ scene16: Scene16, _ scene17: Scene17,
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
+        _ scene5: Scene5,
+        _ scene6: Scene6,
+        _ scene7: Scene7,
+        _ scene8: Scene8,
+        _ scene9: Scene9,
+        _ scene10: Scene10,
+        _ scene11: Scene11,
+        _ scene12: Scene12,
+        _ scene13: Scene13,
+        _ scene14: Scene14,
+        _ scene15: Scene15,
+        _ scene16: Scene16,
+        _ scene17: Scene17,
         _ scene18: Scene18
     ) {
         self.scene0 = scene0
@@ -1882,14 +2558,46 @@ public struct TupleScene19<
 }
 
 public final class TupleSceneNode19<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
-    Scene12: Scene, Scene13: Scene, Scene14: Scene, Scene15: Scene, Scene16: Scene, Scene17: Scene,
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
+    Scene12: Scene,
+    Scene13: Scene,
+    Scene14: Scene,
+    Scene15: Scene,
+    Scene16: Scene,
+    Scene17: Scene,
     Scene18: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene19<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12, Scene13, Scene14, Scene15, Scene16, Scene17, Scene18
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12,
+        Scene13,
+        Scene14,
+        Scene15,
+        Scene16,
+        Scene17,
+        Scene18
     >
 
     var node0: Scene0.Node
@@ -1993,14 +2701,48 @@ public final class TupleSceneNode19<
     }
 }
 public struct TupleScene20<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
-    Scene12: Scene, Scene13: Scene, Scene14: Scene, Scene15: Scene, Scene16: Scene, Scene17: Scene,
-    Scene18: Scene, Scene19: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
+    Scene12: Scene,
+    Scene13: Scene,
+    Scene14: Scene,
+    Scene15: Scene,
+    Scene16: Scene,
+    Scene17: Scene,
+    Scene18: Scene,
+    Scene19: Scene
 >: Scene {
     public typealias Node = TupleSceneNode20<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12, Scene13, Scene14, Scene15, Scene16, Scene17, Scene18, Scene19
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12,
+        Scene13,
+        Scene14,
+        Scene15,
+        Scene16,
+        Scene17,
+        Scene18,
+        Scene19
     >
 
     var scene0: Scene0
@@ -2025,11 +2767,26 @@ public struct TupleScene20<
     var scene19: Scene19
 
     public init(
-        _ scene0: Scene0, _ scene1: Scene1, _ scene2: Scene2, _ scene3: Scene3, _ scene4: Scene4,
-        _ scene5: Scene5, _ scene6: Scene6, _ scene7: Scene7, _ scene8: Scene8, _ scene9: Scene9,
-        _ scene10: Scene10, _ scene11: Scene11, _ scene12: Scene12, _ scene13: Scene13,
-        _ scene14: Scene14, _ scene15: Scene15, _ scene16: Scene16, _ scene17: Scene17,
-        _ scene18: Scene18, _ scene19: Scene19
+        _ scene0: Scene0,
+        _ scene1: Scene1,
+        _ scene2: Scene2,
+        _ scene3: Scene3,
+        _ scene4: Scene4,
+        _ scene5: Scene5,
+        _ scene6: Scene6,
+        _ scene7: Scene7,
+        _ scene8: Scene8,
+        _ scene9: Scene9,
+        _ scene10: Scene10,
+        _ scene11: Scene11,
+        _ scene12: Scene12,
+        _ scene13: Scene13,
+        _ scene14: Scene14,
+        _ scene15: Scene15,
+        _ scene16: Scene16,
+        _ scene17: Scene17,
+        _ scene18: Scene18,
+        _ scene19: Scene19
     ) {
         self.scene0 = scene0
         self.scene1 = scene1
@@ -2055,14 +2812,48 @@ public struct TupleScene20<
 }
 
 public final class TupleSceneNode20<
-    Scene0: Scene, Scene1: Scene, Scene2: Scene, Scene3: Scene, Scene4: Scene, Scene5: Scene,
-    Scene6: Scene, Scene7: Scene, Scene8: Scene, Scene9: Scene, Scene10: Scene, Scene11: Scene,
-    Scene12: Scene, Scene13: Scene, Scene14: Scene, Scene15: Scene, Scene16: Scene, Scene17: Scene,
-    Scene18: Scene, Scene19: Scene
+    Scene0: Scene,
+    Scene1: Scene,
+    Scene2: Scene,
+    Scene3: Scene,
+    Scene4: Scene,
+    Scene5: Scene,
+    Scene6: Scene,
+    Scene7: Scene,
+    Scene8: Scene,
+    Scene9: Scene,
+    Scene10: Scene,
+    Scene11: Scene,
+    Scene12: Scene,
+    Scene13: Scene,
+    Scene14: Scene,
+    Scene15: Scene,
+    Scene16: Scene,
+    Scene17: Scene,
+    Scene18: Scene,
+    Scene19: Scene
 >: SceneGraphNode {
     public typealias NodeScene = TupleScene20<
-        Scene0, Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8, Scene9, Scene10,
-        Scene11, Scene12, Scene13, Scene14, Scene15, Scene16, Scene17, Scene18, Scene19
+        Scene0,
+        Scene1,
+        Scene2,
+        Scene3,
+        Scene4,
+        Scene5,
+        Scene6,
+        Scene7,
+        Scene8,
+        Scene9,
+        Scene10,
+        Scene11,
+        Scene12,
+        Scene13,
+        Scene14,
+        Scene15,
+        Scene16,
+        Scene17,
+        Scene18,
+        Scene19
     >
 
     var node0: Scene0.Node

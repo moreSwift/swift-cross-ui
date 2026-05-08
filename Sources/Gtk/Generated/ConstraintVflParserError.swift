@@ -37,7 +37,8 @@ public enum ConstraintVflParserError: GValueRepresentableEnum {
                 self = .relation
             default:
                 fatalError(
-                    "Unsupported GtkConstraintVflParserError enum value: \(gtkEnum.rawValue)")
+                    "Unsupported GtkConstraintVflParserError enum value: \(gtkEnum.rawValue)"
+                )
         }
     }
 

@@ -115,13 +115,16 @@ extension BackendFeatures.MenuButtons where Self: BackendFeatures.AttachedMenus 
 // can be used -- i.e. when both (or neither) of `PopoverMenus` and `AttachedMenus` are
 // conformed to.
 
-extension BackendFeatures.MenuButtons where Self: BackendFeatures.PopoverMenus, Self: BackendFeatures.AttachedMenus {
+extension BackendFeatures.MenuButtons where Self: BackendFeatures.PopoverMenus,
+    Self: BackendFeatures.AttachedMenus
+{
     @available(
-        *, unavailable,
+        *,
+        unavailable,
         message: """
-        you should only conform to one of 'PopoverMenus' or 'AttachedMenus'. Implement \
-        'menuImplementationStyle' manually if conforming to both is intentional
-        """
+            you should only conform to one of 'PopoverMenus' or 'AttachedMenus'. Implement \
+            'menuImplementationStyle' manually if conforming to both is intentional
+            """
     )
     public var menuImplementationStyle: MenuImplementationStyle<Widget, Menu> {
         fatalError("unavailable default implementation of 'menuImplementationStyle'")
@@ -130,10 +133,11 @@ extension BackendFeatures.MenuButtons where Self: BackendFeatures.PopoverMenus, 
 
 extension BackendFeatures.MenuButtons {
     @available(
-        *, unavailable,
+        *,
+        unavailable,
         message: """
-        you need to conform to one of 'PopoverMenus' or 'AttachedMenus' for full 'MenuButtons' conformance
-        """
+            you need to conform to one of 'PopoverMenus' or 'AttachedMenus' for full 'MenuButtons' conformance
+            """
     )
     public var menuImplementationStyle: MenuImplementationStyle<Widget, Menu> {
         fatalError("unavailable default implementation of 'menuImplementationStyle'")

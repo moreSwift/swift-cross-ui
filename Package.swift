@@ -61,7 +61,10 @@ if let backend = env["SCUI_DEFAULT_BACKEND"] {
     #if os(macOS)
         defaultBackendDependencies = [
             .target(name: "AppKitBackend", condition: .when(platforms: [.macOS])),
-            .target(name: "UIKitBackend", condition: .when(platforms: [.iOS, .tvOS, .macCatalyst, .visionOS])),
+            .target(
+                name: "UIKitBackend",
+                condition: .when(platforms: [.iOS, .tvOS, .macCatalyst, .visionOS])
+            ),
         ]
     #else
         defaultBackendDependencies = [
@@ -86,7 +89,7 @@ let hotReloadingEnabled: Bool
 #else
     hotReloadingEnabled =
         env["SWIFT_BUNDLER_HOT_RELOADING"] == "1"
-        || env["SCUI_HOT_RELOADING"] == "1"
+            || env["SCUI_HOT_RELOADING"] == "1"
 #endif
 
 let testGtk3Backend = env["SCUI_TEST_GTK3BACKEND"] == "1"
@@ -283,7 +286,8 @@ let package = Package(
         .executableTarget(
             name: "GtkCodeGen",
             dependencies: [
-                "XMLCoder", .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
+                "XMLCoder",
+                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
             ],
             exclude: ["GirFiles"]
         ),
@@ -450,13 +454,15 @@ if testGtk3Backend {
 
 func getGtk4MinorVersion() -> Int? {
     #if os(Windows)
-        guard let pkgConfigPath = ProcessInfo.processInfo.environment["PKG_CONFIG_PATH"],
+        guard
+            let pkgConfigPath = ProcessInfo.processInfo.environment["PKG_CONFIG_PATH"],
             case let tripletRoot = URL(fileURLWithPath: pkgConfigPath, isDirectory: true)
-                .deletingLastPathComponent().deletingLastPathComponent(),
+            .deletingLastPathComponent().deletingLastPathComponent(),
             case let vcpkgInfoDirectory = tripletRoot.deletingLastPathComponent()
-                .appendingPathComponent("vcpkg").appendingPathComponent("info"),
+            .appendingPathComponent("vcpkg").appendingPathComponent("info"),
             let installedList = try? FileManager.default.contentsOfDirectory(
-                at: vcpkgInfoDirectory, includingPropertiesForKeys: nil
+                at: vcpkgInfoDirectory,
+                includingPropertiesForKeys: nil
             )
             .map({ $0.deletingPathExtension().lastPathComponent }),
             let packageName = installedList.first(where: {
@@ -475,7 +481,8 @@ func getGtk4MinorVersion() -> Int? {
         let pipe = Pipe()
         process.standardOutput = pipe
 
-        guard (try? process.run()) != nil,
+        guard
+            (try? process.run()) != nil,
             let data = try? pipe.fileHandleForReading.readToEnd(),
             case _ = process.waitUntilExit(),
             let version = String(data: data, encoding: .utf8)?.split(separator: ".")

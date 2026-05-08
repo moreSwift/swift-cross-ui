@@ -64,7 +64,9 @@ struct Namespace: Decodable {
     var interfaces: [Interface]
 
     enum CodingKeys: String, CodingKey {
-        case name, version, sharedLibrary
+        case name
+        case version
+        case sharedLibrary
         case cIdentifierPrefix = "cIdentifierPrefixes"
         case cSymbolPrefix = "cSymbolPrefixes"
         case aliases = "alias"
@@ -101,7 +103,14 @@ struct Interface: Decodable, ClassLike {
     var properties: [Property]
 
     enum CodingKeys: String, CodingKey {
-        case name, cSymbolPrefix, cType, version, glibTypeName, glibGetType, glibTypeStruct, doc
+        case name
+        case cSymbolPrefix
+        case cType
+        case version
+        case glibTypeName
+        case glibGetType
+        case glibTypeStruct
+        case doc
         case prerequisites = "prerequisite"
         case functions = "function"
         case virtualMethods = "virtualMethod"
@@ -119,7 +128,11 @@ struct Function: Decodable {
     var parameters: Parameters
 
     enum CodingKeys: String, CodingKey {
-        case name, cIdentifier, doc, returnValue, parameters
+        case name
+        case cIdentifier
+        case doc
+        case returnValue
+        case parameters
     }
 }
 
@@ -149,7 +162,10 @@ struct Enumeration: Decodable {
     var members: [Member]
 
     enum CodingKeys: String, CodingKey {
-        case name, cType, doc, version
+        case name
+        case cType
+        case doc
+        case version
         case members = "member"
     }
 
@@ -184,7 +200,12 @@ struct Class: Decodable, ClassLike {
     var conformances: [Conformance]
 
     enum CodingKeys: String, CodingKey {
-        case name, cSymbolPrefix, cType, parent, abstract, doc
+        case name
+        case cSymbolPrefix
+        case cType
+        case parent
+        case abstract
+        case doc
         case constructors = "constructor"
         case methods = "method"
         case properties = "property"
@@ -201,7 +222,8 @@ struct Class: Decodable, ClassLike {
     ) -> [(any ClassLike, T)] {
         let baseProperties = self[keyPath: keyPath].map { (self, $0) }
         let interfaceProperties = getImplementedInterfaces(
-            namespace: namespace, excludeInherited: true
+            namespace: namespace,
+            excludeInherited: true
         )
         .flatMap { interface in
             let elements = interface[keyPath: keyPath]
@@ -225,7 +247,7 @@ struct Class: Decodable, ClassLike {
 
         return
             parentClass[keyPath: keyPath].map { (parentClass, $0) }
-            + parentClass.getAllInherited(keyPath, namespace: namespace)
+                + parentClass.getAllInherited(keyPath, namespace: namespace)
     }
 
     /// Returns all interfaces implemented by the class that aren't already implemented

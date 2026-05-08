@@ -43,7 +43,7 @@ struct ForEachApp: App {
 
                     ScrollView {
                         VStack(alignment: .trailing) {
-                            ForEach(Array(items.enumerated()), id: \.element.id) { (index, item) in
+                            ForEach(Array(items.enumerated()), id: \.element.id) { (index, _) in
                                 ItemRow(
                                     item: $items[index],
                                     isFirst: index == 0,

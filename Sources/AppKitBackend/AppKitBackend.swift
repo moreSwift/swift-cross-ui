@@ -23,7 +23,9 @@ public final class AppKitBackend: FullAppBackend {
     public let deviceClass = DeviceClass.desktop
     public let supportedDatePickerStyles: [DatePickerStyle] = [.automatic, .graphical, .compact]
     public let supportedPickerStyles: [BackendPickerStyle] = [
-        .menu, .segmented, .radioGroup,
+        .menu,
+        .segmented,
+        .radioGroup,
     ]
     public let canOverrideWindowColorScheme = true
 
@@ -273,11 +275,13 @@ public final class AppKitBackend: FullAppBackend {
         let isDark = UserDefaults.standard.string(forKey: "AppleInterfaceStyle") == "Dark"
         return
             defaultEnvironment
-            .with(\.colorScheme, isDark ? .dark : .light)
-            .with(\.appPhase, NSApplication.shared.isActive ? .active : .inactive)
+                .with(\.colorScheme, isDark ? .dark : .light)
+                .with(\.appPhase, NSApplication.shared.isActive ? .active : .inactive)
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
+    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor ()
+        -> Void)
+    {
         DistributedNotificationCenter.default.addObserver(
             forName: .AppleInterfaceThemeChangedNotification,
             object: nil,
@@ -353,7 +357,7 @@ public final class AppKitBackend: FullAppBackend {
             forName: NSWindow.didChangeBackingPropertiesNotification,
             object: window,
             queue: .main
-        ) { notification in
+        ) { _ in
             Task { @MainActor in
                 let backingScaleFactorChanged =
                     window.lastBackingScaleFactor != window.backingScaleFactor
@@ -449,7 +453,8 @@ public final class AppKitBackend: FullAppBackend {
 
         if !foundConstraint {
             let constraint = child.leftAnchor.constraint(
-                equalTo: container.leftAnchor, constant: CGFloat(position.x)
+                equalTo: container.leftAnchor,
+                constant: CGFloat(position.x)
             )
             constraint.isActive = true
         }
@@ -495,7 +500,7 @@ public final class AppKitBackend: FullAppBackend {
 
     public func naturalSize(of widget: Widget) -> SIMD2<Int> {
         if let spinner = widget.subviews.first as? NSProgressIndicator,
-            spinner.style == .spinning
+           spinner.style == .spinning
         {
             let size = spinner.intrinsicContentSize
             return SIMD2(
@@ -1368,8 +1373,18 @@ public final class AppKitBackend: FullAppBackend {
     // know of no simple way to tell whether NSDatePicker requires or forbids eras for a given
     // calendar, so in lieu of that I have hardcoded the calendar identifiers.
     private let calendarsRequiringEra: Set<Calendar.Identifier> = [
-        .buddhist, .coptic, .ethiopicAmeteAlem, .ethiopicAmeteMihret, .indian, .islamic,
-        .islamicCivil, .islamicTabular, .islamicUmmAlQura, .japanese, .persian, .republicOfChina,
+        .buddhist,
+        .coptic,
+        .ethiopicAmeteAlem,
+        .ethiopicAmeteMihret,
+        .indian,
+        .islamic,
+        .islamicCivil,
+        .islamicTabular,
+        .islamicUmmAlQura,
+        .japanese,
+        .persian,
+        .republicOfChina,
     ]
 
     public func updateDatePicker(
@@ -1568,7 +1583,11 @@ final class ObjectAssociation<T: Any> {
         }
         set {
             objc_setAssociatedObject(
-                index, Unmanaged.passUnretained(self).toOpaque(), newValue, policy.rawValue)
+                index,
+                Unmanaged.passUnretained(self).toOpaque(),
+                newValue,
+                policy.rawValue
+            )
         }
     }
 }
@@ -1735,8 +1754,11 @@ public class NSCustomWindow: NSWindow {
 
             let contentSize = sender.contentRect(
                 forFrameRect: NSRect(
-                    x: sender.frame.origin.x, y: sender.frame.origin.y, width: frameSize.width,
-                    height: frameSize.height)
+                    x: sender.frame.origin.x,
+                    y: sender.frame.origin.y,
+                    width: frameSize.width,
+                    height: frameSize.height
+                )
             )
 
             resizeHandler(
@@ -1822,7 +1844,9 @@ final class RadioGroup: NSStackView {
     func update(options: [String], environment: EnvironmentValues) {
         for i in 0..<min(buttons.count, options.count) {
             buttons[i].attributedTitle = AppKitBackend.attributedString(
-                for: options[i], in: environment)
+                for: options[i],
+                in: environment
+            )
             buttons[i].isEnabled = environment.isEnabled
         }
 
@@ -1830,7 +1854,9 @@ final class RadioGroup: NSStackView {
             for i in buttons.count..<options.count {
                 let button = NSButton()
                 button.attributedTitle = AppKitBackend.attributedString(
-                    for: options[i], in: environment)
+                    for: options[i],
+                    in: environment
+                )
                 button.isEnabled = environment.isEnabled
                 button.target = self
                 button.action = #selector(buttonClicked(sender:))
