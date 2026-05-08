@@ -36,7 +36,7 @@ public struct Gradient: Sendable, Hashable {
     /// Creates a gradient from an array of colors.
     /// - Parameters:
     ///   - colors: The colors of the gradient. The gradient synthesizes its location values to evenly
-    ///   space the colors along the gradient. If no color is passed, the gradient will be fully transparent.
+    ///     space the colors along the gradient. If no color is passed, the gradient will be fully transparent.
     init(colors: [Color]) {
         guard let first = colors.first else {
             let invisible = Color.black.opacity(0)

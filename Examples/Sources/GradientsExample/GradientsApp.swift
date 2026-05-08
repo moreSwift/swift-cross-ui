@@ -2,22 +2,22 @@ import DefaultBackend
 import SwiftCrossUI
 
 #if canImport(SwiftBundlerRuntime)
-import SwiftBundlerRuntime
+    import SwiftBundlerRuntime
 #endif
 
 @HotReloadable
 @main
 struct GradientsApp: App {
     static let colors: [Color] = [.red, .orange, .yellow, .green, .blue, .purple]
-    
+
     static let stops: [Gradient.Stop] = [
         Gradient.Stop(color: .red, location: 0),
         Gradient.Stop(color: .blue, location: 0.25),
         Gradient.Stop(color: .purple, location: 1),
     ]
-    
+
     @State var gradientType: GradientType? = .linear
-    
+
     var body: some Scene {
         WindowGroup("Gradients Example") {
             #if !canImport(UIKitBackend)
@@ -47,7 +47,7 @@ struct GradientsApp: App {
             #endif
         }
     }
-    
+
     @ViewBuilder
     func scrollViewWithGradient() -> some View {
         ScrollView {
@@ -81,7 +81,7 @@ enum GradientType: String, CaseIterable, Identifiable {
 struct LinearGradientView: View {
     var colors: [Color] { GradientsApp.colors }
     var stops: [Gradient.Stop] { GradientsApp.stops }
-    
+
     var body: some View {
         VStack {
             HStack {
@@ -135,7 +135,7 @@ struct LinearGradientView: View {
 struct RadialGradientView: View {
     var colors: [Color] { GradientsApp.colors }
     var stops: [Gradient.Stop] { GradientsApp.stops }
-    
+
     var body: some View {
         VStack {
             HStack {
@@ -190,7 +190,7 @@ struct RadialGradientView: View {
 struct AngularGradientView: View {
     var colors: [Color] { GradientsApp.colors }
     var stops: [Gradient.Stop] { GradientsApp.stops }
-    
+
     var specialStops: [Gradient.Stop] = [
         Gradient.Stop(color: .red, location: 1 / 12),
         Gradient.Stop(color: .orange, location: 3 / 12),
@@ -200,7 +200,7 @@ struct AngularGradientView: View {
         Gradient.Stop(color: .purple, location: 11 / 12),
         Gradient.Stop(color: .red, location: 1),
     ]
-    
+
     var body: some View {
         VStack {
             HStack {

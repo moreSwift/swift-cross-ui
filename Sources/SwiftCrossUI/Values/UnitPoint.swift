@@ -1,3 +1,5 @@
+/// A normalized 2D point in a view's coordinate space.
+///
 /// The point's coordinates start from the view's top leading corner, and
 /// are relative to the views size.
 ///

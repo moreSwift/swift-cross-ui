@@ -4,7 +4,7 @@ public struct RadialGradient: ElementaryView {
     public let gradient: Gradient
     /// The radius at which the first gradient stop will be placed.
     ///
-    /// All space inside radius gets filled with the color of the first gradient stop.
+    /// All space inside this radius gets filled with the color of the first gradient stop.
     public let startRadius: Double
     /// The radius at which the last gradient stop will be placed.
     ///
@@ -12,9 +12,9 @@ public struct RadialGradient: ElementaryView {
     public let endRadius: Double
     /// The normalized center point of the gradient in its coordinate space.
     public let center: UnitPoint
-    
+
     private static let idealSize = ViewSize(10, 10)
-    
+
     /// Creates a radial gradient from a base gradient.
     public init(
         gradient: Gradient,
@@ -27,7 +27,7 @@ public struct RadialGradient: ElementaryView {
         self.center = center
         self.endRadius = endRadius
     }
-    
+
     @CastBackend<BackendFeatures.RadialGradients>(returnsWidget: true)
     public func asWidget<Backend: BaseAppBackend>(
         backend: Backend
@@ -45,7 +45,7 @@ public struct RadialGradient: ElementaryView {
             size: proposedSize.replacingUnspecifiedDimensions(by: Self.idealSize)
         )
     }
-    
+
     @CastBackend<BackendFeatures.RadialGradients>
     public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
@@ -78,7 +78,7 @@ extension RadialGradient {
             endRadius: endRadius
         )
     }
-    
+
     /// Creates a radial gradient from a collection of color stops.
     public init(
         colors: [Color],
@@ -93,7 +93,7 @@ extension RadialGradient {
             endRadius: endRadius
         )
     }
-    
+
     /// Stops adjusted to accomodate startRadius on backends without native support.
     package var adjustedStops: [Gradient.Stop] {
         guard startRadius != 0 else { return gradient.stops }

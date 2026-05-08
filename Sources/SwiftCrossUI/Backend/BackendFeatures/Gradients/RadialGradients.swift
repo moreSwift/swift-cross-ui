@@ -1,7 +1,7 @@
 extension BackendFeatures {
-    /// Backend Methods for Radial Gradients
+    /// Backend methods for radial gradients.
     ///
-    /// Used by ``RadialGradient``
+    /// Used by ``RadialGradient``.
     public protocol RadialGradients: Core {
         /// Creates the widget for a ``RadialGradient``.
         func createRadialGradientWidget() -> Widget
@@ -11,7 +11,7 @@ extension BackendFeatures {
         ///   - widget: The widget to update.
         ///   - gradient: The SwiftCrossUI struct housing the information for the gradient's rendering.
         ///   - size: The new size of the widget.
-        ///   - environment: The widgets environment, used to resolve its colors.
+        ///   - environment: The widget's environment, used to resolve its colors.
         func updateRadialGradientWidget(
             _ widget: Widget,
             gradient: RadialGradient,

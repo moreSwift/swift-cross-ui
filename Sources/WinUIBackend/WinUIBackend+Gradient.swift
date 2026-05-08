@@ -7,7 +7,7 @@ extension WinUIBackend {
     public func createLinearGradientWidget() -> Widget {
         WinUI.Rectangle()
     }
-    
+
     public func updateLinearGradientWidget(
         _ widget: Widget,
         gradient: LinearGradient,
@@ -39,7 +39,7 @@ extension WinUIBackend {
         
         widget.fill = brush
     }
-    
+
     public func createRadialGradientWidget() -> Widget {
         WinUI.Rectangle()
     }

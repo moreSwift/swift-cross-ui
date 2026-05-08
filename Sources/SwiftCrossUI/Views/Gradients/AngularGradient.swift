@@ -1,6 +1,6 @@
 /// An angular gradient, often referred to as a conic gradient.
 ///
-/// Currently unsupported on WinUIBackend.
+/// Currently unsupported on WinUIBackend and GtkBackend.
 public struct AngularGradient: ElementaryView {
     /// The gradient represented as an array of color stops, each having a parametric location value.
     public let gradient: Gradient
@@ -29,7 +29,7 @@ public struct AngularGradient: ElementaryView {
 
     /// Creates an angular gradient that completes a partial rotation.
     ///
-    /// For ``Gradient.Stop`` location of 0 corresponds to 0° and 1 to 360°.
+    /// For each ``Gradient.Stop``, a location of 0 corresponds to 0°, and a location of 1 corresponds to 360°.
     public init(
         gradient: Gradient,
         center: UnitPoint,

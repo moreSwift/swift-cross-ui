@@ -53,9 +53,9 @@ extension GtkBackend {
         in environment: EnvironmentValues
     ) {
         let widget = widget as! Box
-        let stops = gradient.startRadius < gradient.endRadius ?
-            gradient.gradient.stops:
-            invertedStops(stops: gradient.gradient.stops)
+        let stops = gradient.startRadius < gradient.endRadius
+            ? gradient.gradient.stops
+            : invertedStops(stops: gradient.gradient.stops)
         let cssStops = cssStops(stops: stops, environment: environment)
             .joined(separator: ", ")
         
