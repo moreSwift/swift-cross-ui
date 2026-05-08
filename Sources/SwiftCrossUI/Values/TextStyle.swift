@@ -49,6 +49,19 @@ extension Font.TextStyle {
             emphasizedWeight: .semibold,
             lineHeight: 16
         )
+
+        /// Creates a resolved text style.
+        public init(
+            pointSize: Double,
+            weight: Font.Weight = .regular,
+            emphasizedWeight: Font.Weight,
+            lineHeight: Double
+        ) {
+            self.pointSize = pointSize
+            self.weight = weight
+            self.emphasizedWeight = emphasizedWeight
+            self.lineHeight = lineHeight
+        }
     }
 
     /// Resolves the text style's concrete text properties for the given device

@@ -20,4 +20,22 @@ class AndroidBackendHelpers: JavaObject {
 
     @JavaMethod
     func getSafeAreaTopInset(_ activity: Activity?) -> Int32
+
+    @JavaMethod
+    func clearTextSizeCache()
+
+    @JavaMethod
+    func getLargeTextSize(_ activity: Activity?) -> Float
+
+    @JavaMethod
+    func getTitleTextSize(_ activity: Activity?) -> Float
+
+    @JavaMethod
+    func getMediumTextSize(_ activity: Activity?) -> Float
+
+    @JavaMethod
+    func getSmallTextSize(_ activity: Activity?) -> Float
+    
+    @JavaMethod
+    func isNightMode(_ activity: Activity?) -> Bool
 }

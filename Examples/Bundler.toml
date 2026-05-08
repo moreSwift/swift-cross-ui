@@ -74,6 +74,11 @@ identifier = 'dev.swiftcrossui.HoverExample'
 product = 'HoverExample'
 version = '0.1.0'
 
+[apps.FontsExample]
+identifier = 'dev.swiftcrossui.FontsExample'
+product = 'FontsExample'
+version = '0.1.0'
+
 [apps.ForEachExample]
 identifier = 'dev.swiftcrossui.ForEachExample'
 product = 'ForEachExample'

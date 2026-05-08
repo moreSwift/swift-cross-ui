@@ -219,12 +219,23 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
     }
 
     public func computeRootEnvironment(defaultEnvironment: EnvironmentValues) -> EnvironmentValues {
-        // TODO(stackotter): React to system theme
-        defaultEnvironment
+        var environment = defaultEnvironment
+
+        if helpers.isNightMode(Self.activity) {
+            environment.colorScheme = .dark
+        } else {
+            environment.colorScheme = .light
+        }
+        
+        // TODO(bbrk24): Properly detect time zone and calendar, since
+        // `.current` is broken on Android.
+        
+        return environment
     }
 
     public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
         // TODO(stackotter): Listen for system theme changes
+        // and call helpers.clearTextSizeCache()
     }
 
     public func computeWindowEnvironment(
@@ -339,6 +350,8 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         button.setText(charSequence(from: label))
         let listener = ViewOnClickListener(action: action, environment: Self.env)
         button.setOnClickListener(listener.as(AndroidView.View.OnClickListener.self))
+
+        getTextStyle(from: environment).apply(to: button)
     }
 
     public func createTextField() -> Widget {
@@ -393,7 +406,7 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         let textView = textView.as(AndroidKit.TextView.self)!
         let content = JavaString(content, environment: Self.env)
         textView.setText(content.as(CharSequence.self))
-        // TODO: Handle environment
+        getTextStyle(from: environment).apply(to: textView)
     }
 
     public func size(
@@ -405,10 +418,18 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
     ) -> SIMD2<Int> {
         let widget = createTextView()
         updateTextView(widget, content: text, environment: environment)
-        widget.measure(
-            proposedWidth.map(Int32.init) ?? Int32.max,
-            proposedHeight.map(Int32.init) ?? Int32.max
-        )
+
+        // 0x80000000 = View.MeasureSpec.AT_MOST
+        // 0x3FFFFFFF = View.MeasureSpec.makeMeasureSpec(Int32.max, View.MeasureSpec.UNSPECIFIED)
+        let widthSpec =
+            if let proposedWidth {
+                Int32(bitPattern: 0x80000000 | UInt32(proposedWidth))
+            } else {
+                0x3FFFFFFF as Int32
+            }
+        let heightSpec = Int32(proposedHeight ?? 0x3FFFFFFF)
+
+        widget.measure(widthSpec, heightSpec)
         let width = widget.getMeasuredWidth()
         let height = widget.getMeasuredHeight()
         return SIMD2(Int(width), Int(height))
@@ -479,7 +500,16 @@ extension AndroidBackend: BackendFeatures.Pickers {
                 let selectedOption = picker.getSelectedOption()
                 onChange(selectedOption < 0 ? nil : Int(selectedOption))
             }
-            picker.update(action, options, environment.isEnabled)
+            let textStyle = getTextStyle(from: environment)
+            picker.update(
+                action,
+                options,
+                environment.isEnabled,
+                color: textStyle.color,
+                fontSize: textStyle.fontSizePixels,
+                lineHeight: textStyle.lineHeightPixels,
+                textStyle.typeface
+            )
         } else if let picker = picker.as(CustomSpinner.self) {
             let action = SwiftAction(environment: Self.env) {
                 let selectedOption = picker.getSelectedItemPosition()
@@ -611,6 +641,8 @@ extension AndroidBackend: BackendFeatures.ToggleButtons, BackendFeatures.Checkbo
         let charSequence = charSequence(from: label)
         toggle.setTextOn(charSequence)
         toggle.setTextOff(charSequence)
+
+        getTextStyle(from: environment).apply(to: toggle)
     }
 
     public func updateCheckbox(

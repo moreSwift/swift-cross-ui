@@ -113,5 +113,9 @@ let package = Package(
                 .product(name: "MiniAudio", package: "swift-miniaudio")
             ] + exampleDependencies
         ),
+        .executableTarget(
+            name: "FontsExample",
+            dependencies: exampleDependencies
+        )
     ]
 )
