@@ -514,14 +514,33 @@ public final class GtkBackend:
         )
     }
 
+    private func getPreferredColorScheme() -> ColorScheme {
+        #if os(Linux)
+            let colorSchemeId: UInt32? = try? Freedesktop.Portal.Settings.Appearance.ColorScheme
+                .read()
+
+            if colorSchemeId == 1 {
+                return .dark
+            } else if colorSchemeId == 2 {
+                return .light
+            }
+        #endif
+        // TODO: Implement this stuff for MacOS & Windows
+
+        return .light
+    }
+
     public func computeRootEnvironment(defaultEnvironment: EnvironmentValues) -> EnvironmentValues {
         defaultEnvironment
+            .with(\.colorScheme, getPreferredColorScheme())
             .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
     public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
-        // TODO: React to theme changes
         self.rootEnvironmentChangeHandler = action
+        Freedesktop.Portal.Settings.Appearance.ColorScheme.subscribe { _ in
+            action()
+        }
     }
 
     public func computeWindowEnvironment(
