@@ -52,7 +52,7 @@ public final class TupleSceneNode2<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -114,7 +114,7 @@ public final class TupleSceneNode3<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -182,7 +182,7 @@ public final class TupleSceneNode4<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -256,7 +256,7 @@ public final class TupleSceneNode5<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -337,7 +337,7 @@ public final class TupleSceneNode6<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -426,7 +426,7 @@ public final class TupleSceneNode7<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -521,7 +521,7 @@ public final class TupleSceneNode8<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -622,7 +622,7 @@ public final class TupleSceneNode9<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -729,7 +729,7 @@ public final class TupleSceneNode10<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -844,7 +844,7 @@ public final class TupleSceneNode11<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -967,7 +967,7 @@ public final class TupleSceneNode12<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -1098,7 +1098,7 @@ public final class TupleSceneNode13<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -1235,7 +1235,7 @@ public final class TupleSceneNode14<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -1379,7 +1379,7 @@ public final class TupleSceneNode15<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -1529,7 +1529,7 @@ public final class TupleSceneNode16<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -1685,7 +1685,7 @@ public final class TupleSceneNode17<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -1849,7 +1849,7 @@ public final class TupleSceneNode18<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -2020,7 +2020,7 @@ public final class TupleSceneNode19<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {
@@ -2197,7 +2197,7 @@ public final class TupleSceneNode20<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {

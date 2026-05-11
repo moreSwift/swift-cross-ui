@@ -278,12 +278,12 @@ final class WindowReference<SceneType: WindowingScene> {
             func setBehaviors<NewBackend: BackendFeatures.WindowBehaviors>(backend: NewBackend) {
                 backend.setBehaviors(
                     ofWindow: window as! NewBackend.Window,
-                    closable:
-                    finalContentResult.preferences.windowDismissBehavior?.isEnabled ?? true,
-                    minimizable: finalContentResult.preferences
-                        .preferredWindowMinimizeBehavior?.isEnabled ?? true,
-                    resizable:
-                    finalContentResult.preferences.windowResizeBehavior?.isEnabled ?? true
+                    closable: finalContentResult.preferences.windowDismissBehavior?
+                        .isEnabled ?? true,
+                    minimizable: finalContentResult.preferences.preferredWindowMinimizeBehavior?
+                        .isEnabled ?? true,
+                    resizable: finalContentResult.preferences.windowResizeBehavior?
+                        .isEnabled ?? true
                 )
             }
             setBehaviors(backend: backend)

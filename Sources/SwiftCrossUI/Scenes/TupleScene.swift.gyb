@@ -61,7 +61,7 @@ public final class TupleSceneNode${i}<
         )
     }
 
-    public func update<Backend: BackendFeatures>(
+    public func update<Backend: BaseAppBackend>(
         backend: Backend,
         environment: EnvironmentValues
     ) {

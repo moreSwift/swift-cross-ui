@@ -54,7 +54,9 @@ public struct TupleTableRowContent${i}<
     }
 
     public func content(for row: RowValue) -> RowContent {
-        TupleView${i}(${", ".join("column%d.content(row)" % j for j in range(i))})
+        TupleView${i}(
+            ${", ".join("column%d.content(row)" % j for j in range(i))}
+        )
     }
 }
 

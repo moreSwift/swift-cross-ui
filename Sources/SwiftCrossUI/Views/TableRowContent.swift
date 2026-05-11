@@ -46,7 +46,9 @@ public struct TupleTableRowContent1<
     }
 
     public func content(for row: RowValue) -> RowContent {
-        TupleView1(column0.content(row))
+        TupleView1(
+            column0.content(row)
+        )
     }
 }
 
@@ -72,7 +74,9 @@ public struct TupleTableRowContent2<
     }
 
     public func content(for row: RowValue) -> RowContent {
-        TupleView2(column0.content(row), column1.content(row))
+        TupleView2(
+            column0.content(row), column1.content(row)
+        )
     }
 }
 
@@ -104,7 +108,9 @@ public struct TupleTableRowContent3<
     }
 
     public func content(for row: RowValue) -> RowContent {
-        TupleView3(column0.content(row), column1.content(row), column2.content(row))
+        TupleView3(
+            column0.content(row), column1.content(row), column2.content(row)
+        )
     }
 }
 
@@ -139,10 +145,7 @@ public struct TupleTableRowContent4<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView4(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row)
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row)
         )
     }
 }
@@ -180,10 +183,7 @@ public struct TupleTableRowContent5<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView5(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
             column4.content(row)
         )
     }
@@ -229,12 +229,8 @@ public struct TupleTableRowContent6<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView6(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row)
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row)
         )
     }
 }
@@ -289,13 +285,8 @@ public struct TupleTableRowContent7<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView7(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row),
-            column6.content(row)
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row), column6.content(row)
         )
     }
 }
@@ -353,13 +344,8 @@ public struct TupleTableRowContent8<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView8(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row),
-            column6.content(row),
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row), column6.content(row),
             column7.content(row)
         )
     }
@@ -425,15 +411,9 @@ public struct TupleTableRowContent9<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView9(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row),
-            column6.content(row),
-            column7.content(row),
-            column8.content(row)
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row), column6.content(row),
+            column7.content(row), column8.content(row)
         )
     }
 }
@@ -502,16 +482,9 @@ public struct TupleTableRowContent10<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView10(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row),
-            column6.content(row),
-            column7.content(row),
-            column8.content(row),
-            column9.content(row)
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row), column6.content(row),
+            column7.content(row), column8.content(row), column9.content(row)
         )
     }
 }
@@ -584,16 +557,9 @@ public struct TupleTableRowContent11<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView11(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row),
-            column6.content(row),
-            column7.content(row),
-            column8.content(row),
-            column9.content(row),
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row), column6.content(row),
+            column7.content(row), column8.content(row), column9.content(row),
             column10.content(row)
         )
     }
@@ -674,18 +640,10 @@ public struct TupleTableRowContent12<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView12(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row),
-            column6.content(row),
-            column7.content(row),
-            column8.content(row),
-            column9.content(row),
-            column10.content(row),
-            column11.content(row)
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row), column6.content(row),
+            column7.content(row), column8.content(row), column9.content(row),
+            column10.content(row), column11.content(row)
         )
     }
 }
@@ -768,19 +726,10 @@ public struct TupleTableRowContent13<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView13(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row),
-            column6.content(row),
-            column7.content(row),
-            column8.content(row),
-            column9.content(row),
-            column10.content(row),
-            column11.content(row),
-            column12.content(row)
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row), column6.content(row),
+            column7.content(row), column8.content(row), column9.content(row),
+            column10.content(row), column11.content(row), column12.content(row)
         )
     }
 }
@@ -869,19 +818,10 @@ public struct TupleTableRowContent14<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView14(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row),
-            column6.content(row),
-            column7.content(row),
-            column8.content(row),
-            column9.content(row),
-            column10.content(row),
-            column11.content(row),
-            column12.content(row),
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row), column6.content(row),
+            column7.content(row), column8.content(row), column9.content(row),
+            column10.content(row), column11.content(row), column12.content(row),
             column13.content(row)
         )
     }
@@ -974,21 +914,11 @@ public struct TupleTableRowContent15<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView15(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row),
-            column6.content(row),
-            column7.content(row),
-            column8.content(row),
-            column9.content(row),
-            column10.content(row),
-            column11.content(row),
-            column12.content(row),
-            column13.content(row),
-            column14.content(row)
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row), column6.content(row),
+            column7.content(row), column8.content(row), column9.content(row),
+            column10.content(row), column11.content(row), column12.content(row),
+            column13.content(row), column14.content(row)
         )
     }
 }
@@ -1087,22 +1017,11 @@ public struct TupleTableRowContent16<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView16(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row),
-            column6.content(row),
-            column7.content(row),
-            column8.content(row),
-            column9.content(row),
-            column10.content(row),
-            column11.content(row),
-            column12.content(row),
-            column13.content(row),
-            column14.content(row),
-            column15.content(row)
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row), column6.content(row),
+            column7.content(row), column8.content(row), column9.content(row),
+            column10.content(row), column11.content(row), column12.content(row),
+            column13.content(row), column14.content(row), column15.content(row)
         )
     }
 }
@@ -1204,22 +1123,11 @@ public struct TupleTableRowContent17<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView17(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row),
-            column6.content(row),
-            column7.content(row),
-            column8.content(row),
-            column9.content(row),
-            column10.content(row),
-            column11.content(row),
-            column12.content(row),
-            column13.content(row),
-            column14.content(row),
-            column15.content(row),
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row), column6.content(row),
+            column7.content(row), column8.content(row), column9.content(row),
+            column10.content(row), column11.content(row), column12.content(row),
+            column13.content(row), column14.content(row), column15.content(row),
             column16.content(row)
         )
     }
@@ -1329,24 +1237,12 @@ public struct TupleTableRowContent18<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView18(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row),
-            column6.content(row),
-            column7.content(row),
-            column8.content(row),
-            column9.content(row),
-            column10.content(row),
-            column11.content(row),
-            column12.content(row),
-            column13.content(row),
-            column14.content(row),
-            column15.content(row),
-            column16.content(row),
-            column17.content(row)
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row), column6.content(row),
+            column7.content(row), column8.content(row), column9.content(row),
+            column10.content(row), column11.content(row), column12.content(row),
+            column13.content(row), column14.content(row), column15.content(row),
+            column16.content(row), column17.content(row)
         )
     }
 }
@@ -1458,25 +1354,12 @@ public struct TupleTableRowContent19<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView19(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row),
-            column6.content(row),
-            column7.content(row),
-            column8.content(row),
-            column9.content(row),
-            column10.content(row),
-            column11.content(row),
-            column12.content(row),
-            column13.content(row),
-            column14.content(row),
-            column15.content(row),
-            column16.content(row),
-            column17.content(row),
-            column18.content(row)
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row), column6.content(row),
+            column7.content(row), column8.content(row), column9.content(row),
+            column10.content(row), column11.content(row), column12.content(row),
+            column13.content(row), column14.content(row), column15.content(row),
+            column16.content(row), column17.content(row), column18.content(row)
         )
     }
 }
@@ -1594,25 +1477,12 @@ public struct TupleTableRowContent20<
 
     public func content(for row: RowValue) -> RowContent {
         TupleView20(
-            column0.content(row),
-            column1.content(row),
-            column2.content(row),
-            column3.content(row),
-            column4.content(row),
-            column5.content(row),
-            column6.content(row),
-            column7.content(row),
-            column8.content(row),
-            column9.content(row),
-            column10.content(row),
-            column11.content(row),
-            column12.content(row),
-            column13.content(row),
-            column14.content(row),
-            column15.content(row),
-            column16.content(row),
-            column17.content(row),
-            column18.content(row),
+            column0.content(row), column1.content(row), column2.content(row), column3.content(row),
+            column4.content(row), column5.content(row), column6.content(row),
+            column7.content(row), column8.content(row), column9.content(row),
+            column10.content(row), column11.content(row), column12.content(row),
+            column13.content(row), column14.content(row), column15.content(row),
+            column16.content(row), column17.content(row), column18.content(row),
             column19.content(row)
         )
     }
