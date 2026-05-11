@@ -55,11 +55,7 @@ public struct Gradient: Sendable, Hashable {
             return
         }
 
-        let locationDifference = 1.0 / Double(colors.count - 1)
-
         var stops = [Stop(color: first, location: 0)]
-        var currentLocation = 0.0
-
         for (i, color) in colors[1...].enumerated() {
             let location = Double(i + 1) / Double(colors.count - 1)
             stops.append(

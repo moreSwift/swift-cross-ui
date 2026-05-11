@@ -38,7 +38,7 @@ public final class TupleSceneNode${i}<
     var node${j}: Scene${j}.Node
     %end
 
-    public init<Backend: BackendFeatures>(
+    public init<Backend: BaseAppBackend>(
         from scene: NodeScene,
         backend: Backend,
         environment: EnvironmentValues
