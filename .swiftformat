@@ -20,4 +20,4 @@
         wrapArguments, indent, hoistPatternLet, \
         unusedArguments, semicolons, wrap, \
         wrapEnumCases, wrapMultilineStatementBraces, \
-        simplifyGenericConstraints
+        simplifyGenericConstraints, trailingSpace
