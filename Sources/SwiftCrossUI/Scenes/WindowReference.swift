@@ -62,8 +62,7 @@ final class WindowReference<SceneType: WindowingScene> {
                 needsWindowSizeCommit: false,
                 backend: backend,
                 environment: self.parentEnvironment,
-                windowSizeIsFinal:
-                !backend.isWindowProgrammaticallyResizable(window)
+                windowSizeIsFinal: !backend.isWindowProgrammaticallyResizable(window)
             )
         }
 
@@ -75,8 +74,7 @@ final class WindowReference<SceneType: WindowingScene> {
                 needsWindowSizeCommit: false,
                 backend: backend,
                 environment: self.parentEnvironment,
-                windowSizeIsFinal:
-                !backend.isWindowProgrammaticallyResizable(window)
+                windowSizeIsFinal: !backend.isWindowProgrammaticallyResizable(window)
             )
         }
     }
@@ -282,9 +280,8 @@ final class WindowReference<SceneType: WindowingScene> {
                     ofWindow: window as! NewBackend.Window,
                     closable:
                     finalContentResult.preferences.windowDismissBehavior?.isEnabled ?? true,
-                    minimizable:
-                    finalContentResult.preferences.preferredWindowMinimizeBehavior?
-                        .isEnabled ?? true,
+                    minimizable: finalContentResult.preferences
+                        .preferredWindowMinimizeBehavior?.isEnabled ?? true,
                     resizable:
                     finalContentResult.preferences.windowResizeBehavior?.isEnabled ?? true
                 )

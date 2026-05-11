@@ -121,7 +121,7 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         let tickler = MainRunLoopTickler(environment: Self.env)
         tickler.start()
         self.tickler = tickler
-        
+
         // We just fall through to return control to Java when we're done
         // setting up the initial view hierarchy.
         callback()
@@ -246,13 +246,13 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
 
         // TODO(bbrk24): Properly detect time zone and calendar, since
         // `.current` is broken on Android.
-        
+
         return environment
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor ()
-        -> Void)
-    {
+    public func setRootEnvironmentChangeHandler(
+        to action: @escaping @Sendable @MainActor () -> Void
+    ) {
         // TODO(stackotter): Listen for system theme changes
         // and call helpers.clearTextSizeCache()
     }
@@ -300,11 +300,11 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         
         let container = container.as(CustomContainer.self)!
         let child = container.getChildAt(Int32(index))!
-        
+
         let layoutParams = child.getLayoutParams().as(CustomContainer.LayoutParams.self)!
         layoutParams.setX(Int32(Float(position.x) * density))
         layoutParams.setY(Int32(Float(position.y) * density))
-        
+
         child.setLayoutParams(layoutParams.as(ViewGroup.LayoutParams.self))
     }
 
@@ -460,4 +460,3 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         return SIMD2(Int(width.rounded(.up)), Int(height.rounded(.up)))
      }
  }
- 

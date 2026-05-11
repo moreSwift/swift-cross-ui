@@ -418,8 +418,10 @@ extension ForEach where ID == Int {
         *,
         deprecated,
         renamed: "init(_:id:_:)",
-        message:
-        "ForEach requires an explicit 'id' parameter for non-Identifiable elements to correctly persist state across view updates"
+        message: """
+            ForEach requires an explicit 'id' parameter for non-Identifiable \
+            elements to correctly persist state across view updates
+            """
     )
     @_disfavoredOverload
     public init(
@@ -437,8 +439,10 @@ extension ForEach where Child == [MenuItem], ID == Int {
     @available(
         *,
         deprecated,
-        message:
-        "ForEach requires an explicit 'id' parameter for non-Identifiable elements to correctly persist state across view updates"
+        message: """
+            ForEach requires an explicit 'id' parameter for non-Identifiable \
+            elements to correctly persist state across view updates
+            """
     )
     @_disfavoredOverload
     public init(

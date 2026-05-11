@@ -279,9 +279,9 @@ public final class AppKitBackend: FullAppBackend {
                 .with(\.appPhase, NSApplication.shared.isActive ? .active : .inactive)
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor ()
-        -> Void)
-    {
+    public func setRootEnvironmentChangeHandler(
+        to action: @escaping @Sendable @MainActor () -> Void
+    ) {
         DistributedNotificationCenter.default.addObserver(
             forName: .AppleInterfaceThemeChangedNotification,
             object: nil,
@@ -556,11 +556,11 @@ public final class AppKitBackend: FullAppBackend {
             widget.heightAnchor.constraint(equalToConstant: proposedHeight).isActive = true
         }
     }
-    
+
     public func createTooltipContainer(wrapping child: NSView) -> NSView {
         child
     }
-    
+
     public func updateTooltipContainer(_ widget: NSView, tooltip: String) {
         widget.toolTip = tooltip
     }
@@ -770,13 +770,13 @@ public final class AppKitBackend: FullAppBackend {
     ) {
         if let picker = picker as? NSPopUpButton {
             picker.isEnabled = environment.isEnabled
-            
+
             let menu = picker.menu!
-            
+
             for (item, option) in zip(menu.items, options) {
                 item.attributedTitle = Self.attributedString(for: option, in: environment)
             }
-            
+
             if menu.numberOfItems < options.count {
                 for i in menu.numberOfItems..<options.count {
                     let item = NSMenuItem()
@@ -788,7 +788,7 @@ public final class AppKitBackend: FullAppBackend {
                     menu.removeItem(at: i)
                 }
             }
-            
+
             picker.onAction = { picker in
                 let picker = picker as! NSPopUpButton
                 onChange(picker.indexOfSelectedItem)

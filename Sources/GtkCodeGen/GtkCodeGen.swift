@@ -235,11 +235,11 @@ struct GtkCodeGen {
         let source = SourceFileSyntax(
             """
             import \(raw: cGtkImport)
-            
+
             \(raw: docComment(interface.doc))
             public protocol \(raw: interface.name): GObjectRepresentable {
                 \(raw: properties.map(\.description).joined(separator: "\n\n"))
-            
+
                 \(raw: signalProperties.map(\.description).joined(separator: "\n\n"))
             }
             """
@@ -329,15 +329,15 @@ struct GtkCodeGen {
         let source = SourceFileSyntax(
             """
             import \(raw: cGtkImport)
-            
+
             \(raw: docComment(enumeration.doc))
             public enum \(raw: enumeration.name): GValueRepresentableEnum {
                 public typealias GtkEnum = \(raw: enumeration.cType)
-            
+
                 \(raw: cases.map(\.description).joined(separator: "\n"))
-            
+
                 \(raw: typeProperty)
-            
+
                 public init(from gtkEnum: \(raw: enumeration.cType)) {
                     switch gtkEnum {
                         \(
@@ -350,7 +350,7 @@ struct GtkCodeGen {
                 .cType) enum value: \\(gtkEnum.rawValue)")
                     }
                 }
-            
+
                 public func toGtk() -> \(raw: enumeration.cType) {
                     switch self {
                         \(raw: toGtkConversionSwitchCases.map(\.description)
@@ -529,13 +529,13 @@ struct GtkCodeGen {
         let source = SourceFileSyntax(
             """
             import \(raw: cGtkImport)
-            
+
             \(raw: docComment(class_.doc))
             open class \(raw: class_.name)\(raw: conformanceString) {
                 \(raw: initializers.map(\.description).joined(separator: "\n\n"))
-            
+
                 \(raw: methods.map(\.description).joined(separator: "\n\n"))
-            
+
                 \(raw: properties.map(\.description).joined(separator: "\n\n"))
             }
             """
@@ -650,7 +650,7 @@ struct GtkCodeGen {
             """
             open override func \(raw: methodName)() {
                 super.\(raw: methodName)()
-            
+
                 \(raw: exprs.joined(separator: "\n\n"))
             }
             """
@@ -874,8 +874,9 @@ struct GtkCodeGen {
                         .unsafeCopy()
                         .baseAddress!
                     """
-            } else if let type = parameter.type?.cType,
-                      let destinationType = cTypesManuallyConverted[type]
+            } else if
+                let type = parameter.type?.cType,
+                let destinationType = cTypesManuallyConverted[type]
             {
                 return "\(destinationType)(\(argument))"
             }

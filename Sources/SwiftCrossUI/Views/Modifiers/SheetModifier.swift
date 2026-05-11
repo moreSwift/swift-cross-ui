@@ -132,8 +132,8 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
                 onDismiss: { handleDismiss(children: children) },
                 cornerRadius: preferences.presentationCornerRadius,
                 detents: preferences.presentationDetents ?? [],
-                dragIndicatorVisibility:
-                preferences.presentationDragIndicatorVisibility ?? .automatic,
+                dragIndicatorVisibility: preferences.presentationDragIndicatorVisibility
+                    ?? .automatic,
                 backgroundColor: preferences.presentationBackground?.resolve(in: environment),
                 interactiveDismissDisabled: preferences.interactiveDismissDisabled ?? false
             )

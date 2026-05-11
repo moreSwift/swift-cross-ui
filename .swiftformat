@@ -18,6 +18,6 @@
         lineBreakAtEndOfFile, preferKeyPath, \
         singlePropertyPerLine, spaceInsideComments, \
         wrapArguments, indent, hoistPatternLet, \
-        unusedArguments, semicolons, wrap, \
-        wrapEnumCases, wrapMultilineStatementBraces, \
-        simplifyGenericConstraints, trailingSpace
+        semicolons, wrap, wrapEnumCases, \
+        wrapMultilineStatementBraces, simplifyGenericConstraints, \
+        trailingSpace

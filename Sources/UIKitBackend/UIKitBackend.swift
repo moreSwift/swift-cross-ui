@@ -189,9 +189,9 @@ public final class UIKitBackend:
         return environment
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor ()
-        -> Void)
-    {
+    public func setRootEnvironmentChangeHandler(
+        to action: @escaping @Sendable @MainActor () -> Void
+    ) {
         onTraitCollectionChange = action
         if timeZoneObserver == nil {
             timeZoneObserver = NotificationCenter.default.addObserver(
@@ -401,9 +401,12 @@ open class ApplicationDelegate: UIResponder, UIApplicationDelegate {
     /// point in your implementation. If you do not, then calls to
     /// ``SwiftCrossUI/Scene/commands(_:)`` will have no effect.
     open override func buildMenu(with builder: any UIMenuBuilder) {
-        guard #available(tvOS 14, *),
-              builder.system == .main
-        else { return }
+        guard
+            #available(tvOS 14, *),
+            builder.system == .main
+        else {
+            return
+        }
 
         for submenu in menu {
             let menuIdentifier = mapMenuIdentifier(submenu.label)

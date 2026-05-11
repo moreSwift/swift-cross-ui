@@ -2,8 +2,7 @@ import CGtk
 
 extension DrawingArea {
     public func setDrawFunc(
-        _ drawFunc:
-        @escaping (
+        _ drawFunc: @escaping (
             _ cairo: OpaquePointer,
             _ width: Int,
             _ height: Int

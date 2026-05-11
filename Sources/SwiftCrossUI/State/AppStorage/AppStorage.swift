@@ -37,8 +37,9 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
                 switch mode {
                     case .key(let key, let defaultValue):
                         guard let provider else {
-                            // NB: We used to call `fatalError` here, but since `StateImpl` accesses this
-                            // property on initialization, we're returning the default value instead.
+                            // NB: We used to call `fatalError` here, but since `StateImpl`
+                            // accesses this property on initialization, we're returning the
+                            // default value instead.
                             return defaultValue
                         }
                         return provider.getValue(key: key, defaultValue: defaultValue)
@@ -51,10 +52,9 @@ public struct AppStorage<Value: Codable & Sendable>: ObservableProperty {
                 guard let provider else {
                     fatalError(
                         """
-                        @AppStorage value with key '\(mode
-                            .pathDescription)' used before initialization. \
-                        Don't use @AppStorage properties before SwiftCrossUI requests the \
-                        body of the enclosing 'App' or 'View'.
+                        @AppStorage value with key '\(mode.pathDescription)' used before \
+                        initialization. Don't use @AppStorage properties before \
+                        SwiftCrossUI requests the body of the enclosing 'App' or 'View'.
                         """
                     )
                 }

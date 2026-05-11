@@ -126,17 +126,17 @@ public final class GtkBackend:
                     list {
                         background: none;
                     }
-                    
+
                     list > row {
                         padding: 0;
                         min-height: 0;
                     }
-                    
+
                     .navigation-sidebar {
                         margin: 0;
                         padding: 0;
                     }
-                    
+
                     .navigation-sidebar > row { margin: 0;
                         padding: 0;
                     }
@@ -524,9 +524,9 @@ public final class GtkBackend:
             .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor ()
-        -> Void)
-    {
+    public func setRootEnvironmentChangeHandler(
+        to action: @escaping @Sendable @MainActor () -> Void
+    ) {
         // TODO: React to theme changes
         self.rootEnvironmentChangeHandler = action
     }
@@ -1551,9 +1551,9 @@ public final class GtkBackend:
             case .secondary:
                 let gesture =
                     tapGestureTarget.eventControllers.first {
-                        $0 is GestureClick
-                            && gtk_gesture_single_get_button($0.opaquePointer)
-                            == GDK_BUTTON_SECONDARY
+                        $0 is GestureClick &&
+                            (gtk_gesture_single_get_button($0.opaquePointer) ==
+                                GDK_BUTTON_SECONDARY)
                     } as! GestureClick
                 gesture.pressed = { _, nPress, _, _ in
                     guard environment.isEnabled, nPress == 1 else {
@@ -2200,8 +2200,9 @@ final class TimePicker: Box {
         )
         minutePicker.text = "\(components.minute!)"
         minutePicker.valueChanged = { [unowned self] minutePicker in
-            guard let value = Int(exactly: minutePicker.value),
-                  let newDate = calendar.date(bySetting: .minute, value: value, of: date)
+            guard
+                let value = Int(exactly: minutePicker.value),
+                let newDate = calendar.date(bySetting: .minute, value: value, of: date)
             else {
                 return
             }
@@ -2238,8 +2239,9 @@ final class TimePicker: Box {
         hourPicker.text =
             "\(TimePicker.transformToRange(components.hour!, hourCycle: self.hourCycle))"
         hourPicker.valueChanged = { [unowned self] hourPicker in
-            guard let value = Int(exactly: hourPicker.value),
-                  let newDate = calendar.date(bySetting: .hour, value: value, of: date)
+            guard
+                let value = Int(exactly: hourPicker.value),
+                let newDate = calendar.date(bySetting: .hour, value: value, of: date)
             else {
                 return
             }

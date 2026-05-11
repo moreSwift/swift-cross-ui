@@ -110,34 +110,34 @@ public final class Gtk3Backend:
                         padding-top: 11px;
                         margin-bottom: -10px;
                     }
-                    
+
                     @binding-set DisableEscape {
                         unbind "Escape";
                     }
-                    
+
                     messagedialog {
                         -gtk-key-bindings: DisableEscape;
                     }
-                    
+
                     list {
                         background: none;
                     }
-                    
+
                     list > row {
                         padding: 0;
                         min-height: 0;
                     }
-                    
+
                     .navigation-sidebar {
                         margin: 0;
                         padding: 0;
                     }
-                    
+
                     .navigation-sidebar > row {
                         margin: 0;
                         padding: 0;
                     }
-                    
+
                     textview text {
                         background: none;
                     }
@@ -546,9 +546,9 @@ public final class Gtk3Backend:
             .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor ()
-        -> Void)
-    {
+    public func setRootEnvironmentChangeHandler(
+        to action: @escaping @Sendable @MainActor () -> Void
+    ) {
         // TODO: React to theme changes
         self.rootEnvironmentChangeHandler = action
     }

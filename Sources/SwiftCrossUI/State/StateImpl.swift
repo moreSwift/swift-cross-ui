@@ -23,8 +23,9 @@ struct StateImpl<Storage: StateStorageProtocol> {
            let value = initialStorage.value as? ObservableObject
         {
             storage.downstreamObservation = storage.didChange.link(toUpstream: value.didChange)
-        } else if let value = initialStorage.value as? OptionalObservableObject,
-                  let innerDidChange = value.didChange
+        } else if
+            let value = initialStorage.value as? OptionalObservableObject,
+            let innerDidChange = value.didChange
         {
             // If we have an `Optional<some ObservableObject>.some`, then observe its
             // inner value's publisher.

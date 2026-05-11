@@ -714,9 +714,8 @@ public final class WinUIBackend:
             // weekdays wrap, making it taller than it says it is. Value was derived by trial and
             // error.
             adjustment = SIMD2(20, 0)
-        }
-        else if computedSize.width == 0 && computedSize
-            .height == 0 && widget is CalendarDatePicker
+        } else if
+            computedSize.width == 0 && computedSize.height == 0 && widget is CalendarDatePicker
         {
             // I can't find any source on what the size of CalendarDatePicker is, but it reports 0x0
             // in at least some cases before initial render. In these cases, use a size derived
@@ -732,7 +731,7 @@ public final class WinUIBackend:
         widget.width = Double(size.x)
         widget.height = Double(size.y)
     }
-    
+
     public func createTooltipContainer(wrapping child: Widget) -> Widget {
         // TODO(bbrk24): Look into removing the container, like on AppKit
         TooltipContainer(child: child)
@@ -2225,7 +2224,7 @@ final class TooltipContainer: WinUI.Canvas {
     init(child: WinUI.FrameworkElement) {
         self.child = child
         self.tooltip = ToolTip()
-        
+
         super.init()
 
         children.append(child)
@@ -2313,9 +2312,7 @@ public class CustomWindow: WinUI.Window {
         self.activated.addHandler { [weak self] _, args in
             switch args?.windowActivationState {
                 case .codeActivated, .pointerActivated: self?.isActive = true
-
                 case .deactivated: self?.isActive = false
-
                 // NB: The compiler apparently thinks we didn't exhaustively switch
                 // over this enum without this `default` (even after adding a `case nil`).
                 // Might be because it doesn't treat the underlying C enum as a Swift enum?
