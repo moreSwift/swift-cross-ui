@@ -3,11 +3,11 @@ import SwiftCrossUI
 
 extension AndroidBackend: BackendFeatures.Alerts {
     public typealias Alert = AlertFragment
-    
+
     public func createAlert() -> AlertFragment {
         AlertFragment(environment: Self.env)
     }
-    
+
     public func updateAlert(
         _ alert: AlertFragment,
         title: String,
@@ -16,7 +16,7 @@ extension AndroidBackend: BackendFeatures.Alerts {
     ) {
         alert.update(title, actionLabels)
     }
-    
+
     public func showAlert(
         _ alert: AlertFragment,
         window: Window?,
@@ -26,11 +26,11 @@ extension AndroidBackend: BackendFeatures.Alerts {
             let index = alert.getButtonIndex()
             handleResponse(Int(index))
         }
-        
+
         alert.setAction(action)
         alert.show(Self.activity)
     }
-    
+
     public func dismissAlert(_ alert: AlertFragment, window: Window?) {
         alert.dismiss()
     }

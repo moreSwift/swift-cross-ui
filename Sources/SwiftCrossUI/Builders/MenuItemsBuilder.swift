@@ -4,7 +4,7 @@ public struct MenuItemsBuilder {
     public static func buildBlock() -> [MenuItem] {
         []
     }
-    
+
     public static func buildPartialBlock(first: some View) -> [MenuItem] {
         // For SwiftUI compatibility, we ignore any views that aren't MenuItemRepresentable.
         guard let first = first as? any MenuItemRepresentable else { return [] }

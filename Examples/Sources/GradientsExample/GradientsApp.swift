@@ -90,13 +90,13 @@ struct LinearGradientView: View {
                     startPoint: .trailing,
                     endPoint: .leading
                 )
-                
+
                 LinearGradient(
                     colors: colors,
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                
+
                 LinearGradient(
                     colors: colors,
                     startPoint: .topTrailing,
@@ -104,20 +104,20 @@ struct LinearGradientView: View {
                 )
             }
             .frame(height: 100)
-            
+
             HStack {
                 LinearGradient(
                     colors: colors,
                     startPoint: .leading,
                     endPoint: .trailing
                 )
-                
+
                 LinearGradient(
                     colors: colors,
                     startPoint: .bottom,
                     endPoint: .top
                 )
-                
+
                 LinearGradient(
                     colors: colors,
                     startPoint: .bottomTrailing,
@@ -126,7 +126,7 @@ struct LinearGradientView: View {
             }
             .frame(height: 100)
         }
-        
+
         LinearGradient(stops: stops, startPoint: .leading, endPoint: .trailing)
             .frame(height: 100)
     }
@@ -145,14 +145,14 @@ struct RadialGradientView: View {
                     startRadius: 0,
                     endRadius: 150
                 )
-                
+
                 RadialGradient(
                     colors: colors,
                     center: .topLeading,
                     startRadius: 0,
                     endRadius: 300
                 )
-                
+
                 RadialGradient(
                     stops: stops,
                     center: .bottom,
@@ -161,7 +161,7 @@ struct RadialGradientView: View {
                 )
             }
             .frame(height: 300)
-            
+
             VStack {
                 RadialGradient(
                     stops: [
@@ -172,7 +172,7 @@ struct RadialGradientView: View {
                     startRadius: 0,
                     endRadius: 300
                 ).frame(width: 600)
-                
+
                 RadialGradient(
                     stops: [
                         .init(color: .red, location: 0),
@@ -210,18 +210,18 @@ struct AngularGradientView: View {
                     angle: .degrees(90),
                 )
                 .frame(width: 300)
-                
+
                 AngularGradient(
                     stops: stops,
                     center: .center
                 )
                 .frame(width: 300)
-                
+
                 AngularGradient(colors: colors, center: .center)
                     .frame(width: 300)
             }
             .frame(height: 300)
-            
+
             HStack {
                 AngularGradient(
                     stops: specialStops,
@@ -230,7 +230,7 @@ struct AngularGradientView: View {
                     endAngle: .degrees(500)
                 )
                 .frame(width: 300)
-                
+
                 AngularGradient(
                     stops: specialStops,
                     center: .center,
@@ -238,7 +238,7 @@ struct AngularGradientView: View {
                     endAngle: .degrees(620)
                 )
                 .frame(width: 300)
-                
+
                 AngularGradient(
                     stops: [
                         Gradient.Stop(color: .white, location: 0),

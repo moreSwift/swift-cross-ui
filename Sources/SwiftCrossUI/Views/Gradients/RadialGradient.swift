@@ -34,7 +34,7 @@ public struct RadialGradient: ElementaryView {
     ) -> Backend.Widget {
         backend.createRadialGradientWidget()
     }
-    
+
     public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         proposedSize: ProposedViewSize,
@@ -97,26 +97,26 @@ extension RadialGradient {
     /// Stops adjusted to accomodate startRadius on backends without native support.
     package var adjustedStops: [Gradient.Stop] {
         guard startRadius != 0 else { return gradient.stops }
-        
+
         let range = endRadius - startRadius
-        
+
         if range < 0 {
             let dividableRange = abs(range) / startRadius
             let innerCircle = (startRadius - abs(range)) / startRadius
-            
+
             let invertedStops = gradient.stops.reversed().map { stop in
                 Gradient.Stop(
                     color: stop.color,
                     location: innerCircle + (1.0 - stop.location) * dividableRange
                 )
             }
-            
+
             return invertedStops
         }
-        
+
         let dividableRange = range / endRadius
         let innerCircle = (endRadius - range) / endRadius
-        
+
         return gradient.stops.map { stop in
             Gradient.Stop(
                 color: stop.color,

@@ -5,7 +5,7 @@ extension BackendFeatures {
     public protocol LinearGradients: Core {
         /// Creates the widget for a ``LinearGradient``.
         func createLinearGradientWidget() -> Widget
-        
+
         /// Updates the widget of a ``LinearGradient``.
         /// - Parameters:
         ///   - widget: The widget to update.

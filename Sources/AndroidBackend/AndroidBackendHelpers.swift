@@ -35,7 +35,7 @@ class AndroidBackendHelpers: JavaObject {
 
     @JavaMethod
     func getSmallTextSize(_ activity: Activity?) -> Float
-    
+
     @JavaMethod
     func isNightMode(_ activity: Activity?) -> Bool
 

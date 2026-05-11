@@ -8,10 +8,10 @@ import AndroidKit
 public class AlertFragment: JavaObject {
     @JavaMethod
     func getButtonIndex() -> Int32
-    
+
     @JavaMethod
     func setAction(_ action: SwiftAction?)
-    
+
     @JavaMethod
     func update(
         _ title: String,
@@ -20,7 +20,7 @@ public class AlertFragment: JavaObject {
 
     @JavaMethod
     func show(_ activity: AndroidKit.Activity?)
-    
+
     // Inherited from DialogFragment
     @JavaMethod
     func dismiss()

@@ -5,7 +5,7 @@ extension BackendFeatures {
     public protocol RadialGradients: Core {
         /// Creates the widget for a ``RadialGradient``.
         func createRadialGradientWidget() -> Widget
-        
+
         /// Updates the widget of a ``RadialGradient``.
         /// - Parameters:
         ///   - widget: The widget to update.

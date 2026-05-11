@@ -29,7 +29,7 @@ extension AndroidBackend: BackendFeatures.Pickers {
                 fatalError("Unsupported picker style \(style)")
         }
     }
-    
+
     public func updatePicker(
         _ picker: Widget,
         options: [String],
@@ -54,8 +54,9 @@ extension AndroidBackend: BackendFeatures.Pickers {
         } else if let picker = picker.as(CustomSpinner.self) {
             let action = SwiftAction(environment: Self.env) {
                 let selectedOption = picker.getSelectedItemPosition()
-                let invalidPosition: Int32 = try! JavaClass<AndroidKit.AdapterView>().INVALID_POSITION
-                
+                let invalidPosition: Int32 = try! JavaClass<AndroidKit.AdapterView>()
+                    .INVALID_POSITION
+
                 onChange(selectedOption == invalidPosition ? nil : Int(selectedOption))
             }
             picker.update(action, options, environment.isEnabled)
@@ -69,7 +70,7 @@ extension AndroidBackend: BackendFeatures.Pickers {
             fatalError("Unexpected picker class")
         }
     }
-    
+
     public func setSelectedOption(ofPicker picker: Widget, to selectedOption: Int?) {
         if let picker = picker.as(CustomRadioGroup.self) {
             picker.selectOption(Int32(selectedOption ?? -1))
@@ -77,8 +78,9 @@ extension AndroidBackend: BackendFeatures.Pickers {
             if let selectedOption {
                 picker.selectOption(Int32(selectedOption))
             } else {
-                let invalidPosition: Int32 = try! JavaClass<AndroidKit.AdapterView>().INVALID_POSITION
-                
+                let invalidPosition: Int32 = try! JavaClass<AndroidKit.AdapterView>()
+                    .INVALID_POSITION
+
                 picker.selectOption(invalidPosition)
             }
         } else if let picker = picker.as(AndroidKit.NumberPicker.self) {

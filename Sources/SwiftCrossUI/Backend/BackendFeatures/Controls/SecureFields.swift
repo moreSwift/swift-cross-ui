@@ -11,7 +11,7 @@ extension BackendFeatures {
         ///
         /// - Returns: A secure text field.
         func createSecureField() -> Widget
-        
+
         /// Sets the placeholder label and change handler of an editable secure
         /// text field.
         ///

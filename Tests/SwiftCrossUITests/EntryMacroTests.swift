@@ -28,7 +28,7 @@ struct EntryMacroTests {
                             self[`__Key_test`.self] = newValue
                         }
                     }
-                
+
                     private struct `__Key_test`: SwiftCrossUI.EnvironmentKey {
                         static let defaultValue = 22
                     }
@@ -40,7 +40,7 @@ struct EntryMacroTests {
             }
         )
     }
-    
+
     @Test("Entry generates with type annotation")
     func testGeneratesWithTypeAnnotation() {
         assertMacroExpansion(
@@ -59,7 +59,7 @@ struct EntryMacroTests {
                             self[`__Key_test`.self] = newValue
                         }
                     }
-                
+
                     private struct `__Key_test`: SwiftCrossUI.EnvironmentKey {
                         static let defaultValue: UInt64 = 22
                     }
@@ -71,7 +71,7 @@ struct EntryMacroTests {
             }
         )
     }
-    
+
     @Test("@Entry requires an initial value for non-optional properties.")
     func entryThrowsWithoutInitialValue() {
         assertMacroExpansion(
@@ -98,7 +98,7 @@ struct EntryMacroTests {
             }
         )
     }
-    
+
     @Test("Entry generates default value nil without initial value on Optional type definition")
     func entryGeneratesDefaultValueNilWithoutInitialValueOnOptionalTypeDefinition() {
         assertMacroExpansion(
@@ -118,7 +118,7 @@ struct EntryMacroTests {
                             self[`__Key_test`.self] = newValue
                         }
                     }
-                
+
                     private struct `__Key_test`: SwiftCrossUI.EnvironmentKey {
                         static let defaultValue: UInt64? = nil
                     }
@@ -130,7 +130,7 @@ struct EntryMacroTests {
                             self[`__Key_test1`.self] = newValue
                         }
                     }
-                
+
                     private struct `__Key_test1`: SwiftCrossUI.EnvironmentKey {
                         static let defaultValue: Optional<UInt64> = nil
                     }
@@ -143,7 +143,7 @@ struct EntryMacroTests {
             }
         )
     }
-    
+
     @Test("Entry generates for AppStorage")
     func entryGeneratesForAppStorage() {
         assertMacroExpansion(
@@ -163,7 +163,7 @@ struct EntryMacroTests {
                             setValue(`__Key_test`.self, newValue: newValue)
                         }
                     }
-                
+
                     private struct `__Key_test`: SwiftCrossUI.AppStorageKey {
                         static let defaultValue: UInt64? = nil
                         static let name = "test"
@@ -176,7 +176,7 @@ struct EntryMacroTests {
                             setValue(`__Key_name`.self, newValue: newValue)
                         }
                     }
-                
+
                     private struct `__Key_name`: SwiftCrossUI.AppStorageKey {
                         static let defaultValue = "default"
                         static let name = "name"
@@ -190,7 +190,7 @@ struct EntryMacroTests {
             }
         )
     }
-    
+
     @Test(
         "@Entry-annotated properties must be direct children of an EnvironmentValues or AppStorageValues extension."
     )
@@ -223,7 +223,7 @@ struct EntryMacroTests {
             }
         )
     }
-    
+
     @Test("@Entry is only supported on single binding `var` declarations.")
     func entryFailsWhenAppliedToLet() {
         assertMacroExpansion(
@@ -250,6 +250,6 @@ struct EntryMacroTests {
             }
         )
     }
-    
+
     // TODO: Add test for raw identifiers after SwiftSyntax version bump to 602.0.0+
 }

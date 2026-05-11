@@ -238,7 +238,7 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         } else {
             environment.colorScheme = .light
         }
-        
+
         environment.isCircularScreen = Self.activity
             .getResources()
             .getConfiguration()
@@ -262,7 +262,8 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         rootEnvironment: EnvironmentValues
     ) -> EnvironmentValues {
         var environment = rootEnvironment
-        environment.windowScaleFactor = Double(window.content!.getResources().getDisplayMetrics().density)
+        environment
+            .windowScaleFactor = Double(window.content!.getResources().getDisplayMetrics().density)
         return environment
     }
 
@@ -297,7 +298,7 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         to position: SIMD2<Int>
     ) {
         let density = container.getResources().getDisplayMetrics().density
-        
+
         let container = container.as(CustomContainer.self)!
         let child = container.getChildAt(Int32(index))!
 
@@ -327,7 +328,7 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
 
     public func naturalSize(of widget: Widget) -> SIMD2<Int> {
         let density = widget.getResources().getDisplayMetrics().density
-        
+
         let measureSpecClass = try! JavaClass<AndroidKit.View.MeasureSpec>(
             environment: Self.env
         )
@@ -443,7 +444,8 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         // 0x3FFFFFFF = View.MeasureSpec.makeMeasureSpec(Int32.max, View.MeasureSpec.UNSPECIFIED)
         let widthSpec =
             if let proposedWidth {
-                Int32(bitPattern: 0x80000000 | UInt32(Double(proposedWidth) * environment.windowScaleFactor) & ~0x40000000)
+                Int32(bitPattern: 0x80000000 |
+                    UInt32(Double(proposedWidth) * environment.windowScaleFactor) & ~0x40000000)
             } else {
                 0x3FFFFFFF as Int32
             }
@@ -458,5 +460,5 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         let width = Double(widget.getMeasuredWidth()) / environment.windowScaleFactor
         let height = Double(widget.getMeasuredHeight()) / environment.windowScaleFactor
         return SIMD2(Int(width.rounded(.up)), Int(height.rounded(.up)))
-     }
- }
+    }
+}

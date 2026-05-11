@@ -33,7 +33,7 @@ struct ForEachTests {
         )
         _ = node.commit()
     }
-    
+
     @MainActor
     @Test("Reordered children")
     func reorderedChildren() {

@@ -52,9 +52,9 @@ extension AndroidBackend {
         let typeface = typefaceClass.create(baseTypeface, weightInt, resolvedFont.isItalic)!
 
         let colorInt = environment.suggestedForegroundColor.resolve(in: environment).asColorInt()
-        
+
         let typedValue = try! JavaClass<AndroidKit.TypedValue>()
-        
+
         let lineHeightPixels = Int32(
             typedValue.applyDimension(
                 typedValue.COMPLEX_UNIT_SP,
@@ -90,7 +90,7 @@ extension AndroidBackend {
                 case .caption2: helpers.getSmallTextSize(Self.activity) * 0.846
                 case .footnote: helpers.getSmallTextSize(Self.activity)
             }
-        
+
         // Android's default system styles all seem to have line height = font size, which doesn't
         // match any other platform and can be a bit cramped. The 1.15 here is somewhat arbitrary
         // but makes it match other platforms a bit more closely.

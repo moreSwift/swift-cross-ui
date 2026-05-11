@@ -29,9 +29,9 @@ extension GtkBackend {
 
         let stops = cssStops(stops: gradient.gradient.stops, environment: environment)
             .joined(separator: ", ")
-        
+
         let radians = (angle + Angle(degrees: 90)).radians
-        
+
         widget.css.set(
             property: .init(
                 key: "background",
@@ -58,10 +58,10 @@ extension GtkBackend {
             : invertedStops(stops: gradient.gradient.stops)
         let cssStops = cssStops(stops: stops, environment: environment)
             .joined(separator: ", ")
-        
+
         let centerXPercent = gradient.center.x * 100
         let centerYPercent = gradient.center.y * 100
-        
+
         widget.css.set(
             property: .init(
                 key: "background",
@@ -74,7 +74,7 @@ extension GtkBackend {
             )
         )
     }
-    
+
     private func invertedStops(stops: [Gradient.Stop]) -> [Gradient.Stop] {
         return stops.reversed().map { stop in
             Gradient.Stop(
@@ -91,7 +91,7 @@ extension GtkBackend {
             let green = resolved.green * 255
             let blue = resolved.blue * 255
             let location = stop.location * 100
-            
+
             return
                 """
                 rgba(\(red), \(green), \(blue), \

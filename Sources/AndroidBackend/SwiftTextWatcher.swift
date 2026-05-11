@@ -6,10 +6,10 @@
 // )
 // class SwiftTextWatcher: JavaObject {
 //     typealias Action = () -> ()
-    
+
 //     @JavaMethod
 //     @_nonoverride convenience init(action: SwiftObject?, environment: JNIEnvironment? = nil)
-    
+
 //     @JavaMethod
 //     func getAction() -> SwiftObject?
 // }

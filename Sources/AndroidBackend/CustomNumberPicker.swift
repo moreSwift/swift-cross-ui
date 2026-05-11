@@ -14,7 +14,7 @@ class CustomNumberPicker: JavaObject {
 
     @JavaMethod
     func update(_ onChange: SwiftAction?, _ options: [String], _ isEnabled: Bool)
-    
+
     // Inheritied from NumberPicker; only present to avoid the extra as() call Swift-side.
     @JavaMethod
     func getValue() -> Int32

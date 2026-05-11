@@ -17,7 +17,7 @@ class CustomWebView: JavaObject {
 
     @JavaMethod
     func loadUrl(_ url: String)
-    
+
     @JavaMethod
     func getLoadingUrl() -> JavaString?
 }

@@ -1,6 +1,6 @@
 extension View {
     /// Adds help text to a view using a string that you provide.
-    /// 
+    ///
     /// This configures a hover tooltip where applicable, i.e. desktop and
     /// visionOS. When using touch screens, most users will not be able to
     /// access the help text in a simple way, though it can configure the

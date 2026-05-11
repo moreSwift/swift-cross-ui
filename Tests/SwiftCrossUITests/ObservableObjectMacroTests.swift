@@ -24,7 +24,7 @@ struct ObservableTests {
                     @SwiftCrossUI.Published
                     var name: String = ""
                 }
-                
+
                 extension ViewModel: SwiftCrossUI.ObservableObject {
                 }
                 """,
@@ -34,7 +34,7 @@ struct ObservableTests {
             }
         )
     }
-    
+
     @Test("Computed property gets skipped")
     func testComputedPropertyIsIgnored() {
         assertMacroExpansion(
@@ -50,7 +50,7 @@ struct ObservableTests {
                     var computed: Int { 1 + 1 }
                     var explicitGet: Int { get { 0 } }
                 }
-                
+
                 extension ViewModel: SwiftCrossUI.ObservableObject {
                 }
                 """,
@@ -60,7 +60,7 @@ struct ObservableTests {
             }
         )
     }
-    
+
     @Test("Stored property with observers doesn't get attribute")
     func testPropertyWithObserversGetsAttribute() {
         assertMacroExpansion(
@@ -78,7 +78,7 @@ struct ObservableTests {
                         didSet { print("changed") }
                     }
                 }
-                
+
                 extension ViewModel: SwiftCrossUI.ObservableObject {
                 }
                 """,
@@ -88,7 +88,7 @@ struct ObservableTests {
             }
         )
     }
-    
+
     @Test("Private and static properties are ignored")
     func testPrivateAndStaticAreIgnored() {
         assertMacroExpansion(
@@ -106,7 +106,7 @@ struct ObservableTests {
                     static var shared = "info"
                     private(set) var readOnly = "safe"
                 }
-                
+
                 extension ViewModel: SwiftCrossUI.ObservableObject {
                 }
                 """,
@@ -116,7 +116,7 @@ struct ObservableTests {
             }
         )
     }
-    
+
     @Test("ObservationIgnored is honored")
     func testObservationIgnoredIsHonored() {
         assertMacroExpansion(
@@ -130,7 +130,7 @@ struct ObservableTests {
                 class ViewModel {
                     @ObservationIgnored var skipMe = false
                 }
-                
+
                 extension ViewModel: SwiftCrossUI.ObservableObject {
                 }
                 """,
@@ -140,7 +140,7 @@ struct ObservableTests {
             }
         )
     }
-    
+
     @Test("Multiple Bindings get ignored")
     func testMultipleBindingsThrowError() {
         assertMacroExpansion(
@@ -154,7 +154,7 @@ struct ObservableTests {
                 class ViewModel {
                     var a, b: String
                 }
-                
+
                 extension ViewModel: SwiftCrossUI.ObservableObject {
                 }
                 """,
@@ -164,7 +164,7 @@ struct ObservableTests {
             }
         )
     }
-    
+
     @Test("Namespaced ObservationIgnored blocks application")
     func namespacedObservationIgnoredBlocksApplication() async throws {
         assertMacroExpansion(
@@ -178,7 +178,7 @@ struct ObservableTests {
                 class ViewModel {
                     @SwiftCrossUI.ObservationIgnored var skipMe = false
                 }
-                
+
                 extension ViewModel: SwiftCrossUI.ObservableObject {
                 }
                 """,

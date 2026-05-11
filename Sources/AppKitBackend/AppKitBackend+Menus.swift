@@ -3,7 +3,7 @@ import SwiftCrossUI
 
 extension AppKitBackend: BackendFeatures.PopoverMenus {
     public typealias Menu = NSMenu
-    
+
     public func createPopoverMenu() -> Menu {
         return NSMenu()
     }

@@ -23,7 +23,7 @@ public struct LinearGradient: ElementaryView {
         self.startPoint = startPoint
         self.endPoint = endPoint
     }
-    
+
     @CastBackend<BackendFeatures.LinearGradients>(returnsWidget: true)
     public func asWidget<Backend: BaseAppBackend>(
         backend: Backend
@@ -41,7 +41,7 @@ public struct LinearGradient: ElementaryView {
             size: proposedSize.replacingUnspecifiedDimensions(by: Self.idealSize)
         )
     }
-    
+
     @CastBackend<BackendFeatures.LinearGradients>
     public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,

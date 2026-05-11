@@ -329,7 +329,7 @@ public final class DummyBackend:
     public func activate(window: Window) {
         window.phase = .active
     }
-    
+
     public func close(window: Window) {
         window.closeHandler?()
     }

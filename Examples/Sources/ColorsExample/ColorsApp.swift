@@ -71,7 +71,7 @@ struct ColorsApp: App {
                         otherwise SCUI's built-in colors will be shown
                         """
                     )
-                    
+
                     #if canImport(AndroidBackend)
                         // TODO(bbrk24): Update this once AndroidBackend supports scrolling
                         VStack(spacing: 5) {

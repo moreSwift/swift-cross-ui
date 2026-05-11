@@ -31,7 +31,7 @@ struct PlaylistView: View {
                         self.newSong = nil
                     }
             } else {
-                ForEach(Array(playlist.songs.enumerated()), id: \.element) { (index, songId) in 
+                ForEach(Array(playlist.songs.enumerated()), id: \.element) { (index, songId) in
                     if let song = config.song(withId: songId) {
                         if let songFile = songStorage.loadCachedSong(id: song.id) {
                             SongRow(

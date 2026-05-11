@@ -22,10 +22,10 @@ class CustomRadioGroup: JavaObject {
         lineHeight: Int32,
         _ typeface: AndroidKit.Typeface?
     )
-    
+
     @JavaMethod
     func getSelectedOption() -> Int32
-    
+
     @JavaMethod
     func selectOption(_ index: Int32)
 }

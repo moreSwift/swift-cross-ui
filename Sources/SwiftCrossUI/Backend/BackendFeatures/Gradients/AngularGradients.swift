@@ -5,7 +5,7 @@ extension BackendFeatures {
     public protocol AngularGradients: Core {
         /// Creates the widget for an ``AngularGradient``.
         func createAngularGradientWidget() -> Widget
-        
+
         /// Updates the widget of an ``AngularGradient``.
         /// - Parameters:
         ///   - widget: The widget to update.

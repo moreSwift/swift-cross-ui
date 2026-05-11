@@ -5,18 +5,18 @@ extension BackendFeatures {
     public protocol CoreWindowing<Window>: Widgets {
         /// The underlying window type. Can be a wrapper or subclass.
         associatedtype Window
-        
+
         /// Whether the backend can have multiple windows open at once. Mobile
         /// backends generally can't.
         var supportsMultipleWindows: Bool { get }
-        
+
         /// Whether the backend supports overriding window color schemes (as you may
         /// do with the ``View/preferredColorScheme(_:)`` modifier).
         ///
         /// If `false`, then SwiftCrossUI will ignore the `preferredColorScheme(_:)`
         /// modifier as a nicer failure mode.
         var canOverrideWindowColorScheme: Bool { get }
-        
+
         /// Creates a new window.
         ///
         /// For some backends it may make sense for this method to return the
@@ -31,7 +31,7 @@ extension BackendFeatures {
         ///   preferred window size from a previous session.
         /// - Returns: The created window.
         func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window
-        
+
         /// Updates a window, generally to react to the current color scheme from the
         /// environment.
         ///
@@ -39,14 +39,14 @@ extension BackendFeatures {
         ///   - window: The window to update.
         ///   - environment: the current environment.
         func updateWindow(_ window: Window, environment: EnvironmentValues)
-        
+
         /// Sets the title of a window.
         ///
         /// - Parameters:
         ///   - window: The window to set the title of.
         ///   - title: The new title.
         func setTitle(ofWindow window: Window, to title: String)
-        
+
         /// Sets the root child of a window.
         ///
         /// This replaces the previous child if one exists.
@@ -55,13 +55,13 @@ extension BackendFeatures {
         ///   - window: The window to set the root child of.
         ///   - child: The new root child.
         func setChild(ofWindow window: Window, to child: Widget)
-        
+
         /// Gets the size of the given window in pixels.
         ///
         /// - Parameter window: The window to get the size of.
         /// - Returns: The window's size in pixels.
         func size(ofWindow window: Window) -> SIMD2<Int>
-        
+
         /// Check whether a window is programmatically resizable.
         ///
         /// This value does not necessarily reflect whether the window is resizable
@@ -70,14 +70,14 @@ extension BackendFeatures {
         /// - Parameter window: The window to check.
         /// - Returns: Whether the window is programmatically resizable.
         func isWindowProgrammaticallyResizable(_ window: Window) -> Bool
-        
+
         /// Sets the size (in pixels) of the given window.
         ///
         /// - Parameters:
         ///   - window: The window to set the size of.
         ///   - newSize: The new size.
         func setSize(ofWindow window: Window, to newSize: SIMD2<Int>)
-        
+
         /// Sets the minimum and maximum width and height of a window.
         ///
         /// Prevents the user from making the window any smaller or larger than the
@@ -93,7 +93,7 @@ extension BackendFeatures {
             minimum minimumSize: SIMD2<Int>,
             maximum maximumSize: SIMD2<Int>?
         )
-        
+
         /// Sets the handler for the window's resizing events.
         ///
         /// Setting the resize handler overrides any previous handler.
@@ -105,7 +105,7 @@ extension BackendFeatures {
             ofWindow window: Window,
             to action: @escaping (_ newSize: SIMD2<Int>) -> Void
         )
-        
+
         /// Shows a window after it has been created or updated (may be unnecessary
         /// for some backends).
         ///
@@ -114,7 +114,7 @@ extension BackendFeatures {
         ///
         /// - Parameter window: The window to show.
         func show(window: Window)
-        
+
         /// Brings a window to the front if possible.
         ///
         /// Called when the window receives an external URL or file to handle from
@@ -122,7 +122,7 @@ extension BackendFeatures {
         ///
         /// - Parameter window: The window to activate.
         func activate(window: Window)
-        
+
         /// Computes a window's environment based off the root environment.
         ///
         /// This may involve updating ``EnvironmentValues/windowScaleFactor``, etc.
@@ -135,7 +135,7 @@ extension BackendFeatures {
             window: Window,
             rootEnvironment: EnvironmentValues
         ) -> EnvironmentValues
-        
+
         /// Sets the handler to be notified when the window's contribution to the
         /// environment may have to be recomputed.
         ///

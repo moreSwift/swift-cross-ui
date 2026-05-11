@@ -41,7 +41,7 @@ public struct AngularGradient: ElementaryView {
         self.startAngle = startAngle
         self.endAngle = endAngle
     }
-    
+
     @CastBackend<BackendFeatures.AngularGradients>(returnsWidget: true)
     public func asWidget<Backend: BaseAppBackend>(
         backend: Backend
@@ -59,7 +59,7 @@ public struct AngularGradient: ElementaryView {
             size: proposedSize.replacingUnspecifiedDimensions(by: Self.idealSize)
         )
     }
-    
+
     @CastBackend<BackendFeatures.AngularGradients>
     public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
@@ -135,7 +135,7 @@ extension AngularGradient {
             endAngle: endAngle
         )
     }
-    
+
     /// Stops adjusted to accomodate endAngle on backends without native support.
     package var adjustedStops: [Gradient.Stop] {
         guard let endAngle else { return gradient.stops }

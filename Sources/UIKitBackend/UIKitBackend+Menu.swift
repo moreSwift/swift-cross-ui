@@ -95,7 +95,7 @@ extension UIKitBackend: BackendFeatures.AttachedMenus {
     public func createPopoverMenu() -> Menu {
         return Menu()
     }
-    
+
     public func updatePopoverMenu(
         _ menu: Menu,
         content: ResolvedMenu,

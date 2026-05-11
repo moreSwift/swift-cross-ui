@@ -82,7 +82,7 @@ final class ScrollWidget: ContainerWidget {
     // be a stored property.
     final class TooltipWidget: ContainerWidget {
         private let interaction = UIToolTipInteraction()
-    
+
         var text = "" {
             didSet {
                 child.accessibilityHint = text
@@ -225,11 +225,11 @@ extension UIKitBackend {
             hasHorizontalScrollBar: hasHorizontalScrollBar
         )
     }
-    
+
     public func createTooltipContainer(wrapping child: Widget) -> Widget {
         TooltipWidget(child: child)
     }
-    
+
     public func updateTooltipContainer(_ widget: Widget, tooltip: String) {
         let widget = widget as! TooltipWidget
         widget.text = tooltip

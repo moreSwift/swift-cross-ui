@@ -110,7 +110,7 @@ public struct CastBackendMacro: BodyMacro {
                 \(widgetCast)
                 \(body.statements)
             }
-            
+
             guard let \(castedBackend) = backend as? any BaseAppBackend & \(newBackend) else {
                 fatalError("'\\(\(backendParameter.type).self)' does not implement '\(
                     newBackend.trimmed

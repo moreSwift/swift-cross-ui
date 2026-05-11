@@ -12,7 +12,7 @@ extension SwiftCrossUI.Color.Resolved {
 
         return Int32(bitPattern: combined)
     }
-    
+
     init(fromColorInt int: Int32) {
         let uint = UInt32(bitPattern: int)
 
@@ -35,14 +35,14 @@ extension AndroidBackend: BackendFeatures.Colors {
     public func createColorableRectangle() -> Widget {
         AndroidKit.View(Self.activity, environment: Self.env)
     }
-    
+
     public func setColor(
         ofColorableRectangle widget: Widget,
         to color: SwiftCrossUI.Color.Resolved
     ) {
         widget.setBackgroundColor(color.asColorInt())
     }
-    
+
     public func resolveAdaptiveColor(
         _ adaptiveColor: SwiftCrossUI.Color.SystemAdaptive,
         in environment: EnvironmentValues
@@ -64,13 +64,13 @@ extension AndroidBackend: BackendFeatures.Colors {
                 default: // brown, yellow
                     nil
             }
-        
+
         guard let resId else {
             return SwiftCrossUI.Color.defaultResolveAdaptiveColor(adaptiveColor, in: environment)
         }
-        
+
         let colorInt = Self.activity.getColor(resId)
-        
+
         return SwiftCrossUI.Color.Resolved(fromColorInt: colorInt)
     }
 }

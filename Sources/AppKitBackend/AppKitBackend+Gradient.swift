@@ -150,7 +150,7 @@ final class RadialGradientView: NSView {
 
 class GradientView: NSView {
     override var isFlipped: Bool { true }
-    
+
     func setGradientLayer(to layer: CAGradientLayer) {
         self.layer = layer
         layer.drawsAsynchronously = true
