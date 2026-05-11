@@ -1,6 +1,8 @@
 // This file was generated using gyb. Do not edit it directly. Edit
 // TupleViewChildren.swift.gyb instead.
 
+// swiftformat:options --allow-partial-wrapping true
+
 protocol TupleViewChildren: ViewGraphNodeChildren {
     @MainActor
     var stackLayoutCache: StackLayoutCache { get nonmutating set }
@@ -26,7 +28,9 @@ private func node<V: View, Backend: BaseAppBackend>(
 
 /// A fixed-length strongly-typed collection of 1 child nodes. A counterpart to
 /// ``TupleView1``.
-public class TupleViewChildren1<Child0: View>: TupleViewChildren {
+public class TupleViewChildren1<
+    Child0: View
+>: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [child0.widget]
     }
@@ -59,7 +63,9 @@ public class TupleViewChildren1<Child0: View>: TupleViewChildren {
 
 /// A fixed-length strongly-typed collection of 2 child nodes. A counterpart to
 /// ``TupleView2``.
-public class TupleViewChildren2<Child0: View, Child1: View>: TupleViewChildren {
+public class TupleViewChildren2<
+    Child0: View, Child1: View
+>: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [child0.widget, child1.widget]
     }
@@ -80,15 +86,13 @@ public class TupleViewChildren2<Child0: View, Child1: View>: TupleViewChildren {
 
     /// Creates the nodes for 2 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
+        _ child0: Child0, _ child1: Child1,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self)
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self)
         ]
         let snapshots = ViewGraphSnapshotter.match(snapshots ?? [], to: viewTypeNames)
         self.child0 = node(for: child0, backend, snapshots[0], environment)
@@ -98,7 +102,9 @@ public class TupleViewChildren2<Child0: View, Child1: View>: TupleViewChildren {
 
 /// A fixed-length strongly-typed collection of 3 child nodes. A counterpart to
 /// ``TupleView3``.
-public class TupleViewChildren3<Child0: View, Child1: View, Child2: View>: TupleViewChildren {
+public class TupleViewChildren3<
+    Child0: View, Child1: View, Child2: View
+>: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [child0.widget, child1.widget, child2.widget]
     }
@@ -122,16 +128,13 @@ public class TupleViewChildren3<Child0: View, Child1: View, Child2: View>: Tuple
 
     /// Creates the nodes for 3 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self)
         ]
         let snapshots = ViewGraphSnapshotter.match(snapshots ?? [], to: viewTypeNames)
@@ -144,10 +147,7 @@ public class TupleViewChildren3<Child0: View, Child1: View, Child2: View>: Tuple
 /// A fixed-length strongly-typed collection of 4 child nodes. A counterpart to
 /// ``TupleView4``.
 public class TupleViewChildren4<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View
+    Child0: View, Child1: View, Child2: View, Child3: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [child0.widget, child1.widget, child2.widget, child3.widget]
@@ -175,17 +175,13 @@ public class TupleViewChildren4<
 
     /// Creates the nodes for 4 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self)
         ]
@@ -200,11 +196,7 @@ public class TupleViewChildren4<
 /// A fixed-length strongly-typed collection of 5 child nodes. A counterpart to
 /// ``TupleView5``.
 public class TupleViewChildren5<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [child0.widget, child1.widget, child2.widget, child3.widget, child4.widget]
@@ -235,18 +227,13 @@ public class TupleViewChildren5<
 
     /// Creates the nodes for 5 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self)
@@ -263,12 +250,7 @@ public class TupleViewChildren5<
 /// A fixed-length strongly-typed collection of 6 child nodes. A counterpart to
 /// ``TupleView6``.
 public class TupleViewChildren6<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [
@@ -309,19 +291,14 @@ public class TupleViewChildren6<
 
     /// Creates the nodes for 6 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
         _ child5: Child5,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),
@@ -340,13 +317,7 @@ public class TupleViewChildren6<
 /// A fixed-length strongly-typed collection of 7 child nodes. A counterpart to
 /// ``TupleView7``.
 public class TupleViewChildren7<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View,
-    Child6: View
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View, Child6: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [
@@ -391,20 +362,14 @@ public class TupleViewChildren7<
 
     /// Creates the nodes for 7 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
-        _ child5: Child5,
-        _ child6: Child6,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
+        _ child5: Child5, _ child6: Child6,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),
@@ -425,12 +390,7 @@ public class TupleViewChildren7<
 /// A fixed-length strongly-typed collection of 8 child nodes. A counterpart to
 /// ``TupleView8``.
 public class TupleViewChildren8<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View,
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View,
     Child6: View,
     Child7: View
 >: TupleViewChildren {
@@ -481,21 +441,14 @@ public class TupleViewChildren8<
 
     /// Creates the nodes for 8 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
-        _ child5: Child5,
-        _ child6: Child6,
-        _ child7: Child7,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
+        _ child5: Child5, _ child6: Child6, _ child7: Child7,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),
@@ -518,15 +471,9 @@ public class TupleViewChildren8<
 /// A fixed-length strongly-typed collection of 9 child nodes. A counterpart to
 /// ``TupleView9``.
 public class TupleViewChildren9<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View,
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View,
     Child6: View,
-    Child7: View,
-    Child8: View
+    Child7: View, Child8: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [
@@ -579,22 +526,14 @@ public class TupleViewChildren9<
 
     /// Creates the nodes for 9 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
-        _ child5: Child5,
-        _ child6: Child6,
-        _ child7: Child7,
-        _ child8: Child8,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
+        _ child5: Child5, _ child6: Child6, _ child7: Child7, _ child8: Child8,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),
@@ -619,16 +558,9 @@ public class TupleViewChildren9<
 /// A fixed-length strongly-typed collection of 10 child nodes. A counterpart to
 /// ``TupleView10``.
 public class TupleViewChildren10<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View,
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View,
     Child6: View,
-    Child7: View,
-    Child8: View,
-    Child9: View
+    Child7: View, Child8: View, Child9: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [
@@ -685,23 +617,15 @@ public class TupleViewChildren10<
 
     /// Creates the nodes for 10 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
-        _ child5: Child5,
-        _ child6: Child6,
-        _ child7: Child7,
-        _ child8: Child8,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
+        _ child5: Child5, _ child6: Child6, _ child7: Child7, _ child8: Child8,
         _ child9: Child9,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),
@@ -728,17 +652,9 @@ public class TupleViewChildren10<
 /// A fixed-length strongly-typed collection of 11 child nodes. A counterpart to
 /// ``TupleView11``.
 public class TupleViewChildren11<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View,
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View,
     Child6: View,
-    Child7: View,
-    Child8: View,
-    Child9: View,
-    Child10: View
+    Child7: View, Child8: View, Child9: View, Child10: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [
@@ -799,15 +715,8 @@ public class TupleViewChildren11<
 
     /// Creates the nodes for 11 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
-        _ child5: Child5,
-        _ child6: Child6,
-        _ child7: Child7,
-        _ child8: Child8,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
+        _ child5: Child5, _ child6: Child6, _ child7: Child7, _ child8: Child8,
         _ child9: Child9,
         _ child10: Child10,
         backend: Backend,
@@ -815,8 +724,7 @@ public class TupleViewChildren11<
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),
@@ -845,18 +753,9 @@ public class TupleViewChildren11<
 /// A fixed-length strongly-typed collection of 12 child nodes. A counterpart to
 /// ``TupleView12``.
 public class TupleViewChildren12<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View,
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View,
     Child6: View,
-    Child7: View,
-    Child8: View,
-    Child9: View,
-    Child10: View,
-    Child11: View
+    Child7: View, Child8: View, Child9: View, Child10: View, Child11: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [
@@ -921,25 +820,16 @@ public class TupleViewChildren12<
 
     /// Creates the nodes for 12 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
-        _ child5: Child5,
-        _ child6: Child6,
-        _ child7: Child7,
-        _ child8: Child8,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
+        _ child5: Child5, _ child6: Child6, _ child7: Child7, _ child8: Child8,
         _ child9: Child9,
-        _ child10: Child10,
-        _ child11: Child11,
+        _ child10: Child10, _ child11: Child11,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),
@@ -970,19 +860,9 @@ public class TupleViewChildren12<
 /// A fixed-length strongly-typed collection of 13 child nodes. A counterpart to
 /// ``TupleView13``.
 public class TupleViewChildren13<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View,
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View,
     Child6: View,
-    Child7: View,
-    Child8: View,
-    Child9: View,
-    Child10: View,
-    Child11: View,
-    Child12: View
+    Child7: View, Child8: View, Child9: View, Child10: View, Child11: View, Child12: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [
@@ -1051,26 +931,16 @@ public class TupleViewChildren13<
 
     /// Creates the nodes for 13 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
-        _ child5: Child5,
-        _ child6: Child6,
-        _ child7: Child7,
-        _ child8: Child8,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
+        _ child5: Child5, _ child6: Child6, _ child7: Child7, _ child8: Child8,
         _ child9: Child9,
-        _ child10: Child10,
-        _ child11: Child11,
-        _ child12: Child12,
+        _ child10: Child10, _ child11: Child11, _ child12: Child12,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),
@@ -1103,19 +973,9 @@ public class TupleViewChildren13<
 /// A fixed-length strongly-typed collection of 14 child nodes. A counterpart to
 /// ``TupleView14``.
 public class TupleViewChildren14<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View,
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View,
     Child6: View,
-    Child7: View,
-    Child8: View,
-    Child9: View,
-    Child10: View,
-    Child11: View,
-    Child12: View,
+    Child7: View, Child8: View, Child9: View, Child10: View, Child11: View, Child12: View,
     Child13: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
@@ -1189,27 +1049,16 @@ public class TupleViewChildren14<
 
     /// Creates the nodes for 14 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
-        _ child5: Child5,
-        _ child6: Child6,
-        _ child7: Child7,
-        _ child8: Child8,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
+        _ child5: Child5, _ child6: Child6, _ child7: Child7, _ child8: Child8,
         _ child9: Child9,
-        _ child10: Child10,
-        _ child11: Child11,
-        _ child12: Child12,
-        _ child13: Child13,
+        _ child10: Child10, _ child11: Child11, _ child12: Child12, _ child13: Child13,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),
@@ -1244,21 +1093,10 @@ public class TupleViewChildren14<
 /// A fixed-length strongly-typed collection of 15 child nodes. A counterpart to
 /// ``TupleView15``.
 public class TupleViewChildren15<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View,
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View,
     Child6: View,
-    Child7: View,
-    Child8: View,
-    Child9: View,
-    Child10: View,
-    Child11: View,
-    Child12: View,
-    Child13: View,
-    Child14: View
+    Child7: View, Child8: View, Child9: View, Child10: View, Child11: View, Child12: View,
+    Child13: View, Child14: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [
@@ -1335,28 +1173,17 @@ public class TupleViewChildren15<
 
     /// Creates the nodes for 15 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
-        _ child5: Child5,
-        _ child6: Child6,
-        _ child7: Child7,
-        _ child8: Child8,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
+        _ child5: Child5, _ child6: Child6, _ child7: Child7, _ child8: Child8,
         _ child9: Child9,
-        _ child10: Child10,
-        _ child11: Child11,
-        _ child12: Child12,
-        _ child13: Child13,
+        _ child10: Child10, _ child11: Child11, _ child12: Child12, _ child13: Child13,
         _ child14: Child14,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),
@@ -1393,22 +1220,10 @@ public class TupleViewChildren15<
 /// A fixed-length strongly-typed collection of 16 child nodes. A counterpart to
 /// ``TupleView16``.
 public class TupleViewChildren16<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View,
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View,
     Child6: View,
-    Child7: View,
-    Child8: View,
-    Child9: View,
-    Child10: View,
-    Child11: View,
-    Child12: View,
-    Child13: View,
-    Child14: View,
-    Child15: View
+    Child7: View, Child8: View, Child9: View, Child10: View, Child11: View, Child12: View,
+    Child13: View, Child14: View, Child15: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [
@@ -1489,29 +1304,17 @@ public class TupleViewChildren16<
 
     /// Creates the nodes for 16 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
-        _ child5: Child5,
-        _ child6: Child6,
-        _ child7: Child7,
-        _ child8: Child8,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
+        _ child5: Child5, _ child6: Child6, _ child7: Child7, _ child8: Child8,
         _ child9: Child9,
-        _ child10: Child10,
-        _ child11: Child11,
-        _ child12: Child12,
-        _ child13: Child13,
-        _ child14: Child14,
-        _ child15: Child15,
+        _ child10: Child10, _ child11: Child11, _ child12: Child12, _ child13: Child13,
+        _ child14: Child14, _ child15: Child15,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),
@@ -1550,23 +1353,10 @@ public class TupleViewChildren16<
 /// A fixed-length strongly-typed collection of 17 child nodes. A counterpart to
 /// ``TupleView17``.
 public class TupleViewChildren17<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View,
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View,
     Child6: View,
-    Child7: View,
-    Child8: View,
-    Child9: View,
-    Child10: View,
-    Child11: View,
-    Child12: View,
-    Child13: View,
-    Child14: View,
-    Child15: View,
-    Child16: View
+    Child7: View, Child8: View, Child9: View, Child10: View, Child11: View, Child12: View,
+    Child13: View, Child14: View, Child15: View, Child16: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [
@@ -1651,30 +1441,17 @@ public class TupleViewChildren17<
 
     /// Creates the nodes for 17 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
-        _ child5: Child5,
-        _ child6: Child6,
-        _ child7: Child7,
-        _ child8: Child8,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
+        _ child5: Child5, _ child6: Child6, _ child7: Child7, _ child8: Child8,
         _ child9: Child9,
-        _ child10: Child10,
-        _ child11: Child11,
-        _ child12: Child12,
-        _ child13: Child13,
-        _ child14: Child14,
-        _ child15: Child15,
-        _ child16: Child16,
+        _ child10: Child10, _ child11: Child11, _ child12: Child12, _ child13: Child13,
+        _ child14: Child14, _ child15: Child15, _ child16: Child16,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),
@@ -1715,24 +1492,10 @@ public class TupleViewChildren17<
 /// A fixed-length strongly-typed collection of 18 child nodes. A counterpart to
 /// ``TupleView18``.
 public class TupleViewChildren18<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View,
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View,
     Child6: View,
-    Child7: View,
-    Child8: View,
-    Child9: View,
-    Child10: View,
-    Child11: View,
-    Child12: View,
-    Child13: View,
-    Child14: View,
-    Child15: View,
-    Child16: View,
-    Child17: View
+    Child7: View, Child8: View, Child9: View, Child10: View, Child11: View, Child12: View,
+    Child13: View, Child14: View, Child15: View, Child16: View, Child17: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [
@@ -1821,31 +1584,17 @@ public class TupleViewChildren18<
 
     /// Creates the nodes for 18 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
-        _ child5: Child5,
-        _ child6: Child6,
-        _ child7: Child7,
-        _ child8: Child8,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
+        _ child5: Child5, _ child6: Child6, _ child7: Child7, _ child8: Child8,
         _ child9: Child9,
-        _ child10: Child10,
-        _ child11: Child11,
-        _ child12: Child12,
-        _ child13: Child13,
-        _ child14: Child14,
-        _ child15: Child15,
-        _ child16: Child16,
-        _ child17: Child17,
+        _ child10: Child10, _ child11: Child11, _ child12: Child12, _ child13: Child13,
+        _ child14: Child14, _ child15: Child15, _ child16: Child16, _ child17: Child17,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),
@@ -1888,25 +1637,10 @@ public class TupleViewChildren18<
 /// A fixed-length strongly-typed collection of 19 child nodes. A counterpart to
 /// ``TupleView19``.
 public class TupleViewChildren19<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View,
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View,
     Child6: View,
-    Child7: View,
-    Child8: View,
-    Child9: View,
-    Child10: View,
-    Child11: View,
-    Child12: View,
-    Child13: View,
-    Child14: View,
-    Child15: View,
-    Child16: View,
-    Child17: View,
-    Child18: View
+    Child7: View, Child8: View, Child9: View, Child10: View, Child11: View, Child12: View,
+    Child13: View, Child14: View, Child15: View, Child16: View, Child17: View, Child18: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [
@@ -1999,32 +1733,18 @@ public class TupleViewChildren19<
 
     /// Creates the nodes for 19 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
-        _ child5: Child5,
-        _ child6: Child6,
-        _ child7: Child7,
-        _ child8: Child8,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
+        _ child5: Child5, _ child6: Child6, _ child7: Child7, _ child8: Child8,
         _ child9: Child9,
-        _ child10: Child10,
-        _ child11: Child11,
-        _ child12: Child12,
-        _ child13: Child13,
-        _ child14: Child14,
-        _ child15: Child15,
-        _ child16: Child16,
-        _ child17: Child17,
+        _ child10: Child10, _ child11: Child11, _ child12: Child12, _ child13: Child13,
+        _ child14: Child14, _ child15: Child15, _ child16: Child16, _ child17: Child17,
         _ child18: Child18,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),
@@ -2069,25 +1789,10 @@ public class TupleViewChildren19<
 /// A fixed-length strongly-typed collection of 20 child nodes. A counterpart to
 /// ``TupleView20``.
 public class TupleViewChildren20<
-    Child0: View,
-    Child1: View,
-    Child2: View,
-    Child3: View,
-    Child4: View,
-    Child5: View,
+    Child0: View, Child1: View, Child2: View, Child3: View, Child4: View, Child5: View,
     Child6: View,
-    Child7: View,
-    Child8: View,
-    Child9: View,
-    Child10: View,
-    Child11: View,
-    Child12: View,
-    Child13: View,
-    Child14: View,
-    Child15: View,
-    Child16: View,
-    Child17: View,
-    Child18: View,
+    Child7: View, Child8: View, Child9: View, Child10: View, Child11: View, Child12: View,
+    Child13: View, Child14: View, Child15: View, Child16: View, Child17: View, Child18: View,
     Child19: View
 >: TupleViewChildren {
     public var widgets: [AnyWidget] {
@@ -2185,33 +1890,18 @@ public class TupleViewChildren20<
 
     /// Creates the nodes for 20 child views.
     public init<Backend: BaseAppBackend>(
-        _ child0: Child0,
-        _ child1: Child1,
-        _ child2: Child2,
-        _ child3: Child3,
-        _ child4: Child4,
-        _ child5: Child5,
-        _ child6: Child6,
-        _ child7: Child7,
-        _ child8: Child8,
+        _ child0: Child0, _ child1: Child1, _ child2: Child2, _ child3: Child3, _ child4: Child4,
+        _ child5: Child5, _ child6: Child6, _ child7: Child7, _ child8: Child8,
         _ child9: Child9,
-        _ child10: Child10,
-        _ child11: Child11,
-        _ child12: Child12,
-        _ child13: Child13,
-        _ child14: Child14,
-        _ child15: Child15,
-        _ child16: Child16,
-        _ child17: Child17,
-        _ child18: Child18,
-        _ child19: Child19,
+        _ child10: Child10, _ child11: Child11, _ child12: Child12, _ child13: Child13,
+        _ child14: Child14, _ child15: Child15, _ child16: Child16, _ child17: Child17,
+        _ child18: Child18, _ child19: Child19,
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) {
         let viewTypeNames = [
-            ViewGraphSnapshotter.name(of: Child0.self),
-            ViewGraphSnapshotter.name(of: Child1.self),
+            ViewGraphSnapshotter.name(of: Child0.self), ViewGraphSnapshotter.name(of: Child1.self),
             ViewGraphSnapshotter.name(of: Child2.self),
             ViewGraphSnapshotter.name(of: Child3.self),
             ViewGraphSnapshotter.name(of: Child4.self),

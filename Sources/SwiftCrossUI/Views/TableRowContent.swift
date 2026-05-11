@@ -1,6 +1,8 @@
 // This file was generated using gyb. Do not edit it directly. Edit
 // TableRowContent.swift.gyb instead.
 
+// swiftformat:options --allow-partial-wrapping true
+
 public protocol TableRowContent<RowValue> {
     associatedtype RowValue
     associatedtype RowContent: View
@@ -24,8 +26,12 @@ public struct EmptyTableRowContent<RowValue>: TableRowContent {
     }
 }
 
-public struct TupleTableRowContent1<RowValue, Content0: View>: TableRowContent {
-    public typealias RowContent = TupleView1<Content0>
+public struct TupleTableRowContent1<
+    RowValue, Content0: View
+>: TableRowContent {
+    public typealias RowContent = TupleView1<
+        Content0
+    >
 
     public var column0: TableColumn<RowValue, Content0>
 
@@ -33,7 +39,9 @@ public struct TupleTableRowContent1<RowValue, Content0: View>: TableRowContent {
         [column0.label]
     }
 
-    public init(_ column0: TableColumn<RowValue, Content0>) {
+    public init(
+        _ column0: TableColumn<RowValue, Content0>
+    ) {
         self.column0 = column0
     }
 
@@ -42,8 +50,12 @@ public struct TupleTableRowContent1<RowValue, Content0: View>: TableRowContent {
     }
 }
 
-public struct TupleTableRowContent2<RowValue, Content0: View, Content1: View>: TableRowContent {
-    public typealias RowContent = TupleView2<Content0, Content1>
+public struct TupleTableRowContent2<
+    RowValue, Content0: View, Content1: View
+>: TableRowContent {
+    public typealias RowContent = TupleView2<
+        Content0, Content1
+    >
 
     public var column0: TableColumn<RowValue, Content0>
     public var column1: TableColumn<RowValue, Content1>
@@ -53,8 +65,7 @@ public struct TupleTableRowContent2<RowValue, Content0: View, Content1: View>: T
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -65,10 +76,12 @@ public struct TupleTableRowContent2<RowValue, Content0: View, Content1: View>: T
     }
 }
 
-public struct TupleTableRowContent3<RowValue, Content0: View, Content1: View, Content2: View>:
-    TableRowContent
-{
-    public typealias RowContent = TupleView3<Content0, Content1, Content2>
+public struct TupleTableRowContent3<
+    RowValue, Content0: View, Content1: View, Content2: View
+>: TableRowContent {
+    public typealias RowContent = TupleView3<
+        Content0, Content1, Content2
+    >
 
     public var column0: TableColumn<RowValue, Content0>
     public var column1: TableColumn<RowValue, Content1>
@@ -79,9 +92,11 @@ public struct TupleTableRowContent3<RowValue, Content0: View, Content1: View, Co
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -94,13 +109,11 @@ public struct TupleTableRowContent3<RowValue, Content0: View, Content1: View, Co
 }
 
 public struct TupleTableRowContent4<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View
 >: TableRowContent {
-    public typealias RowContent = TupleView4<Content0, Content1, Content2, Content3>
+    public typealias RowContent = TupleView4<
+        Content0, Content1, Content2, Content3
+    >
 
     public var column0: TableColumn<RowValue, Content0>
     public var column1: TableColumn<RowValue, Content1>
@@ -112,10 +125,11 @@ public struct TupleTableRowContent4<
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -134,14 +148,11 @@ public struct TupleTableRowContent4<
 }
 
 public struct TupleTableRowContent5<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View
 >: TableRowContent {
-    public typealias RowContent = TupleView5<Content0, Content1, Content2, Content3, Content4>
+    public typealias RowContent = TupleView5<
+        Content0, Content1, Content2, Content3, Content4
+    >
 
     public var column0: TableColumn<RowValue, Content0>
     public var column1: TableColumn<RowValue, Content1>
@@ -154,11 +165,11 @@ public struct TupleTableRowContent5<
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -179,21 +190,11 @@ public struct TupleTableRowContent5<
 }
 
 public struct TupleTableRowContent6<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
     Content5: View
 >: TableRowContent {
     public typealias RowContent = TupleView6<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5
+        Content0, Content1, Content2, Content3, Content4, Content5
     >
 
     public var column0: TableColumn<RowValue, Content0>
@@ -208,12 +209,15 @@ public struct TupleTableRowContent6<
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -236,23 +240,11 @@ public struct TupleTableRowContent6<
 }
 
 public struct TupleTableRowContent7<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
-    Content5: View,
-    Content6: View
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
+    Content5: View, Content6: View
 >: TableRowContent {
     public typealias RowContent = TupleView7<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5,
-        Content6
+        Content0, Content1, Content2, Content3, Content4, Content5, Content6
     >
 
     public var column0: TableColumn<RowValue, Content0>
@@ -271,18 +263,20 @@ public struct TupleTableRowContent7<
             column3.label,
             column4.label,
             column5.label,
-            column6.label,
+            column6.label
         ]
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>,
-        _ column6: TableColumn<RowValue, Content6>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >, _ column6: TableColumn<RowValue, Content6>
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -307,25 +301,11 @@ public struct TupleTableRowContent7<
 }
 
 public struct TupleTableRowContent8<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
-    Content5: View,
-    Content6: View,
-    Content7: View
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
+    Content5: View, Content6: View, Content7: View
 >: TableRowContent {
     public typealias RowContent = TupleView8<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5,
-        Content6,
-        Content7
+        Content0, Content1, Content2, Content3, Content4, Content5, Content6, Content7
     >
 
     public var column0: TableColumn<RowValue, Content0>
@@ -346,19 +326,20 @@ public struct TupleTableRowContent8<
             column4.label,
             column5.label,
             column6.label,
-            column7.label,
+            column7.label
         ]
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>,
-        _ column6: TableColumn<RowValue, Content6>,
-        _ column7: TableColumn<RowValue, Content7>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >, _ column6: TableColumn<RowValue, Content6>, _ column7: TableColumn<RowValue, Content7>
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -385,27 +366,11 @@ public struct TupleTableRowContent8<
 }
 
 public struct TupleTableRowContent9<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
-    Content5: View,
-    Content6: View,
-    Content7: View,
-    Content8: View
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
+    Content5: View, Content6: View, Content7: View, Content8: View
 >: TableRowContent {
     public typealias RowContent = TupleView9<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5,
-        Content6,
-        Content7,
-        Content8
+        Content0, Content1, Content2, Content3, Content4, Content5, Content6, Content7, Content8
     >
 
     public var column0: TableColumn<RowValue, Content0>
@@ -428,20 +393,24 @@ public struct TupleTableRowContent9<
             column5.label,
             column6.label,
             column7.label,
-            column8.label,
+            column8.label
         ]
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>,
-        _ column6: TableColumn<RowValue, Content6>,
-        _ column7: TableColumn<RowValue, Content7>,
-        _ column8: TableColumn<RowValue, Content8>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >, _ column6: TableColumn<RowValue, Content6>, _ column7: TableColumn<RowValue, Content7>,
+        _ column8: TableColumn<
+            RowValue,
+            Content8
+        >
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -470,28 +439,11 @@ public struct TupleTableRowContent9<
 }
 
 public struct TupleTableRowContent10<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
-    Content5: View,
-    Content6: View,
-    Content7: View,
-    Content8: View,
-    Content9: View
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
+    Content5: View, Content6: View, Content7: View, Content8: View, Content9: View
 >: TableRowContent {
     public typealias RowContent = TupleView10<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5,
-        Content6,
-        Content7,
-        Content8,
+        Content0, Content1, Content2, Content3, Content4, Content5, Content6, Content7, Content8,
         Content9
     >
 
@@ -517,21 +469,24 @@ public struct TupleTableRowContent10<
             column6.label,
             column7.label,
             column8.label,
-            column9.label,
+            column9.label
         ]
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>,
-        _ column6: TableColumn<RowValue, Content6>,
-        _ column7: TableColumn<RowValue, Content7>,
-        _ column8: TableColumn<RowValue, Content8>,
-        _ column9: TableColumn<RowValue, Content9>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >, _ column6: TableColumn<RowValue, Content6>, _ column7: TableColumn<RowValue, Content7>,
+        _ column8: TableColumn<
+            RowValue,
+            Content8
+        >, _ column9: TableColumn<RowValue, Content9>
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -562,31 +517,13 @@ public struct TupleTableRowContent10<
 }
 
 public struct TupleTableRowContent11<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
-    Content5: View,
-    Content6: View,
-    Content7: View,
-    Content8: View,
-    Content9: View,
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
+    Content5: View, Content6: View, Content7: View, Content8: View, Content9: View,
     Content10: View
 >: TableRowContent {
     public typealias RowContent = TupleView11<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5,
-        Content6,
-        Content7,
-        Content8,
-        Content9,
-        Content10
+        Content0, Content1, Content2, Content3, Content4, Content5, Content6, Content7, Content8,
+        Content9, Content10
     >
 
     public var column0: TableColumn<RowValue, Content0>
@@ -613,22 +550,24 @@ public struct TupleTableRowContent11<
             column7.label,
             column8.label,
             column9.label,
-            column10.label,
+            column10.label
         ]
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>,
-        _ column6: TableColumn<RowValue, Content6>,
-        _ column7: TableColumn<RowValue, Content7>,
-        _ column8: TableColumn<RowValue, Content8>,
-        _ column9: TableColumn<RowValue, Content9>,
-        _ column10: TableColumn<RowValue, Content10>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >, _ column6: TableColumn<RowValue, Content6>, _ column7: TableColumn<RowValue, Content7>,
+        _ column8: TableColumn<
+            RowValue,
+            Content8
+        >, _ column9: TableColumn<RowValue, Content9>, _ column10: TableColumn<RowValue, Content10>
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -661,33 +600,13 @@ public struct TupleTableRowContent11<
 }
 
 public struct TupleTableRowContent12<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
-    Content5: View,
-    Content6: View,
-    Content7: View,
-    Content8: View,
-    Content9: View,
-    Content10: View,
-    Content11: View
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
+    Content5: View, Content6: View, Content7: View, Content8: View, Content9: View,
+    Content10: View, Content11: View
 >: TableRowContent {
     public typealias RowContent = TupleView12<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5,
-        Content6,
-        Content7,
-        Content8,
-        Content9,
-        Content10,
-        Content11
+        Content0, Content1, Content2, Content3, Content4, Content5, Content6, Content7, Content8,
+        Content9, Content10, Content11
     >
 
     public var column0: TableColumn<RowValue, Content0>
@@ -716,23 +635,28 @@ public struct TupleTableRowContent12<
             column8.label,
             column9.label,
             column10.label,
-            column11.label,
+            column11.label
         ]
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>,
-        _ column6: TableColumn<RowValue, Content6>,
-        _ column7: TableColumn<RowValue, Content7>,
-        _ column8: TableColumn<RowValue, Content8>,
-        _ column9: TableColumn<RowValue, Content9>,
-        _ column10: TableColumn<RowValue, Content10>,
-        _ column11: TableColumn<RowValue, Content11>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >, _ column6: TableColumn<RowValue, Content6>, _ column7: TableColumn<RowValue, Content7>,
+        _ column8: TableColumn<
+            RowValue,
+            Content8
+        >, _ column9: TableColumn<RowValue, Content9>, _ column10: TableColumn<RowValue, Content10>,
+        _ column11: TableColumn<
+            RowValue,
+            Content11
+        >
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -767,35 +691,13 @@ public struct TupleTableRowContent12<
 }
 
 public struct TupleTableRowContent13<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
-    Content5: View,
-    Content6: View,
-    Content7: View,
-    Content8: View,
-    Content9: View,
-    Content10: View,
-    Content11: View,
-    Content12: View
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
+    Content5: View, Content6: View, Content7: View, Content8: View, Content9: View,
+    Content10: View, Content11: View, Content12: View
 >: TableRowContent {
     public typealias RowContent = TupleView13<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5,
-        Content6,
-        Content7,
-        Content8,
-        Content9,
-        Content10,
-        Content11,
-        Content12
+        Content0, Content1, Content2, Content3, Content4, Content5, Content6, Content7, Content8,
+        Content9, Content10, Content11, Content12
     >
 
     public var column0: TableColumn<RowValue, Content0>
@@ -826,24 +728,28 @@ public struct TupleTableRowContent13<
             column9.label,
             column10.label,
             column11.label,
-            column12.label,
+            column12.label
         ]
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>,
-        _ column6: TableColumn<RowValue, Content6>,
-        _ column7: TableColumn<RowValue, Content7>,
-        _ column8: TableColumn<RowValue, Content8>,
-        _ column9: TableColumn<RowValue, Content9>,
-        _ column10: TableColumn<RowValue, Content10>,
-        _ column11: TableColumn<RowValue, Content11>,
-        _ column12: TableColumn<RowValue, Content12>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >, _ column6: TableColumn<RowValue, Content6>, _ column7: TableColumn<RowValue, Content7>,
+        _ column8: TableColumn<
+            RowValue,
+            Content8
+        >, _ column9: TableColumn<RowValue, Content9>, _ column10: TableColumn<RowValue, Content10>,
+        _ column11: TableColumn<
+            RowValue,
+            Content11
+        >, _ column12: TableColumn<RowValue, Content12>
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -880,37 +786,13 @@ public struct TupleTableRowContent13<
 }
 
 public struct TupleTableRowContent14<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
-    Content5: View,
-    Content6: View,
-    Content7: View,
-    Content8: View,
-    Content9: View,
-    Content10: View,
-    Content11: View,
-    Content12: View,
-    Content13: View
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
+    Content5: View, Content6: View, Content7: View, Content8: View, Content9: View,
+    Content10: View, Content11: View, Content12: View, Content13: View
 >: TableRowContent {
     public typealias RowContent = TupleView14<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5,
-        Content6,
-        Content7,
-        Content8,
-        Content9,
-        Content10,
-        Content11,
-        Content12,
-        Content13
+        Content0, Content1, Content2, Content3, Content4, Content5, Content6, Content7, Content8,
+        Content9, Content10, Content11, Content12, Content13
     >
 
     public var column0: TableColumn<RowValue, Content0>
@@ -943,25 +825,31 @@ public struct TupleTableRowContent14<
             column10.label,
             column11.label,
             column12.label,
-            column13.label,
+            column13.label
         ]
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>,
-        _ column6: TableColumn<RowValue, Content6>,
-        _ column7: TableColumn<RowValue, Content7>,
-        _ column8: TableColumn<RowValue, Content8>,
-        _ column9: TableColumn<RowValue, Content9>,
-        _ column10: TableColumn<RowValue, Content10>,
-        _ column11: TableColumn<RowValue, Content11>,
-        _ column12: TableColumn<RowValue, Content12>,
-        _ column13: TableColumn<RowValue, Content13>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >, _ column6: TableColumn<RowValue, Content6>, _ column7: TableColumn<RowValue, Content7>,
+        _ column8: TableColumn<
+            RowValue,
+            Content8
+        >, _ column9: TableColumn<RowValue, Content9>, _ column10: TableColumn<RowValue, Content10>,
+        _ column11: TableColumn<
+            RowValue,
+            Content11
+        >, _ column12: TableColumn<RowValue, Content12>, _ column13: TableColumn<
+            RowValue,
+            Content13
+        >
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -1000,39 +888,13 @@ public struct TupleTableRowContent14<
 }
 
 public struct TupleTableRowContent15<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
-    Content5: View,
-    Content6: View,
-    Content7: View,
-    Content8: View,
-    Content9: View,
-    Content10: View,
-    Content11: View,
-    Content12: View,
-    Content13: View,
-    Content14: View
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
+    Content5: View, Content6: View, Content7: View, Content8: View, Content9: View,
+    Content10: View, Content11: View, Content12: View, Content13: View, Content14: View
 >: TableRowContent {
     public typealias RowContent = TupleView15<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5,
-        Content6,
-        Content7,
-        Content8,
-        Content9,
-        Content10,
-        Content11,
-        Content12,
-        Content13,
-        Content14
+        Content0, Content1, Content2, Content3, Content4, Content5, Content6, Content7, Content8,
+        Content9, Content10, Content11, Content12, Content13, Content14
     >
 
     public var column0: TableColumn<RowValue, Content0>
@@ -1067,26 +929,31 @@ public struct TupleTableRowContent15<
             column11.label,
             column12.label,
             column13.label,
-            column14.label,
+            column14.label
         ]
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>,
-        _ column6: TableColumn<RowValue, Content6>,
-        _ column7: TableColumn<RowValue, Content7>,
-        _ column8: TableColumn<RowValue, Content8>,
-        _ column9: TableColumn<RowValue, Content9>,
-        _ column10: TableColumn<RowValue, Content10>,
-        _ column11: TableColumn<RowValue, Content11>,
-        _ column12: TableColumn<RowValue, Content12>,
-        _ column13: TableColumn<RowValue, Content13>,
-        _ column14: TableColumn<RowValue, Content14>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >, _ column6: TableColumn<RowValue, Content6>, _ column7: TableColumn<RowValue, Content7>,
+        _ column8: TableColumn<
+            RowValue,
+            Content8
+        >, _ column9: TableColumn<RowValue, Content9>, _ column10: TableColumn<RowValue, Content10>,
+        _ column11: TableColumn<
+            RowValue,
+            Content11
+        >, _ column12: TableColumn<RowValue, Content12>, _ column13: TableColumn<
+            RowValue,
+            Content13
+        >, _ column14: TableColumn<RowValue, Content14>
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -1127,41 +994,14 @@ public struct TupleTableRowContent15<
 }
 
 public struct TupleTableRowContent16<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
-    Content5: View,
-    Content6: View,
-    Content7: View,
-    Content8: View,
-    Content9: View,
-    Content10: View,
-    Content11: View,
-    Content12: View,
-    Content13: View,
-    Content14: View,
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
+    Content5: View, Content6: View, Content7: View, Content8: View, Content9: View,
+    Content10: View, Content11: View, Content12: View, Content13: View, Content14: View,
     Content15: View
 >: TableRowContent {
     public typealias RowContent = TupleView16<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5,
-        Content6,
-        Content7,
-        Content8,
-        Content9,
-        Content10,
-        Content11,
-        Content12,
-        Content13,
-        Content14,
-        Content15
+        Content0, Content1, Content2, Content3, Content4, Content5, Content6, Content7, Content8,
+        Content9, Content10, Content11, Content12, Content13, Content14, Content15
     >
 
     public var column0: TableColumn<RowValue, Content0>
@@ -1198,27 +1038,34 @@ public struct TupleTableRowContent16<
             column12.label,
             column13.label,
             column14.label,
-            column15.label,
+            column15.label
         ]
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>,
-        _ column6: TableColumn<RowValue, Content6>,
-        _ column7: TableColumn<RowValue, Content7>,
-        _ column8: TableColumn<RowValue, Content8>,
-        _ column9: TableColumn<RowValue, Content9>,
-        _ column10: TableColumn<RowValue, Content10>,
-        _ column11: TableColumn<RowValue, Content11>,
-        _ column12: TableColumn<RowValue, Content12>,
-        _ column13: TableColumn<RowValue, Content13>,
-        _ column14: TableColumn<RowValue, Content14>,
-        _ column15: TableColumn<RowValue, Content15>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >, _ column6: TableColumn<RowValue, Content6>, _ column7: TableColumn<RowValue, Content7>,
+        _ column8: TableColumn<
+            RowValue,
+            Content8
+        >, _ column9: TableColumn<RowValue, Content9>, _ column10: TableColumn<RowValue, Content10>,
+        _ column11: TableColumn<
+            RowValue,
+            Content11
+        >, _ column12: TableColumn<RowValue, Content12>, _ column13: TableColumn<
+            RowValue,
+            Content13
+        >, _ column14: TableColumn<RowValue, Content14>, _ column15: TableColumn<
+            RowValue,
+            Content15
+        >
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -1261,43 +1108,14 @@ public struct TupleTableRowContent16<
 }
 
 public struct TupleTableRowContent17<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
-    Content5: View,
-    Content6: View,
-    Content7: View,
-    Content8: View,
-    Content9: View,
-    Content10: View,
-    Content11: View,
-    Content12: View,
-    Content13: View,
-    Content14: View,
-    Content15: View,
-    Content16: View
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
+    Content5: View, Content6: View, Content7: View, Content8: View, Content9: View,
+    Content10: View, Content11: View, Content12: View, Content13: View, Content14: View,
+    Content15: View, Content16: View
 >: TableRowContent {
     public typealias RowContent = TupleView17<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5,
-        Content6,
-        Content7,
-        Content8,
-        Content9,
-        Content10,
-        Content11,
-        Content12,
-        Content13,
-        Content14,
-        Content15,
-        Content16
+        Content0, Content1, Content2, Content3, Content4, Content5, Content6, Content7, Content8,
+        Content9, Content10, Content11, Content12, Content13, Content14, Content15, Content16
     >
 
     public var column0: TableColumn<RowValue, Content0>
@@ -1336,28 +1154,34 @@ public struct TupleTableRowContent17<
             column13.label,
             column14.label,
             column15.label,
-            column16.label,
+            column16.label
         ]
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>,
-        _ column6: TableColumn<RowValue, Content6>,
-        _ column7: TableColumn<RowValue, Content7>,
-        _ column8: TableColumn<RowValue, Content8>,
-        _ column9: TableColumn<RowValue, Content9>,
-        _ column10: TableColumn<RowValue, Content10>,
-        _ column11: TableColumn<RowValue, Content11>,
-        _ column12: TableColumn<RowValue, Content12>,
-        _ column13: TableColumn<RowValue, Content13>,
-        _ column14: TableColumn<RowValue, Content14>,
-        _ column15: TableColumn<RowValue, Content15>,
-        _ column16: TableColumn<RowValue, Content16>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >, _ column6: TableColumn<RowValue, Content6>, _ column7: TableColumn<RowValue, Content7>,
+        _ column8: TableColumn<
+            RowValue,
+            Content8
+        >, _ column9: TableColumn<RowValue, Content9>, _ column10: TableColumn<RowValue, Content10>,
+        _ column11: TableColumn<
+            RowValue,
+            Content11
+        >, _ column12: TableColumn<RowValue, Content12>, _ column13: TableColumn<
+            RowValue,
+            Content13
+        >, _ column14: TableColumn<RowValue, Content14>, _ column15: TableColumn<
+            RowValue,
+            Content15
+        >, _ column16: TableColumn<RowValue, Content16>
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -1402,44 +1226,14 @@ public struct TupleTableRowContent17<
 }
 
 public struct TupleTableRowContent18<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
-    Content5: View,
-    Content6: View,
-    Content7: View,
-    Content8: View,
-    Content9: View,
-    Content10: View,
-    Content11: View,
-    Content12: View,
-    Content13: View,
-    Content14: View,
-    Content15: View,
-    Content16: View,
-    Content17: View
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
+    Content5: View, Content6: View, Content7: View, Content8: View, Content9: View,
+    Content10: View, Content11: View, Content12: View, Content13: View, Content14: View,
+    Content15: View, Content16: View, Content17: View
 >: TableRowContent {
     public typealias RowContent = TupleView18<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5,
-        Content6,
-        Content7,
-        Content8,
-        Content9,
-        Content10,
-        Content11,
-        Content12,
-        Content13,
-        Content14,
-        Content15,
-        Content16,
+        Content0, Content1, Content2, Content3, Content4, Content5, Content6, Content7, Content8,
+        Content9, Content10, Content11, Content12, Content13, Content14, Content15, Content16,
         Content17
     >
 
@@ -1481,29 +1275,37 @@ public struct TupleTableRowContent18<
             column14.label,
             column15.label,
             column16.label,
-            column17.label,
+            column17.label
         ]
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>,
-        _ column6: TableColumn<RowValue, Content6>,
-        _ column7: TableColumn<RowValue, Content7>,
-        _ column8: TableColumn<RowValue, Content8>,
-        _ column9: TableColumn<RowValue, Content9>,
-        _ column10: TableColumn<RowValue, Content10>,
-        _ column11: TableColumn<RowValue, Content11>,
-        _ column12: TableColumn<RowValue, Content12>,
-        _ column13: TableColumn<RowValue, Content13>,
-        _ column14: TableColumn<RowValue, Content14>,
-        _ column15: TableColumn<RowValue, Content15>,
-        _ column16: TableColumn<RowValue, Content16>,
-        _ column17: TableColumn<RowValue, Content17>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >, _ column6: TableColumn<RowValue, Content6>, _ column7: TableColumn<RowValue, Content7>,
+        _ column8: TableColumn<
+            RowValue,
+            Content8
+        >, _ column9: TableColumn<RowValue, Content9>, _ column10: TableColumn<RowValue, Content10>,
+        _ column11: TableColumn<
+            RowValue,
+            Content11
+        >, _ column12: TableColumn<RowValue, Content12>, _ column13: TableColumn<
+            RowValue,
+            Content13
+        >, _ column14: TableColumn<RowValue, Content14>, _ column15: TableColumn<
+            RowValue,
+            Content15
+        >, _ column16: TableColumn<RowValue, Content16>, _ column17: TableColumn<
+            RowValue,
+            Content17
+        >
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -1550,47 +1352,15 @@ public struct TupleTableRowContent18<
 }
 
 public struct TupleTableRowContent19<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
-    Content5: View,
-    Content6: View,
-    Content7: View,
-    Content8: View,
-    Content9: View,
-    Content10: View,
-    Content11: View,
-    Content12: View,
-    Content13: View,
-    Content14: View,
-    Content15: View,
-    Content16: View,
-    Content17: View,
-    Content18: View
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
+    Content5: View, Content6: View, Content7: View, Content8: View, Content9: View,
+    Content10: View, Content11: View, Content12: View, Content13: View, Content14: View,
+    Content15: View, Content16: View, Content17: View, Content18: View
 >: TableRowContent {
     public typealias RowContent = TupleView19<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5,
-        Content6,
-        Content7,
-        Content8,
-        Content9,
-        Content10,
-        Content11,
-        Content12,
-        Content13,
-        Content14,
-        Content15,
-        Content16,
-        Content17,
-        Content18
+        Content0, Content1, Content2, Content3, Content4, Content5, Content6, Content7, Content8,
+        Content9, Content10, Content11, Content12, Content13, Content14, Content15, Content16,
+        Content17, Content18
     >
 
     public var column0: TableColumn<RowValue, Content0>
@@ -1633,30 +1403,37 @@ public struct TupleTableRowContent19<
             column15.label,
             column16.label,
             column17.label,
-            column18.label,
+            column18.label
         ]
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>,
-        _ column6: TableColumn<RowValue, Content6>,
-        _ column7: TableColumn<RowValue, Content7>,
-        _ column8: TableColumn<RowValue, Content8>,
-        _ column9: TableColumn<RowValue, Content9>,
-        _ column10: TableColumn<RowValue, Content10>,
-        _ column11: TableColumn<RowValue, Content11>,
-        _ column12: TableColumn<RowValue, Content12>,
-        _ column13: TableColumn<RowValue, Content13>,
-        _ column14: TableColumn<RowValue, Content14>,
-        _ column15: TableColumn<RowValue, Content15>,
-        _ column16: TableColumn<RowValue, Content16>,
-        _ column17: TableColumn<RowValue, Content17>,
-        _ column18: TableColumn<RowValue, Content18>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >, _ column6: TableColumn<RowValue, Content6>, _ column7: TableColumn<RowValue, Content7>,
+        _ column8: TableColumn<
+            RowValue,
+            Content8
+        >, _ column9: TableColumn<RowValue, Content9>, _ column10: TableColumn<RowValue, Content10>,
+        _ column11: TableColumn<
+            RowValue,
+            Content11
+        >, _ column12: TableColumn<RowValue, Content12>, _ column13: TableColumn<
+            RowValue,
+            Content13
+        >, _ column14: TableColumn<RowValue, Content14>, _ column15: TableColumn<
+            RowValue,
+            Content15
+        >, _ column16: TableColumn<RowValue, Content16>, _ column17: TableColumn<
+            RowValue,
+            Content17
+        >, _ column18: TableColumn<RowValue, Content18>
     ) {
         self.column0 = column0
         self.column1 = column1
@@ -1705,49 +1482,15 @@ public struct TupleTableRowContent19<
 }
 
 public struct TupleTableRowContent20<
-    RowValue,
-    Content0: View,
-    Content1: View,
-    Content2: View,
-    Content3: View,
-    Content4: View,
-    Content5: View,
-    Content6: View,
-    Content7: View,
-    Content8: View,
-    Content9: View,
-    Content10: View,
-    Content11: View,
-    Content12: View,
-    Content13: View,
-    Content14: View,
-    Content15: View,
-    Content16: View,
-    Content17: View,
-    Content18: View,
-    Content19: View
+    RowValue, Content0: View, Content1: View, Content2: View, Content3: View, Content4: View,
+    Content5: View, Content6: View, Content7: View, Content8: View, Content9: View,
+    Content10: View, Content11: View, Content12: View, Content13: View, Content14: View,
+    Content15: View, Content16: View, Content17: View, Content18: View, Content19: View
 >: TableRowContent {
     public typealias RowContent = TupleView20<
-        Content0,
-        Content1,
-        Content2,
-        Content3,
-        Content4,
-        Content5,
-        Content6,
-        Content7,
-        Content8,
-        Content9,
-        Content10,
-        Content11,
-        Content12,
-        Content13,
-        Content14,
-        Content15,
-        Content16,
-        Content17,
-        Content18,
-        Content19
+        Content0, Content1, Content2, Content3, Content4, Content5, Content6, Content7, Content8,
+        Content9, Content10, Content11, Content12, Content13, Content14, Content15, Content16,
+        Content17, Content18, Content19
     >
 
     public var column0: TableColumn<RowValue, Content0>
@@ -1792,31 +1535,40 @@ public struct TupleTableRowContent20<
             column16.label,
             column17.label,
             column18.label,
-            column19.label,
+            column19.label
         ]
     }
 
     public init(
-        _ column0: TableColumn<RowValue, Content0>,
-        _ column1: TableColumn<RowValue, Content1>,
-        _ column2: TableColumn<RowValue, Content2>,
-        _ column3: TableColumn<RowValue, Content3>,
-        _ column4: TableColumn<RowValue, Content4>,
-        _ column5: TableColumn<RowValue, Content5>,
-        _ column6: TableColumn<RowValue, Content6>,
-        _ column7: TableColumn<RowValue, Content7>,
-        _ column8: TableColumn<RowValue, Content8>,
-        _ column9: TableColumn<RowValue, Content9>,
-        _ column10: TableColumn<RowValue, Content10>,
-        _ column11: TableColumn<RowValue, Content11>,
-        _ column12: TableColumn<RowValue, Content12>,
-        _ column13: TableColumn<RowValue, Content13>,
-        _ column14: TableColumn<RowValue, Content14>,
-        _ column15: TableColumn<RowValue, Content15>,
-        _ column16: TableColumn<RowValue, Content16>,
-        _ column17: TableColumn<RowValue, Content17>,
-        _ column18: TableColumn<RowValue, Content18>,
-        _ column19: TableColumn<RowValue, Content19>
+        _ column0: TableColumn<RowValue, Content0>, _ column1: TableColumn<RowValue, Content1>,
+        _ column2: TableColumn<
+            RowValue,
+            Content2
+        >, _ column3: TableColumn<RowValue, Content3>, _ column4: TableColumn<RowValue, Content4>,
+        _ column5: TableColumn<
+            RowValue,
+            Content5
+        >, _ column6: TableColumn<RowValue, Content6>, _ column7: TableColumn<RowValue, Content7>,
+        _ column8: TableColumn<
+            RowValue,
+            Content8
+        >, _ column9: TableColumn<RowValue, Content9>, _ column10: TableColumn<RowValue, Content10>,
+        _ column11: TableColumn<
+            RowValue,
+            Content11
+        >, _ column12: TableColumn<RowValue, Content12>, _ column13: TableColumn<
+            RowValue,
+            Content13
+        >, _ column14: TableColumn<RowValue, Content14>, _ column15: TableColumn<
+            RowValue,
+            Content15
+        >, _ column16: TableColumn<RowValue, Content16>, _ column17: TableColumn<
+            RowValue,
+            Content17
+        >, _ column18: TableColumn<RowValue, Content18>, _ column19: TableColumn<
+            RowValue,
+            Content19
+        >
     ) {
         self.column0 = column0
         self.column1 = column1

@@ -1,5 +1,7 @@
 // This file was generated using gyb. Do not edit it directly. Edit
 // TupleView.swift.gyb instead.
+
+// swiftformat:options --allow-partial-wrapping true
 %{
 maximum_view_count = 20
 }%
@@ -89,13 +91,17 @@ children_type_parameters = ", ".join(["View%d" % j for j in range(i + 1)])
 /// production ready variadic generics.
 ///
 /// Has the same behaviour as ``Group`` when rendered directly.
-public struct ${view}<${struct_parameters}> {
+public struct ${view}<
+    ${struct_parameters}
+> {
     ${properties}
 
     public var body = EmptyView()
 
     /// Wraps ${i + 1} child views in a single container view.
-    public init(${init_parameters}) {
+    public init(
+        ${init_parameters}
+    ) {
         ${init_body}
     }
 }

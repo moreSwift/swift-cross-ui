@@ -1,5 +1,7 @@
 // This file was generated using gyb. Do not edit it directly. Edit
 // TupleViewChildren.swift.gyb instead.
+
+// swiftformat:options --allow-partial-wrapping true
 %{
 maximum_child_count = 20
 }%
@@ -39,7 +41,9 @@ variadic_type_parameters = ", ".join(children)
 
 /// A fixed-length strongly-typed collection of ${i + 1} child nodes. A counterpart to
 /// ``TupleView${i + 1}``.
-public class TupleViewChildren${i + 1}<${struct_type_parameters}>: TupleViewChildren {
+public class TupleViewChildren${i + 1}<
+    ${struct_type_parameters}
+>: TupleViewChildren {
     public var widgets: [AnyWidget] {
         return [${", ".join("%s.widget" % child.lower() for child in children)}]
     }

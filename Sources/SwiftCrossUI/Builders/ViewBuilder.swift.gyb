@@ -1,5 +1,7 @@
 // This file was generated using gyb. Do not edit it directly. Edit
 // ViewBuilder.swift.gyb instead.
+
+// swiftformat:options --allow-partial-wrapping true
 %{
 maximum_view_count = 20
 }%
@@ -17,11 +19,15 @@ type_parameters = ", ".join(["V%d: View" % j for j in range(i + 1)])
 parameters = ", ".join(["_ view%d: V%d" % (j, j) for j in range(i + 1)])
 
 return_type_parameters = ", ".join(["V%d" % j for j in range(i + 1)])
-return_type = "TupleView%d<%s>" % (i + 1, return_type_parameters)
+return_type = "TupleView%d<\n        %s\n    >" % (i + 1, return_type_parameters)
 return_type_init_parameters = ", ".join(["view%d" % j for j in range(i + 1)])
 }%
 
-    public static func buildBlock<${type_parameters}>(${parameters}) -> ${return_type} {
+    public static func buildBlock<
+        ${type_parameters}
+    >(
+        ${parameters}
+    ) -> ${return_type} {
         return ${return_type}(${return_type_init_parameters})
     }
 % end

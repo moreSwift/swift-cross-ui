@@ -1,5 +1,7 @@
 // This file was generated using gyb. Do not edit it directly. Edit
 // TableRowBuilder.swift.gyb instead.
+
+// swiftformat:options --allow-partial-wrapping true
 %{
 maximum_column_count = 20
 }%

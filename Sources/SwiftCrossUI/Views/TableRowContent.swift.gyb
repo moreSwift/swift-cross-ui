@@ -1,5 +1,7 @@
 // This file was generated using gyb. Do not edit it directly. Edit
 // TableRowContent.swift.gyb instead.
+
+// swiftformat:options --allow-partial-wrapping true
 %{
 maximum_column_count = 20
 }%
@@ -28,8 +30,12 @@ public struct EmptyTableRowContent<RowValue>: TableRowContent {
 }
 
 %for i in range(1, maximum_column_count + 1):
-public struct TupleTableRowContent${i}<RowValue, ${", ".join("Content%d: View" % j for j in range(i))}>: TableRowContent {
-    public typealias RowContent = TupleView${i}<${", ".join("Content%d" % j for j in range(i))}>
+public struct TupleTableRowContent${i}<
+    RowValue, ${", ".join("Content%d: View" % j for j in range(i))}
+>: TableRowContent {
+    public typealias RowContent = TupleView${i}<
+        ${", ".join("Content%d" % j for j in range(i))}
+    >
 
     %for j in range(i):
     public var column${j}: TableColumn<RowValue, Content${j}>
@@ -39,7 +45,9 @@ public struct TupleTableRowContent${i}<RowValue, ${", ".join("Content%d: View" %
         [${", ".join("column%d.label" % j for j in range(i))}]
     }
 
-    public init(${", ".join("_ column%d: TableColumn<RowValue, Content%d>" % (j, j) for j in range(i))}) {
+    public init(
+        ${", ".join("_ column%d: TableColumn<RowValue, Content%d>" % (j, j) for j in range(i))}
+    ) {
         %for j in range(i):
         self.column${j} = column${j}
         %end
