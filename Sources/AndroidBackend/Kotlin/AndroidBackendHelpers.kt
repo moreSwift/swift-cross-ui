@@ -17,7 +17,7 @@ class AndroidBackendHelpers {
         private const val DEVICE_CLASS_WATCH: Short = 4
     }
 
-    fun getWindowWidth(activity: Activity): Int {
+    fun getSafeWindowWidth(activity: Activity): Int {
         val windowMetrics = activity.getWindowManager().getCurrentWindowMetrics()
         val insets = windowMetrics.getWindowInsets()
                 .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
@@ -26,11 +26,23 @@ class AndroidBackendHelpers {
         return ((windowMetrics.getBounds().width() - insets.left - insets.right).toFloat() / windowMetrics.density).toInt()
     }
 
-    fun getWindowHeight(activity: Activity): Int {
+    fun getSafeWindowHeight(activity: Activity): Int {
         val windowMetrics = activity.getWindowManager().getCurrentWindowMetrics()
         val insets = windowMetrics.getWindowInsets()
                 .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
         return ((windowMetrics.getBounds().height() - insets.top - insets.bottom).toFloat() / windowMetrics.density).toInt()
+    }
+
+    fun getFullWindowWidth(activity: Activity): Int {
+        val windowMetrics = activity.getWindowManager().getCurrentWindowMetrics()
+        // density is very frequently a fractional value like 1.5, so cast to int after division
+        // instead of before
+        return (windowMetrics.getBounds().width().toFloat() / windowMetrics.density).toInt()
+    }
+
+    fun getFullWindowHeight(activity: Activity): Int {
+        val windowMetrics = activity.getWindowManager().getCurrentWindowMetrics()
+        return (windowMetrics.getBounds().height().toFloat() / windowMetrics.density).toInt()
     }
 
     fun getSafeAreaLeftInset(activity: Activity): Int {

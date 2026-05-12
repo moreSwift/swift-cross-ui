@@ -60,6 +60,10 @@ extension BackendFeatures {
         /// at least once for any given widget before it appears. Backends such as
         /// AndroidBackend don't handle missing widget sizes very well (often because
         /// of custom container implementations such as AndroidBackend's CustomContainer).
+        /// The only exception is the root container widget of windows, as many backends
+        /// rely on such containers changing size as the user resizes the window. Backends
+        /// that need their root container to have a fixed size can do that in their own
+        /// window listeners.
         ///
         /// - Parameters:
         ///   - widget: The widget to set the size of.

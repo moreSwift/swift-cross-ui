@@ -9,11 +9,23 @@ class AndroidBackendHelpers: JavaObject {
         environment: JNIEnvironment? = nil
     )
 
+    /// Get the width of the window's usable safe area.
     @JavaMethod
-    func getWindowWidth(_ activity: Activity?) -> Int32
+    func getSafeWindowWidth(_ activity: Activity?) -> Int32
 
+    /// Get the height of the window's usable safe area.
     @JavaMethod
-    func getWindowHeight(_ activity: Activity?) -> Int32
+    func getSafeWindowHeight(_ activity: Activity?) -> Int32
+
+    /// Get the window width, including the parts that extend outside of the
+    /// safe areas.
+    @JavaMethod
+    func getFullWindowWidth(_ activity: Activity?) -> Int32
+
+    /// Get the window height, including the parts that extend outside of the
+    /// safe areas.
+    @JavaMethod
+    func getFullWindowHeight(_ activity: Activity?) -> Int32
 
     @JavaMethod
     func getSafeAreaLeftInset(_ activity: Activity?) -> Int32

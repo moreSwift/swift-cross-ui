@@ -171,14 +171,21 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
 
         let leftInset = Int(helpers.getSafeAreaLeftInset(Self.activity))
         let topInset = Int(helpers.getSafeAreaTopInset(Self.activity))
-        let windowSize = size(ofWindow: window)
+        let fullWindowSize = SIMD2(
+            Int(helpers.getFullWindowWidth(Self.activity)),
+            Int(helpers.getFullWindowHeight(Self.activity))
+        )
+        setSize(of: container, to: fullWindowSize)
         setPosition(ofChildAt: 0, in: container, to: SIMD2(leftInset, topInset))
-        setSize(of: container, to: windowSize)
+
+        let safeWindowSize = size(ofWindow: window)
+        let child = container.as(CustomContainer.self)!.getChildAt(0)!
+        setSize(of: child, to: safeWindowSize)
     }
 
     public func size(ofWindow window: Window) -> SIMD2<Int> {
-        let width = Int(helpers.getWindowWidth(Self.activity))
-        let height = Int(helpers.getWindowHeight(Self.activity))
+        let width = Int(helpers.getSafeWindowWidth(Self.activity))
+        let height = Int(helpers.getSafeWindowHeight(Self.activity))
         return SIMD2(Int(width), Int(height))
     }
 
