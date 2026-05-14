@@ -67,6 +67,91 @@ jobs:
         swift build --target FontsExample && \
         swift build --target TapGesturesExample
 
+  android:
+    runs-on: macos-15
+    env:
+      # Release and checksum retrieved from https://www.swift.org/api/v1/install/dev/6.3/android-sdk.json
+      SWIFT_RELEASE: swift-6.3-DEVELOPMENT-SNAPSHOT-2026-05-01-a
+      SWIFT_ANDROID_SDK_CHECKSUM: 27a0e63264d1b8512522d3a07407ae3d2774eb07d28279ef58e96d1dc2ab720d
+    steps:
+    - name: Setup Xcode 16.3 (Swift 6.1)
+      uses: maxim-lobanov/setup-xcode@v1.6.0
+      with:
+        xcode-version: '16.3'
+
+    - name: Swift version
+      run: swift --version
+
+    - uses: actions/checkout@v3
+
+    - name: Restore Swift Bundler
+      id: restore-swift-bundler
+      uses: actions/cache/restore@v5
+      with:
+        path: ./swift-bundler
+        key: swift-bundler-e6909f16ae8b06dc956ba09a3cee1c4863c165bd
+
+    - name: Build Swift Bundler
+      if: steps.restore-swift-bundler.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        set -eux
+        checkout="$(pwd)"
+        cd ../
+        git clone https://github.com/moreSwift/swift-bundler
+        cd swift-bundler
+        git checkout e6909f16ae8b06dc956ba09a3cee1c4863c165bd
+        swift build -c debug --product swift-bundler
+        cp .build/debug/swift-bundler $checkout/swift-bundler
+
+    - name: Cache Swift Bundler
+      id: cache-swift-bundler
+      if: steps.restore-swift-bundler.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v5
+      with:
+        path: ./swift-bundler
+        key: ${{ steps.restore-swift-bundler.outputs.cache-primary-key }}
+
+    # We use Swiftly to install an open source Swift toolchain, because using
+    # the Swift for Android SDKs requires an open source Swift toolchain
+    - name: Install Swiftly
+      shell: bash
+      run: |
+        curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg && \
+          installer -pkg swiftly.pkg -target CurrentUserHomeDirectory && \
+          ~/.swiftly/bin/swiftly init --quiet-shell-followup --skip-install && \
+          . "${SWIFTLY_HOME_DIR:-$HOME/.swiftly}/env.sh" && \
+          hash -r
+
+    - name: Install Swift 6.3 snapshot
+      shell: bash
+      run: |
+        ~/.swiftly/bin/swiftly install --use $SWIFT_RELEASE
+
+    - name: Install Swift for Android SDK (6.3 snapshot)
+      shell: bash
+      run: |
+        # Adapted from https://www.swift.org/documentation/articles/swift-sdk-for-android-getting-started.html
+        ~/.swiftly/bin/swift install \
+          https://download.swift.org/swift-6.3-branch/android-sdk/$SWIFT_RELEASE/${SWIFT_RELEASE}_android.artifactbundle.tar.gz \
+          --checksum $SWIFT_ANDROID_SDK_CHECKSUM
+
+        # Guess some common places where the swift-sdks file lives
+        cd ~/Library/org.swift.swiftpm || cd ~/.config/swiftpm || cd ~/.local/swiftpm || cd ~/.swiftpm || cd /root/.swiftpm
+
+        cd swift-sdks/$RELEASE_android.artifactbundle/swift-android
+        curl -fSL -o ndk.zip https://dl.google.com/android/repository/android-ndk-r27d-$(uname -s).zip
+        unzip -qo ndk.zip
+        export ANDROID_NDK_HOME=$PWD/android-ndk-r27d
+        ./scripts/setup-android-sdk.sh
+
+    - name: Build examples
+      shell: bash
+      run: |
+        cd Examples
+        ../swift-bundler bundle CounterExample --platform Android
+        ../swift-bundler bundle ControlsExample --platform Android
+
   uikit:
     runs-on: macos-15
     strategy:
