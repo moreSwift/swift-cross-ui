@@ -73,6 +73,7 @@ jobs:
       # Release and checksum retrieved from https://www.swift.org/api/v1/install/dev/6.3/android-sdk.json
       SWIFT_RELEASE: swift-6.3-DEVELOPMENT-SNAPSHOT-2026-05-01-a
       SWIFT_ANDROID_SDK_CHECKSUM: 27a0e63264d1b8512522d3a07407ae3d2774eb07d28279ef58e96d1dc2ab720d
+      SWIFT_BUNDLER_REVISION: e6909f16ae8b06dc956ba09a3cee1c4863c165bd
     steps:
     - name: Setup Xcode 16.3 (Swift 6.1)
       uses: maxim-lobanov/setup-xcode@v1.6.0
@@ -89,7 +90,7 @@ jobs:
       uses: actions/cache/restore@v5
       with:
         path: ./swift-bundler
-        key: swift-bundler-e6909f16ae8b06dc956ba09a3cee1c4863c165bd
+        key: swift-bundler-${{ env.SWIFT_BUNDLER_REVISION }}
 
     - name: Build Swift Bundler
       if: steps.restore-swift-bundler.outputs.cache-hit != 'true'
@@ -100,7 +101,7 @@ jobs:
         cd ../
         git clone https://github.com/moreSwift/swift-bundler
         cd swift-bundler
-        git checkout e6909f16ae8b06dc956ba09a3cee1c4863c165bd
+        git checkout $SWIFT_BUNDLER_REVISION
         swift build -c debug --product swift-bundler
         cp .build/debug/swift-bundler $checkout/swift-bundler
 
@@ -132,7 +133,7 @@ jobs:
       shell: bash
       run: |
         # Adapted from https://www.swift.org/documentation/articles/swift-sdk-for-android-getting-started.html
-        ~/.swiftly/bin/swift install \
+        ~/.swiftly/bin/swift sdk install \
           https://download.swift.org/swift-6.3-branch/android-sdk/$SWIFT_RELEASE/${SWIFT_RELEASE}_android.artifactbundle.tar.gz \
           --checksum $SWIFT_ANDROID_SDK_CHECKSUM
 
