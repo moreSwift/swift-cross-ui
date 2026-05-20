@@ -7,7 +7,7 @@ import PerceptionCore
 /// This is where updates are initiated when a view's state updates, and where state is persisted
 /// even when a view gets recomputed by its parent.
 @MainActor
-public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: ViewModelObserver, Sendable {
+public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: ModelObserver, Sendable {
     /// The view's single widget for the entirety of its lifetime in the view graph.
     ///
     public var widget: Backend.Widget {
@@ -61,7 +61,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: ViewModelOb
     /// The dynamic property updater for this view.
     private var dynamicPropertyUpdater: DynamicPropertyUpdater<NodeView>
     
-    /// Used by the `ViewModelObserver` protocol to prevent duplicate view updates.
+    /// Used by the ``ModelObserver`` protocol to prevent duplicate view updates.
     var currentViewModelObservationID: UUID?
 
     /// Creates a node for a given view while also creating the nodes for its children, creating
@@ -95,7 +95,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: ViewModelOb
 
         dynamicPropertyUpdater.update(view, with: viewEnvironment, previousValue: nil)
 
-        self.children = self.observe(in: backend) {
+        self.children = self.observe(with: backend) {
             view.children(
                 backend: backend,
                 snapshots: childSnapshots,
@@ -241,7 +241,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: ViewModelOb
         // layout computations and the following commit, because groups of updates
         // following that pattern are assumed to be occurring within a single overarching
         // view update. Under that assumption, we can cache view layout results.
-        let result = self.observe(in: backend) {
+        let result = self.observe(with: backend) {
             view.computeLayout(
                 widget,
                 children: children,

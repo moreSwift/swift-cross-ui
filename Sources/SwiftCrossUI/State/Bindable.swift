@@ -86,7 +86,7 @@ import Foundation
     }
 }
 
-extension Bindable where Value : AnyObject {
+extension Bindable where Value: AnyObject {
     /// Returns a binding for the writable property at the supplied key path.
     public subscript<Subject>(dynamicMember keyPath: ReferenceWritableKeyPath<Value, Subject>) -> Binding<Subject> {
         Binding(
@@ -124,8 +124,7 @@ extension Bindable where Value : AnyObject {
     }
 }
 
-extension Bindable : Identifiable where Value : Identifiable {
-
+extension Bindable: Identifiable where Value: Identifiable {
     /// The stable identity of the wrapped value.
     public var id: Value.ID {
         wrappedValue.id
@@ -135,4 +134,4 @@ extension Bindable : Identifiable where Value : Identifiable {
     public typealias ID = Value.ID
 }
 
-extension Bindable : Sendable where Value : Sendable {}
+extension Bindable: Sendable where Value: Sendable {}

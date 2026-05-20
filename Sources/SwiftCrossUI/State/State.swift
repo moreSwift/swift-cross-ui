@@ -76,15 +76,15 @@ extension State {
         implementation = StateImpl(initialStorage: Storage(initialValue))
     }
     
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
-    // NB: Needed to prevent deprecation warnings for `Perceptible` types, which
-    // *are* supported
-    // Causes a compilation error on Windows and Linux where Perceptible just
-    // uses Observable under the hood.
-    public init(wrappedValue initialValue: Value) where Value: Perceptible & AnyObject {
-        implementation = StateImpl(initialStorage: Storage(initialValue))
-    }
-#endif
+    #if canImport(Darwin)
+        // NB: Needed to prevent deprecation warnings for `Perceptible` types, which
+        // *are* supported
+        // Causes a compilation error on Windows and Linux where Perceptible just
+        // uses Observable under the hood.
+        public init(wrappedValue initialValue: Value) where Value: Perceptible & AnyObject {
+            implementation = StateImpl(initialStorage: Storage(initialValue))
+        }
+    #endif
 }
 
 extension State: SnapshottableProperty {
