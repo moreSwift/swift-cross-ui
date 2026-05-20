@@ -3,7 +3,7 @@ import PerceptionCore
 
 /// Holds the view graph and window handle for a single window.
 @MainActor
-final class WindowReference<SceneType: WindowingScene>: ViewModelObserver {
+final class WindowReference<SceneType: WindowingScene>: ModelObserver {
     /// The scene.
     private var scene: SceneType
     /// The view graph of the window's root view.
@@ -21,7 +21,7 @@ final class WindowReference<SceneType: WindowingScene>: ViewModelObserver {
     /// The window's preferred color scheme, cached from the last update.
     private var preferredColorScheme: ColorScheme?
     
-    /// Used by the `ViewModelObserver` protocol to prevent duplicate view updates.
+    /// Used by the ``ModelObserver`` protocol to prevent duplicate view updates.
     var currentViewModelObservationID: UUID?
 
     /// - Parameters:
@@ -191,7 +191,7 @@ final class WindowReference<SceneType: WindowingScene>: ViewModelObserver {
             environment.colorScheme = preferredColorScheme
         }
         
-        let content = self.observe(in: backend) { newScene?.content() }
+        let content = self.observe(with: backend) { newScene?.content() }
         let probingResult = viewGraph.computeLayout(
             with: content,
             proposedSize: .zero,
