@@ -31,12 +31,13 @@ class ObservableModel {
     var windowText: String = "Window Text"
     var view1Text: String = "View 1 Text"
     var view2Text: String = "View 2 Text"
+    @PerceptionIgnored private var automaticModeTask: Task<Void, any Error>?
     
     func startAutomaticMode() {
         guard !automaticModeIsOn else { return }
         automaticModeIsOn = true
-        Task {
-            while true {
+        automaticModeTask = Task {
+            while !Task.isCancelled {
                 // Wait one second before changing the next text
                 try await Task.sleep(nanoseconds: 1_000_000_000)
                 
@@ -54,5 +55,12 @@ class ObservableModel {
                 }
             }
         }
+    }
+    
+    func stopAutomaticMode() {
+        guard automaticModeIsOn else { return }
+        automaticModeIsOn = false
+        automaticModeTask?.cancel()
+        automaticModeTask = nil
     }
 }

@@ -23,7 +23,11 @@ struct ObservableApp: App {
                 }
                 ModifyingView(model: model)
                     .padding()
-                if !model.automaticModeIsOn {
+                if model.automaticModeIsOn {
+                    Button("Stop automatic Mode") {
+                        model.stopAutomaticMode()
+                    }
+                } else {
                     Button("Start automatic Mode") {
                         model.startAutomaticMode()
                     }
