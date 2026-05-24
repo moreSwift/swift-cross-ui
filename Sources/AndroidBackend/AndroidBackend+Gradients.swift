@@ -19,14 +19,9 @@ extension AndroidBackend: BackendFeatures.Gradients {
         let colorClass = try! JavaClass<AndroidGraphics.Color>()
 
         let count = gradient.gradient.stops.count
-        var stops = [Float]()
-        var colors = [Int32]()
-        stops.reserveCapacity(count)
-        colors.reserveCapacity(count)
-
-        for stop in gradient.gradient.stops {
-            stops.append(Float(stop.location))
-            colors.append(stop.color.resolve(in: environment).asColorInt())
+        let stops = gradient.gradient.stops.map { Float($0.location) }
+        let colors = gradient.gradient.stops.map { stop in
+            stop.color.resolve(in: environment).asColorInt()
         }
         
         let density = Float(environment.windowScaleFactor)
@@ -69,14 +64,9 @@ extension AndroidBackend: BackendFeatures.Gradients {
         let colorClass = try! JavaClass<AndroidGraphics.Color>()
 
         let count = gradient.gradient.stops.count
-        var stops = [Float]()
-        var colors = [Int32]()
-        stops.reserveCapacity(count)
-        colors.reserveCapacity(count)
-
-        for stop in gradient.adjustedStops {
-            stops.append(Float(stop.location))
-            colors.append(stop.color.resolve(in: environment).asColorInt())
+        let stops = gradient.gradient.stops.map { Float($0.location) }
+        let colors = gradient.gradient.stops.map { stop in
+            stop.color.resolve(in: environment).asColorInt()
         }
         
         let density = Float(environment.windowScaleFactor)
@@ -121,14 +111,9 @@ extension AndroidBackend: BackendFeatures.Gradients {
         let colorClass = try! JavaClass<AndroidGraphics.Color>()
 
         let count = gradient.gradient.stops.count
-        var stops = [Float]()
-        var colors = [Int32]()
-        stops.reserveCapacity(count)
-        colors.reserveCapacity(count)
-
-        for stop in gradient.adjustedStops {
-            stops.append(Float(stop.location))
-            colors.append(stop.color.resolve(in: environment).asColorInt())
+        let stops = gradient.gradient.stops.map { Float($0.location) }
+        let colors = gradient.gradient.stops.map { stop in
+            stop.color.resolve(in: environment).asColorInt()
         }
         
         let density = Float(environment.windowScaleFactor)
@@ -152,7 +137,7 @@ extension AndroidBackend: BackendFeatures.Gradients {
         )
 
         let scaleX: Float = 1.0
-        let scaleY: Float = Float(size.y) / Float(size.x)
+        let scaleY = Float(size.y) / Float(size.x)
 
         let gradientWidget = widget.as(GradientWidget.self)!
         

@@ -51,9 +51,9 @@ struct GradientsApp: App {
     @ViewBuilder
     func scrollViewWithGradient() -> some View {
         #if !canImport(AndroidBackend)
-        ScrollView {
-            gradients()
-        }
+            ScrollView {
+                gradients()
+            }
         #else
             gradients()
         #endif
@@ -62,22 +62,22 @@ struct GradientsApp: App {
     @ViewBuilder
     func gradients() -> some View {
         switch gradientType {
-        case .linear:
-            LinearGradientView()
-        case .radial:
-            RadialGradientView()
-        case .angular:
-            #if !canImport(WinUIBackend) && !canImport(GtkBackend) && !canImport(AndroidBackend)
-                ScrollView(.horizontal) {
+            case .linear:
+                LinearGradientView()
+            case .radial:
+                RadialGradientView()
+            case .angular:
+                #if !canImport(WinUIBackend) && !canImport(GtkBackend) && !canImport(AndroidBackend)
+                    ScrollView(.horizontal) {
+                        AngularGradientView()
+                    }
+                #elseif canImport(AndroidBackend)
                     AngularGradientView()
-                }
-            #elseif canImport(AndroidBackend)
-                AngularGradientView()
-            #else
-                Text("Angular Gradients are not supported on \(App.Backend)")
-            #endif
-        case .none:
-            Text("Please select a gradient type.")
+                #else
+                    Text("Angular Gradients are not supported on \(App.Backend)")
+                #endif
+            case .none:
+                Text("Please select a gradient type.")
         }
     }
 }
