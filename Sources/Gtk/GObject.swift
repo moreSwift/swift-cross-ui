@@ -18,6 +18,12 @@ open class GObject: GObjectRepresentable {
     }
 
     deinit {
+        // disconnect all GTK signal handlers before releasing the object
+        // to prevent callbacks firing on deallocated Swift wrapper instances.
+        for (id, _) in signals {
+            g_signal_handler_disconnect(gobjectPointer, id)
+        }
+  
         g_object_unref(gobjectPointer)
     }
 

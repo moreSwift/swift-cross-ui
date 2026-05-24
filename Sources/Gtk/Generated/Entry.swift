@@ -101,10 +101,17 @@ open class Entry: Widget, CellEditable, Editable {
             gtk_entry_new_with_buffer(buffer)
         )
     }
+    
+    /// Prevents duplicate GTK signal connections if the view is re-parented.
+    private var signalsConnected = false
 
     open override func didMoveToParent() {
         super.didMoveToParent()
 
+        // guard against reconnecting signals if already set up.
+        guard !signalsConnected else { return }
+        signalsConnected = true
+      
         addSignal(name: "activate") { [weak self] () in
             guard let self else { return }
             self.activate?(self)
