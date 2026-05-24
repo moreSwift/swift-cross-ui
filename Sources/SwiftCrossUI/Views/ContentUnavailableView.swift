@@ -17,14 +17,48 @@ public struct ContentUnavailableView<Label: View, Description: View, Actions: Vi
     
     @Environment(\.backend) var backend
     
+    var labelFont: Font {
+        switch backend.deviceClass {
+            case .phone, .tablet: .title2
+            case .tv: .headline
+            case .desktop: .largeTitle
+            default: .title2
+        }
+    }
+    
+    var descriptionFont: Font {
+        switch backend.deviceClass {
+            case .phone, .tablet, .tv: .subheadline
+            case .desktop: .body
+            default: .subheadline
+        }
+    }
+    
+    var labelColor: Color {
+        if backend.deviceClass == .desktop { return .gray }
+        return .adaptive(light: .black, dark: .white)
+    }
+    
     public var body: some View {
         VStack {
-            label.font(.system(size: 26.0)).foregroundColor(.gray)
-            description.font(.system(size: 13.0)).foregroundColor(.gray)
-            HStack {
-                actions
-                .environment(\.font, .system(.body))
-                .foregroundColor(.adaptive(light: .black, dark: .white))
+            label.font(labelFont).foregroundColor(labelColor)
+            description.font(descriptionFont).foregroundColor(.gray)
+            if backend.deviceClass == .desktop {
+                HStack {
+                    actions
+                        .environment(\.font, .body)
+                        .foregroundColor(.adaptive(light: .black, dark: .white))
+                }
+            } else {
+                VStack {
+                    actions
+                        .environment(\.font, .system(.body))
+                    #if !os(Android)
+                        .foregroundColor(.blue)
+                    #else
+                        .foregroundColor(.adaptive(light: .black, dark: .white))
+                    #endif
+                }
             }
         }
         .if(backend.deviceClass != .desktop) { view in
