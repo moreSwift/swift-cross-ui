@@ -21,8 +21,10 @@ struct IconsApp: App {
                             Icon.share
                             Icon.plus
                                 .foregroundColor(.green)
-                            Icon.edit
                             Icon.back
+                            Icon.cut
+                            Icon.copy
+                            Icon.paste
                         }
                     }
 

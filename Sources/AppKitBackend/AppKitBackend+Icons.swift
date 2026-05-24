@@ -8,8 +8,11 @@ extension AppKitBackend: BackendFeatures.Icons {
             switch icon {
                 case .share: "square.and.arrow.up"
                 case .plus: "plus"
-                case .edit: "pencil"
                 case .back: "chevron.backward"
+                case .cut: "scissors"
+                case .copy: "document.on.document"
+                case .paste: "document.on.clipboard"
+                case .search: "magnifyingglass"
             }
 
         return NSImage(systemSymbolName: name, accessibilityDescription: nil)

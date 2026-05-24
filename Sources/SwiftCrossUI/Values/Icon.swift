@@ -4,6 +4,9 @@
 public enum Icon: Hashable, Sendable {
     case share
     case plus
-    case edit
     case back
+    case cut
+    case copy
+    case paste
+    case search
 }
