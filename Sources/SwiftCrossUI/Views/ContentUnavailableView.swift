@@ -56,13 +56,13 @@ public struct ContentUnavailableView<Label: View, Description: View, Actions: Vi
             if backend.deviceClass == .desktop {
                 HStack {
                     actions
-                        .environment(\.font, .body)
+                        .font(.body)
                         .foregroundColor(.adaptive(light: .black, dark: .white))
                 }
             } else {
                 VStack {
                     actions
-                        .environment(\.font, .body)
+                        .font(.body)
                 }
             }
         }
