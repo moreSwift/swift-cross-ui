@@ -62,12 +62,7 @@ public struct ContentUnavailableView<Label: View, Description: View, Actions: Vi
             } else {
                 VStack {
                     actions
-                        .environment(\.font, .system(.body))
-                    #if !os(Android)
-                        .foregroundColor(.blue)
-                    #else
-                        .foregroundColor(.adaptive(light: .black, dark: .white))
-                    #endif
+                        .environment(\.font, .body)
                 }
             }
         }
