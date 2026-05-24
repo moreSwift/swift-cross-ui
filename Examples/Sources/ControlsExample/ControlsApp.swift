@@ -62,16 +62,6 @@ struct ControlsApp: App {
                         }
 
                         VStack {
-                            Text("Icons")
-                            HStack {
-                                Icon.share
-                                Icon.plus
-                                Icon.edit
-                                Icon.back
-                            }
-                        }
-
-                        VStack {
                             Text("Menu button")
                             Menu("Menu") {
                                 Button("Button item") {
