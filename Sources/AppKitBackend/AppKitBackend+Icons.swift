@@ -25,6 +25,13 @@ extension AppKitBackend: BackendFeatures.Icons {
         environment: EnvironmentValues
     ) {
         let iconView = iconView as! NSImageView
-        iconView.image = Self.sfSymbol(for: icon)
+        let image = Self.sfSymbol(for: icon)?.withSymbolConfiguration(
+            .init(
+                pointSize: environment.resolvedFont.pointSize,
+                weight: Self.weight(for: environment.resolvedFont.weight)
+            )
+        )
+        iconView.image = image
+        iconView.contentTintColor = environment.foregroundColor?.resolve(in: environment).nsColor
     }
 }

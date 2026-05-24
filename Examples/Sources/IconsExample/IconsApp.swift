@@ -9,6 +9,8 @@ import SwiftCrossUI
 @main
 @HotReloadable
 struct IconsApp: App {
+    @State var iconSize = 20.0
+
     var body: some Scene {
         WindowGroup("IconsApp") {
             #hotReloadable {
@@ -18,16 +20,20 @@ struct IconsApp: App {
                         HStack {
                             Icon.share
                             Icon.plus
+                                .foregroundColor(.green)
                             Icon.edit
                             Icon.back
                         }
                     }
 
-//                    VStack {
-//                        Text("Bigger Icons")
-//                        Icon.share
-//                            .frame(width: 50, height: 50)
-//                    }
+                    VStack {
+                        Text("Icon Resizing")
+                        #if !canImport(AndroidBackend)
+                            Slider(value: $iconSize, in: 10...100)
+                        #endif
+                        Icon.share
+                            .font(.system(size: iconSize))
+                    }
                 }.padding()
             }
         }.defaultSize(width: 300, height: 300)

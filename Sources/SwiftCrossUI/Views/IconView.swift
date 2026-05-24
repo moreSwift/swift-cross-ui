@@ -26,5 +26,6 @@ extension Icon: ElementaryView {
         backend: Backend
     ) {
         backend.updateIconView(widget, icon: self, environment: environment)
+        backend.setSize(of: widget, to: layout.size.vector)
     }
 }
