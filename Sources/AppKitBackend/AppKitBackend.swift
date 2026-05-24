@@ -9,7 +9,21 @@ extension App {
     }
 }
 
-public final class AppKitBackend: FullAppBackend {
+public final class AppKitBackend:
+    BaseAppBackend,
+    BackendFeatures.Alerts,
+    BackendFeatures.IncomingURLs,
+    BackendFeatures.ExternalURLs,
+    BackendFeatures.RevealFiles,
+    BackendFeatures.ApplicationMenus,
+    BackendFeatures.FileDialogs,
+    BackendFeatures.CornerRadius,
+    BackendFeatures.Tables,
+    BackendFeatures.Tooltips,
+    BackendFeatures.Colors,
+    BackendFeatures.DatePickers,
+    BackendFeatures.Windowing
+{
     public typealias Window = NSCustomWindow
     public typealias Widget = NSView
     public typealias Alert = NSAlert
