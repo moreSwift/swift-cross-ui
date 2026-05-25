@@ -3,6 +3,7 @@ import SwiftCrossUI
 
 final class ImageView: WrapperWidget<UIImageView> {}
 
+@available(iOS 15.0, *)
 extension UIKitBackend: BackendFeatures.Icons {
     static func sfSymbol(for icon: Icon) -> UIImage? {
         let name =
@@ -38,7 +39,10 @@ extension UIKitBackend: BackendFeatures.Icons {
 
         iconView.child.image =
             if let tintColor = environment.foregroundColor {
-                image?.withTintColor(tintColor.resolve(in: environment).uiColor)
+                image?.withTintColor(
+                    tintColor.resolve(in: environment).uiColor,
+                    renderingMode: .alwaysOriginal
+                )
             } else {
                 image
             }
