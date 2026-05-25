@@ -11,33 +11,56 @@ import SwiftCrossUI
 struct IconsApp: App {
     @State var iconSize = 20.0
 
+    let weights: [Font.Weight] = [
+        .ultraLight,
+        .thin,
+        .light,
+        .regular,
+        .medium,
+        .semibold,
+        .bold,
+        .heavy,
+        .black,
+    ]
+
     var body: some Scene {
         WindowGroup("IconsApp") {
             #hotReloadable {
-                VStack(spacing: 30) {
+                VStack {
                     VStack {
-                        Text("Icons")
-                        HStack {
-                            Icon.share
-                            Icon.plus
-                                .foregroundColor(.green)
-                            Icon.back
-                            Icon.cut
-                            Icon.copy
-                            Icon.paste
+                        Text("Icon Weights")
+                        ForEach(weights, id: \.self) { weight in
+                            HStack {
+                                Text("\(weight)")
+                                Spacer()
+
+                                Icon.share
+                                Icon.plus
+                                    .foregroundColor(.green)
+                                Icon.back
+                                Icon.cut
+                                Icon.copy
+                                Icon.paste
+                            }
+                            .fontWeight(weight)
                         }
                     }
 
-                    VStack {
-                        Text("Icon Resizing")
-                        #if !canImport(AndroidBackend)
+                    #if !canImport(AndroidBackend)
+                        Divider()
+
+                        VStack {
+                            Text("Icon Resizing")
                             Slider(value: $iconSize, in: 10...100)
-                        #endif
-                        Icon.share
-                            .font(.system(size: iconSize))
-                    }
-                }.padding()
+                            Icon.share
+                                .font(.system(size: iconSize))
+                        }
+                    #endif
+                }
+                .padding()
             }
-        }.defaultSize(width: 300, height: 300)
+        }
+        .defaultSize(width: 300, height: 300)
+        .windowResizability(.contentSize)
     }
 }
