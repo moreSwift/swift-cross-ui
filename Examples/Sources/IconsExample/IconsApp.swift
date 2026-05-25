@@ -10,6 +10,7 @@ import SwiftCrossUI
 @HotReloadable
 struct IconsApp: App {
     @State var iconSize = 20.0
+    @State var showForegroundColors = false
 
     let weights: [Font.Weight] = [
         .ultraLight,
@@ -52,8 +53,11 @@ struct IconsApp: App {
                         VStack {
                             Text("Icon Resizing")
                             Slider(value: $iconSize, in: 10...100)
-                            Icon.share
-                                .font(.system(size: iconSize))
+                            HStack {
+                                Icon.copy
+                                Text("Some text for scale")
+                            }
+                            .font(.system(size: iconSize))
                         }
                     #endif
                 }
@@ -62,5 +66,10 @@ struct IconsApp: App {
         }
         .defaultSize(width: 300, height: 300)
         .windowResizability(.contentSize)
+        .commands {
+            CommandMenu("Icons") {
+                Toggle("Show foreground colors", isOn: $showForegroundColors)
+            }
+        }
     }
 }
