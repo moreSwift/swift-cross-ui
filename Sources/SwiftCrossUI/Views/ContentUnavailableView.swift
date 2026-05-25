@@ -1,7 +1,6 @@
 /// An interface, consisting of a label and additional content,
 /// that you display when the content of your app is unavailable to users.
 public struct ContentUnavailableView<Label: View, Description: View, Actions: View>: View {
-
     /// Creates an interface, consisting of a label and additional content,
     /// that you display when the content of your app is unavailable to users.
     ///
@@ -26,38 +25,46 @@ public struct ContentUnavailableView<Label: View, Description: View, Actions: Vi
     private var actions: Actions
 
     @Environment(\.backend) var backend
+    @Environment(\.foregroundColor) var environmentForegroundColor
 
     var labelFont: Font {
-        switch backend.deviceClass {
-            case .phone, .tablet: .title2
+        switch backend.deviceClass.kind {
+            case .phone, .tablet, .watch: .title2
             case .tv: .headline
             case .desktop: .largeTitle
-            default: .title2
         }
     }
 
     var descriptionFont: Font {
-        switch backend.deviceClass {
-            case .phone, .tablet, .tv: .subheadline
+        switch backend.deviceClass.kind {
+            case .phone, .tablet, .tv, .watch: .subheadline
             case .desktop: .body
-            default: .subheadline
         }
     }
 
     var labelColor: Color {
+        if let environmentForegroundColor { return environmentForegroundColor }
         if backend.deviceClass == .desktop { return .gray }
         return .adaptive(light: .black, dark: .white)
     }
 
     public var body: some View {
         VStack {
-            label.font(labelFont).foregroundColor(labelColor)
-            description.font(descriptionFont).foregroundColor(.gray)
+            label
+                .font(labelFont)
+                .foregroundColor(labelColor)
+            description
+                .font(descriptionFont)
+                .foregroundColor(environmentForegroundColor ?? .gray)
+
             if backend.deviceClass == .desktop {
                 HStack {
                     actions
                         .font(.body)
-                        .foregroundColor(.adaptive(light: .black, dark: .white))
+                        .foregroundColor(
+                            environmentForegroundColor
+                                ?? .adaptive(light: .black, dark: .white)
+                        )
                 }
             } else {
                 VStack {
@@ -70,7 +77,7 @@ public struct ContentUnavailableView<Label: View, Description: View, Actions: Vi
             view.padding(30)
         }
         .if(backend.deviceClass == .desktop) { view in
-            view.frame(width: 360)
+            view.frame(maxWidth: 360)
         }
     }
 }

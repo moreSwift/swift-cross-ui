@@ -109,8 +109,3 @@ version = '0.1.0'
 identifier = 'dev.swiftcrossui.TapGesturesExample'
 product = 'TapGesturesExample'
 version = '0.1.0'
-
-[apps.ContentUnavailableExample]
-identifier = 'dev.swiftcrossui.ContentUnavailableExample'
-product = 'ContentUnavailableExample'
-version = '0.1.0'

@@ -23,7 +23,7 @@ extension AndroidBackend: BackendFeatures.Gradients {
         let colors = gradient.gradient.stops.map { stop in
             stop.color.resolve(in: environment).asColorInt()
         }
-        
+
         let density = Float(environment.windowScaleFactor)
 
         let width = Float(size.x)
@@ -41,7 +41,7 @@ extension AndroidBackend: BackendFeatures.Gradients {
             tileClass.CLAMP,
             environment: Self.env
         )
-        
+
         widget.as(GradientWidget.self)!.set(
             shader: gradient,
             width: pxWidth,
@@ -68,7 +68,7 @@ extension AndroidBackend: BackendFeatures.Gradients {
         let colors = gradient.gradient.stops.map { stop in
             stop.color.resolve(in: environment).asColorInt()
         }
-        
+
         let density = Float(environment.windowScaleFactor)
 
         let width = Float(size.x)
@@ -115,7 +115,7 @@ extension AndroidBackend: BackendFeatures.Gradients {
         let colors = gradient.gradient.stops.map { stop in
             stop.color.resolve(in: environment).asColorInt()
         }
-        
+
         let density = Float(environment.windowScaleFactor)
 
         let width = Float(size.x)
@@ -140,13 +140,13 @@ extension AndroidBackend: BackendFeatures.Gradients {
         let scaleY = Float(size.y) / Float(size.x)
 
         let gradientWidget = widget.as(GradientWidget.self)!
-        
+
         gradientWidget.set(
             shader: gradient,
             width: pxWidth,
             height: pxHeight
         )
-        
+
         gradientWidget.setMatrix(
             centerX: centerX,
             centerY: centerY,

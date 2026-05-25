@@ -121,9 +121,5 @@ let package = Package(
             name: "TapGesturesExample",
             dependencies: exampleDependencies
         ),
-        .executableTarget(
-            name: "ContentUnavailableExample",
-            dependencies: exampleDependencies
-        )
     ]
 )
