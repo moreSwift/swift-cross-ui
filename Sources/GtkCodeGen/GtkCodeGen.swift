@@ -642,7 +642,7 @@ struct GtkCodeGen {
             exprs.append(expr.description)
         }
 
-      let methodName = "registerSignals"
+        let methodName = "registerSignals"
 
         return DeclSyntax(
             """
