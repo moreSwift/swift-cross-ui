@@ -4,8 +4,6 @@ import SwiftCrossUI
 
 extension Gtk3Backend: BackendFeatures.Icons {
     static func iconName(for icon: Icon) -> String {
-        // TODO(kaascevich): Use icons from libadwaita once we can link that
-        // (These icons are all built in to GTK3, and there aren't very many of them.)
         switch icon {
             case .share: "folder-publicshare-symbolic" // FIXME(kaascevich): Nonexistent on GTK3
             case .plus: "list-add-symbolic"
@@ -29,6 +27,9 @@ extension Gtk3Backend: BackendFeatures.Icons {
         let iconView = iconView as! Gtk3.Image
         iconView.iconName = Self.iconName(for: icon)
         iconView.pixelSize = Int(environment.resolvedFont.pointSize)
+        if let tintColor = environment.foregroundColor?.resolve(in: environment) {
+            iconView.css.set(property: .foregroundColor(tintColor.gtkColor))
+        }
     }
 }
 

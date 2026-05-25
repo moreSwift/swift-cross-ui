@@ -29,6 +29,9 @@ extension GtkBackend: BackendFeatures.Icons {
         let iconView = iconView as! Gtk.Image
         iconView.iconName = Self.iconName(for: icon)
         iconView.pixelSize = Int(environment.resolvedFont.pointSize)
+        if let tintColor = environment.foregroundColor?.resolve(in: environment) {
+            iconView.css.set(property: .foregroundColor(tintColor.gtkColor))
+        }
     }
 }
 
