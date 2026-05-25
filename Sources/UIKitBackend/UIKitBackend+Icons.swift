@@ -1,13 +1,19 @@
 import UIKit
 import SwiftCrossUI
 
+extension SwiftCrossUI.Icon {
+    public init(sfSymbol: String) {
+        self = .custom(sfSymbol)
+    }
+}
+
 final class ImageView: WrapperWidget<UIImageView> {}
 
 @available(iOS 15.0, *)
 extension UIKitBackend: BackendFeatures.Icons {
     static func sfSymbol(for icon: Icon) -> UIImage? {
         let name =
-            switch icon {
+            switch icon.kind {
                 case .share: "square.and.arrow.up"
                 case .plus: "plus"
                 case .back: "chevron.backward"
@@ -15,6 +21,7 @@ extension UIKitBackend: BackendFeatures.Icons {
                 case .copy: "document.on.document"
                 case .paste: "document.on.clipboard"
                 case .search: "magnifyingglass"
+                case .custom(let name): name
             }
 
         return UIImage(systemName: name)

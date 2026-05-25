@@ -2,11 +2,17 @@ import CGtk
 import Gtk
 import SwiftCrossUI
 
+extension SwiftCrossUI.Icon {
+    public init(gtkIcon: String) {
+        self = .custom(gtkIcon)
+    }
+}
+
 extension GtkBackend: BackendFeatures.Icons {
     static func iconName(for icon: Icon) -> String {
         // TODO(kaascevich): Use icons from libadwaita once we can link that
         // (These icons are all built in to GTK, and there aren't very many of them.)
-        switch icon {
+        switch icon.kind {
             case .share: "folder-publicshare-symbolic"
             case .plus: "list-add-symbolic"
             case .back: "go-previous-symbolic"
@@ -14,6 +20,7 @@ extension GtkBackend: BackendFeatures.Icons {
             case .copy: "edit-copy-symbolic"
             case .paste: "edit-paste-symbolic"
             case .search: "system-search-symbolic"
+            case .custom(let name): name
         }
     }
 

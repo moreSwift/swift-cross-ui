@@ -2,9 +2,15 @@ import CGtk3
 import Gtk3
 import SwiftCrossUI
 
+extension SwiftCrossUI.Icon {
+    public init(gtkIcon: String) {
+        self = .custom(gtkIcon)
+    }
+}
+
 extension Gtk3Backend: BackendFeatures.Icons {
     static func iconName(for icon: Icon) -> String {
-        switch icon {
+        switch icon.kind {
             case .share: "folder-publicshare-symbolic" // FIXME(kaascevich): Nonexistent on GTK3
             case .plus: "list-add-symbolic"
             case .back: "go-previous-symbolic"
@@ -12,6 +18,7 @@ extension Gtk3Backend: BackendFeatures.Icons {
             case .copy: "edit-copy-symbolic"
             case .paste: "edit-paste-symbolic"
             case .search: "system-search-symbolic"
+            case .custom(let name): name
         }
     }
 
