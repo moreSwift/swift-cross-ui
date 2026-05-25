@@ -90,8 +90,8 @@ open class CheckButton: Widget, Actionable {
         )
     }
 
-    open override func didMoveToParent() {
-        super.didMoveToParent()
+    open override func registerSignals() {
+        super.registerSignals()
 
         addSignal(name: "activate") { [weak self] () in
             guard let self else { return }

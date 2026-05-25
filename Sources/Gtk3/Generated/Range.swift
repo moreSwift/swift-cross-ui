@@ -14,8 +14,8 @@ import CGtk3
 /// “fill level” on range widgets. See gtk_range_set_fill_level().
 open class Range: Widget, Orientable {
 
-    open override func didMoveToParent() {
-        super.didMoveToParent()
+    open override func registerSignals() {
+        super.registerSignals()
 
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, Double, UnsafeMutableRawPointer

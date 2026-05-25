@@ -34,8 +34,8 @@ import CGtk3
 /// grab and receive all key presses.
 open class MenuShell: Container {
 
-    open override func didMoveToParent() {
-        super.didMoveToParent()
+    open override func registerSignals() {
+        super.registerSignals()
 
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, Bool, UnsafeMutableRawPointer

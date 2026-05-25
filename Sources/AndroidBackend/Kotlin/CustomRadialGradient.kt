@@ -9,5 +9,5 @@ class CustomRadialGradient(
     radius: Float,
     colors: IntArray,
     stops: FloatArray?,
-    tileMode: Shader.TileMode
+    tileMode: Shader.TileMode,
 ) : RadialGradient(centerX, centerY, radius, colors, stops, tileMode)

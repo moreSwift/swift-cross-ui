@@ -520,8 +520,7 @@ struct GtkCodeGen {
                     signals.map { signal in
                         signal.1
                     },
-                    namespace: namespace,
-                    isWidget: inheritanceChain.contains("Widget")
+                    namespace: namespace
                 )
             )
         }
@@ -558,8 +557,7 @@ struct GtkCodeGen {
 
     static func generateSignalRegistrationMethod(
         _ signals: [Signal],
-        namespace: Namespace,
-        isWidget: Bool
+        namespace: Namespace
     ) -> DeclSyntax {
         var exprs: [String] = []
 
@@ -644,7 +642,7 @@ struct GtkCodeGen {
             exprs.append(expr.description)
         }
 
-        let methodName = isWidget ? "didMoveToParent" : "registerSignals"
+      let methodName = "registerSignals"
 
         return DeclSyntax(
             """

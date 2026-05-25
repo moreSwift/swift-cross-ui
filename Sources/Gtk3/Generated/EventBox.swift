@@ -16,8 +16,8 @@ open class EventBox: Bin {
         )
     }
 
-    open override func didMoveToParent() {
-        super.didMoveToParent()
+    open override func registerSignals() {
+        super.registerSignals()
 
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer

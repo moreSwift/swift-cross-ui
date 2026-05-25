@@ -205,8 +205,8 @@ open class Label: Misc {
         )
     }
 
-    open override func didMoveToParent() {
-        super.didMoveToParent()
+    open override func registerSignals() {
+        super.registerSignals()
 
         addSignal(name: "activate-current-link") { [weak self] () in
             guard let self else { return }

@@ -21,8 +21,8 @@ import CGtk
 /// fine-tuning mode.
 open class Range: Widget, Orientable {
 
-    open override func didMoveToParent() {
-        super.didMoveToParent()
+    open override func registerSignals() {
+        super.registerSignals()
 
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, Double, UnsafeMutableRawPointer
