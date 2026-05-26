@@ -25,7 +25,12 @@ open class Widget: GObject {
 
     open func didMoveToParent() {
         removeSignals()
-      
+        registerSignals()
+    }
+
+    open func didMoveFromParent() {}
+
+    open override func registerSignals() {
         // The Gtk3 docs claim that this handler should take GdkEventButton as a
         // value, but that leads to crashes on Rocky Linux. These crashes are
         // fixed by instead taking the event as a pointer. I've confirmed that
@@ -102,12 +107,8 @@ open class Widget: GObject {
             guard let self else { return }
             self.styleUpdated?()
         }
-      
-        registerSignals()
     }
-
-    open func didMoveFromParent() {}
-
+  
     public func queueDraw() {
         gtk_widget_queue_draw(widgetPointer)
     }
