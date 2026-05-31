@@ -1,5 +1,5 @@
 {
-  "originHash" : "e72ed50d35229773858c00ead5ee48b27378291dbff55cb87ae9f310150c1de2",
+  "originHash" : "26c4a5cd6310de25488df1aa13727991b14437f7cc1b48c068fc1aca149860e9",
   "pins" : [
     {
       "identity" : "aexml",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/moreSwift/AndroidKit",
       "state" : {
-        "revision" : "937a0643efb2f0820dc62a9249729f12987bf340",
-        "version" : "0.7.2"
+        "revision" : "ed371b3becaab639cada60f5c65f0ee8f0d6d149",
+        "version" : "0.8.0"
       }
     },
     {
@@ -141,8 +141,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser.git",
       "state" : {
-        "revision" : "626b5b7b2f45e1b0b1c6f4a309296d1d21d7311b",
-        "version" : "1.7.1"
+        "revision" : "ca37474853a4b5f59a22c74bfdd449b1f6bc4cc2",
+        "version" : "1.8.1"
       }
     },
     {
@@ -255,10 +255,10 @@
     {
       "identity" : "swift-java",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swiftlang/swift-java",
+      "location" : "https://github.com/stackotter/swift-java",
       "state" : {
-        "revision" : "3d52a15db42c4d5ef322fde074626106b9bf82d7",
-        "version" : "0.2.0"
+        "revision" : "e04c0ed6af98936ca6300e94be9a19869df418a2",
+        "version" : "0.5.1"
       }
     },
     {
@@ -410,8 +410,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stackotter/SwiftJavaLang.git",
       "state" : {
-        "revision" : "b60871fd650b81b142a1d6a62d7d440ea1e9bff7",
-        "version" : "0.2.1"
+        "revision" : "000441db9284536a2af611745b82ec7653dca5bc",
+        "version" : "0.3.0"
       }
     },
     {
@@ -419,8 +419,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stackotter/SwiftKotlin.git",
       "state" : {
-        "revision" : "f408b73ebb86a33411f27a668e2d843a10f007c2",
-        "version" : "0.2.1"
+        "revision" : "ad30daacb7e4666e1a56bfdd48498f5ac4ff081d",
+        "version" : "0.3.0"
       }
     },
     {

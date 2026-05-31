@@ -399,11 +399,11 @@ if androidBackendSupported {
     package.dependencies += [
         .package(
             url: "https://github.com/moreSwift/AndroidKit",
-            .upToNextMinor(from: "0.7.2")
+            .upToNextMinor(from: "0.8.0")
         ),
         .package(
-            url: "https://github.com/swiftlang/swift-java",
-            .upToNextMinor(from: "0.2.0")
+            url: "https://github.com/stackotter/swift-java",
+            .upToNextMinor(from: "0.5.1")
         ),
     ]
 
