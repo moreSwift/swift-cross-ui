@@ -172,16 +172,8 @@ let package = Package(
             .upToNextMinor(from: "0.5.0")
         ),
         .package(
-            url: "https://github.com/moreSwift/swift-windowsappsdk",
-            .upToNextMinor(from: "0.1.1")
-        ),
-        .package(
-            url: "https://github.com/moreSwift/swift-windowsfoundation",
-            .upToNextMinor(from: "0.1.0")
-        ),
-        .package(
             url: "https://github.com/moreSwift/swift-winui",
-            .upToNextMinor(from: "0.1.1")
+            .upToNextMinor(from: "0.2.0")
         ),
         .package(
             url: "https://github.com/stackotter/swift-benchmark",
@@ -323,8 +315,8 @@ let package = Package(
                 "SwiftCrossUI",
                 "WinUIInterop",
                 .product(name: "WinUI", package: "swift-winui"),
-                .product(name: "WinAppSDK", package: "swift-windowsappsdk"),
-                .product(name: "WindowsFoundation", package: "swift-windowsfoundation"),
+                .product(name: "WinAppSDK", package: "swift-winui"),
+                .product(name: "WindowsFoundation", package: "swift-winui"),
                 .product(name: "Mutex", package: "swift-mutex"),
             ]
         ),
