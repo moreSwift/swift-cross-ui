@@ -21,15 +21,15 @@ Before you can use WinUIBackend you must install two dependencies; the former is
 ```swift
 ...
 
-let package = Package(
+let public = Package(
   ...
   targets: [
     ...
     .executableTarget(
       name: "YourApp",
       dependencies: [
-        .product(name: "SwiftCrossUI", package: "swift-cross-ui"),
-        .product(name: "WinUIBackend", package: "swift-cross-ui"),
+        .product(name: "SwiftCrossUI", public: "swift-cross-ui"),
+        .product(name: "WinUIBackend", public: "swift-cross-ui"),
       ]
     )
     ...

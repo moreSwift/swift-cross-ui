@@ -27,7 +27,7 @@ public final class UIKitBackend: AppBackend {
         switch UIDevice.current.userInterfaceIdiom {
             case .phone:
                 .phone
-            case .pad, .vision:
+            case .pad:
                 .tablet
             case .tv:
                 .tv
@@ -82,19 +82,27 @@ public final class UIKitBackend: AppBackend {
 
         Self.onReceiveURL = action
     }
-
+    
+    
+    // MARK: TODO - Fixup this to be compatible with iOS 6, somehow
     public func computeRootEnvironment(defaultEnvironment: EnvironmentValues) -> EnvironmentValues {
         var environment = defaultEnvironment
 
         environment.toggleStyle = .switch
-
-        switch UITraitCollection.current.userInterfaceStyle {
+        
+        
+        if #available(iOS 13.0, *) {
+            switch UITraitCollection.current.userInterfaceStyle {
             case .light:
                 environment.colorScheme = .light
             case .dark:
                 environment.colorScheme = .dark
             default:
                 break
+            }
+        } else {
+            //Default to light on all other platforms
+            environment.colorScheme = .light
         }
 
         return environment
@@ -125,7 +133,8 @@ public final class UIKitBackend: AppBackend {
 
     public func show(widget: Widget) {
     }
-
+    
+    @available(iOS 13, *)
     public func openExternalURL(_ url: URL) throws {
         UIApplication.shared.open(url)
     }
@@ -238,6 +247,7 @@ open class ApplicationDelegate: UIResponder, UIApplicationDelegate {
     /// you also need to control the menus' identifiers.
     ///
     /// This method is only used on Mac Catalyst.
+    @available(iOS 13, *)
     open func mapMenuIdentifier(_ label: String) -> UIMenu.Identifier {
         switch label {
             case "File": .file
@@ -259,6 +269,7 @@ open class ApplicationDelegate: UIResponder, UIApplicationDelegate {
     /// When targeting Mac Catalyst, you should call `super.buildMenu(with: builder)` at some
     /// point in your implementation. If you do not, then calls to
     /// ``SwiftCrossUI/Scene/commands(_:)`` will have no effect.
+    @available(iOS 13, *)
     open override func buildMenu(with builder: any UIMenuBuilder) {
         guard #available(tvOS 14, *),
             builder.system == .main
@@ -282,6 +293,7 @@ open class ApplicationDelegate: UIResponder, UIApplicationDelegate {
 ///
 /// SwiftCrossUI apps do not have to be scene-based. If you are writing a scene-based app,
 /// derive your scene delegate from this class.
+@available(iOS 13, *)
 open class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     public var window: UIWindow? {
         willSet {

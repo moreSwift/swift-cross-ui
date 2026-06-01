@@ -40,7 +40,7 @@ public struct Toggle: View {
 
 /// A style of toggle.
 public struct ToggleStyle: Sendable {
-    package var style: Style
+    public var style: Style
 
     /// A toggle switch.
     public static let `switch` = Self(style: .switch)
@@ -50,7 +50,7 @@ public struct ToggleStyle: Sendable {
     /// A checkbox.
     public static let checkbox = Self(style: .checkbox)
 
-    package enum Style {
+    public enum Style {
         case `switch`
         case button
         case checkbox

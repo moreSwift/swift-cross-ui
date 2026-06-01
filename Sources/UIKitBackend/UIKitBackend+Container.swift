@@ -1,5 +1,6 @@
 import SwiftCrossUI
 import UIKit
+import UIKitCompatKit
 
 final class ScrollWidget: ContainerWidget {
     private var scrollView = UIScrollView()

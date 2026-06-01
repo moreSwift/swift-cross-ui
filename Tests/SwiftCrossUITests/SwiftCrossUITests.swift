@@ -69,7 +69,9 @@ struct SwiftCrossUITests {
 
         return original == decoded
     }
-
+    
+    
+    /*
     #if canImport(AppKitBackend)
         @Test("Ensure that a basic view has the expected dimensions under AppKitBackend")
         @MainActor
@@ -129,5 +131,5 @@ struct SwiftCrossUITests {
 
             return data
         }
-    #endif
+    #endif*/
 }

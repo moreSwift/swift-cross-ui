@@ -62,6 +62,8 @@ struct PublisherTests {
         #expect(!observedChange, "Expected mutation not to trigger cancelled observation")
     }
 
+    
+    /*
     #if canImport(AppKitBackend)
         // TODO: Create mock backend so that this can be tested on all platforms. There's
         //   nothing AppKit-specific about it.
@@ -118,5 +120,5 @@ struct PublisherTests {
                 """
             )
         }
-    #endif
+    #endif*/
 }

@@ -1,5 +1,6 @@
 import SwiftCrossUI
 import UIKit
+import UIKitCompatKit
 
 public struct UIViewControllerRepresentableContext<Coordinator> {
     public let coordinator: Coordinator

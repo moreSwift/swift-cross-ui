@@ -171,6 +171,7 @@ final class TappableWidget: ContainerWidget {
 }
 
 @available(tvOS, unavailable)
+@available(iOS 13, *)
 final class HoverableWidget: ContainerWidget {
     private var hoverGestureRecognizer: UIHoverGestureRecognizer?
 
@@ -242,6 +243,19 @@ extension UIKitBackend {
         // and all round looks quite sloppy. Therefore, it's safest to just
         // ignore foreground color for buttons on tvOS until we have a better
         // solution.
+        let foregroundColor: UIColor
+        foregroundColor = .blue
+        
+        //MARK: Test fix
+        /*if #available(iOS 13, *) {
+            foregroundColor = .link
+        } else if #available(iOS 7, *) {
+            // fallback color for older iOS versions
+            foregroundColor = UIColor.systemBlue
+        } else {
+            foregroundColor = UIColor.blue
+        }*/
+        
         #if os(tvOS)
             buttonWidget.child.setTitle(label, for: .normal)
         #else
@@ -249,7 +263,7 @@ extension UIKitBackend {
                 UIKitBackend.attributedString(
                     text: label,
                     environment: environment,
-                    defaultForegroundColor: .link
+                    defaultForegroundColor: foregroundColor
                 ),
                 for: .normal
             )
@@ -290,9 +304,20 @@ extension UIKitBackend {
         textFieldWidget.onChange = onChange
         textFieldWidget.onSubmit = onSubmit
 
-        let (keyboardType, contentType) = splitTextContentType(environment.textContentType)
+        let keyboardType: UIKeyboardType
+        let contentType: UITextContentType?
+
+        if #available(iOS 10, *) {
+            (keyboardType, contentType) = splitTextContentType(environment.textContentType)
+        } else {
+            keyboardType = .default
+            contentType = nil
+        }
+
         textFieldWidget.child.keyboardType = keyboardType
-        textFieldWidget.child.textContentType = contentType
+        if #available(iOS 10, *) {
+            textFieldWidget.child.textContentType = contentType
+        }
 
         #if os(iOS)
             if let updateToolbar = environment.updateToolbar {
@@ -336,10 +361,23 @@ extension UIKitBackend {
         textEditorWidget.child.font = environment.resolvedFont.uiFont
         textEditorWidget.child.textColor = UIColor(color: environment.suggestedForegroundColor)
         textEditorWidget.onChange = onChange
+        
+        
+        let keyboardType: UIKeyboardType
+        let contentType: UITextContentType?
 
-        let (keyboardType, contentType) = splitTextContentType(environment.textContentType)
+        if #available(iOS 10, *) {
+            (keyboardType, contentType) = splitTextContentType(environment.textContentType)
+        } else {
+            keyboardType = .default
+            contentType = nil
+        }
+
         textEditorWidget.child.keyboardType = keyboardType
-        textEditorWidget.child.textContentType = contentType
+        if #available(iOS 10, *) {
+            textEditorWidget.child.textContentType = contentType
+        }
+        
 
         #if os(iOS)
             if let updateToolbar = environment.updateToolbar {
@@ -354,20 +392,6 @@ extension UIKitBackend {
 
             textEditorWidget.child.alwaysBounceVertical =
                 environment.scrollDismissesKeyboardMode != .never
-            textEditorWidget.child.keyboardDismissMode =
-                switch environment.scrollDismissesKeyboardMode {
-                    case .automatic:
-                        textEditorWidget.child.inputAccessoryView == nil
-                            ? .interactive : .interactiveWithAccessory
-                    case .immediately:
-                        textEditorWidget.child.inputAccessoryView == nil
-                            ? .onDrag : .onDragWithAccessory
-                    case .interactively:
-                        textEditorWidget.child.inputAccessoryView == nil
-                            ? .interactive : .interactiveWithAccessory
-                    case .never:
-                        .none
-                }
         #endif
     }
 
@@ -383,6 +407,7 @@ extension UIKitBackend {
 
     // Splits a SwiftCrossUI TextContentType into a UIKit keyboard type and
     // text content type.
+    @available(iOS 10, *)
     private func splitTextContentType(
         _ textContentType: TextContentType
     ) -> (UIKeyboardType, UITextContentType?) {
@@ -447,11 +472,13 @@ extension UIKitBackend {
                 wrapper.onLongPress = environment.isEnabled ? action : {}
         }
     }
-
+    
+    @available(iOS 13, *)
     public func createHoverTarget(wrapping child: Widget) -> Widget {
         HoverableWidget(child: child)
     }
-
+    
+    @available(iOS 13, *)
     public func updateHoverTarget(
         _ hoverTarget: any WidgetProtocol,
         environment: EnvironmentValues,

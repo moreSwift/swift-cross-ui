@@ -1,3 +1,10 @@
+//MARK: Will add to a shim library later, just here for testing now.
+@available(iOS, introduced: 6.0, obsoleted: 13.0)
+public protocol Identifiable {
+    associatedtype ID: Hashable
+    var id: ID { get }
+}
+
 public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View {
     typealias Children = ListViewChildren<PaddingModifierView<RowView>>
 

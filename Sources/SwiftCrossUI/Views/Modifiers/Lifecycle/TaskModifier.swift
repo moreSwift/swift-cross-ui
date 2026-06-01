@@ -1,3 +1,6 @@
+//MARK: Is this needed? This seems to be the worst offender in terms of compatibility. 
+
+/*@available(iOS 13, *)
 extension View {
     /// Starts a task before a view appears (but after ``View/body`` has been
     /// accessed), and cancels the task when the view disappears. Additionally,
@@ -34,6 +37,7 @@ extension View {
     }
 }
 
+@available(iOS 13, *)
 struct TaskModifier<Id: Equatable, Content: View> {
     @State var task: Task<(), any Error>? = nil
 
@@ -43,6 +47,7 @@ struct TaskModifier<Id: Equatable, Content: View> {
     var action: () async -> Void
 }
 
+@available(iOS 13, *)
 extension TaskModifier: View {
     var body: some View {
         // Explicitly return to disable result builder (we don't want an extra
@@ -59,4 +64,4 @@ extension TaskModifier: View {
                 task?.cancel()
             }
     }
-}
+}*/

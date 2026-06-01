@@ -1,15 +1,19 @@
 import SwiftCrossUI
 import UIKit
 
+
 extension UIKitBackend {
+    @available(iOS 13, *)
     public final class Menu {
         var uiMenu: UIMenu?
     }
-
+    
+    @available(iOS 13, *)
     public func createPopoverMenu() -> Menu {
         return Menu()
     }
-
+    
+    @available(iOS 13, *)
     @available(tvOS 14, *)
     static func buildMenu(
         content: ResolvedMenu,
@@ -31,7 +35,8 @@ extension UIKitBackend {
 
         return UIMenu(title: label, identifier: identifier, children: children)
     }
-
+    
+    @available(iOS 13, *)
     public func updatePopoverMenu(
         _ menu: Menu, content: ResolvedMenu, environment _: EnvironmentValues
     ) {
@@ -41,7 +46,8 @@ extension UIKitBackend {
             preconditionFailure("Current OS is too old to support menu buttons.")
         }
     }
-
+    
+    @available(iOS 13, *)
     public func updateButton(
         _ button: Widget,
         label: String,
@@ -58,7 +64,8 @@ extension UIKitBackend {
             preconditionFailure("Current OS is too old to support menu buttons.")
         }
     }
-
+    
+    @available(iOS 13, *)
     public func setApplicationMenu(_ submenus: [ResolvedMenu.Submenu]) {
         #if targetEnvironment(macCatalyst)
             let appDelegate = UIApplication.shared.delegate as! ApplicationDelegate

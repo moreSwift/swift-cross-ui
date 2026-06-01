@@ -1,4 +1,4 @@
-package enum ListStyle {
+public enum ListStyle {
     case `default`
     case sidebar
 }

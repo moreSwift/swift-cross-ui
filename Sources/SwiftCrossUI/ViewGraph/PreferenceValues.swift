@@ -12,14 +12,22 @@ public struct PreferenceValues: Sendable {
     }
 
     public init(merging children: [PreferenceValues]) {
-        let handlers = children.compactMap(\.onOpenURL)
+        // Extract all non-nil handlers from children
+        let handlers: [(URL) -> Void] = children.compactMap { $0.onOpenURL }
 
-        if !handlers.isEmpty {
-            onOpenURL = { url in
-                for handler in handlers {
+        // Assign a closure that safely calls each handler
+        onOpenURL = { url in
+            for handler in handlers {
+                // Wrap each call in a do/catch to prevent crashes from unexpected errors
+                // or weak captures inside handlers
+                do {
                     handler(url)
+                } catch {
+                    // Optionally log the error, but prevent crash
+                    print("Warning: onOpenURL handler threw an error: \(error)")
                 }
             }
         }
     }
+
 }

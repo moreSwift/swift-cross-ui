@@ -1,4 +1,5 @@
 import UIKit
+import UIKitCompatKit
 
 public protocol WidgetProtocol: UIResponder {
     var x: Int { get set }

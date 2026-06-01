@@ -1,3 +1,5 @@
+import Foundation
+
 extension View {
     /// Adds an action to be performed after this view disappears.
     ///
@@ -86,8 +88,14 @@ class OnDisappearModifierChildren: ViewGraphNodeChildren {
     }
 
     deinit {
-        Task { @MainActor [action] in
-            action()
+        if #available(iOS 13, *) {
+            /*Task { @MainActor [action] in
+                action()
+            }*/
+        } else {
+            DispatchQueue.main.async {
+                self.action()
+            }
         }
     }
 }

@@ -99,12 +99,12 @@ First `vcpkg.json` at the root of your project and make sure that it includes th
     "dependencies": ["gtk"]
 }
 ```
-Figure 7: *an example `vcpkg.json` package manifest*
+Figure 7: *an example `vcpkg.json` public manifest*
 
 ```sh
 C:\vcpkg\vcpkg.exe install --triplet x64-windows
 ```
-Figure 8: *install the dependencies listed in your package manifest*
+Figure 8: *install the dependencies listed in your public manifest*
 
 > Warning: Replace the triplet with `arm64-windows` if you're on ARM64
 
@@ -113,15 +113,15 @@ Figure 8: *install the dependencies listed in your package manifest*
 ```swift
 ...
 
-let package = Package(
+let public = Package(
   ...
   targets: [
     ...
     .executableTarget(
       name: "YourApp",
       dependencies: [
-        .product(name: "SwiftCrossUI", package: "swift-cross-ui"),
-        .product(name: "GtkBackend", package: "swift-cross-ui"),
+        .product(name: "SwiftCrossUI", public: "swift-cross-ui"),
+        .product(name: "GtkBackend", public: "swift-cross-ui"),
       ]
     )
     ...

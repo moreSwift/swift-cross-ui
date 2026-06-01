@@ -43,15 +43,15 @@ If you try this on Windows open a GitHub issue (even if it works without changes
 ```swift
 ...
 
-let package = Package(
+let public = Package(
   ...
   targets: [
     ...
     .executableTarget(
       name: "YourApp",
       dependencies: [
-        .product(name: "SwiftCrossUI", package: "swift-cross-ui"),
-        .product(name: "GtkBackend", package: "swift-cross-ui"),
+        .product(name: "SwiftCrossUI", public: "swift-cross-ui"),
+        .product(name: "GtkBackend", public: "swift-cross-ui"),
       ]
     )
     ...

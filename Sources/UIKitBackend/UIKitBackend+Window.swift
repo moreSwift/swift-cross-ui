@@ -1,4 +1,5 @@
 import UIKit
+import UIKitCompatKit
 
 final class RootViewController: UIViewController {
     unowned var backend: UIKitBackend
@@ -20,7 +21,9 @@ final class RootViewController: UIViewController {
             self.backend = backend
             super.init(nibName: nil, bundle: nil)
         }
-
+        
+        
+        @available(iOS 8.0, *)
         override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
             super.traitCollectionDidChange(previousTraitCollection)
             backend.onTraitCollectionChange?()
@@ -34,11 +37,17 @@ final class RootViewController: UIViewController {
 
     override func loadView() {
         super.loadView()
-        if traitCollection.userInterfaceStyle != .dark {
+        if #available(iOS 13, *) {
+            if traitCollection.userInterfaceStyle != .dark {
+                view.backgroundColor = .white
+            }
+        } else {
             view.backgroundColor = .white
         }
     }
-
+    
+    
+    @available(iOS 8.0, *)
     override func viewWillTransition(
         to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator
     ) {
@@ -146,7 +155,13 @@ extension UIKitBackend {
     public func setMinimumSize(ofWindow window: Window, to minimumSize: SIMD2<Int>) {
         // if windowScene is nil, either the window isn't shown or it must be fullscreen
         // if sizeRestrictions is nil, the device doesn't support setting a minimum window size
-        window.windowScene?.sizeRestrictions?.minimumSize = CGSize(
-            width: CGFloat(minimumSize.x), height: CGFloat(minimumSize.y))
+        if #available(iOS 13, *) {
+            window.windowScene?.sizeRestrictions?.minimumSize = CGSize(
+                width: CGFloat(minimumSize.x), height: CGFloat(minimumSize.y))
+        } else {
+            // iOS 12: windowScene/sizeRestrictions not available
+            // Optional: enforce min size in your layout logic
+            print("UIKitBackend: setMinimumSize ignored on iOS < 13")
+        }
     }
 }

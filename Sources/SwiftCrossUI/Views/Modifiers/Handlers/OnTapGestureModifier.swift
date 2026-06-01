@@ -1,5 +1,5 @@
 public struct TapGesture: Sendable, Hashable {
-    package var kind: TapGestureKind
+    public var kind: TapGestureKind
 
     /// The idiomatic "primary" interaction for the device, such as a left-click with the mouse
     /// or normal tap on a touch screen.
@@ -11,7 +11,7 @@ public struct TapGesture: Sendable, Hashable {
     /// ``secondary`` on some backends, particularly on mobile devices.
     public static let longPress = TapGesture(kind: .longPress)
 
-    package enum TapGestureKind {
+    public enum TapGestureKind {
         case primary, secondary, longPress
     }
 }

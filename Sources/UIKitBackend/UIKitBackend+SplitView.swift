@@ -1,4 +1,5 @@
 import UIKit
+import UIKitCompatKit
 
 #if os(iOS)
     final class SplitWidget: WrapperControllerWidget<UISplitViewController>,
@@ -16,9 +17,12 @@ import UIKit
             super.init(child: UISplitViewController())
 
             child.delegate = self
-
-            child.preferredDisplayMode = .oneBesideSecondary
-            child.preferredPrimaryColumnWidthFraction = 0.3
+            
+            
+            if #available(iOS 8.0, *) {
+                child.preferredDisplayMode = .oneBesideSecondary
+                child.preferredPrimaryColumnWidthFraction = 0.3
+            }
 
             child.viewControllers = [sidebarContainer, mainContainer]
         }
@@ -71,12 +75,14 @@ import UIKit
             let splitWidget = splitView as! SplitWidget
             splitWidget.resizeHandler = action
         }
-
+        
+        @available(iOS 8, *)
         public func sidebarWidth(ofSplitView splitView: Widget) -> Int {
             let splitWidget = splitView as! SplitWidget
             return Int(splitWidget.child.primaryColumnWidth.rounded(.toNearestOrEven))
         }
-
+        
+        @available(iOS 8, *)
         public func setSidebarWidthBounds(
             ofSplitView splitView: Widget,
             minimum minimumWidth: Int,

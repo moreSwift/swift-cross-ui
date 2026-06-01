@@ -11,15 +11,15 @@ SwiftCrossUI's native macOS backend built on top of AppKit.
 ```swift
 ...
 
-let package = Package(
+let public = Package(
   ...
   targets: [
     ...
     .executableTarget(
       name: "YourApp",
       dependencies: [
-        .product(name: "SwiftCrossUI", package: "swift-cross-ui"),
-        .product(name: "AppKitBackend", package: "swift-cross-ui"),
+        .product(name: "SwiftCrossUI", public: "swift-cross-ui"),
+        .product(name: "AppKitBackend", public: "swift-cross-ui"),
       ]
     )
     ...

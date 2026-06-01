@@ -212,11 +212,11 @@ public struct Font: Hashable, Sendable {
 
     public struct Resolved: Hashable, Sendable {
         public struct Identifier: Hashable, Sendable {
-            package var kind: Kind
+            public var kind: Kind
 
             public static let system = Self(kind: .system)
 
-            package enum Kind: Hashable {
+            public enum Kind: Hashable {
                 case system
             }
         }
@@ -236,7 +236,7 @@ public struct Font: Hashable, Sendable {
     }
 
     @MainActor
-    package func resolve(in context: Context) -> Resolved {
+    public func resolve(in context: Context) -> Resolved {
         let emphasizedWeight: Weight
         var resolved: Resolved
         switch kind {

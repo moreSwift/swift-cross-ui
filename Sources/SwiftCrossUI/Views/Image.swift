@@ -1,5 +1,4 @@
 import Foundation
-import ImageFormats
 
 /// A view that displays an image.
 public struct Image: Sendable {
@@ -8,7 +7,7 @@ public struct Image: Sendable {
 
     enum Source: Equatable {
         case url(URL, useFileExtension: Bool)
-        case image(ImageFormats.Image<RGBA>)
+        case rawData(Data, width: Int, height: Int)
     }
 
     /// Displays an image file. `png`, `jpg`, and `webp` are supported.
@@ -20,10 +19,13 @@ public struct Image: Sendable {
         source = .url(url, useFileExtension: useFileExtension)
     }
 
-    /// Displays an image from raw pixel data.
-    /// - Parameter image: The image data to display.
-    public init(_ image: ImageFormats.Image<RGBA>) {
-        source = .image(image)
+    /// Displays an image from raw RGBA pixel data.
+    /// - Parameters:
+    ///   - data: Raw RGBA bytes.
+    ///   - width: Width of the image in pixels.
+    ///   - height: Height of the image in pixels.
+    public init(data: Data, width: Int, height: Int) {
+        source = .rawData(data, width: width, height: height)
     }
 
     /// Makes the image resize to fit the available space.
@@ -74,44 +76,34 @@ extension Image: TypeSafeView {
         backend: Backend,
         dryRun: Bool
     ) -> ViewUpdateResult {
-        let image: ImageFormats.Image<RGBA>?
+        var imageData: (data: Data, width: Int, height: Int)?
         if source != children.cachedImageSource {
             switch source {
-                case .url(let url, let useFileExtension):
+                case .url(let url, _):
                     if let data = try? Data(contentsOf: url) {
-                        let bytes = Array(data)
-                        if useFileExtension {
-                            image = try? ImageFormats.Image<RGBA>.load(
-                                from: bytes,
-                                usingFileExtension: url.pathExtension
-                            )
-                        } else {
-                            image = try? ImageFormats.Image<RGBA>.load(from: bytes)
-                        }
-                    } else {
-                        image = nil
+                        // Backend should decode raw image bytes into RGBA
+                        imageData = (data: data, width: 0, height: 0)
                     }
-                case .image(let sourceImage):
-                    image = sourceImage
+                case .rawData(let data, let width, let height):
+                    imageData = (data: data, width: width, height: height)
             }
-
             children.cachedImageSource = source
-            children.cachedImage = image
+            children.cachedImageData = imageData
             children.imageChanged = true
         } else {
-            image = children.cachedImage
+            imageData = children.cachedImageData
         }
 
-        let idealSize = SIMD2(image?.width ?? 0, image?.height ?? 0)
+        let idealSize = SIMD2(imageData?.width ?? 0, imageData?.height ?? 0)
         let size: ViewSize
         if isResizable {
             size = ViewSize(
-                size: image == nil ? .zero : proposedSize,
+                size: imageData == nil ? .zero : proposedSize,
                 idealSize: idealSize,
                 minimumWidth: 0,
                 minimumHeight: 0,
-                maximumWidth: image == nil ? 0 : nil,
-                maximumHeight: image == nil ? 0 : nil
+                maximumWidth: imageData == nil ? 0 : nil,
+                maximumHeight: imageData == nil ? 0 : nil
             )
         } else {
             size = ViewSize(fixedSize: idealSize)
@@ -124,12 +116,12 @@ extension Image: TypeSafeView {
                 || (backend.requiresImageUpdateOnScaleFactorChange
                     && children.lastScaleFactor != environment.windowScaleFactor))
         {
-            if let image {
+            if let imageData {
                 backend.updateImageView(
                     children.imageWidget.into(),
-                    rgbaData: image.bytes,
-                    width: image.width,
-                    height: image.height,
+                    rgbaData: [UInt8](imageData.data),
+                    width: imageData.width,
+                    height: imageData.height,
                     targetWidth: size.size.x,
                     targetHeight: size.size.y,
                     dataHasChanged: children.imageChanged,
@@ -161,7 +153,7 @@ extension Image: TypeSafeView {
 
 class _ImageChildren: ViewGraphNodeChildren {
     var cachedImageSource: Image.Source? = nil
-    var cachedImage: ImageFormats.Image<RGBA>? = nil
+    var cachedImageData: (data: Data, width: Int, height: Int)? = nil
     var cachedImageDisplaySize: SIMD2<Int> = .zero
     var container: AnyWidget
     var imageWidget: AnyWidget

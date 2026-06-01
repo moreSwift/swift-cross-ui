@@ -3,7 +3,7 @@
 public struct Spacer: ElementaryView, View {
     /// The minimum length this spacer can be shrunk to, along the axis of
     /// expansion.
-    package var minLength: Int?
+    public var minLength: Int?
 
     /// Creates a spacer with a given minimum length along its axis or axes
     /// of expansion.

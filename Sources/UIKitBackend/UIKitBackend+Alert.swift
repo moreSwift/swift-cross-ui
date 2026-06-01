@@ -1,6 +1,10 @@
 import SwiftCrossUI
 import UIKit
 
+
+
+//MARK: Might come back and make a shim for this :P
+@available(iOS 8.0, *)
 extension UIKitBackend {
     public final class Alert {
         let controller: UIAlertController

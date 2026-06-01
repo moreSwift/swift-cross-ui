@@ -40,7 +40,7 @@ public struct EnvironmentValues {
     /// helper method for our own backends. We haven't made this public because
     /// it would be weird to have two pretty equivalent ways of resolving fonts.
     @MainActor
-    package var resolvedFont: Font.Resolved {
+    public var resolvedFont: Font.Resolved {
         font.resolve(in: fontResolutionContext)
     }
 
@@ -90,7 +90,7 @@ public struct EnvironmentValues {
     var onResize: @MainActor (_ newSize: ViewSize) -> Void
 
     /// The style of list to use.
-    package var listStyle: ListStyle
+    public var listStyle: ListStyle
 
     /// The style of toggle to use.
     public var toggleStyle: ToggleStyle
@@ -121,7 +121,7 @@ public struct EnvironmentValues {
     /// The backend's representation of the window that the current view is
     /// in, if any. This is a very internal detail that should never get
     /// exposed to users.
-    package var window: Any?
+    public var window: Any?
     /// The backend in use. Mustn't change throughout the app's lifecycle.
     let backend: any AppBackend
 
