@@ -1,4 +1,5 @@
 import Foundation
+import PerceptionCore
 
 /// A view graph node storing a view, its widget, and its children (likely a
 /// collection of more nodes).
@@ -6,7 +7,7 @@ import Foundation
 /// This is where updates are initiated when a view's state updates, and where state is persisted
 /// even when a view gets recomputed by its parent.
 @MainActor
-public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
+public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: ViewModelObserver, Sendable {
     /// The view's single widget for the entirety of its lifetime in the view graph.
     ///
     public var widget: Backend.Widget {
@@ -59,6 +60,9 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
 
     /// The dynamic property updater for this view.
     private var dynamicPropertyUpdater: DynamicPropertyUpdater<NodeView>
+    
+    /// Used by the `ViewModelObserver` protocol to prevent duplicate view updates.
+    var currentViewModelObservationID: UUID?
 
     /// Creates a node for a given view while also creating the nodes for its children, creating
     /// the view's widget, and starting to observe its state for changes.
@@ -91,12 +95,13 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
 
         dynamicPropertyUpdater.update(view, with: viewEnvironment, previousValue: nil)
 
-        let children = view.children(
-            backend: backend,
-            snapshots: childSnapshots,
-            environment: viewEnvironment
-        )
-        self.children = children
+        self.children = self.observe(in: backend) {
+            view.children(
+                backend: backend,
+                snapshots: childSnapshots,
+                environment: viewEnvironment
+            )
+        }
 
         // Then create the widget for the view itself
         let widget = view.asWidget(
@@ -131,6 +136,10 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
             }
             cancellables.append(cancellable)
         }
+    }
+    
+    func viewModelDidChange<B: BackendFeatures.Core>(backend: B) {
+        bottomUpUpdate()
     }
 
     /// Triggers the view to be updated as part of a bottom-up chain of updates (where either the
@@ -228,18 +237,19 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
 
         dynamicPropertyUpdater.update(view, with: viewEnvironment, previousValue: previousView)
 
-        let result = view.computeLayout(
-            widget,
-            children: children,
-            proposedSize: proposedSize,
-            environment: viewEnvironment,
-            backend: backend
-        )
-
         // We assume that the view's sizing behaviour won't change between consecutive
         // layout computations and the following commit, because groups of updates
         // following that pattern are assumed to be occurring within a single overarching
         // view update. Under that assumption, we can cache view layout results.
+        let result = self.observe(in: backend) {
+            view.computeLayout(
+                widget,
+                children: children,
+                proposedSize: proposedSize,
+                environment: viewEnvironment,
+                backend: backend
+            )
+        }
         resultCache[proposedSize] = result
 
         currentLayout = result

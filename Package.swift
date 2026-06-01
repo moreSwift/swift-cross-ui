@@ -185,6 +185,10 @@ let package = Package(
             url: "https://github.com/apple/swift-collections",
             .upToNextMajor(from: "1.5.0")
         ),
+        .package(
+            url: "https://github.com/pointfreeco/swift-perception.git",
+            from: "2.0.10"
+        ),
         // .package(
         //     url: "https://github.com/stackotter/TermKit",
         //     revision: "163afa64f1257a0c026cc83ed8bc47a5f8fc9704"
@@ -207,6 +211,7 @@ let package = Package(
                 .product(name: "ImageFormats", package: "swift-image-formats"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Mutex", package: "swift-mutex"),
+                .product(name: "PerceptionCore", package: "swift-perception"),
             ],
             exclude: [
                 "Builders/ViewBuilder.swift.gyb",

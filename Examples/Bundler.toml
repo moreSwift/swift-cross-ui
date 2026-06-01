@@ -110,7 +110,12 @@ identifier = 'dev.swiftcrossui.TapGesturesExample'
 product = 'TapGesturesExample'
 version = '0.1.0'
 
- [apps.ControlFocusabilityTest]
- identifier = 'dev.swiftcrossui.ControlFocusabilityTest'
- product = 'ControlFocusabilityTest'
- version = '0.1.0'
+[apps.ControlFocusabilityTest]
+identifier = 'dev.swiftcrossui.ControlFocusabilityTest'
+product = 'ControlFocusabilityTest'
+version = '0.1.0'
+
+[apps.ObservableExample]
+identifier = 'dev.swiftcrossui.ObservableExample'
+product = 'ObservableExample'
+version = '0.1.0'

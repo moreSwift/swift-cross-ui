@@ -102,9 +102,6 @@ extension Optional: OptionalObservableObject where Wrapped: ObservableObject {
     }
 }
 
-@available(*, deprecated, message: "Replace Observable with ObservableObject")
-public typealias Observable = ObservableObject
-
 /// Automatically observes all public noncomputed variables with public getter and setter
 @attached(memberAttribute)
 @attached(extension, conformances: ObservableObject)
@@ -116,6 +113,10 @@ public macro ObservableObject() =
 
 /// Apply to a member inside your `@ObservableObject` class to opt out of observation
 // This macro is just used as a flag for `@ObservableObject` to ignore a specific property
+@available(macOS, obsoleted: 14, message: "Add `import Observation`. Also consider using `@Observable` insted of `@ObservableObject`.")
+@available(iOS, obsoleted: 17, message: "Add `import Observation`. Also consider using `@Observable` insted of `@ObservableObject`.")
+@available(watchOS, obsoleted: 10, message: "Add `import Observation`. Also consider using `@Observable` insted of `@ObservableObject`.")
+@available(tvOS, obsoleted: 17, message: "Add `import Observation`. Also consider using `@Observable` insted of `@ObservableObject`.")
 @attached(accessor)
 public macro ObservationIgnored() =
     #externalMacro(
