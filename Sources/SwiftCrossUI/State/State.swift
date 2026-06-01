@@ -1,4 +1,5 @@
 import Foundation
+import PerceptionCore
 
 // TODO: Document State properly, this is an important type.
 // - It supports value types
@@ -55,7 +56,7 @@ extension State {
         deprecated,
         message: """
             'State' does not work correctly with non-observable classes; conform \
-            your class to 'ObservableObject' or use a struct instead
+            your class to 'ObservableObject', use `@Observable` or use a struct instead
             """
     )
     public init(wrappedValue initialValue: Value) where Value: AnyObject {
@@ -67,6 +68,23 @@ extension State {
     public init(wrappedValue initialValue: Value) where Value: ObservableObject {
         implementation = StateImpl(initialStorage: Storage(initialValue))
     }
+    
+    // NB: Needed to prevent deprecation warnings for `Observable` types, which
+    // *are* supported
+    @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
+    public init(wrappedValue initialValue: Value) where Value: Observable & AnyObject {
+        implementation = StateImpl(initialStorage: Storage(initialValue))
+    }
+    
+#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
+    // NB: Needed to prevent deprecation warnings for `Perceptible` types, which
+    // *are* supported
+    // Causes a compilation error on Windows and Linux where Perceptible just
+    // uses Observable under the hood.
+    public init(wrappedValue initialValue: Value) where Value: Perceptible & AnyObject {
+        implementation = StateImpl(initialStorage: Storage(initialValue))
+    }
+#endif
 }
 
 extension State: SnapshottableProperty {

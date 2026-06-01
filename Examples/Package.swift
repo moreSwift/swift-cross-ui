@@ -35,6 +35,10 @@ let package = Package(
             url: "https://github.com/stackotter/swift-miniaudio",
             .upToNextMinor(from: "0.1.2")
         ),
+        .package(
+            url: "https://github.com/pointfreeco/swift-perception.git",
+            from: "2.0.10"
+        ),
     ] + hotReloadingDependencies,
     targets: [
         .executableTarget(
@@ -120,6 +124,11 @@ let package = Package(
         .executableTarget(
             name: "TapGesturesExample",
             dependencies: exampleDependencies
+        ),
+        .executableTarget(
+            name: "ObservableExample",
+            dependencies: exampleDependencies
+                + [.product(name: "Perception", package: "swift-perception")]
         ),
     ]
 )

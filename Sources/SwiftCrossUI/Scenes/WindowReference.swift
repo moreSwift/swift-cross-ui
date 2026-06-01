@@ -1,6 +1,9 @@
+import Foundation
+import PerceptionCore
+
 /// Holds the view graph and window handle for a single window.
 @MainActor
-final class WindowReference<SceneType: WindowingScene> {
+final class WindowReference<SceneType: WindowingScene>: ViewModelObserver {
     /// The scene.
     private var scene: SceneType
     /// The view graph of the window's root view.
@@ -17,6 +20,9 @@ final class WindowReference<SceneType: WindowingScene> {
     private let containerWidget: AnyWidget
     /// The window's preferred color scheme, cached from the last update.
     private var preferredColorScheme: ColorScheme?
+    
+    /// Used by the `ViewModelObserver` protocol to prevent duplicate view updates.
+    var currentViewModelObservationID: UUID?
 
     /// - Parameters:
     ///   - closeHandler: The action to perform when the window is closed. Should
@@ -184,9 +190,10 @@ final class WindowReference<SceneType: WindowingScene> {
         if let preferredColorScheme {
             environment.colorScheme = preferredColorScheme
         }
-
+        
+        let content = self.observe(in: backend) { newScene?.content() }
         let probingResult = viewGraph.computeLayout(
-            with: newScene?.content(),
+            with: content,
             proposedSize: .zero,
             environment: environment
                 .with(\.allowLayoutCaching, true)
@@ -301,6 +308,10 @@ final class WindowReference<SceneType: WindowingScene> {
             backend.show(window: window)
             isFirstUpdate = false
         }
+    }
+    
+    func viewModelDidChange<Backend: BaseAppBackend>(backend: Backend) {
+        self.update(self.scene, backend: backend, environment: self.parentEnvironment)
     }
 
     func activate<Backend: BaseAppBackend>(backend: Backend) {
