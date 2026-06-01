@@ -41,7 +41,7 @@ struct ControlsApp: App {
     @State var date = Date()
     @State var datePickerStyle: DatePickerStyle? = .automatic
     @State var menuToggleState = false
-    @State var progressViewSize: Int = 10
+    @State var progressViewSize: Double = 10
     @State var isProgressViewResizable = true
     @State var pickerStyle: BuiltInPickerStyle? = .automatic
 
