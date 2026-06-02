@@ -2,3 +2,6 @@ format_version = 2
 
 [targets.AndroidBackend]
 android.kotlin_directory = "Kotlin"
+
+[targets.AndroidComposeBackend]
+android.kotlin_directory = "Kotlin"

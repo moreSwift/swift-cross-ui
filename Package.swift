@@ -79,6 +79,10 @@ if let backend = env["SCUI_DEFAULT_BACKEND"] {
                 name: "AndroidBackend",
                 condition: .when(platforms: [.android])
             ),
+            .target(
+                name: "AndroidComposeBackend",
+                condition: .when(platforms: [.android])
+            ),
         ]
     }
 }
@@ -399,13 +403,37 @@ if androidBackendSupported {
         ),
     ]
 
-    package.products.append(
+    package.products.append(contentsOf: [
         .library(name: "AndroidBackend", type: libraryType, targets: ["AndroidBackend"]),
-    )
+        .library(name: "AndroidComposeBackend", type: libraryType, targets: ["AndroidComposeBackend"])
+    ])
 
     package.targets += [
         .target(
             name: "AndroidBackend",
+            dependencies: [
+                "SwiftCrossUI",
+                "AndroidBackendShim",
+
+                // These two dependencies have to be marked as only included on Android
+                // (even though this target is only used on Android) because SwiftPM requires
+                // every library product to only include dependencies matching the package's
+                // minimum platform requirements (even when not compiling said product)
+                .product(
+                    name: "AndroidKit",
+                    package: "AndroidKit",
+                    condition: .when(platforms: [.android])
+                ),
+                .product(
+                    name: "SwiftJava",
+                    package: "swift-java",
+                    condition: .when(platforms: [.android])
+                ),
+            ],
+            exclude: ["Kotlin"]
+        ),
+        .target(
+            name: "AndroidComposeBackend",
             dependencies: [
                 "SwiftCrossUI",
                 "AndroidBackendShim",
