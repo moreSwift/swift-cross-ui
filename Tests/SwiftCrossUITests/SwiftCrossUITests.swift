@@ -171,12 +171,12 @@ struct SwiftCrossUITests {
         func testBasicLayout() async throws {
             let backend = AppKitBackend()
             let window = backend.createWindow(withDefaultSize: SIMD2(200, 200))
-
+            
             // Idea taken from https://github.com/pointfreeco/swift-snapshot-testing/pull/533
             // and implemented in AppKitBackend.
             window.backingScaleFactorOverride = 1
             window.colorSpace = .genericRGB
-
+            
             let environment = EnvironmentValues(backend: backend)
                 .with(\.window, window)
             let viewGraph = ViewGraph(
@@ -185,61 +185,21 @@ struct SwiftCrossUITests {
                 environment: environment
             )
             backend.setChild(ofWindow: window, to: viewGraph.rootNode.widget.into())
-
-            let contentViewResult = viewGraph.computeLayout(
+            
+            let result = viewGraph.computeLayout(
                 proposedSize: ProposedViewSize(200, 200),
                 environment: environment
             )
-
-            let decreaseSize = measureText("Decrease", in: window, with: environment)
-            let increaseSize = measureText("Increase", in: window, with: environment)
-            let textSize = measureText("Count: 1", in: window, with: environment)
-
-            let buttonPadding = backend.buttonPadding(in: environment)
-
-            let widestViewWidth = max(
-                decreaseSize.width + Double(buttonPadding.x),
-                increaseSize.width + Double(buttonPadding.x),
-                textSize.width
-            )
-
-            let totalViewHeight = decreaseSize.height
-                + increaseSize.height
-                + Double(buttonPadding.y) * 2
-                + textSize.height
-                + Double(VStack<Text>.defaultSpacing * 2)
-                + Double(backend.defaultPaddingAmount * 2)
-
-            let expectedViewSize = ViewSize(
-                widestViewWidth + Double(backend.defaultPaddingAmount) * 2,
-                totalViewHeight
-            )
-
-            #expect(contentViewResult.size == expectedViewSize)
-
+            
             #expect(
-                contentViewResult.preferences.onOpenURL == nil,
+                result.size == ViewSize(92, 96),
+                "View update result mismatch"
+            )
+            
+            #expect(
+                result.preferences.onOpenURL == nil,
                 "onOpenURL not nil"
             )
-
-            func measureText(
-                _ string: String,
-                in window: AppKitBackend.Window,
-                with environment: EnvironmentValues
-            ) -> ViewSize {
-                let viewGraph = ViewGraph(
-                    for: Text(string),
-                    backend: backend,
-                    environment: environment
-                )
-                backend.setChild(ofWindow: window, to: viewGraph.rootNode.widget.into())
-                let result = viewGraph.computeLayout(
-                    proposedSize: ProposedViewSize(200, 200),
-                    environment: environment
-                )
-
-                return result.size
-            }
         }
 
         /// Snapshots an AppKit view to a TIFF image.

@@ -19,6 +19,7 @@ extension AppKitBackend {
         )
         button.appearance = environment.colorScheme.nsAppearance
         button.isEnabled = environment.isEnabled
+        
         button.onAction = { _ in
             action()
         }
@@ -29,7 +30,7 @@ extension AppKitBackend {
     ) -> NSView {
         let button = NSCustomButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-
+        
         button.addSubview(child)
         child.translatesAutoresizingMaskIntoConstraints = false
         button.setupConstraints()
@@ -51,16 +52,36 @@ extension AppKitBackend {
 
     public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
         switch environment.resolvedButtonStyle.kind {
-            case .bordered: SIMD2<Int>(
-                    Int(NSCustomButton.horizontalPadding * 2),
-                    Int(NSCustomButton.verticalPadding * 2)
-                )
+            case .bordered: measureBorderedButtonPadding()
             case .plain, .borderless: SIMD2<Int>(0, 0)
         }
     }
 
     public func defaultButtonStyle() -> ButtonStyle {
         .bordered
+    }
+    
+    func measureBorderedButtonPadding() -> SIMD2<Int> {
+        let dummyButton = NSButton()
+        dummyButton.title = "Test"
+        dummyButton.controlSize = .regular
+        dummyButton.sizeToFit()
+        
+        let frame = dummyButton.frame
+        
+        // 24 and 8 are the current results on macOS 26
+        guard let cell = dummyButton.cell else { return SIMD2(24, 8) }
+        let titleRect = cell.titleRect(forBounds: dummyButton.bounds)
+        
+        let leftPadding = max(0, titleRect.origin.x)
+        let rightPadding = max(0, frame.size.width - (titleRect.origin.x + titleRect.size.width))
+        
+        // Alignment rect is used to bypass coordinate flipping.
+        let alignmentRect = dummyButton.alignmentRect(forFrame: frame)
+        let topPadding = max(0, titleRect.origin.y - alignmentRect.origin.y)
+        let bottomPadding = max(0, alignmentRect.size.height - (titleRect.origin.y + titleRect.size.height))
+        
+        return SIMD2(Int(leftPadding + rightPadding), Int(topPadding + bottomPadding))
     }
 }
 
