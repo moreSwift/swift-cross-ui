@@ -59,14 +59,16 @@ struct ControlsApp: App {
                             Text("Button (persisted)")
                             if #available(iOS 15.0, tvOS 15.0, macCatalyst 15.0, *) {
                                 Text("Default ButtonStyle: \(defaultButtonStyle)")
-                                Picker(
-                                    of: [
-                                        ButtonStyle.bordered,
-                                        ButtonStyle.plain,
-                                        ButtonStyle.borderless
-                                    ],
-                                    selection: $buttonStyle
-                                )
+                                #if !canImport(Gtk3Backend)
+                                    Picker(
+                                        of: [
+                                            ButtonStyle.bordered,
+                                            ButtonStyle.plain,
+                                            ButtonStyle.borderless
+                                        ],
+                                        selection: $buttonStyle
+                                    )
+                                #endif
                                 VStack(spacing: 0) {
                                     Button {
                                         count += 1
@@ -81,8 +83,6 @@ struct ControlsApp: App {
                                             .foregroundColor(.adaptive(light: .black, dark: .white))
                                     }
                                     .buttonStyle(buttonStyle)
-                                    Button("Click me!") { count += 1 }
-                                        .buttonStyle(buttonStyle)
                                 }
                             } else {
                                 Button("Click me!") {
