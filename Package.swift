@@ -400,7 +400,7 @@ if androidBackendSupported {
     ]
 
     package.products.append(
-        .library(name: "AndroidBackend", type: libraryType, targets: ["AndroidBackend"]),
+        .library(name: "AndroidBackend", type: libraryType, targets: ["AndroidBackend"])
     )
 
     package.targets += [
