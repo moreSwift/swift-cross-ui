@@ -30,10 +30,9 @@ extension AppKitBackend {
     ) -> NSView {
         let button = NSCustomButton()
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.setupButton()
         
-        button.addSubview(child)
-        child.translatesAutoresizingMaskIntoConstraints = false
-        button.setupConstraints()
+        button.addAndSetupLabel(child)
 
         return button
     }
@@ -90,7 +89,7 @@ public final class NSCustomButton: NSView {
     static let verticalPadding: CGFloat = 4.0
 
     fileprivate var action: (() -> Void)?
-    fileprivate let cell = NSButtonCell()
+    fileprivate let button = NSButtonBackground()
     fileprivate var buttonStyle: ButtonStyle.Kind = .bordered {
         didSet { updateButtonAppearance() }
     }
@@ -118,27 +117,6 @@ public final class NSCustomButton: NSView {
         }
     }
 
-    init() {
-        cell.title = ""
-        cell.isBordered = true
-        cell.bezelStyle = .flexiblePush
-        super.init()
-    }
-
-    public required init?(coder: NSCoder) {
-        cell.title = ""
-        cell.isBordered = true
-        cell.bezelStyle = .flexiblePush
-        super.init(coder: coder)
-    }
-
-    override public init(frame frameRect: NSRect) {
-        cell.title = ""
-        cell.isBordered = true
-        cell.bezelStyle = .flexiblePush
-        super.init(frame: frameRect)
-    }
-
     override public func accessibilityRole() -> NSAccessibility.Role? {
         .button
     }
@@ -160,10 +138,6 @@ public final class NSCustomButton: NSView {
     }
 
     override public func draw(_ dirtyRect: NSRect) {
-        if buttonStyle.shouldRenderNativeBackground {
-            cell.drawBezel(withFrame: self.bounds, in: self)
-        }
-
         super.draw(dirtyRect)
     }
 
@@ -260,10 +234,27 @@ public final class NSCustomButton: NSView {
         noteFocusRingMaskChanged()
         self.needsDisplay = true
     }
+    
+    fileprivate func setupButton() {
+        button.title = ""
+        button.isBordered = true
+        button.bezelStyle = .flexiblePush
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        addSubview(button)
+        
+        NSLayoutConstraint.activate([
+            button.leadingAnchor.constraint(equalTo: leadingAnchor),
+            button.trailingAnchor.constraint(equalTo: trailingAnchor),
+            button.topAnchor.constraint(equalTo: topAnchor),
+            button.bottomAnchor.constraint(equalTo: bottomAnchor),
+        ])
+    }
 
-    fileprivate func setupConstraints() {
-        guard let child = subviews.first else { return }
-
+    fileprivate func addAndSetupLabel(_ child: NSView) {
+        addSubview(child)
+        child.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             child.centerXAnchor.constraint(equalTo: centerXAnchor),
             child.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -271,12 +262,22 @@ public final class NSCustomButton: NSView {
     }
 }
 
+private final class NSButtonBackground: NSButton {
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        return nil
+    }
+    
+    override var alignmentRectInsets: NSEdgeInsets { .init(top: 0, left: 0, bottom: 0, right: 0)}
+    
+    override var canBecomeKeyView: Bool { false }
+}
+
 extension ButtonStyle.Kind {
     fileprivate func applyModifications(_ button: NSCustomButton) {
         switch self {
             case .bordered:
-                button.cell.isEnabled = button.isEnabled
-                button.cell.isHighlighted = button.isHighlighted
+                button.button.isEnabled = button.isEnabled
+                button.button.isHighlighted = button.isHighlighted
             case .plain, .borderless:
                 button.alphaValue = button.isEnabled
                     ? button.isHighlighted ? 0.80: 1.0
@@ -302,7 +303,7 @@ extension ButtonStyle.Kind {
     fileprivate func drawFocusRingMask(on button: NSCustomButton) {
         switch self {
             case .bordered:
-                button.cell.drawFocusRingMask(withFrame: button.bounds, in: button)
+                button.button.drawFocusRingMask()
             case .plain, .borderless:
                 let maskPath = NSBezierPath(rect: button.bounds)
                 maskPath.fill()
