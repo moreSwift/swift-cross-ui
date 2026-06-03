@@ -66,21 +66,16 @@ extension AppKitBackend {
         dummyButton.controlSize = .regular
         dummyButton.sizeToFit()
         
-        let frame = dummyButton.frame
+        let field = NSTextField(wrappingLabelWithString: "")
+        field.stringValue = "Test"
+        field.font = dummyButton.font
+        let textSize = field.intrinsicContentSize
         
-        // 24 and 8 are the current results on macOS 26
-        guard let cell = dummyButton.cell else { return SIMD2(24, 8) }
-        let titleRect = cell.titleRect(forBounds: dummyButton.bounds)
+        let buttonSize = dummyButton.intrinsicContentSize
         
-        let leftPadding = max(0, titleRect.origin.x)
-        let rightPadding = max(0, frame.size.width - (titleRect.origin.x + titleRect.size.width))
-        
-        // Alignment rect is used to bypass coordinate flipping.
-        let alignmentRect = dummyButton.alignmentRect(forFrame: frame)
-        let topPadding = max(0, titleRect.origin.y - alignmentRect.origin.y)
-        let bottomPadding = max(0, alignmentRect.size.height - (titleRect.origin.y + titleRect.size.height))
-        
-        return SIMD2(Int(leftPadding + rightPadding), Int(topPadding + bottomPadding))
+        print("button: \(buttonSize)")
+        print(SIMD2(Int(buttonSize.width - textSize.width), Int(buttonSize.height - textSize.height)))
+        return SIMD2(Int(buttonSize.width - textSize.width), Int(buttonSize.height - textSize.height))
     }
 }
 
@@ -268,6 +263,16 @@ private final class NSButtonBackground: NSButton {
     }
     
     override var canBecomeKeyView: Bool { false }
+
+    override func drawFocusRingMask() {
+        guard let cell else { return }
+        var bounds = bounds
+        if #unavailable(macOS 26) {
+            bounds.origin.x -= 3
+            bounds.origin.y -= 3
+        }
+        cell.drawFocusRingMask(withFrame: bounds, in: self)
+    }
 }
 
 extension ButtonStyle.Kind {
