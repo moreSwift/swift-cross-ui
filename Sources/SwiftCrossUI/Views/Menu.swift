@@ -33,7 +33,7 @@ public struct Menu {
     static func resolve(item: MenuItem) -> ResolvedMenu.Item {
         switch item {
             case .button(let button):
-                .button(button.stringLabel!, button.action)
+                .button(button.body.view0.view0.string, button.action)
             case .text(let text):
                 .button(text.string, nil)
             case .toggle(let toggle):

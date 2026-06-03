@@ -72,13 +72,13 @@ public final class DummyBackend:
         }
     }
 
-    public class Button: Widget {
+    public class SimpleButton: Widget {
         public var label = ""
         public var font: Font.Resolved?
         public var action: (() -> Void)?
     }
 
-    public class CustomButton: Widget {
+    public class Button: Widget {
         public var label: Widget?
         public var action: (() -> Void)?
         public var buttonStyle: ButtonStyle = .bordered
@@ -601,7 +601,7 @@ public final class DummyBackend:
     }
 
     public func createSimpleButton() -> Widget {
-        Button()
+        SimpleButton()
     }
 
     public func updateSimpleButton(
@@ -610,13 +610,13 @@ public final class DummyBackend:
         environment: EnvironmentValues,
         action: @escaping () -> Void
     ) {
-        let button = button as! Button
+        let button = button as! SimpleButton
         button.label = label
         button.action = action
     }
 
     public func createButton(wrapping widget: Widget) -> Widget {
-        let button = CustomButton()
+        let button = Button()
         button.label = widget
 
         return button
@@ -627,7 +627,7 @@ public final class DummyBackend:
         environment: EnvironmentValues,
         action: @escaping () -> Void
     ) {
-        let button = button as! CustomButton
+        let button = button as! Button
         button.buttonStyle = environment.resolvedButtonStyle
         button.action = action
     }

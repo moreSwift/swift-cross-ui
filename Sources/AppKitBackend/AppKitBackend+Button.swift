@@ -19,7 +19,7 @@ extension AppKitBackend {
         )
         button.appearance = environment.colorScheme.nsAppearance
         button.isEnabled = environment.isEnabled
-        
+
         button.onAction = { _ in
             action()
         }
@@ -31,7 +31,7 @@ extension AppKitBackend {
         let button = NSCustomButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setupButton()
-        
+
         button.addAndSetupLabel(child)
 
         return button
@@ -59,21 +59,25 @@ extension AppKitBackend {
     public func defaultButtonStyle() -> ButtonStyle {
         .bordered
     }
-    
+
     func measureBorderedButtonPadding() -> SIMD2<Int> {
+        let testString = "Test"
         let dummyButton = NSButton()
-        dummyButton.title = "Test"
+        dummyButton.title = testString
         dummyButton.controlSize = .regular
         dummyButton.sizeToFit()
-        
+
         let field = NSTextField(wrappingLabelWithString: "")
-        field.stringValue = "Test"
+        field.stringValue = testString
         field.font = dummyButton.font
         let textSize = field.intrinsicContentSize
-        
+
         let buttonSize = dummyButton.intrinsicContentSize
-        
-        return SIMD2(Int(buttonSize.width - textSize.width), Int(buttonSize.height - textSize.height))
+
+        return SIMD2(
+            Int(buttonSize.width - textSize.width),
+            Int(buttonSize.height - textSize.height)
+        )
     }
 }
 
@@ -227,16 +231,16 @@ public final class NSCustomButton: NSView {
         noteFocusRingMaskChanged()
         self.needsDisplay = true
     }
-    
+
     fileprivate func setupButton() {
         button.title = ""
         button.isBordered = true
         button.bezelStyle = .flexiblePush
-        
+
         button.translatesAutoresizingMaskIntoConstraints = false
-        
+
         addSubview(button)
-        
+
         NSLayoutConstraint.activate([
             button.leadingAnchor.constraint(equalTo: leadingAnchor),
             button.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -261,7 +265,7 @@ private final class NSButtonBackground: NSButton {
     override func hitTest(_ point: NSPoint) -> NSView? {
         return nil
     }
-    
+
     override var canBecomeKeyView: Bool { false }
 
     override func drawFocusRingMask() {

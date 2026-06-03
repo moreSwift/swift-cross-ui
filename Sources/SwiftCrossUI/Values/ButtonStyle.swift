@@ -1,7 +1,6 @@
 /// A type that applies standard interaction behavior and a custom appearance to all buttons within a view hierarchy.
 public struct ButtonStyle: Hashable, Sendable {
-    // ALWAYS KEEP ORDER CONSISTENT with CustomButton.ButtonStyle in Kotlin.
-    package enum Kind: Int16 {
+    package enum Kind {
         case bordered
         case plain
         case borderless

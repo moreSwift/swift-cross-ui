@@ -17,7 +17,7 @@ extension AndroidBackend {
         let button = button.as(CustomButton.self)!
         button.set(
             action: SwiftAction(environment: Self.env, action: action),
-            buttonStyle: environment.resolvedButtonStyle.kind.rawValue,
+            buttonStyle: environment.resolvedButtonStyle.kotlinRepresentation,
             isEnabled: environment.isEnabled,
             isDarkMode: environment.colorScheme == .dark
         )
@@ -26,7 +26,8 @@ extension AndroidBackend {
     public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
         let buttonClass = try! JavaClass<CustomButton>()
         return switch environment.resolvedButtonStyle.kind {
-            case .bordered: SIMD2(
+            case .bordered:
+                SIMD2(
                     Int(buttonClass.horizontalPadding) * 2,
                     Int(buttonClass.verticalPadding) * 2
                 )
@@ -36,5 +37,16 @@ extension AndroidBackend {
 
     public func defaultButtonStyle() -> ButtonStyle {
         .bordered
+    }
+}
+
+extension ButtonStyle {
+    var kotlinRepresentation: Int16 {
+        let buttonClass = try! JavaClass<CustomButton>()
+        return switch self.kind {
+            case .bordered: buttonClass.borderedButtonStyle
+            case .plain: buttonClass.plainButtonStyle
+            case .borderless: buttonClass.borderlessButtonStyle
+        }
     }
 }

@@ -64,7 +64,7 @@ public enum ToolbarBuilder {
 
 @available(tvOS, unavailable)
 @available(visionOS, unavailable)
-extension Button: ToolbarItem where Label == Text {
+extension Button: ToolbarItem where Label == TupleView1<Text> {
     public final class ItemType: UIBarButtonItem {
         var callback: @MainActor @Sendable () -> Void
 
@@ -89,12 +89,12 @@ extension Button: ToolbarItem where Label == Text {
     }
 
     public func createBarButtonItem(in environment: EnvironmentValues) -> ItemType {
-        ItemType(title: stringLabel ?? "", callback: action)
+        ItemType(title: body.view0.view0.string, callback: action)
     }
 
     public func updateBarButtonItem(_ item: inout ItemType, in environment: EnvironmentValues) {
         item.callback = action
-        item.title = stringLabel ?? ""
+        item.title = body.view0.view0.string
     }
 }
 

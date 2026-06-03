@@ -46,7 +46,7 @@
 /// The new layout system behaviour is in line with SwiftUI's layout behaviour.
 public struct Text: Sendable {
     /// The string to be shown in the text view.
-    var string: String
+    public private(set) var string: String
 
     /// Creates a new text view that displays a string.
     ///

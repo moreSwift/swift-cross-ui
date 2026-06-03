@@ -306,7 +306,7 @@ extension UIKitBackend {
         let buttonWidget = button as! ButtonWidget
 
         setSimpleButtonTitle(buttonWidget, label, environment: environment)
-        
+
         buttonWidget.onTap = action
         buttonWidget.child.isEnabled = environment.isEnabled
     }

@@ -5,7 +5,7 @@ extension UIKitBackend {
     public func createButton(wrapping widget: Widget) -> Widget {
         let widget = widget as! UIView
         let button = UICustomButton(label: widget)
-        
+
         button.translatesAutoresizingMaskIntoConstraints = false
         widget.isUserInteractionEnabled = false
         button.isUserInteractionEnabled = true
@@ -21,7 +21,7 @@ extension UIKitBackend {
         let button = (button as! CustomButtonWidget).child
         button.onTap = action
         button.isEnabled = environment.isEnabled
-        
+
         if #available(iOS 15.0, tvOS 15.0, macCatalyst 15.0, *) {
             button.configuration = switch environment.resolvedButtonStyle.kind {
                 case .bordered: .bordered()
@@ -74,7 +74,7 @@ final class CustomButtonWidget: WrapperWidget<UICustomButton> {
 
 final class UICustomButton: UIButton {
     var label: UIView
-    
+
     static var horizontalInsets: CGFloat {
         guard #available(iOS 15.0, tvOS 15.0, macCatalyst 15.0, *) else {
             return 24
@@ -82,7 +82,7 @@ final class UICustomButton: UIButton {
         let insets = UIButton.Configuration.bordered().contentInsets
         return insets.leading + insets.trailing
     }
-    
+
     static var verticalInsets: CGFloat {
         guard #available(iOS 15.0, tvOS 15.0, macCatalyst 15.0, *) else {
             return 14
@@ -90,11 +90,11 @@ final class UICustomButton: UIButton {
         let insets = UIButton.Configuration.bordered().contentInsets
         return insets.bottom + insets.top
     }
-    
+
     public var onTap: (() -> Void)?
-    
+
     public var buttonStyle: ButtonStyle.Kind = .borderless
-    
+
     override public var isHighlighted: Bool {
         didSet {
             UIView.animate(
@@ -109,13 +109,13 @@ final class UICustomButton: UIButton {
             )
         }
     }
-    
+
     override public var isEnabled: Bool {
         didSet {
             self.buttonStyle.applyModifications(self)
         }
     }
-    
+
     init(label: UIView) {
         self.label = label
         super.init(frame: .zero)
@@ -126,22 +126,22 @@ final class UICustomButton: UIButton {
             addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         #endif
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         // Ensure custom label stays above system overlays (like highlighting)
         bringSubviewToFront(label)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("NSCoder input is not supported on UICustomButton")
     }
-    
+
     @objc
     func buttonTapped() {
         onTap?()
     }
-    
+
     func addAndCenterChild(_ child: UIView) {
         addSubview(child)
         child.translatesAutoresizingMaskIntoConstraints = false
@@ -158,7 +158,7 @@ extension ButtonStyle.Kind {
         guard #available(iOS 15.0, tvOS 15.0, macCatalyst 15.0, *) else {
             return
         }
-        
+
         switch self {
             case .bordered:
                 button.configuration = .bordered()
@@ -167,12 +167,12 @@ extension ButtonStyle.Kind {
                 button.configuration = .plain()
         }
     }
-    
+
     fileprivate func applyModifications(_ button: UICustomButton) {
         guard #available(iOS 15.0, tvOS 15.0, macCatalyst 15.0, *) else {
             button.label.alpha = button.isEnabled
-            ? button.isHighlighted ? 0.8: 1.0
-            : 0.5
+                ? button.isHighlighted ? 0.8: 1.0
+                : 0.5
             return
         }
         switch self {
@@ -180,8 +180,8 @@ extension ButtonStyle.Kind {
                 button.label.alpha = button.isEnabled ? 1.0: 0.5
             case .plain, .borderless:
                 button.label.alpha = button.isEnabled
-                ? button.isHighlighted ? 0.8: 1.0
-                : 0.5
+                    ? button.isHighlighted ? 0.8: 1.0
+                    : 0.5
                 // Why 50% disabled opacity was chosen:
                 // A disabled SwiftUI .plain button looks visually the same as
                 // an enabled one at 0.5 opacity.

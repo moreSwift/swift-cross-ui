@@ -171,12 +171,12 @@ struct SwiftCrossUITests {
         func testBasicLayout() async throws {
             let backend = AppKitBackend()
             let window = backend.createWindow(withDefaultSize: SIMD2(200, 200))
-            
+
             // Idea taken from https://github.com/pointfreeco/swift-snapshot-testing/pull/533
             // and implemented in AppKitBackend.
             window.backingScaleFactorOverride = 1
             window.colorSpace = .genericRGB
-            
+
             let environment = EnvironmentValues(backend: backend)
                 .with(\.window, window)
             let viewGraph = ViewGraph(
@@ -185,17 +185,17 @@ struct SwiftCrossUITests {
                 environment: environment
             )
             backend.setChild(ofWindow: window, to: viewGraph.rootNode.widget.into())
-            
+
             let result = viewGraph.computeLayout(
                 proposedSize: ProposedViewSize(200, 200),
                 environment: environment
             )
-            
+
             #expect(
                 result.size == ViewSize(92, 96),
                 "View update result mismatch"
             )
-            
+
             #expect(
                 result.preferences.onOpenURL == nil,
                 "onOpenURL not nil"

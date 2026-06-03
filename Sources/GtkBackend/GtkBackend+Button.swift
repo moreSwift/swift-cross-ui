@@ -27,8 +27,8 @@ extension GtkBackend {
         let button = GtkCustomButton()
         gtk_button_set_child(button.widgetPointer.cast(), widget.widgetPointer)
 
-        gtk_widget_set_halign(widget.widgetPointer, GTK_ALIGN_CENTER)
-        gtk_widget_set_valign(widget.widgetPointer, GTK_ALIGN_CENTER)
+        button.horizontalAlignment = .center
+        button.verticalAlignment = .center
 
         return button
     }
@@ -46,7 +46,8 @@ extension GtkBackend {
 
     public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
         switch environment.resolvedButtonStyle.kind {
-            case .bordered: SIMD2<Int>(
+            case .bordered:
+                SIMD2<Int>(
                     Int(GtkCustomButton.horizontalPadding * 2),
                     Int(GtkCustomButton.verticalPadding * 2)
                 )
@@ -65,10 +66,10 @@ fileprivate final class GtkCustomButton: Gtk.Button {
 
     fileprivate var buttonStyle: ButtonStyle.Kind = .bordered {
         willSet {
-            buttonStyle.removeClass(self)
+            buttonStyle.removeClass(from: self)
         }
         didSet {
-            buttonStyle.setClass(self)
+            buttonStyle.setClass(on: self)
         }
     }
 
@@ -116,13 +117,13 @@ fileprivate final class GtkCustomButton: Gtk.Button {
 }
 
 extension ButtonStyle.Kind {
-    fileprivate func setClass(_ button: GtkCustomButton) {
+    fileprivate func setClass(on button: GtkCustomButton) {
         if let cssClass {
             gtk_widget_add_css_class(button.widgetPointer, cssClass)
         }
     }
 
-    fileprivate func removeClass(_ button: GtkCustomButton) {
+    fileprivate func removeClass(from button: GtkCustomButton) {
         if let cssClass {
             gtk_widget_remove_css_class(button.widgetPointer, cssClass)
         }

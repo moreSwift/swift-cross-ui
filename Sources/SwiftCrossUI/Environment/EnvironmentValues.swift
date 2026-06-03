@@ -454,11 +454,15 @@ extension EnvironmentValues {
         backend.defaultButtonStyle()
     }
 
-    /// The resolved ``ButtonStyle`` for backends to use.
-    /// Either the set buttonStyle in environment or the ``defaultButtonStyle`` if nil.
+    /// The resolved ``ButtonStyle``. Either ``buttonStyle``, or ``defaultButtonStyle`` if nil.
     @MainActor
     public var resolvedButtonStyle: ButtonStyle {
         buttonStyle ?? defaultButtonStyle
+    }
+
+    @MainActor
+    public var buttonPadding: SIMD2<Int> {
+        backend.buttonPadding(in: self)
     }
 }
 

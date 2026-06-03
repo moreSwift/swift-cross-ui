@@ -34,7 +34,7 @@ extension BackendFeatures {
     /// These are used by ``Button``.
     @MainActor
     public protocol ViewLabelButtons: Core {
-        /// Creates a button supporting ``View`` as label with an action triggered on click/tap.
+        /// Creates a button that uses `widget` as its label with an action triggered on click/tap.
         ///
         /// Predominantly used by ``Button``.
         ///
@@ -60,15 +60,15 @@ extension BackendFeatures {
         /// Buttons are set to label size + padding by SwiftCrossUI.
         /// Backends may choose different amounts of padding for different button styles.
         ///
+        /// A padding of (0, 0) is recommended for all styles without a system defined background.
+        ///
         /// - Parameters:
         ///   - environment: The current environment.
         ///
         /// - Returns: A vector containing the **total** spacing horizontally and vertically.
-        ///
-        /// A padding of (0, 0) is recommended for all styles without a system defined background.
         func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int>
 
-        /// The default style of a button the backend expects, that's used when no ``ButtonStyle`` is set.
+        /// The default button style that the backend desires.
         ///
         /// - Returns: The default ``ButtonStyle``.
         func defaultButtonStyle() -> ButtonStyle

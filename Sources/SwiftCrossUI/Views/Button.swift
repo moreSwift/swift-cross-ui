@@ -5,8 +5,6 @@ public struct Button<Label: View> {
     public var label: () -> Label
     /// The action to be performed when the button is clicked.
     package var action: @MainActor @Sendable () -> Void
-    
-    public var stringLabel: String?
 
     /// Creates a button that displays a text label.
     ///
@@ -19,7 +17,6 @@ public struct Button<Label: View> {
     ) where Label == TupleView1<Text> {
         self.label = { TupleView1(Text(label)) }
         self.action = action
-        self.stringLabel = label
     }
 
     /// Creates a button that displays a custom view as label.
@@ -35,6 +32,32 @@ public struct Button<Label: View> {
         self.label = label
         self.action = action
     }
+
+    private struct ConstrainedButtonLabel<Label: View>: View {
+        @Environment(\.buttonPadding.x) var horizontalPadding
+
+        var content: Label
+        var width: Int?
+
+        var body: some View {
+            content.ifLet(width) { view, width in
+                view.frame(width: width - horizontalPadding)
+            }
+        }
+    }
+
+    @MainActor
+    @available(
+        *,
+        deprecated,
+        message: "Use @ViewBuilder init of Button instead and apply a frame modifier to the label."
+    )
+    public func _buttonWidth(_ width: Int?) -> Button<some View> {
+        return Button<TupleView1<ConstrainedButtonLabel<TupleView1<Label>>>>(
+            action: action,
+            label: { ConstrainedButtonLabel(content: body, width: width) }
+        )
+    }
 }
 
 @MainActor
@@ -42,7 +65,7 @@ extension Button: TypeSafeView {
     public var body: TupleView1<Label> {
         label()
     }
-    
+
     typealias Children = TupleViewChildren1<Label>
 
     func children<Backend: BaseAppBackend>(
@@ -70,48 +93,6 @@ extension Button: TypeSafeView {
         var childEnvironment = environment
 
         let buttonStyle = environment.resolvedButtonStyle.kind
-
-        if !environment.isEnabled, buttonStyle == .bordered {
-            if backend.deviceClass == .desktop || backend.deviceClass == .tv {
-                childEnvironment = childEnvironment.with(
-                    \.foregroundColor,
-                    environment.foregroundColor ?? .gray
-                        .opacity(0.5) // SwiftUI is closer to secondary.
-                )
-            } else if backend.deviceClass == .phone || backend.deviceClass == .tablet {
-                childEnvironment = childEnvironment.with(
-                    \.foregroundColor,
-                    environment.foregroundColor?.opacity(0.8) ?? .blue.opacity(0.8)
-                )
-            } else if backend.deviceClass == .tv {
-                childEnvironment = childEnvironment.with(
-                    \.foregroundColor,
-                    environment.foregroundColor ?? .white.opacity(0.5)
-                )
-            }
-        }
-        // The disabled opacities and defaults are based on discoveries in SwiftUI.
-        // iOS appears to dimm even foregroundColors in the environment.
-
-        // Set the default foregroundColor for the label unless overridden.
-        // Uses the same colors as SwiftUI.
-        if
-            buttonStyle == .borderless,
-            backend.deviceClass == .desktop
-        {
-            childEnvironment = childEnvironment.with(
-                \.foregroundColor,
-                environment.foregroundColor ?? .gray
-            )
-        } else if
-            backend.deviceClass == .phone || backend.deviceClass == .tablet,
-            buttonStyle == .borderless || buttonStyle == .bordered
-        {
-            childEnvironment = childEnvironment.with(
-                \.foregroundColor,
-                environment.foregroundColor ?? .blue // TODO: Replace with .accent
-            )
-        }
 
         let childrenResult = children.child0.computeLayout(
             with: body.view0,
@@ -144,9 +125,7 @@ extension Button: TypeSafeView {
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        if Label.self != Text.self {
-            children.child0.commit()
-        }
+        children.child0.commit()
         backend.setSize(of: widget, to: layout.size.vector)
     }
 }

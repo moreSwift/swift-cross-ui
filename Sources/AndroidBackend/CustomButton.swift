@@ -22,4 +22,13 @@ extension JavaClass where JavaClass_T == CustomButton {
 
     @JavaStaticField(isFinal: true)
     var verticalPadding: Int32
+
+    @JavaStaticField(isFinal: true)
+    var borderedButtonStyle: Int16
+
+    @JavaStaticField(isFinal: true)
+    var plainButtonStyle: Int16
+
+    @JavaStaticField(isFinal: true)
+    var borderlessButtonStyle: Int16
 }

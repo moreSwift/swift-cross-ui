@@ -23,6 +23,10 @@ class CustomButton(activity: Activity) : FrameLayout(activity) {
         const val horizontalPadding = 11
         const val verticalPadding = 5
 
+        const val borderedButtonStyle = ButtonStyle.BORDERED
+        const val plainButtonStyle = ButtonStyle.PLAIN
+        const val borderlessButtonStyle = ButtonStyle.BORDERLESS
+
         private val BORDERED_ATTR = R.attr.selectableItemBackground
         private val BORDERLESS_ATTR = R.attr.selectableItemBackgroundBorderless
 

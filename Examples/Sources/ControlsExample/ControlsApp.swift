@@ -72,15 +72,15 @@ struct ControlsApp: App {
                                         count += 1
                                     } label: {
                                         Text("Click me!")
-                                        .padding(.horizontal, 11)
-                                         .padding(.vertical, 4)
-                                         .background {
-                                         Color.purple.opacity(0.5)
-                                         .cornerRadius(5)
-                                         }
-                                         .foregroundColor(.adaptive(light: .black, dark: .white))
+                                            .padding(.horizontal, 11)
+                                            .padding(.vertical, 4)
+                                            .background {
+                                                Color.purple.opacity(0.5)
+                                                    .cornerRadius(5)
+                                            }
+                                            .foregroundColor(.adaptive(light: .black, dark: .white))
                                     }
-                                        .buttonStyle(buttonStyle)
+                                    .buttonStyle(buttonStyle)
                                     Button("Click me!") { count += 1 }
                                         .buttonStyle(buttonStyle)
                                 }
