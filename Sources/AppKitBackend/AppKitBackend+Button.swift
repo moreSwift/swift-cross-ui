@@ -267,8 +267,6 @@ private final class NSButtonBackground: NSButton {
         return nil
     }
     
-    override var alignmentRectInsets: NSEdgeInsets { .init(top: 0, left: 0, bottom: 0, right: 0)}
-    
     override var canBecomeKeyView: Bool { false }
 }
 
