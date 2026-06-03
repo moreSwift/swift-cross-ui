@@ -127,6 +127,12 @@ final class UICustomButton: UIButton {
         #endif
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // Ensure custom label stays above system overlays (like highlighting)
+        bringSubviewToFront(label)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("NSCoder input is not supported on UICustomButton")
     }
@@ -172,8 +178,6 @@ extension ButtonStyle.Kind {
         switch self {
             case .bordered:
                 button.label.alpha = button.isEnabled ? 1.0: 0.5
-                // 92% was the closest I found in combination
-                // with reducing the foregroundColor opacity to 80%.
             case .plain, .borderless:
                 button.label.alpha = button.isEnabled
                 ? button.isHighlighted ? 0.8: 1.0
