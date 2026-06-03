@@ -73,8 +73,6 @@ extension AppKitBackend {
         
         let buttonSize = dummyButton.intrinsicContentSize
         
-        print("button: \(buttonSize)")
-        print(SIMD2(Int(buttonSize.width - textSize.width), Int(buttonSize.height - textSize.height)))
         return SIMD2(Int(buttonSize.width - textSize.width), Int(buttonSize.height - textSize.height))
     }
 }
@@ -282,8 +280,10 @@ private final class NSButtonBackground: NSButton {
 
 extension ButtonStyle.Kind {
     fileprivate func applyModifications(_ button: NSCustomButton) {
+        button.button.isHidden = true
         switch self {
             case .bordered:
+                button.button.isHidden = false
                 button.button.isEnabled = button.isEnabled
                 button.button.isHighlighted = button.isHighlighted
             case .plain, .borderless:
