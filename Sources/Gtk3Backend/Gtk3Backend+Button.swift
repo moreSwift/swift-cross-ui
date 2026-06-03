@@ -28,8 +28,8 @@ extension Gtk3Backend {
         let button = GtkCustomButton()
         gtk_container_add(button.widgetPointer.cast(), widget.widgetPointer)
 
-        button.horizontalAlignment = .center
-        button.verticalAlignment = .center
+        widget.horizontalAlignment = .center
+        widget.verticalAlignment = .center
 
         return button
     }
@@ -110,7 +110,7 @@ fileprivate final class GtkCustomButton: Gtk3.Button {
             button.customButton.flat:disabled {
                 opacity: 0.5;
             }
-            """)
+        """)
 
         // Why 50% disabled opacity was chosen:
         // https://gnome.pages.gitlab.gnome.org/libadwaita/doc/main/css-variables.html#opacity

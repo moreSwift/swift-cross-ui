@@ -27,8 +27,8 @@ extension GtkBackend {
         let button = GtkCustomButton()
         gtk_button_set_child(button.widgetPointer.cast(), widget.widgetPointer)
 
-        button.horizontalAlignment = .center
-        button.verticalAlignment = .center
+        widget.horizontalAlignment = .center
+        widget.verticalAlignment = .center
 
         return button
     }
@@ -105,7 +105,7 @@ fileprivate final class GtkCustomButton: Gtk.Button {
             button.customButton.flat:disabled {
                 opacity: 0.5;
             }
-            """)
+        """)
         // Why 50% disabled opacity was chosen:
         // https://gnome.pages.gitlab.gnome.org/libadwaita/doc/main/css-variables.html#opacity
         // (switch to the variable when we have adwaita)
