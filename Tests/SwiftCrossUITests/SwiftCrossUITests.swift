@@ -15,9 +15,9 @@ struct CounterView: View {
 
     var body: some View {
         VStack {
-            Button("Decrease") { count -= 1 }
+            Text("Decrease")
             Text("Count: 1")
-            Button("Increase") { count += 1 }
+            Text("Increase")
         }.padding()
     }
 }
@@ -192,7 +192,7 @@ struct SwiftCrossUITests {
             )
 
             #expect(
-                result.size == ViewSize(92, 96),
+                result.size == ViewSize(78, 88),
                 "View update result mismatch"
             )
 

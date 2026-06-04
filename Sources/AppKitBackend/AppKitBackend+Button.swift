@@ -61,6 +61,8 @@ extension AppKitBackend {
     }
 
     func measureBorderedButtonPadding() -> SIMD2<Int> {
+        if let borderedButtonPadding { return borderedButtonPadding }
+        
         let testString = "Test"
         let dummyButton = NSButton()
         dummyButton.title = testString
@@ -74,17 +76,17 @@ extension AppKitBackend {
 
         let buttonSize = dummyButton.intrinsicContentSize
 
-        return SIMD2(
+        let result = SIMD2(
             Int(buttonSize.width - textSize.width),
             Int(buttonSize.height - textSize.height)
         )
+        
+        borderedButtonPadding = result
+        return result
     }
 }
 
 public final class NSCustomButton: NSView {
-    static let horizontalPadding: CGFloat = 12.0
-    static let verticalPadding: CGFloat = 4.0
-
     fileprivate var action: (() -> Void)?
     fileprivate let button = NSButtonBackground()
     fileprivate var buttonStyle: ButtonStyle.Kind = .bordered {

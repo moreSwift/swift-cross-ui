@@ -90,9 +90,7 @@ extension Button: TypeSafeView {
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
-        var childEnvironment = environment
-
-        let buttonStyle = environment.resolvedButtonStyle.kind
+        var childEnvironment = backend.buttonLabelEnvironment(from: environment)
 
         let childrenResult = children.child0.computeLayout(
             with: body.view0,
