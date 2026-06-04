@@ -62,7 +62,7 @@ extension AppKitBackend {
 
     func measureBorderedButtonPadding() -> SIMD2<Int> {
         if let borderedButtonPadding { return borderedButtonPadding }
-        
+
         let testString = "Test"
         let dummyButton = NSButton()
         dummyButton.title = testString
@@ -80,7 +80,7 @@ extension AppKitBackend {
             Int(buttonSize.width - textSize.width),
             Int(buttonSize.height - textSize.height)
         )
-        
+
         borderedButtonPadding = result
         return result
     }

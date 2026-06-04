@@ -85,32 +85,32 @@ fileprivate final class GtkCustomButton: Gtk3.Button {
 
     private func loadCSS() {
         cssProvider.loadCss(from: """
-            button.customButton {
-                min-width: 0px;
-                min-height: 0px;
-                padding: 0px;
-            }
+                button.customButton {
+                    min-width: 0px;
+                    min-height: 0px;
+                    padding: 0px;
+                }
 
-            button.customButton.flat:active {
-                opacity: 0.8;
-            }
+                button.customButton.flat:active {
+                    opacity: 0.8;
+                }
 
-            button.customButton.flat {
-                background-image: none;
-                background-color: transparent;
-                border-color: transparent;
-                box-shadow: none;
-            }
+                button.customButton.flat {
+                    background-image: none;
+                    background-color: transparent;
+                    border-color: transparent;
+                    box-shadow: none;
+                }
 
-            button.customButton.flat:focus {
-                -gtk-outline-radius: 0px;
-                outline-offset: 0px;
-            }
+                button.customButton.flat:focus {
+                    -gtk-outline-radius: 0px;
+                    outline-offset: 0px;
+                }
 
-            button.customButton.flat:disabled {
-                opacity: 0.5;
-            }
-        """)
+                button.customButton.flat:disabled {
+                    opacity: 0.5;
+                }
+            """)
 
         // Why 50% disabled opacity was chosen:
         // https://gnome.pages.gitlab.gnome.org/libadwaita/doc/main/css-variables.html#opacity

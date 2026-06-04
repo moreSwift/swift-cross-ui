@@ -83,29 +83,29 @@ fileprivate final class GtkCustomButton: Gtk.Button {
 
     private func loadCSS() {
         cssProvider.loadCss(from: """
-            button.customButton {
-                min-width: 0px;
-                min-height: 0px;
-                padding: 0px;
-            }
+                button.customButton {
+                    min-width: 0px;
+                    min-height: 0px;
+                    padding: 0px;
+                }
 
-            button.customButton.flat:active,
-            button.customButton.flat.keyboard-activating {
-                opacity: 0.80;
-            }
+                button.customButton.flat:active,
+                button.customButton.flat.keyboard-activating {
+                    opacity: 0.80;
+                }
 
-            button.customButton.flat {
-                background-color: transparent;
-            }
+                button.customButton.flat {
+                    background-color: transparent;
+                }
 
-            button.customButton.flat:focus {
-                border-radius: 0px;
-            }
+                button.customButton.flat:focus {
+                    border-radius: 0px;
+                }
 
-            button.customButton.flat:disabled {
-                opacity: 0.5;
-            }
-        """)
+                button.customButton.flat:disabled {
+                    opacity: 0.5;
+                }
+            """)
         // Why 50% disabled opacity was chosen:
         // https://gnome.pages.gitlab.gnome.org/libadwaita/doc/main/css-variables.html#opacity
         // (switch to the variable when we have adwaita)
