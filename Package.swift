@@ -26,7 +26,7 @@ if let version = getGtk4MinorVersion(), version >= 10 {
     gtkSwiftSettings.append(.define("GTK_4_10_PLUS"))
 }
 
-let invokedByXcodebuild: Bool
+let invokedByXcode: Bool
 #if os(macOS)
     import Darwin
 
@@ -36,9 +36,9 @@ let invokedByXcodebuild: Bool
     proc_pidpath(ppid, UnsafeMutableRawPointer(pathBuffer), UInt32(PROC_PIDPATHINFO_MAXSIZE))
     let parentProcessPath = String(cString: pathBuffer)
     let parentProcessName = URL(fileURLWithPath: parentProcessPath).lastPathComponent
-    invokedByXcodebuild = parentProcessName == "xcodebuild"
+    invokedByXcode = parentProcessName == "xcodebuild" || parentProcessName == "Xcode"
 #else
-    invokedByXcodebuild = false
+    invokedByXcode = false
 #endif
 
 let env = ProcessInfo.processInfo.environment
@@ -47,7 +47,7 @@ let androidBackendSupported: Bool
     // xcodebuild can't handle non-Apple platform conditional dependencies for some weird
     // reason, so we have to remove AndroidBackend when we detect that we're being built
     // by xcodebuild.
-    androidBackendSupported = !invokedByXcodebuild
+    androidBackendSupported = !invokedByXcode
 #else
     androidBackendSupported = false
 #endif
