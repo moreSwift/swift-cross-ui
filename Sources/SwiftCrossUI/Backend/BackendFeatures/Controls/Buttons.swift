@@ -79,15 +79,15 @@ extension BackendFeatures {
         /// The default implementation applies SwiftUI-like behavior.
         ///
         /// - Returns: The modified environment.
-        func buttonLabelEnvironment(
+        func computeButtonLabelEnvironment(
             from environment: EnvironmentValues
         ) -> EnvironmentValues
     }
 }
 
-// MARK: - Default Implementations
+// MARK: - Default Implementationsv
 extension BackendFeatures.ViewLabelButtons {
-    public func buttonLabelEnvironment(
+    public func computeButtonLabelEnvironment(
         from environment: EnvironmentValues
     ) -> EnvironmentValues {
         var labelEnvironment = environment
@@ -95,28 +95,17 @@ extension BackendFeatures.ViewLabelButtons {
         let buttonStyle = environment.resolvedButtonStyle.kind
         let deviceClass = environment.backend.deviceClass
 
-        if !environment.isEnabled, buttonStyle == .bordered {
-            if deviceClass == .desktop || deviceClass == .tv {
-                labelEnvironment = labelEnvironment.with(
-                    \.foregroundColor,
-                    environment.foregroundColor ?? .gray
-                        .opacity(0.5) // SwiftUI is closer to secondary.
-                )
-            } else if deviceClass == .phone || deviceClass == .tablet {
-                labelEnvironment = labelEnvironment.with(
-                    \.foregroundColor,
-                    environment.foregroundColor?.opacity(0.8) ?? .blue.opacity(0.8)
-                )
-            } else if deviceClass == .tv {
-                labelEnvironment = labelEnvironment.with(
-                    \.foregroundColor,
-                    environment.foregroundColor ?? .white.opacity(0.5)
-                )
-            }
+        if
+            !environment.isEnabled, buttonStyle == .bordered,
+            deviceClass == .desktop || deviceClass == .tv
+        {
+            labelEnvironment = labelEnvironment.with(
+                \.foregroundColor,
+                environment.suggestedForegroundColor.opacity(0.3) // SwiftUI uses tertiary afaict.
+            )
         }
 
         // The disabled opacities and defaults are based on discoveries in SwiftUI.
-        // iOS appears to dimm even foregroundColors in the environment.
 
         // Set the default foregroundColor for the label unless overridden.
         // Uses the same colors as SwiftUI.
@@ -124,17 +113,11 @@ extension BackendFeatures.ViewLabelButtons {
             buttonStyle == .borderless,
             deviceClass == .desktop
         {
+            // Approximately equivalent to Color.secondary in SwiftUI.
+            let opacity = environment.colorScheme == .dark ? 0.7: 0.5
             labelEnvironment = labelEnvironment.with(
                 \.foregroundColor,
-                environment.foregroundColor ?? .gray
-            )
-        } else if
-            deviceClass == .phone || deviceClass == .tablet,
-            buttonStyle == .borderless || buttonStyle == .bordered
-        {
-            labelEnvironment = labelEnvironment.with(
-                \.foregroundColor,
-                environment.foregroundColor ?? .blue // TODO: Replace with .accent
+                environment.foregroundColor ?? environment.suggestedForegroundColor.opacity(opacity)
             )
         }
 

@@ -111,40 +111,40 @@ fileprivate final class CustomButton: WinUI.Button {
         }
     }
 
-    override func onPointerReleased(_ e: PointerRoutedEventArgs!) throws {
-        try super.onPointerReleased(e)
+    override func onPointerReleased(_ event: PointerRoutedEventArgs!) throws {
+        try super.onPointerReleased(event)
         isPointerCaptured = false
         isHighlighted = false
     }
 
-    override func onPointerCaptureLost(_ e: PointerRoutedEventArgs!) throws {
-        try super.onPointerCaptureLost(e)
+    override func onPointerCaptureLost(_ event: PointerRoutedEventArgs!) throws {
+        try super.onPointerCaptureLost(event)
         isPointerCaptured = false
         isHighlighted = false
     }
 
-    override func onKeyDown(_ e: KeyRoutedEventArgs!) throws {
-        try super.onKeyDown(e)
+    override func onKeyDown(_ event: KeyRoutedEventArgs!) throws {
+        try super.onKeyDown(event)
 
-        let targetKey = e.key
+        let targetKey = event.key
 
         if [.space, .enter].contains(targetKey) {
             isHighlighted = true
         }
     }
 
-    override func onKeyUp(_ e: KeyRoutedEventArgs!) throws {
-        try super.onKeyUp(e)
+    override func onKeyUp(_ event: KeyRoutedEventArgs!) throws {
+        try super.onKeyUp(event)
 
-        let targetKey = e.key
+        let targetKey = event.key
 
         if [.space, .enter].contains(targetKey) {
             isHighlighted = false
         }
     }
 
-    override func onLostFocus(_ e: RoutedEventArgs!) throws {
-        try super.onLostFocus(e)
+    override func onLostFocus(_ event: RoutedEventArgs!) throws {
+        try super.onLostFocus(event)
         isPointerCaptured = false
         isHighlighted = false
     }
@@ -196,9 +196,10 @@ extension ButtonStyle.Kind {
             case .plain, .borderless:
                 button.opacity = button.enabled
                     ? button.isHighlighted ? 0.7: 1.0
-                    : 0.38
-                // Why 38% opacity was chosen (I couldn't find a Fluent guideline):
-                // https://m2.material.io/design/interaction/states.html#disabled
+                    : 0.365
+                // Why 36.5% opacity was chosen
+                // https://github.com/microsoft/microsoft-ui-xaml/blob/fc2f821173298e8130fb5b143373ba70793bc251/src/controls/dev/CommonStyles/Common_themeresources_any.xaml#L8
+                // 5D = 93 in base 10, 93 / 255 = 0.3647 ~ 0.365
         }
     }
 }

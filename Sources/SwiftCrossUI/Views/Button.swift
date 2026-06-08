@@ -90,11 +90,20 @@ extension Button: TypeSafeView {
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
-        var childEnvironment = backend.buttonLabelEnvironment(from: environment)
+        let buttonPadding = backend.buttonPadding(in: environment)
+        var childEnvironment = backend.computeButtonLabelEnvironment(from: environment)
 
-        let childrenResult = children.child0.computeLayout(
+        var childProposal = proposedSize
+        if let proposedWidth = proposedSize.width {
+            childProposal.width = max(proposedWidth - Double(buttonPadding.x), 0)
+        }
+        if let proposedHeight = proposedSize.height {
+            childProposal.height = max(proposedHeight - Double(buttonPadding.y), 0)
+        }
+
+        let childResult = children.child0.computeLayout(
             with: body.view0,
-            proposedSize: proposedSize,
+            proposedSize: childProposal,
             environment: childEnvironment
         )
 
@@ -104,13 +113,11 @@ extension Button: TypeSafeView {
             action: action
         )
 
-        let buttonPadding = backend.buttonPadding(in: environment)
-
         // Buttons should always be set to label size + padding.
         // The backend representation of a button is expected not to have a minSize.
         let size = SIMD2(
-            Int(childrenResult.size.width) + buttonPadding.x,
-            Int(childrenResult.size.height) + buttonPadding.y
+            Int(childResult.size.width) + buttonPadding.x,
+            Int(childResult.size.height) + buttonPadding.y
         )
 
         return ViewLayoutResult.leafView(size: ViewSize(size))

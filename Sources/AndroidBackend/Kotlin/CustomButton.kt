@@ -107,6 +107,7 @@ class CustomButton(activity: Activity) : FrameLayout(activity) {
                 else -> BORDERED_ATTR
             }
 
+        // Sets or removes the press ripple effect.
         if (isEnabled) {
             foreground = getDrawable(context, foregroundAttr)
         } else {

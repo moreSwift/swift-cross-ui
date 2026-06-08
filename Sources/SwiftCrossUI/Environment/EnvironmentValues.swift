@@ -460,6 +460,7 @@ extension EnvironmentValues {
         buttonStyle ?? defaultButtonStyle
     }
 
+    /// The amount of padding that the current backend applies to the labels of buttons with the current ``ButtonStyle``.
     @MainActor
     public var buttonPadding: SIMD2<Int> {
         backend.buttonPadding(in: self)

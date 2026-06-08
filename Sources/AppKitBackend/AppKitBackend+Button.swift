@@ -63,7 +63,7 @@ extension AppKitBackend {
     func measureBorderedButtonPadding() -> SIMD2<Int> {
         if let borderedButtonPadding { return borderedButtonPadding }
 
-        let testString = "Test"
+        let testString = "E"
         let dummyButton = NSButton()
         dummyButton.title = testString
         dummyButton.controlSize = .regular
@@ -141,7 +141,7 @@ public final class NSCustomButton: NSView {
     }
 
     override public var acceptsFirstResponder: Bool {
-        // Even though its called FullKeyboardAccess, it actuall corresponds to
+        // Even though its called FullKeyboardAccess, it's actually
         // the "Keyboard navigation" setting.
         isEnabled && NSApplication.shared.isFullKeyboardAccessEnabled
     }
@@ -184,6 +184,8 @@ public final class NSCustomButton: NSView {
             self?.isHighlighted = false
         }
         highlightResetWorkItem = workItem
+
+        // 0.1 highlight duration is an estimate of what it feels like.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: workItem)
     }
 
