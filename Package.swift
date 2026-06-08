@@ -19,13 +19,6 @@ import PackageDescription
 //     visualization mode instead of benchmarking mode. It will use DefaultBackend
 //     to visualize a benchmark layout of your choosing (chosen at runtime via stdin).
 
-// In Gtk 4.10 some breaking changes were made, so the GtkBackend code needs to know
-// which version is in use.
-var gtkSwiftSettings: [SwiftSetting] = []
-if let version = getGtk4MinorVersion(), version >= 10 {
-    gtkSwiftSettings.append(.define("GTK_4_10_PLUS"))
-}
-
 let invokedByXcode: Bool
 #if os(macOS)
     import Darwin
@@ -261,8 +254,7 @@ let package = Package(
         .target(
             name: "Gtk",
             dependencies: ["CGtk", "GtkCHelpers"],
-            exclude: ["LICENSE.md"],
-            swiftSettings: gtkSwiftSettings
+            exclude: ["LICENSE.md"]
         ),
         .executableTarget(
             name: "GtkExample",
@@ -294,8 +286,7 @@ let package = Package(
         .target(
             name: "Gtk3",
             dependencies: ["CGtk3", "Gtk3CHelpers"],
-            exclude: ["LICENSE.md"],
-            swiftSettings: gtkSwiftSettings
+            exclude: ["LICENSE.md"]
         ),
         .executableTarget(
             name: "Gtk3Example",
@@ -442,50 +433,4 @@ if testGtk3Backend {
             ]
         )
     )
-}
-
-func getGtk4MinorVersion() -> Int? {
-    #if os(Windows)
-        guard
-            let pkgConfigPath = ProcessInfo.processInfo.environment["PKG_CONFIG_PATH"],
-            case let tripletRoot = URL(fileURLWithPath: pkgConfigPath, isDirectory: true)
-            .deletingLastPathComponent().deletingLastPathComponent(),
-            case let vcpkgInfoDirectory = tripletRoot.deletingLastPathComponent()
-            .appendingPathComponent("vcpkg").appendingPathComponent("info"),
-            let installedList = try? FileManager.default.contentsOfDirectory(
-                at: vcpkgInfoDirectory,
-                includingPropertiesForKeys: nil
-            )
-            .map({ $0.deletingPathExtension().lastPathComponent }),
-            let packageName = installedList.first(where: {
-                $0.hasPrefix("gtk_") && $0.hasSuffix("_\(tripletRoot.lastPathComponent)")
-            })
-        else {
-            print("We only support installing gtk through vcpkg on Windows.")
-            return nil
-        }
-
-        let version = packageName.split(separator: "_")[1].split(separator: ".")
-    #else
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/bin/bash")
-        process.arguments = ["-c", "gtk4-launch --version"]
-        let pipe = Pipe()
-        process.standardOutput = pipe
-
-        guard
-            (try? process.run()) != nil,
-            let data = try? pipe.fileHandleForReading.readToEnd(),
-            case _ = process.waitUntilExit(),
-            let version = String(data: data, encoding: .utf8)?.split(separator: ".")
-        else {
-            print("Failed to get gtk version")
-            return nil
-        }
-    #endif
-    guard version.count >= 2, let minor = Int(version[1]) else {
-        print("Failed to get gtk version")
-        return nil
-    }
-    return minor
 }
