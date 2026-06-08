@@ -268,7 +268,7 @@ struct WindowingApp: App {
                         Divider()
                     #endif
 
-                    #if !os(tvOS) && !os(Android)
+                    #if !os(tvOS)
                         FileDialogDemo()
 
                         Divider()

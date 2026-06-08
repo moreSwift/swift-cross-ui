@@ -11,6 +11,27 @@ import SwiftCrossUI
     import SwiftBundlerRuntime
 #endif
 
+#if canImport(AndroidBackend)
+    // Workaround so that things compile
+    extension View {
+        public func inspect(
+            _ inspectionPoints: InspectionPoints = .onCreate,
+            _ action: @escaping @MainActor @Sendable (Never) -> Void
+        ) -> some View {
+            self
+        }
+
+        public func inspectWindow(
+            _ action: @escaping @MainActor @Sendable (Never) -> Void
+        ) -> some View {
+            self
+        }
+    }
+
+    // TODO(bbrk24): Remove this when Android supports scroll views
+    typealias ScrollView = VStack
+#endif
+
 @main
 @HotReloadable
 struct CounterApp: App {
@@ -72,7 +93,7 @@ struct CounterApp: App {
                         }
                     }
 
-                    #if !os(tvOS)
+                    #if !os(tvOS) && !canImport(AndroidBackend)
                         Slider(value: $value, in: 0...10)
                             .inspect { slider in
                                 #if canImport(AppKitBackend)
@@ -166,49 +187,62 @@ struct CounterApp: App {
                         #endif
                     }.frame(height: 200)
 
-                    List(["Red", "Green", "Blue"], id: \.self, selection: $color) { color in
-                        Text(color)
-                    }.inspect(.afterUpdate) { table in
-                        #if canImport(AppKitBackend)
-                            table.usesAlternatingRowBackgroundColors = true
-                        #elseif canImport(UIKitBackend)
-                            table.isEditing = true
-                        #elseif canImport(WinUIBackend)
-                            let brush = WinUI.SolidColorBrush()
-                            brush.color = .init(a: 255, r: 255, g: 0, b: 255)
-                            table.borderBrush = brush
-                            table.borderThickness = .init(
-                                left: 1,
-                                top: 1,
-                                right: 1,
-                                bottom: 1
-                            )
-                        #elseif canImport(GtkBackend)
-                            table.showSeparators = true
-                        #elseif canImport(Gtk3Backend)
-                            table.selectionMode = .multiple
-                        #endif
-                    }
-
-                    Image(Bundle.module.bundleURL.appendingPathComponent("Banner.png"))
-                        .resizable()
-                        .inspect(.afterUpdate) { image in
+                    #if !canImport(AndroidBackend)
+                        List(["Red", "Green", "Blue"], id: \.self, selection: $color) { color in
+                            Text(color)
+                        }.inspect(.afterUpdate) { table in
                             #if canImport(AppKitBackend)
-                                image.isEditable = true
+                                table.usesAlternatingRowBackgroundColors = true
                             #elseif canImport(UIKitBackend)
-                                image.layer.borderWidth = 1
-                                image.layer.borderColor = .init(red: 0, green: 1, blue: 0, alpha: 1)
+                                table.isEditing = true
                             #elseif canImport(WinUIBackend)
-                            // Couldn't find anything visually interesting
-                            // to do to the WinUI.Image, but the point is
-                            // that you could do something if you wanted to.
+                                let brush = WinUI.SolidColorBrush()
+                                brush.color = .init(a: 255, r: 255, g: 0, b: 255)
+                                table.borderBrush = brush
+                                table.borderThickness = .init(
+                                    left: 1,
+                                    top: 1,
+                                    right: 1,
+                                    bottom: 1
+                                )
                             #elseif canImport(GtkBackend)
-                                image.css.set(property: .border(color: .init(0, 1, 0), width: 2))
+                                table.showSeparators = true
                             #elseif canImport(Gtk3Backend)
-                                image.css.set(property: .border(color: .init(0, 1, 0), width: 2))
+                                table.selectionMode = .multiple
                             #endif
                         }
-                        .aspectRatio(contentMode: .fit)
+
+                        Image(Bundle.module.bundleURL.appendingPathComponent("Banner.png"))
+                            .resizable()
+                            .inspect(.afterUpdate) { image in
+                                #if canImport(AppKitBackend)
+                                    image.isEditable = true
+                                #elseif canImport(UIKitBackend)
+                                    image.layer.borderWidth = 1
+                                    image.layer.borderColor = .init(
+                                        red: 0,
+                                        green: 1,
+                                        blue: 0,
+                                        alpha: 1
+                                    )
+                                #elseif canImport(WinUIBackend)
+                                // Couldn't find anything visually interesting
+                                // to do to the WinUI.Image, but the point is
+                                // that you could do something if you wanted to.
+                                #elseif canImport(GtkBackend)
+                                    image.css.set(property: .border(
+                                        color: .init(0, 1, 0),
+                                        width: 2
+                                    ))
+                                #elseif canImport(Gtk3Backend)
+                                    image.css.set(property: .border(
+                                        color: .init(0, 1, 0),
+                                        width: 2
+                                    ))
+                                #endif
+                            }
+                            .aspectRatio(contentMode: .fit)
+                    #endif
                 }
                 .padding()
                 .inspectWindow { window in

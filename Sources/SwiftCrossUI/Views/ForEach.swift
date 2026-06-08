@@ -56,15 +56,7 @@ extension ForEach: TypeSafeView, View where Child: View {
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
-        let container = backend.createContainer()
-        if idKeyPath == nil {
-            // Deprecated code path. We've centralised the new implementation
-            // into computeLayout and commit.
-            for (index, node) in children.nodes.enumerated() {
-                backend.insert(node.widget.into(), into: container, at: index)
-            }
-        }
-        return container
+        return backend.createContainer()
     }
 
     func computeLayout<Backend: BaseAppBackend>(
@@ -227,10 +219,6 @@ extension ForEach: TypeSafeView, View where Child: View {
 
         let elementsStartIndex = elements.startIndex
 
-        // TODO: The way we're reusing nodes for technically different elements means that if
-        //   Child has state of its own then it could get pretty confused thinking that its state
-        //   changed whereas it was actually just moved to a new slot in the array. Probably not
-        //   a huge issue, but definitely something to keep an eye on.
         var layoutableChildren: [LayoutSystem.LayoutableChild] = []
         for (i, node) in children.nodes.enumerated() {
             guard i < elements.count else {
@@ -268,6 +256,8 @@ extension ForEach: TypeSafeView, View where Child: View {
             }
             children.nodes.removeLast(unusedCount)
         }
+
+        children.layoutableChildren = layoutableChildren
 
         return LayoutSystem.computeStackLayout(
             container: widget,

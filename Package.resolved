@@ -1,13 +1,13 @@
 {
-  "originHash" : "848af29777f0d85216ca529814aeef544ac2b82e4829189e9521f4f5ce3070b3",
+  "originHash" : "3f78b4201a2b283fa0247a8d63a937c8d8195da44b7445818adfa8c6d2bc6cba",
   "pins" : [
     {
       "identity" : "androidkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/moreSwift/AndroidKit",
       "state" : {
-        "revision" : "937a0643efb2f0820dc62a9249729f12987bf340",
-        "version" : "0.7.2"
+        "revision" : "ed371b3becaab639cada60f5c65f0ee8f0d6d149",
+        "version" : "0.8.0"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser",
       "state" : {
-        "revision" : "626b5b7b2f45e1b0b1c6f4a309296d1d21d7311b",
-        "version" : "1.7.1"
+        "revision" : "ca37474853a4b5f59a22c74bfdd449b1f6bc4cc2",
+        "version" : "1.8.1"
       }
     },
     {
@@ -71,15 +71,6 @@
       "state" : {
         "revision" : "7b847a3b7008b2dc2f47ca3110d8c782fb2e5c7e",
         "version" : "1.3.0"
-      }
-    },
-    {
-      "identity" : "swift-cwinrt",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/moreSwift/swift-cwinrt",
-      "state" : {
-        "revision" : "601287a2a89e8e56e8aa53782b6054db8be0bce8",
-        "version" : "0.1.2"
       }
     },
     {
@@ -112,10 +103,10 @@
     {
       "identity" : "swift-java",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swiftlang/swift-java",
+      "location" : "https://github.com/stackotter/swift-java",
       "state" : {
-        "revision" : "3d52a15db42c4d5ef322fde074626106b9bf82d7",
-        "version" : "0.2.0"
+        "revision" : "e04c0ed6af98936ca6300e94be9a19869df418a2",
+        "version" : "0.5.1"
       }
     },
     {
@@ -182,48 +173,12 @@
       }
     },
     {
-      "identity" : "swift-uwp",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/moreSwift/swift-uwp",
-      "state" : {
-        "revision" : "a0a86467514eaa63272eae848c70d49e6874ede4",
-        "version" : "0.1.0"
-      }
-    },
-    {
-      "identity" : "swift-webview2core",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/moreSwift/swift-webview2core",
-      "state" : {
-        "revision" : "a8ed52a57f6d81ee06c8db692f8ee0431174379a",
-        "version" : "0.1.0"
-      }
-    },
-    {
-      "identity" : "swift-windowsappsdk",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/moreSwift/swift-windowsappsdk",
-      "state" : {
-        "revision" : "40d2db0c4cfadf557b9ce60a0ce1c5c96defc438",
-        "version" : "0.1.2"
-      }
-    },
-    {
-      "identity" : "swift-windowsfoundation",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/moreSwift/swift-windowsfoundation",
-      "state" : {
-        "revision" : "94d56a5aea472672bc5d041c091f6cdf72e3cc44",
-        "version" : "0.1.0"
-      }
-    },
-    {
       "identity" : "swift-winui",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/moreSwift/swift-winui",
       "state" : {
-        "revision" : "73d5d19c39c523c92355027dd13aee445fc627a7",
-        "version" : "0.1.1"
+        "revision" : "7cce3fcd0b55c48e6d8993fd2c7c392e8bc945c4",
+        "version" : "0.2.0"
       }
     },
     {
@@ -231,8 +186,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stackotter/SwiftJavaLang.git",
       "state" : {
-        "revision" : "b60871fd650b81b142a1d6a62d7d440ea1e9bff7",
-        "version" : "0.2.1"
+        "revision" : "000441db9284536a2af611745b82ec7653dca5bc",
+        "version" : "0.3.0"
       }
     },
     {
@@ -240,8 +195,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stackotter/SwiftKotlin.git",
       "state" : {
-        "revision" : "f408b73ebb86a33411f27a668e2d843a10f007c2",
-        "version" : "0.2.1"
+        "revision" : "ad30daacb7e4666e1a56bfdd48498f5ac4ff081d",
+        "version" : "0.3.0"
       }
     },
     {

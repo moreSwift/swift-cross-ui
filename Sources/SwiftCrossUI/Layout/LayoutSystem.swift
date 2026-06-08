@@ -12,7 +12,7 @@ public enum LayoutSystem {
             logger.warning("LayoutSystem.roundSize(_:) called with infinite size")
         }
 
-        let size = size.rounded(.towardZero)
+        let size = size.rounded(.up)
         return if size >= Double(Int.max) {
             Int.max
         } else if size <= Double(Int.min) {

@@ -40,7 +40,7 @@ public struct EnvironmentValues {
     /// Each view graph node sets its own handler when passing the environment
     /// on to its children, setting up a bottom-up update chain up which resize
     /// events can propagate.
-    var onResize: @MainActor (_ newSize: ViewSize) -> Void
+    package var onResize: @MainActor (_ newSize: ViewSize) -> Void
 
     /// Backing storage for extensible subscript
     private var values: [ObjectIdentifier: Any]

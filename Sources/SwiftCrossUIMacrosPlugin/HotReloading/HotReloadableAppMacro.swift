@@ -18,17 +18,21 @@ extension HotReloadableAppMacro: PeerMacro {
             return [
                 """
                 @MainActor
-                var hotReloadingImportedEntryPoint: (@convention(c) (UnsafeRawPointer, Int) -> Any)? = nil
+                var hotReloadingImportedEntryPoint: (@convention(c) (UnsafeRawPointer, Int) -> UnsafeMutableRawPointer)? = nil
                 """,
                 """
                 @MainActor
-                @_cdecl("body")
-                public func hotReloadingExportedEntryPoint(app: UnsafeRawPointer, viewId: Int) -> Any {
+                @_cdecl("hotReloadingExportedEntryPoint")
+                public func hotReloadingExportedEntryPoint(app: UnsafeRawPointer, viewId: Int) -> UnsafeMutableRawPointer {
                     hotReloadingHasConnectedToServer = true
                     let app = app.assumingMemoryBound(to: \(raw: structDecl.identifier).self)
-                    return SwiftCrossUI.HotReloadableView(
+
+                    let pointer = UnsafeMutableBufferPointer<SwiftCrossUI.HotReloadableView>.allocate(capacity: 1)
+                    let view = SwiftCrossUI.HotReloadableView(
                         app.pointee.entryPoint(viewId: viewId)
                     )
+                    pointer.initializeElement(at: 0, to: view)
+                    return UnsafeMutableRawPointer(pointer.baseAddress!)
                 }
                 """,
                 """
@@ -114,8 +118,11 @@ extension HotReloadableAppMacro: MemberMacro {
                                 print("Hot reloading: received new dylib")
                                 try await client.handlePackets { @Sendable dylib in
                                     Task { @MainActor in
-                                        guard let symbol = dylib.symbol(named: "body", ofType: (@convention(c) (UnsafeRawPointer, Int) -> Any).self) else {
-                                            print("Hot reloading: Missing 'body' symbol")
+                                        guard let symbol = dylib.symbol(
+                                            named: "hotReloadingExportedEntryPoint",
+                                            ofType: (@convention(c) (UnsafeRawPointer, Int) -> UnsafeMutableRawPointer).self
+                                        ) else {
+                                            print("Hot reloading: Missing 'hotReloadingExportedEntryPoint' symbol")
                                             return
                                         }
                                         hotReloadingImportedEntryPoint = symbol

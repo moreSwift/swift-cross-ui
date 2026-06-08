@@ -26,7 +26,7 @@ if let version = getGtk4MinorVersion(), version >= 10 {
     gtkSwiftSettings.append(.define("GTK_4_10_PLUS"))
 }
 
-let invokedByXcodebuild: Bool
+let invokedByXcode: Bool
 #if os(macOS)
     import Darwin
 
@@ -36,9 +36,9 @@ let invokedByXcodebuild: Bool
     proc_pidpath(ppid, UnsafeMutableRawPointer(pathBuffer), UInt32(PROC_PIDPATHINFO_MAXSIZE))
     let parentProcessPath = String(cString: pathBuffer)
     let parentProcessName = URL(fileURLWithPath: parentProcessPath).lastPathComponent
-    invokedByXcodebuild = parentProcessName == "xcodebuild"
+    invokedByXcode = parentProcessName == "xcodebuild" || parentProcessName == "Xcode"
 #else
-    invokedByXcodebuild = false
+    invokedByXcode = false
 #endif
 
 let env = ProcessInfo.processInfo.environment
@@ -47,7 +47,7 @@ let androidBackendSupported: Bool
     // xcodebuild can't handle non-Apple platform conditional dependencies for some weird
     // reason, so we have to remove AndroidBackend when we detect that we're being built
     // by xcodebuild.
-    androidBackendSupported = !invokedByXcodebuild
+    androidBackendSupported = !invokedByXcode
 #else
     androidBackendSupported = false
 #endif
@@ -172,16 +172,8 @@ let package = Package(
             .upToNextMinor(from: "0.5.0")
         ),
         .package(
-            url: "https://github.com/moreSwift/swift-windowsappsdk",
-            .upToNextMinor(from: "0.1.1")
-        ),
-        .package(
-            url: "https://github.com/moreSwift/swift-windowsfoundation",
-            .upToNextMinor(from: "0.1.0")
-        ),
-        .package(
             url: "https://github.com/moreSwift/swift-winui",
-            .upToNextMinor(from: "0.1.1")
+            .upToNextMinor(from: "0.2.0")
         ),
         .package(
             url: "https://github.com/stackotter/swift-benchmark",
@@ -323,8 +315,8 @@ let package = Package(
                 "SwiftCrossUI",
                 "WinUIInterop",
                 .product(name: "WinUI", package: "swift-winui"),
-                .product(name: "WinAppSDK", package: "swift-windowsappsdk"),
-                .product(name: "WindowsFoundation", package: "swift-windowsfoundation"),
+                .product(name: "WinAppSDK", package: "swift-winui"),
+                .product(name: "WindowsFoundation", package: "swift-winui"),
                 .product(name: "Mutex", package: "swift-mutex"),
             ]
         ),
@@ -399,16 +391,16 @@ if androidBackendSupported {
     package.dependencies += [
         .package(
             url: "https://github.com/moreSwift/AndroidKit",
-            .upToNextMinor(from: "0.7.2")
+            .upToNextMinor(from: "0.8.0")
         ),
         .package(
-            url: "https://github.com/swiftlang/swift-java",
-            .upToNextMinor(from: "0.2.0")
+            url: "https://github.com/stackotter/swift-java",
+            .upToNextMinor(from: "0.5.1")
         ),
     ]
 
     package.products.append(
-        .library(name: "AndroidBackend", type: libraryType, targets: ["AndroidBackend"]),
+        .library(name: "AndroidBackend", type: libraryType, targets: ["AndroidBackend"])
     )
 
     package.targets += [

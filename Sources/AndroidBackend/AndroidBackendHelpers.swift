@@ -17,16 +17,6 @@ class AndroidBackendHelpers: JavaObject {
     @JavaMethod
     func getSafeWindowHeight(_ activity: Activity?) -> Int32
 
-    /// Get the window width, including the parts that extend outside of the
-    /// safe areas.
-    @JavaMethod
-    func getFullWindowWidth(_ activity: Activity?) -> Int32
-
-    /// Get the window height, including the parts that extend outside of the
-    /// safe areas.
-    @JavaMethod
-    func getFullWindowHeight(_ activity: Activity?) -> Int32
-
     @JavaMethod
     func getSafeAreaLeftInset(_ activity: Activity?) -> Int32
 
@@ -53,4 +43,20 @@ class AndroidBackendHelpers: JavaObject {
 
     @JavaMethod
     func getDeviceClass(_ activity: Activity?) -> Int16
+
+    @JavaMethod
+    func getTimeZoneIdentifier() -> JavaString?
+
+    @JavaMethod
+    func registerActivityResults(
+        _ activity: FragmentActivity!,
+        _ filesCallback: FilesActivityCallback!,
+        _ folderCallback: FolderActivityCallback!,
+    )
+
+    @JavaMethod
+    func launchFilesActivity(_ options: FilesActivityContract.Options!)
+
+    @JavaMethod
+    func launchFolderActivity(_ urlString: JavaString?)
 }

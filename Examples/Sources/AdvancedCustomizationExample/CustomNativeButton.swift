@@ -139,3 +139,26 @@ struct CustomNativeButton {
         }
     }
 #endif
+
+#if canImport(AndroidBackend)
+    import AndroidBackend
+    import AndroidKit
+    import SwiftJava
+
+    extension CustomNativeButton: AndroidViewRepresentable {
+        func makeAndroidView(context: Self.Context) -> AndroidKit.Button {
+            AndroidKit.Button(
+                context.environment.androidActivity,
+                environment: context.environment.jniEnv
+            )
+        }
+
+        func updateAndroidView(_ view: AndroidKit.Button, context: Self.Context) {
+            view.setText(
+                JavaString(label, environment: context.environment.jniEnv)
+                    .as(CharSequence.self)
+            )
+            view.setBackgroundColor(Int32(bitPattern: 0xffff00ff))
+        }
+    }
+#endif

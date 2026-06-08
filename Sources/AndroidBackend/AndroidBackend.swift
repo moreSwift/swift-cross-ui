@@ -73,6 +73,11 @@ extension App {
     }
 }
 
+extension EnvironmentValues {
+    @Entry public var androidActivity: AndroidKit.Activity! = nil
+    @Entry public var jniEnv: UnsafeMutablePointer<JNIEnv?>? = nil
+}
+
 // TODO: Implement the rest of `BaseAppBackend` so we can move off of `BaseStubs`
 
 public final class AndroidBackend: BackendFeatures.BaseStubs {
@@ -96,9 +101,11 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         }
 
     public let defaultPaddingAmount = 10
-    public let requiresImageUpdateOnScaleFactorChange = false
     public let supportsMultipleWindows = false
     public let canOverrideWindowColorScheme = false
+
+    static var fileDialogCallback: (([Foundation.URL]) -> Void)?
+    static var folderDialogCallback: ((Foundation.URL?) -> Void)?
 
     /// A reference used to keep the tickler alive.
     var tickler: MainRunLoopTickler?
@@ -112,6 +119,49 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
 
     public init() {
         helpers = AndroidBackendHelpers(environment: Self.env)
+
+        let fragmentActivity = Self.activity.as(FragmentActivity.self)!
+
+        let filesCallback = FilesActivityCallback(environment: Self.env)
+        let filesAction = SwiftAction(environment: Self.env) {
+            let urls = filesCallback.getUrlStrings()
+            AndroidBackend.fileDialogCallback?(urls.map {
+                guard let url = Foundation.URL(string: $0) else {
+                    fatalError("Failed to convert Uri to Foundation.URL: \($0)")
+                }
+                return url
+            })
+            AndroidBackend.fileDialogCallback = nil
+        }
+        filesCallback.setAction(filesAction)
+
+        let folderCallback = FolderActivityCallback(environment: Self.env)
+        let folderAction = SwiftAction(environment: Self.env) {
+            let url = folderCallback.getUrlString()?.toString()
+            AndroidBackend.folderDialogCallback?(url.map {
+                guard let url = Foundation.URL(string: $0) else {
+                    fatalError("Failed to convert Uri to Foundation.URL: \($0)")
+                }
+                return url
+            })
+            AndroidBackend.folderDialogCallback = nil
+        }
+        folderCallback.setAction(folderAction)
+
+        helpers.registerActivityResults(fragmentActivity, filesCallback, folderCallback)
+    }
+
+    public convenience init(delegate: any ActivityDelegate) {
+        self.init()
+
+        let delegateObject = SwiftObject(delegate, environment: Self.env)
+        let castedActivity = Self.activity.as(FragmentActivity.self)!
+
+        // ActivityListener.init connects it to the Activity, which keeps it alive without Swift
+        // needing to keep any references to it.
+        _ = ActivityListener(castedActivity, delegateObject, environment: Self.env)
+
+        delegate.onCreate(of: castedActivity, env: Self.env)
     }
 
     public func runMainLoop(
@@ -168,12 +218,11 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
             return
         }
 
+        let matchParent = try! JavaClass<AndroidKit.ViewGroup.LayoutParams>().MATCH_PARENT
+
         let leftInset = Int(helpers.getSafeAreaLeftInset(Self.activity))
         let topInset = Int(helpers.getSafeAreaTopInset(Self.activity))
-        let fullWindowSize = SIMD2(
-            Int(helpers.getFullWindowWidth(Self.activity)),
-            Int(helpers.getFullWindowHeight(Self.activity))
-        )
+        let fullWindowSize = SIMD2(Int(matchParent), Int(matchParent))
         setSize(of: container, to: fullWindowSize)
         setPosition(ofChildAt: 0, in: container, to: SIMD2(leftInset, topInset))
 
@@ -239,6 +288,9 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
     public func computeRootEnvironment(defaultEnvironment: EnvironmentValues) -> EnvironmentValues {
         var environment = defaultEnvironment
 
+        environment.androidActivity = Self.activity
+        environment.jniEnv = Self.env
+
         if helpers.isNightMode(Self.activity) {
             environment.colorScheme = .dark
         } else {
@@ -250,8 +302,17 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
             .getConfiguration()
             .isScreenRound()
 
-        // TODO(bbrk24): Properly detect time zone and calendar, since
-        // `.current` is broken on Android.
+        if let identifier = helpers.getTimeZoneIdentifier()?.toString(),
+           let timeZone = Foundation.TimeZone(identifier: identifier)
+        {
+            environment.timeZone = timeZone
+            environment.calendar = getCurrentCalendar(timeZone: timeZone)
+        } else {
+            environment.calendar = getCurrentCalendar(timeZone: nil)
+        }
+
+        environment
+            .appStorageProvider = SharedPreferencesAppStorageProvider(activity: Self.activity)
 
         return environment
     }
