@@ -311,7 +311,7 @@ struct WindowingApp: App {
                 Divider()
 
                 ForEach([1, 2, 3, 4, 5], id: \.self) { num in
-                    Button("ForEach \(num)") {}
+                    Text("ForEach \(num)")
                 }
             }
         }

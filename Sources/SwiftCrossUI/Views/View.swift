@@ -238,5 +238,5 @@ extension View {
         )
     }
 
-    public var asMenuItems: [MenuItem] { [] }
+    public var asMenuItems: [MenuItem] { body.asMenuItems }
 }
