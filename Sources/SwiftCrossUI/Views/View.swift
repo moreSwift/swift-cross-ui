@@ -109,6 +109,8 @@ public protocol View {
         environment: EnvironmentValues,
         backend: Backend
     )
+
+    var asMenuItems: [MenuItem] { get }
 }
 
 extension View {
@@ -235,4 +237,6 @@ extension View {
             backend: backend
         )
     }
+
+    public var asMenuItems: [MenuItem] { [] }
 }

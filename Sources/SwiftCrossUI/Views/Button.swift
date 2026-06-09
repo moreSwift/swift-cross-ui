@@ -25,7 +25,11 @@ public struct Button: Sendable {
     }
 }
 
-extension Button: View {}
+extension Button: View {
+    public var asMenuItems: [MenuItem] {
+        [.button(self)]
+    }
+}
 
 extension Button: ElementaryView {
     public func asWidget<Backend: BaseAppBackend>(backend: Backend) -> Backend.Widget {

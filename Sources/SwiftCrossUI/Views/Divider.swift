@@ -28,4 +28,8 @@ public struct Divider: View, Sendable {
                 height: layoutOrientation == .vertical ? 1 : nil
             )
     }
+
+    public var asMenuItems: [MenuItem] {
+        [.separator(self)]
+    }
 }

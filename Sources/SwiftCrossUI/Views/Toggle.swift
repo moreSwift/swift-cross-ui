@@ -48,6 +48,10 @@ public struct Toggle: View {
                 }
         }
     }
+
+    public var asMenuItems: [MenuItem] {
+        [.toggle(self)]
+    }
 }
 
 /// A style of toggle.

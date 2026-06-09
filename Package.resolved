@@ -1,15 +1,6 @@
 {
-  "originHash" : "3f78b4201a2b283fa0247a8d63a937c8d8195da44b7445818adfa8c6d2bc6cba",
+  "originHash" : "c8d47b833ed13bcd80c0959e98b2495c4638c8f78642a6c80eda9fe78e286dda",
   "pins" : [
-    {
-      "identity" : "androidkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/moreSwift/AndroidKit",
-      "state" : {
-        "revision" : "ed371b3becaab639cada60f5c65f0ee8f0d6d149",
-        "version" : "0.8.0"
-      }
-    },
     {
       "identity" : "jpeg",
       "kind" : "remoteSourceControl",
@@ -38,15 +29,6 @@
       }
     },
     {
-      "identity" : "swift-android-native",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swift-android-sdk/swift-android-native.git",
-      "state" : {
-        "revision" : "6ff6e6274fccafac7fdabb4cf7c958d747f44831",
-        "version" : "2.0.1"
-      }
-    },
-    {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser",
@@ -62,15 +44,6 @@
       "state" : {
         "revision" : "45a7b500c24e7243da7b02e19cf436d0107a0c1b",
         "version" : "0.2.0"
-      }
-    },
-    {
-      "identity" : "swift-collections",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-collections",
-      "state" : {
-        "revision" : "7b847a3b7008b2dc2f47ca3110d8c782fb2e5c7e",
-        "version" : "1.3.0"
       }
     },
     {
@@ -101,24 +74,6 @@
       }
     },
     {
-      "identity" : "swift-java",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stackotter/swift-java",
-      "state" : {
-        "revision" : "e04c0ed6af98936ca6300e94be9a19869df418a2",
-        "version" : "0.5.1"
-      }
-    },
-    {
-      "identity" : "swift-java-jni-core",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swiftlang/swift-java-jni-core",
-      "state" : {
-        "revision" : "b440a0be98381550cf189c903782e817619ffa05",
-        "version" : "0.5.1"
-      }
-    },
-    {
       "identity" : "swift-log",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-log.git",
@@ -146,15 +101,6 @@
       }
     },
     {
-      "identity" : "swift-subprocess",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swiftlang/swift-subprocess.git",
-      "state" : {
-        "revision" : "13d087685b95d64d6aac9b94500d347bbe84c39b",
-        "version" : "0.4.0"
-      }
-    },
-    {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax.git",
@@ -164,39 +110,12 @@
       }
     },
     {
-      "identity" : "swift-system",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-system",
-      "state" : {
-        "revision" : "7c6ad0fc39d0763e0b699210e4124afd5041c5df",
-        "version" : "1.6.4"
-      }
-    },
-    {
       "identity" : "swift-winui",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/moreSwift/swift-winui",
       "state" : {
         "revision" : "7cce3fcd0b55c48e6d8993fd2c7c392e8bc945c4",
         "version" : "0.2.0"
-      }
-    },
-    {
-      "identity" : "swiftjavalang",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stackotter/SwiftJavaLang.git",
-      "state" : {
-        "revision" : "000441db9284536a2af611745b82ec7653dca5bc",
-        "version" : "0.3.0"
-      }
-    },
-    {
-      "identity" : "swiftkotlin",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stackotter/SwiftKotlin.git",
-      "state" : {
-        "revision" : "ad30daacb7e4666e1a56bfdd48498f5ac4ff081d",
-        "version" : "0.3.0"
       }
     },
     {

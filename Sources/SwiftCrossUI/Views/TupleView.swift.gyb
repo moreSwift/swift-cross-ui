@@ -108,6 +108,16 @@ public struct ${view}<
 
 extension ${view}: View {
     public typealias Content = EmptyView
+    public var asMenuItems: [MenuItem] {
+        % if i >= 11:
+        // NB: "the compiler is unable to type-check this expression in reasonable time"
+        let views1: [MenuItem] = ${" + ".join("view%d.asMenuItems" % j for j in range(11))}
+        let views2: [MenuItem] = ${" + ".join("view%d.asMenuItems" % j for j in range(11, i + 1))}
+        return views1 + views2
+        % else:
+        ${" + ".join("view%d.asMenuItems" % j for j in range(i + 1))}
+        % end
+    }
 }
 
 extension ${view}: TupleView {
