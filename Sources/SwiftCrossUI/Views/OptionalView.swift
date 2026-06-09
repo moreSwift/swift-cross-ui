@@ -11,8 +11,8 @@ public struct OptionalView<V: View> {
 }
 
 extension OptionalView: View {
-    public var asMenuItems: [MenuItem] {
-        view?.asMenuItems ?? []
+    public var _asMenuItems: [MenuItem] {
+        view?._asMenuItems ?? []
     }
 }
 

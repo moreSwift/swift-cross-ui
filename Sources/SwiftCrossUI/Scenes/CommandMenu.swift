@@ -13,7 +13,7 @@ public struct CommandMenu {
     @MainActor
     public init(_ name: String, @ViewBuilder content: () -> some View) {
         self.name = name
-        self.content = content().asMenuItems
+        self.content = content()._asMenuItems
     }
 
     /// Creates a command menu.

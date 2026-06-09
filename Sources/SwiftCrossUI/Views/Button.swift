@@ -26,7 +26,7 @@ public struct Button: Sendable {
 }
 
 extension Button: View {
-    public var asMenuItems: [MenuItem] {
+    public var _asMenuItems: [MenuItem] {
         [.button(self)]
     }
 }

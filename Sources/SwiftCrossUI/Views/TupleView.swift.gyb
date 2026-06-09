@@ -108,10 +108,10 @@ public struct ${view}<
 
 extension ${view}: View {
     public typealias Content = EmptyView
-    public var asMenuItems: [MenuItem] {
+    public var _asMenuItems: [MenuItem] {
         var result: [MenuItem] = []
         % for j in range(i + 1):
-        result += view${j}.asMenuItems
+        result += view${j}._asMenuItems
         % end
         return result
     }

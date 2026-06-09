@@ -51,8 +51,8 @@ package struct EnvironmentModifier<Child: View>: View {
         )
     }
 
-    public var asMenuItems: [MenuItem] {
-        self.body.asMenuItems.map { menuItem in
+    public var _asMenuItems: [MenuItem] {
+        self.body._asMenuItems.map { menuItem in
             .modifiedEnvironment({ menuItem }, { self.modification })
         }
     }

@@ -29,7 +29,7 @@ public struct Divider: View, Sendable {
             )
     }
 
-    public var asMenuItems: [MenuItem] {
+    public var _asMenuItems: [MenuItem] {
         [.separator(self)]
     }
 }

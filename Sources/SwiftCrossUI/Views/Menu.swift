@@ -18,7 +18,7 @@ public struct Menu {
     @MainActor
     public init(_ label: String, @ViewBuilder items: () -> some View) {
         self.label = label
-        self.items = items().asMenuItems
+        self.items = items()._asMenuItems
     }
 
     /// Resolves the menu to a representation used by backends.
@@ -63,7 +63,7 @@ public struct Menu {
 extension Menu: TypeSafeView {
     public var body: EmptyView { return EmptyView() }
 
-    public var asMenuItems: [MenuItem] { [.submenu(self)] }
+    public var _asMenuItems: [MenuItem] { [.submenu(self)] }
 
     func children<Backend: BaseAppBackend>(
         backend: Backend,

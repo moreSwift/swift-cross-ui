@@ -49,7 +49,7 @@ public struct Toggle: View {
         }
     }
 
-    public var asMenuItems: [MenuItem] {
+    public var _asMenuItems: [MenuItem] {
         [.toggle(self)]
     }
 }

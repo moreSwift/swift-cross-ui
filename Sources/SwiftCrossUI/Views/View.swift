@@ -110,7 +110,13 @@ public protocol View {
         backend: Backend
     )
 
-    var asMenuItems: [MenuItem] { get }
+    /// Returns this view as an array of ``MenuItem``s.
+    ///
+    /// The default implementation forwards to ``body``; you should never have to override this.
+    ///
+    /// - Warning: This is an implementation detail and is subject to be changed or removed at any
+    ///   time.
+    var _asMenuItems: [MenuItem] { get }
 }
 
 extension View {
@@ -238,5 +244,5 @@ extension View {
         )
     }
 
-    public var asMenuItems: [MenuItem] { body.asMenuItems }
+    public var _asMenuItems: [MenuItem] { body._asMenuItems }
 }

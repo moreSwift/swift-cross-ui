@@ -62,7 +62,7 @@ public struct EmptyView: View, Sendable {
         backend: Backend
     ) {}
 
-    public var asMenuItems: [MenuItem] { [] }
+    public var _asMenuItems: [MenuItem] { [] }
 }
 
 /// The children of a node with no children.
@@ -80,5 +80,5 @@ extension Never: View {
         return fatalError("Rendered Never")
     }
 
-    public var asMenuItems: [MenuItem] { [] }
+    public var _asMenuItems: [MenuItem] { [] }
 }

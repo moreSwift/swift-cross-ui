@@ -38,8 +38,8 @@ extension ForEach: TypeSafeView, View where Child: View {
         return EmptyView()
     }
 
-    public var asMenuItems: [MenuItem] {
-        elements.map(child).flatMap(\.asMenuItems)
+    public var _asMenuItems: [MenuItem] {
+        elements.map(child).flatMap(\._asMenuItems)
     }
 
     func children<Backend: BaseAppBackend>(
