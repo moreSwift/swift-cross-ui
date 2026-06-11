@@ -77,7 +77,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         // First create the view's child nodes and widgets
         let childSnapshots =
             snapshot?.isValid(for: NodeView.self) == true
-                ? snapshot?.children : snapshot.map { [$0] }
+            ? snapshot?.children : snapshot.map { [$0] }
 
         currentLayout = nil
         resultCache = [:]
@@ -85,7 +85,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         parentEnvironment = environment
         cancellables = []
 
-        dynamicPropertyUpdater = DynamicPropertyUpdater(for: NodeView.self)
+        dynamicPropertyUpdater = DynamicPropertyUpdater(for: nodeView)
 
         let viewEnvironment = updateEnvironment(environment)
 
@@ -109,20 +109,21 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         backend.tag(widget: widget, as: tag)
 
         // Update the view and its children when state changes (children are always updated first).
-        let mirror = Mirror(reflecting: view)
-        for property in mirror.children {
-            if property.label == "state" && property.value is ObservableObject {
-                logger.warning(
-                    """
-                    the View.state protocol requirement has been removed in favour of \
-                    SwiftUI-style @State annotations; decorate \(NodeView.self).state \
-                    with the @State property wrapper to restore previous behaviour
-                    """
-                )
-            }
+        forEachField(of: view) { name, _, field in
+            #if DEBUG
+                if name == "state", field is ObservableObject {
+                    logger.warning(
+                        """
+                        the View.state protocol requirement has been removed in favour of \
+                        SwiftUI-style @State annotations; decorate \(NodeView.self).state \
+                        with the @State property wrapper to restore previous behaviour
+                        """
+                    )
+                }
+            #endif
 
-            guard let value = property.value as? any ObservableProperty else {
-                continue
+            guard let value = field as? any ObservableProperty else {
+                return // i.e. continue
             }
 
             let cancellable = value.didChange.observeAsUIUpdater(backend: backend) { [weak self] in

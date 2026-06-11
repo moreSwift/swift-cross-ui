@@ -25,7 +25,7 @@ class _App<AppRoot: App> {
         self.environment = EnvironmentValues(backend: backend)
         self.cancellables = []
 
-        dynamicPropertyUpdater = DynamicPropertyUpdater(for: AppRoot.self)
+        dynamicPropertyUpdater = DynamicPropertyUpdater(for: app)
     }
 
     func refreshSceneGraph() {
@@ -59,20 +59,21 @@ class _App<AppRoot: App> {
 
             dynamicPropertyUpdater.update(app, with: environment, previousValue: nil)
 
-            let mirror = Mirror(reflecting: app)
-            for property in mirror.children {
-                if property.label == "state" && property.value is ObservableObject {
-                    logger.warning(
-                        """
-                        the App.state protocol requirement has been removed in favour of \
-                        SwiftUI-style @State annotations; decorate \(AppRoot.self).state \
-                        with the @State property wrapper to restore previous behaviour
-                        """
-                    )
-                }
+            forEachField(of: app) { name, _, field in
+                #if DEBUG
+                    if name == "state", field is ObservableObject {
+                        logger.warning(
+                            """
+                            the App.state protocol requirement has been removed in favour of \
+                            SwiftUI-style @State annotations; decorate \(AppRoot.self).state \
+                            with the @State property wrapper to restore previous behaviour
+                            """
+                        )
+                    }
+                #endif
 
-                guard let value = property.value as? any ObservableProperty else {
-                    continue
+                guard let value = field as? any ObservableProperty else {
+                    return // i.e. continue
                 }
 
                 let cancellable =

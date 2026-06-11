@@ -9,15 +9,17 @@ private import SwiftShims
 @_silgen_name("swift_reflectionMirror_recursiveCount")
 private func getRecursiveChildCount(of: Any.Type) -> Int
 
-@_silgen_name("swift_reflectionMirror_recursiveChildMetadata")
-private func getChildMetadata(
-    of: Any.Type,
-    index: Int,
-    fieldMetadata: UnsafeMutablePointer<_FieldReflectionMetadata>
-) -> Any.Type
-
 @_silgen_name("swift_reflectionMirror_recursiveChildOffset")
 private func getChildOffset(of: Any.Type, index: Int) -> Int
+
+@_silgen_name("swift_reflectionMirror_subscript")
+private func getChild<T>(
+    of: T,
+    type: Any.Type,
+    index: Int,
+    outName: UnsafeMutablePointer<UnsafePointer<CChar>?>,
+    outFreeFunc: UnsafeMutablePointer<NameFreeFunc?>
+) -> Any
 
 /// Calls the given closure on every field of the specified type.
 ///
@@ -30,8 +32,8 @@ private func getChildOffset(of: Any.Type, index: Int) -> Int
 ///
 /// There are three runtime functions used to implement this:
 /// - `swift_reflectionMirror_recursiveCount(_:)`
-/// - `swift_reflectionMirror_recursiveChildMetadata(_:index:fieldMetadata:)`
 /// - `swift_reflectionMirror_recursiveChildOffset(_:index:)`
+/// - `swift_reflectionMirror_subscript(_:type:index:outName:outFreeFunc:)`
 ///
 /// All three of these are public runtime API/ABI, as noted by the docs for the
 /// [`SWIFT_RUNTIME_STDLIB_API`] C macro that they are annotated with.
@@ -39,27 +41,35 @@ private func getChildOffset(of: Any.Type, index: Int) -> Int
 /// - SeeAlso: The [original implementation] as of Swift 6.2.3.
 ///
 /// [by Combine]: https://forums.swift.org/t/how-is-the-published-property-wrapper-implemented/58223/11
-/// [original implementation]: https://github.com/swiftlang/swift/blob/swift-6.2.3-RELEASE/stdlib/public/core/ReflectionMirror.swift
+/// [original implementation]: https://github.com/swiftlang/swift/blob/swift-6.2.3-RELEASE/stdlib/public/core/ReflectionMirror.swift#L280-L284
 /// [`SWIFT_RUNTIME_STDLIB_API`]: https://github.com/swiftlang/swift/blob/swift-6.2.3-RELEASE/stdlib/public/SwiftShims/swift/shims/Visibility.h#L265-L267
 ///
 /// - Parameters:
 ///   - type: The type to inspect.
 ///   - body: A closure to call with information about each field in `type`.
 ///     The parameters to `body` are the name of the field, the offset of the
-///     field, and the type of the field.
-func forEachField(
-    of type: Any.Type,
-    body: (_ name: String?, _ offset: Int, _ type: Any.Type) -> Void
+///     field, and the field's value.
+func forEachField<Value>(
+    of value: Value,
+    body: (_ name: String?, _ offset: Int, _ field: Any) -> Void
 ) {
-    let childCount = getRecursiveChildCount(of: type)
+    let childCount = getRecursiveChildCount(of: Value.self)
     for index in 0..<childCount {
-        let offset = getChildOffset(of: type, index: index)
+        let offset = getChildOffset(of: Value.self, index: index)
 
-        var field = _FieldReflectionMetadata()
-        let childType = getChildMetadata(of: type, index: index, fieldMetadata: &field)
-        defer { field.freeFunc?(field.name) }
+        var name: UnsafePointer<CChar>? = nil
+        var freeFunc: NameFreeFunc? = nil
+        defer { freeFunc?(name) }
 
-        body(field.name.flatMap(String.init(validatingCString:)), offset, childType)
+        let childValue = getChild(
+            of: value,
+            type: Value.self,
+            index: index,
+            outName: &name,
+            outFreeFunc: &freeFunc
+        )
+
+        body(name.flatMap(String.init(validatingCString:)), offset, childValue)
     }
 }
 
