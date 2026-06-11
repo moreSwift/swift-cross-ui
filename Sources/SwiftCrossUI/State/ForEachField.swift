@@ -65,8 +65,13 @@ func forEachField(
     }
 }
 
+/// > Safety: You must ensure that the `Base` type has a stored property at `offset` with a type of
+/// > `Property` (or another type that can be safely bit-casted to `Property` for all possible
+/// > values); breaking these invariants will cause undefined behavior.
+@unsafe
 func getProperty<Base, Property>(_: Property.Type, of base: Base, at offset: Int) -> Property {
-    withUnsafeBytes(of: base) { buffer in
+    assert(offset + MemoryLayout<Property>.size <= MemoryLayout<Base>.size)
+    return withUnsafeBytes(of: base) { buffer in
         buffer.baseAddress!.advanced(by: offset)
             .assumingMemoryBound(to: Property.self)
             .pointee
