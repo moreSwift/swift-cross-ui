@@ -21,28 +21,26 @@ private func getChildOffset(of: Any.Type, index: Int) -> Int
 
 /// Calls the given closure on every field of the specified type.
 ///
-/// The standard library exposes a function named `_forEachField(of:options:body:)`,
-/// which calls directly into the runtime's reflection facilities in order to
-/// get the names and types of the provided value's stored properties, bypassing
-/// most of the `Mirror` overhead. However, it's annotated with `@_spi(Reflection)`,
-/// and most people's toolchain installations don't include the stdlib's SPI
-/// interfaces. So we have to reimplement this function ourselves.
+/// The standard library exposes a function named `_forEachField(of:options:body:)` (used
+/// [by Combine]), which calls directly into the runtime's reflection facilities in order to get
+/// the names and types of the provided value's stored properties, bypassing most of the `Mirror`
+/// overhead. However, it's annotated with `@_spi(Reflection)`, and most people's toolchain
+/// installations don't include the stdlib's SPI interfaces. So we have to reimplement this
+/// function ourselves.
 ///
 /// There are three runtime functions used to implement this:
 /// - `swift_reflectionMirror_recursiveCount(_:)`
 /// - `swift_reflectionMirror_recursiveChildMetadata(_:index:fieldMetadata:)`
 /// - `swift_reflectionMirror_recursiveChildOffset(_:index:)`
 ///
-/// All three of these have been present in the runtime for at least 6 years (probably
-/// longer), and since `_forEachField(of:options:body:)` is used [within Combine] (and
-/// presumably other Apple frameworks), it's fairly unlikely that either it or the
-/// functions it depends on (which are the same as shown above) will be removed any
-/// time soon.
+/// All three of these are public runtime API/ABI, as noted by the docs for the
+/// [`SWIFT_RUNTIME_STDLIB_API`] C macro that they are annotated with.
 ///
 /// - SeeAlso: The [original implementation] as of Swift 6.2.3.
 ///
-/// [within Combine]: https://forums.swift.org/t/how-is-the-published-property-wrapper-implemented/58223/11
+/// [by Combine]: https://forums.swift.org/t/how-is-the-published-property-wrapper-implemented/58223/11
 /// [original implementation]: https://github.com/swiftlang/swift/blob/swift-6.2.3-RELEASE/stdlib/public/core/ReflectionMirror.swift
+/// [`SWIFT_RUNTIME_STDLIB_API`]: https://github.com/swiftlang/swift/blob/swift-6.2.3-RELEASE/stdlib/public/SwiftShims/swift/shims/Visibility.h#L265-L267
 ///
 /// - Parameters:
 ///   - type: The type to inspect.
