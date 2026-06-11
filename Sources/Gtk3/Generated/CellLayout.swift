@@ -32,7 +32,15 @@ import CGtk3
 ///
 /// This is an example of a UI definition fragment specifying attributes:
 ///
-/// |[<!-- language="xml" --><object class="GtkCellView"><child><object class="GtkCellRendererText"/><attributes><attribute name="text">0</attribute></attributes></child></object>
+/// |[<!-- language="xml" -->
+/// <object class="GtkCellView">
+///     <child>
+///         <object class="GtkCellRendererText"/>
+///         <attributes>
+///             <attribute name="text">0</attribute>
+///         </attributes>
+///     </child>
+/// </object>
 /// ]|
 ///
 /// Furthermore for implementations of GtkCellLayout that use a #GtkCellArea

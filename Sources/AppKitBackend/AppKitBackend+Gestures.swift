@@ -158,8 +158,8 @@ final class NSCustomTapGestureTarget: NSView {
     @objc
     func longPress(sender: NSPressGestureRecognizer) {
         // GTK emits the event once as soon as the gesture is recognized.
-        // AppKit emits it twice, once when it's recognized and once when you release the mouse button.
-        // For consistency, ignore the second event.
+        // AppKit emits it twice, once when it's recognized and once when you
+        // release the mouse button. For consistency, ignore the second event.
         if sender.state != .ended {
             longPressHandler?()
         }

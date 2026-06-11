@@ -84,7 +84,7 @@ struct ContentView: View {
                     }
                     .padding(10)
                 }
-                if let error = error {
+                if let error {
                     Text(error)
                         .foregroundColor(.red)
                 }
@@ -122,7 +122,7 @@ struct ContentView: View {
             GeometryReader { proxy in
                 ScrollView {
                     VStack(alignment: .center) {
-                        if let selectedNote = selectedNote {
+                        if let selectedNote {
                             HStack(spacing: 4) {
                                 Text("Title")
                                 TextField("Title", text: selectedNote.title)

@@ -103,7 +103,18 @@ import CGtk
 /// An example of a `GtkDialog` UI definition fragment:
 ///
 /// ```xml
-/// <object class="GtkDialog" id="dialog1"><child type="action"><object class="GtkButton" id="button_cancel"/></child><child type="action"><object class="GtkButton" id="button_ok"></object></child><action-widgets><action-widget response="cancel">button_cancel</action-widget><action-widget response="ok" default="true">button_ok</action-widget></action-widgets></object>
+/// <object class="GtkDialog" id="dialog1">
+///     <child type="action">
+///         <object class="GtkButton" id="button_cancel"/>
+///     </child>
+///     <child type="action">
+///         <object class="GtkButton" id="button_ok"></object>
+///     </child>
+///     <action-widgets>
+///         <action-widget response="cancel">button_cancel</action-widget>
+///         <action-widget response="ok" default="true">button_ok</action-widget>
+///     </action-widgets>
+/// </object>
 /// ```
 ///
 /// # Accessibility

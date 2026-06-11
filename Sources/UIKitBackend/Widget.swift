@@ -342,11 +342,11 @@ class WrapperWidget<View: UIView>: BaseViewWidget {
 
 /// The root class for widgets who are passed their children on initialization.
 ///
-/// If a widget is passed an arbitrary child widget on initialization (as opposed to e.g. ``WrapperWidget``,
-/// which has a specific non-widget subview), it must be a view controller. If the widget is
-/// a view but the child is a controller, that child will not be connected to the parent view
-/// controller (as a view can't know what its controller will be during initialization). This
-/// widget handles setting up the responder chain during initialization.
+/// If a widget is passed an arbitrary child widget on initialization (as opposed to e.g.
+/// ``WrapperWidget``, which has a specific non-widget subview), it must be a view controller. If
+/// the widget is a view but the child is a controller, that child will not be connected to the
+/// parent view controller (as a view can't know what its controller will be during initialization).
+/// This widget handles setting up the responder chain during initialization.
 class ContainerWidget: BaseControllerWidget {
     let child: any WidgetProtocol
 

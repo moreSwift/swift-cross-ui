@@ -28,7 +28,22 @@ import CGtk
 /// elements.
 ///
 /// ```xml
-/// <menu id='app-menu'><section><item><attribute name='label' translatable='yes'>_New Window</attribute><attribute name='action'>app.new</attribute></item><item><attribute name='label' translatable='yes'>_About Sunny</attribute><attribute name='action'>app.about</attribute></item><item><attribute name='label' translatable='yes'>_Quit</attribute><attribute name='action'>app.quit</attribute></item></section></menu>
+/// <menu id='app-menu'>
+///     <section>
+///         <item>
+///             <attribute name='label' translatable='yes'>_New Window</attribute>
+///             <attribute name='action'>app.new</attribute>
+///         </item>
+///         <item>
+///             <attribute name='label' translatable='yes'>_About Sunny</attribute>
+///             <attribute name='action'>app.about</attribute>
+///         </item>
+///         <item>
+///             <attribute name='label' translatable='yes'>_Quit</attribute>
+///             <attribute name='action'>app.quit</attribute>
+///         </item>
+///     </section>
+/// </menu>
 /// ```
 ///
 /// Attribute values can be translated using gettext, like other `GtkBuilder`

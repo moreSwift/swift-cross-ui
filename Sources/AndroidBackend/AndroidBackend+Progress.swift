@@ -56,3 +56,4 @@ extension AndroidBackend: BackendFeatures.ProgressBars, BackendFeatures.Progress
         setSize(of: widget, to: size)
     }
 }
+// swiftlint:enable force_try

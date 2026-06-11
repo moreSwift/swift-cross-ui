@@ -76,7 +76,8 @@ extension PreferenceValues {
             }
         }
 
-        // For presentation modifiers, take the outer-most value (using child ordering to break ties).
+        // For presentation modifiers, take the outer-most value
+        // (using child ordering to break ties).
         presentationDetents = children.compactMap(\.presentationDetents).first
         presentationCornerRadius = children.compactMap(\.presentationCornerRadius).first
         presentationDragIndicatorVisibility =

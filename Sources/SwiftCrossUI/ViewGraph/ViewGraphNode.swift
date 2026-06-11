@@ -1,12 +1,14 @@
 import Foundation
 
+// NB: ViewGraphNode is implicitly Sendable due to the @MainActor annotation.
+
 /// A view graph node storing a view, its widget, and its children (likely a
 /// collection of more nodes).
 ///
 /// This is where updates are initiated when a view's state updates, and where state is persisted
 /// even when a view gets recomputed by its parent.
 @MainActor
-public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
+public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend> {
     /// The view's single widget for the entirety of its lifetime in the view graph.
     ///
     public var widget: Backend.Widget {

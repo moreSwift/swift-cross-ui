@@ -13,10 +13,10 @@ public class Pango {
         g_object_unref(UnsafeMutableRawPointer(pangoContext))
     }
 
-    /// Gets the size of the given text in pixels using the default font. If supplied, `proposedWidth`
-    /// acts as a suggested width. The text will attempt to take up less than or equal to the proposed
-    /// width but if the text wrapping strategy doesn't allow the text to become as small as required
-    /// than it may take up more the proposed width.
+    /// Gets the size of the given text in pixels using the default font. If supplied,
+    /// `proposedWidth` acts as a suggested width. The text will attempt to take up less than or
+    /// equal to the proposed width but if the text wrapping strategy doesn't allow the text to
+    /// become as small as required than it may take up more the proposed width.
     ///
     /// Uses the `PANGO_WRAP_WORD_CHAR` text wrapping mode.
     public func getTextSize(

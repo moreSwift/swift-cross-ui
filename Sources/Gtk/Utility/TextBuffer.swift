@@ -117,7 +117,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler8:
-        //     @convention(c) (UnsafeMutableRawPointer, GtkTextMark, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //        UnsafeMutableRawPointer, GtkTextMark, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<GtkTextMark>.run(data, value1)
         //         }
@@ -130,14 +132,23 @@ open class TextBuffer: GObject {
 
         // let handler9:
         //     @convention(c) (
-        //         UnsafeMutableRawPointer, UnsafeMutablePointer<GtkTextIter>, UnsafeMutablePointer<GtkTextMark>, UnsafeMutableRawPointer
+        //         UnsafeMutableRawPointer,
+        //         UnsafeMutablePointer<GtkTextIter>,
+        //         UnsafeMutablePointer<GtkTextMark>,
+        //         UnsafeMutableRawPointer
         //     ) -> Void =
         //         { _, value1, value2, data in
-        //             SignalBox2<UnsafeMutablePointer<GtkTextIter>, UnsafeMutablePointer<GtkTextMark>>.run(data, value1, value2)
+        //             SignalBox2<
+        //                 UnsafeMutablePointer<GtkTextIter>,
+        //                 UnsafeMutablePointer<GtkTextMark>
+        //             >.run(data, value1, value2)
         //         }
 
         // addSignal(name: "mark-set", handler: gCallback(handler9)) {
-        //     [weak self] (param0: UnsafeMutablePointer<GtkTextIter>, param1: UnsafeMutablePointer<GtkTextMark>) in
+        //     [weak self] (
+        //         param0: UnsafeMutablePointer<GtkTextIter>,
+        //         param1: UnsafeMutablePointer<GtkTextMark>
+        //     ) in
         //     guard let self else { return }
         //     self.markSet?(self, param0, param1)
         // }
@@ -148,7 +159,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler11:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }
@@ -186,7 +199,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler15:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }
@@ -198,7 +213,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler16:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }
@@ -210,7 +227,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler17:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }
@@ -222,7 +241,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler18:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }
@@ -234,7 +255,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler19:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }
@@ -246,7 +269,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler20:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }
@@ -258,7 +283,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler21:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }
@@ -390,7 +417,11 @@ open class TextBuffer: GObject {
     // /// See also:
     // /// [method@Gtk.TextBuffer.create_mark],
     // /// [method@Gtk.TextBuffer.move_mark].
-    // public var markSet: ((TextBuffer, UnsafeMutablePointer<GtkTextIter>, UnsafeMutablePointer<GtkTextMark>) -> Void)?
+    // public var markSet: ((
+    //    TextBuffer,
+    //    UnsafeMutablePointer<GtkTextIter>,
+    //    UnsafeMutablePointer<GtkTextMark>
+    // ) -> Void)?
 
     // /// Emitted when the modified bit of a `GtkTextBuffer` flips.
     // ///

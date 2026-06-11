@@ -18,12 +18,16 @@ extension HotReloadableAppMacro: PeerMacro {
             return [
                 """
                 @MainActor
-                var hotReloadingImportedEntryPoint: (@convention(c) (UnsafeRawPointer, Int) -> UnsafeMutableRawPointer)? = nil
+                var hotReloadingImportedEntryPoint:
+                    (@convention(c) (UnsafeRawPointer, Int) -> UnsafeMutableRawPointer)? = nil
                 """,
                 """
                 @MainActor
                 @_cdecl("hotReloadingExportedEntryPoint")
-                public func hotReloadingExportedEntryPoint(app: UnsafeRawPointer, viewId: Int) -> UnsafeMutableRawPointer {
+                public func hotReloadingExportedEntryPoint(
+                    app: UnsafeRawPointer,
+                    viewId: Int
+                ) -> UnsafeMutableRawPointer {
                     hotReloadingHasConnectedToServer = true
                     let app = app.assumingMemoryBound(to: \(raw: structDecl.identifier).self)
 
@@ -104,10 +108,15 @@ extension HotReloadableAppMacro: MemberMacro {
             }
 
             return [
-                """
+                #"""
                 func entryPoint(viewId: Int) -> SwiftCrossUI.HotReloadableView {
                     #if !canImport(SwiftBundlerRuntime)
-                        #error("Hot reloading requires importing SwiftBundlerRuntime from the swift-bundler package")
+                        #error(
+                            """
+                            Hot reloading requires importing SwiftBundlerRuntime from the \
+                            swift-bundler package
+                            """
+                        )
                     #endif
 
                     if !hotReloadingHasConnectedToServer {
@@ -120,7 +129,10 @@ extension HotReloadableAppMacro: MemberMacro {
                                     Task { @MainActor in
                                         guard let symbol = dylib.symbol(
                                             named: "hotReloadingExportedEntryPoint",
-                                            ofType: (@convention(c) (UnsafeRawPointer, Int) -> UnsafeMutableRawPointer).self
+                                            ofType: (
+                                                @convention(c) (UnsafeRawPointer, Int)
+                                                    -> UnsafeMutableRawPointer
+                                            ).self
                                         ) else {
                                             print("Hot reloading: Missing 'hotReloadingExportedEntryPoint' symbol")
                                             return
@@ -130,15 +142,15 @@ extension HotReloadableAppMacro: MemberMacro {
                                     }
                                 }
                             } catch {
-                                print("Hot reloading: \\(error)")
+                                print("Hot reloading: \(error)")
                             }
                         }
                     }
 
-                    \(raw: cases.map(\.description).joined(separator: "\n"))
-                    fatalError("Unknown viewId \\(viewId)")
+                    \#(raw: cases.map(\.description).joined(separator: "\n"))
+                    fatalError("Unknown viewId \(viewId)")
                 }
-                """,
+                """#,
                 """
                 static let hotReloadingExprIds: [ExprLocation: Int] = [
                     \(raw: exprIds.joined(separator: "\n"))

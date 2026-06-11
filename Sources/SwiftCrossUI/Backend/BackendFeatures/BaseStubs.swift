@@ -42,7 +42,8 @@ extension BackendFeatures {
             *,
             deprecated,
             message: """
-                'BaseStubs' should not be used in release builds, conform to 'BaseAppBackend' instead
+                'BaseStubs' should not be used in release builds, conform to 'BaseAppBackend' \
+                instead
                 """
         )
     #endif

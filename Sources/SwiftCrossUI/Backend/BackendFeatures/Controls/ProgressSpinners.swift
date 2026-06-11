@@ -12,7 +12,8 @@ extension BackendFeatures {
 
         /// Sets the size of a progress spinner.
         ///
-        /// This method exists because AppKitBackend requires special handling to resize progress spinners.
+        /// This method exists because AppKitBackend requires special handling to resize progress
+        /// spinners.
         ///
         /// The default implementation forwards to ``BackendFeatures/Widgets/setSize(of:to:)``.
         func setSize(

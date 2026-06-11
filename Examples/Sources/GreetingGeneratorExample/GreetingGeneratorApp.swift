@@ -53,7 +53,8 @@ struct GreetingGeneratorApp: App {
     }
 }
 
-/// This intermediate view exists to show the usage of custom environment keys. In reality it is not necessary.
+/// This intermediate view exists to show the usage of custom environment keys.
+/// In reality it is not necessary.
 struct LatestGreetingDisplay: View {
     @Environment(\.latestGreeting) var value: String?
 

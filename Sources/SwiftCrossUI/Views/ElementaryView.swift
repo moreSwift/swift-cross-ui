@@ -36,7 +36,8 @@ extension ElementaryView {
         asWidget(backend: backend)
     }
 
-    /// Do not implement yourself, implement ``ElementaryView/update(_:proposedSize:environment:backend:)`` instead.
+    /// Do not implement yourself, implement
+    /// ``ElementaryView/update(_:proposedSize:environment:backend:)`` instead.
     public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,

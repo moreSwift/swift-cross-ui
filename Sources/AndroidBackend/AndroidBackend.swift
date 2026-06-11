@@ -7,6 +7,7 @@ import AndroidBackendShim
 
 // Many force tries are required for the Android backend but we don't really want them
 // anywhere else so just disable the lint rule at a file level.
+// swiftlint:disable:next blanket_disable_command
 // swiftlint:disable force_try
 
 func log(_ message: String) {
@@ -251,7 +252,12 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         maximum maximumSize: SIMD2<Int>?
     ) {}
 
-    //    public func setBehaviors(ofWindow window: Void, closable: Bool, minimizable: Bool, resizable: Bool) {}
+    //    public func setBehaviors(
+    //        ofWindow window: Void,
+    //        closable: Bool,
+    //        minimizable: Bool,
+    //        resizable: Bool
+    //    ) {}
 
     public func setResizeHandler(
         ofWindow window: Window,

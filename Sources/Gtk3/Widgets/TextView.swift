@@ -27,7 +27,7 @@ import CGtk3
 ///
 /// If a context menu is opened, the window node will appear as a subnode
 /// of the main node.
-open class TextView: Container, Scrollable {
+open class TextView: Container, Scrollable { // swiftlint:disable:this type_body_length
     /// Create a text view with an empty text buffer.
     public init() {
         buffer = TextBuffer(table: nil)

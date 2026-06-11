@@ -4,6 +4,7 @@ import WindowsFoundation
 
 // Many force tries are required for the WinUI backend but we don't really want them
 // anywhere else so just disable the lint rule at a file level.
+// swiftlint:disable:next blanket_disable_command
 // swiftlint:disable force_try
 
 /// The context associated with an instance of ``Representable``.

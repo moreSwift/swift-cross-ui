@@ -15,11 +15,6 @@ struct CommandsModifier<Content: Scene>: Scene {
 
     var content: Content
     var commands: Commands
-
-    init(content: Content, commands: Commands) {
-        self.content = content
-        self.commands = commands
-    }
 }
 
 final class CommandsModifierNode<Content: Scene>: SceneGraphNode {

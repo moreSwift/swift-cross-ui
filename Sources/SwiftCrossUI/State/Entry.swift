@@ -1,6 +1,7 @@
 /// Creates an ``EnvironmentValues``, or ``AppStorageValues`` entry.
 ///
-/// You can create ``EnvironmentValues`` entries by extending the ``EnvironmentValues`` struct with `@Entry`-annotated properties:
+/// You can create ``EnvironmentValues`` entries by extending the ``EnvironmentValues`` struct with
+/// `@Entry`-annotated properties:
 /// ```swift
 /// extension EnvironmentValues {
 ///     @Entry var myCustomValue: String = "Default value"
@@ -8,7 +9,8 @@
 /// }
 /// ```
 ///
-/// You can create ``AppStorageValues`` entries by extending the ``AppStorageValues`` struct with `@Entry`-annotated properties:
+/// You can create ``AppStorageValues`` entries by extending the ``AppStorageValues`` struct with
+/// `@Entry`-annotated properties:
 /// ```swift
 /// extension AppStorageValues {
 ///     @Entry var myCustomValue: String = "Default value"

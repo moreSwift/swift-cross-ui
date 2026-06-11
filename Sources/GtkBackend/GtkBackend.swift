@@ -809,7 +809,7 @@ public final class GtkBackend:
         let ellipsize: EllipsizeMode
         if let widget = widget as? CustomLabel {
             ellipsize = widget.ellipsize
-        } else if let widget = widget as? TextView {
+        } else if widget is TextView {
             // We don't ellipsize multi-line text editors
             ellipsize = .none
         } else {
@@ -1488,7 +1488,7 @@ public final class GtkBackend:
         configure(chooser)
 
         chooser.registerSignals()
-        chooser.response = { (_: NativeDialog, response: Int) -> Void in
+        chooser.response = { (_: NativeDialog, response: Int) in
             // Release our intentional retain cycle which ironically only exists
             // because of this line. The retain cycle keeps the file chooser
             // around long enough for the user to respond (it gets released
@@ -1902,8 +1902,10 @@ public final class GtkBackend:
     }
 
     public func createSheet(content: Widget) -> Sheet {
-        // TODO: dismissing a sheet with nested sheets doesn't trigger the onDismiss handlers of the nested sheets
-        // TODO: dismissing a sheet with nested sheets causes the app to freeze/deadlock or something along those lines...
+        // TODO: dismissing a sheet with nested sheets doesn't trigger the onDismiss handlers of
+        //    the nested sheets
+        // TODO: dismissing a sheet with nested sheets causes the app to freeze/deadlock or
+        //    something along those lines...
 
         let sheet = Sheet()
         sheet.setChild(content)
@@ -2074,7 +2076,7 @@ final class TooltipContainer: Fixed {
                 deallocateText()
 
                 tooltip = .allocate(capacity: buf.count)
-                tooltip.initialize(from: buf)
+                _ = tooltip.initialize(from: buf)
             }
         }
 
@@ -2082,7 +2084,7 @@ final class TooltipContainer: Fixed {
     }
 
     private func deallocateText() {
-        if tooltip.count > 0 {
+        if !tooltip.isEmpty {
             tooltip.deinitialize()
             tooltip.deallocate()
         }
@@ -2095,7 +2097,8 @@ final class TooltipContainer: Fixed {
 // but I couldn't get the spin buttons to work. TODOs include:
 // - Fix the spin buttons
 // - Update the strings in the AM/PM picker when the locale changes
-// - Replace the calls to calendar.date(bySetting:value:of:) with something that actually does what we need
+// - Replace the calls to calendar.date(bySetting:value:of:) with something that actually does what
+//   we need
 // - Implement range when possible
 @available(macOS 13, *)
 final class TimePicker: Box {
@@ -2223,7 +2226,7 @@ final class TimePicker: Box {
         )
 
         if self.hourCycle == .oneToTwelve || self.hourCycle == .zeroToEleven {
-            if let amPmPicker {
+            if amPmPicker != nil {
                 // update strings if necessary
             } else {
                 amPmPicker = DropDown(strings: [calendar.amSymbol, calendar.pmSymbol])

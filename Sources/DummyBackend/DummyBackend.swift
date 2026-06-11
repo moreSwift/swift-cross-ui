@@ -3,11 +3,7 @@ import SwiftCrossUI
 
 public final class DummyBackend:
     BaseAppBackend,
-    BackendFeatures.IncomingURLs,
-    BackendFeatures.CornerRadius,
-    BackendFeatures.Tables,
-    BackendFeatures.Colors,
-    BackendFeatures.Windowing
+    BackendFeatures.IncomingURLs
 {
     public class Window {
         static let defaultSize = SIMD2<Int>(400, 200)
@@ -72,180 +68,11 @@ public final class DummyBackend:
         }
     }
 
-    public class Button: Widget {
-        public var label = ""
-        public var font: Font.Resolved?
-        public var action: (() -> Void)?
-    }
-
-    public class ToggleButton: Widget {
-        public var label = ""
-        public var font: Font.Resolved?
-        public var toggleHandler: ((Bool) -> Void)?
-        public var state = false
-    }
-
-    public class ToggleSwitch: Widget {
-        public var toggleHandler: ((Bool) -> Void)?
-        public var state = false
-
-        override public var naturalSize: SIMD2<Int> {
-            SIMD2(20, 10)
-        }
-    }
-
-    public class Checkbox: Widget {
-        public var toggleHandler: ((Bool) -> Void)?
-        public var state = false
-
-        override public var naturalSize: SIMD2<Int> {
-            SIMD2(10, 10)
-        }
-    }
-
-    public class Slider: Widget {
-        public var value: Double = 0
-        public var minimumValue: Double = 0
-        public var maximumValue: Double = 100
-        public var decimalPlaces = 1
-        public var changeHandler: ((Double) -> Void)?
-
-        override public var naturalSize: SIMD2<Int> {
-            SIMD2(20, 10)
-        }
-    }
-
-    public class TextField: Widget {
-        public var isSecure: Bool
-        public var value = ""
-        public var placeholder = ""
-        public var font: Font.Resolved?
-        public var changeHandler: ((String) -> Void)?
-        public var submitHandler: (() -> Void)?
-
-        init(isSecure: Bool) {
-            self.isSecure = isSecure
-        }
-    }
-
-    public class TextView: Widget {
-        public var content: String = ""
-        public var font: Font.Resolved?
-        public var color = Color.Resolved(red: 0.0, green: 0.0, blue: 0.0)
-    }
-
-    public class ImageView: Widget {
-        public var rgbaData: [UInt8] = []
-        public var pixelWidth = 0
-        public var pixelHeight = 0
-    }
-
-    public class Table: Widget {
-        public var rowCount = 0
-        public var columnLabels: [String] = []
-        public var cells: [Widget] = []
-        public var rowHeights: [Int] = []
-
-        public override func getChildren() -> [Widget] {
-            cells
-        }
-    }
-
     public class Container: Widget {
         public var children: [(widget: Widget, position: SIMD2<Int>)] = []
 
         public override func getChildren() -> [Widget] {
             children.map(\.widget)
-        }
-    }
-
-    public class ScrollContainer: Widget {
-        public var child: Widget
-        public var hasVerticalScrollBar = false
-        public var hasHorizontalScrollBar = false
-        public var bouncesVertically = false
-        public var bouncesHorizontally = false
-
-        public init(child: Widget) {
-            self.child = child
-        }
-
-        public override func getChildren() -> [Widget] {
-            [child]
-        }
-    }
-
-    public class SelectableListView: Widget {
-        public var items: [Widget] = []
-        public var rowHeights: [Int] = []
-        public var selectionHandler: ((Int) -> Void)?
-        public var selectedIndex: Int?
-
-        public override func getChildren() -> [Widget] {
-            items
-        }
-    }
-
-    public class Rectangle: Widget {
-        public var color = Color.Resolved(red: 0.0, green: 0.0, blue: 0.0, opacity: 0.0)
-    }
-
-    public class SplitView: Widget {
-        public var leadingChild: Widget
-        public var trailingChild: Widget
-
-        public var sidebarResizeHandler: (() -> Void)?
-
-        private var _sidebarWidth = 100
-
-        public var sidebarWidth: Int {
-            get {
-                _sidebarWidth
-            }
-            set {
-                var width = newValue
-                if let minimumSidebarWidth {
-                    width = max(minimumSidebarWidth, width)
-                }
-                if let maximumSidebarWidth {
-                    width = min(maximumSidebarWidth, width)
-                }
-                width = max(0, min(size.x, width))
-                _sidebarWidth = width
-            }
-        }
-
-        public var minimumSidebarWidth: Int? {
-            didSet {
-                if let minimumSidebarWidth {
-                    sidebarWidth = max(minimumSidebarWidth, sidebarWidth)
-                }
-            }
-        }
-
-        public var maximumSidebarWidth: Int? {
-            didSet {
-                if let maximumSidebarWidth {
-                    sidebarWidth = min(maximumSidebarWidth, sidebarWidth)
-                }
-            }
-        }
-
-        override public var size: SIMD2<Int> {
-            didSet {
-                if sidebarWidth > size.x {
-                    sidebarWidth = size.x
-                }
-            }
-        }
-
-        public init(leadingChild: Widget, trailingChild: Widget) {
-            self.leadingChild = leadingChild
-            self.trailingChild = trailingChild
-        }
-
-        public override func getChildren() -> [Widget] {
-            [leadingChild, trailingChild]
         }
     }
 
@@ -279,17 +106,6 @@ public final class DummyBackend:
 
     public func setTitle(ofWindow window: Window, to title: String) {
         window.title = title
-    }
-
-    public func setBehaviors(
-        ofWindow window: Window,
-        closable: Bool,
-        minimizable: Bool,
-        resizable: Bool
-    ) {
-        window.closable = closable
-        window.minimizable = minimizable
-        window.resizable = resizable
     }
 
     public func setChild(ofWindow window: Window, to child: Widget) {
@@ -328,14 +144,6 @@ public final class DummyBackend:
 
     public func activate(window: Window) {
         window.phase = .active
-    }
-
-    public func close(window: Window) {
-        window.closeHandler?()
-    }
-
-    public func setCloseHandler(ofWindow window: Window, to action: @escaping () -> Void) {
-        window.closeHandler = action
     }
 
     public func runInMainThread(action: @escaping @MainActor () -> Void) {
@@ -400,24 +208,101 @@ public final class DummyBackend:
         container.children.remove(at: index)
     }
 
-    public func createColorableRectangle() -> Widget {
-        Rectangle()
-    }
-
-    public func setColor(ofColorableRectangle widget: Widget, to color: Color.Resolved) {
-        (widget as! Rectangle).color = color
-    }
-
-    public func setCornerRadius(of widget: Widget, to radius: Int) {
-        widget.cornerRadius = radius
-    }
-
     public func naturalSize(of widget: Widget) -> SIMD2<Int> {
         widget.naturalSize
     }
 
     public func setSize(of widget: Widget, to size: SIMD2<Int>) {
         widget.size = size
+    }
+}
+
+// MARK: Containers
+extension DummyBackend {
+    public class ScrollContainer: Widget {
+        public var child: Widget
+        public var hasVerticalScrollBar = false
+        public var hasHorizontalScrollBar = false
+        public var bouncesVertically = false
+        public var bouncesHorizontally = false
+
+        public init(child: Widget) {
+            self.child = child
+        }
+
+        public override func getChildren() -> [Widget] {
+            [child]
+        }
+    }
+
+    public class SelectableListView: Widget {
+        public var items: [Widget] = []
+        public var rowHeights: [Int] = []
+        public var selectionHandler: ((Int) -> Void)?
+        public var selectedIndex: Int?
+
+        public override func getChildren() -> [Widget] {
+            items
+        }
+    }
+
+    public class SplitView: Widget {
+        public var leadingChild: Widget
+        public var trailingChild: Widget
+
+        public var sidebarResizeHandler: (() -> Void)?
+
+        private var _sidebarWidth = 100
+
+        public var sidebarWidth: Int {
+            get {
+                _sidebarWidth
+            }
+            set {
+                var width = newValue
+                if let minimumSidebarWidth {
+                    width = max(minimumSidebarWidth, width)
+                }
+                if let maximumSidebarWidth {
+                    width = min(maximumSidebarWidth, width)
+                }
+                width = max(0, min(size.x, width))
+                _sidebarWidth = width
+            }
+        }
+
+        public var minimumSidebarWidth: Int? {
+            didSet {
+                if let minimumSidebarWidth {
+                    sidebarWidth = max(minimumSidebarWidth, sidebarWidth)
+                }
+            }
+        }
+
+        public var maximumSidebarWidth: Int? {
+            didSet {
+                if let maximumSidebarWidth {
+                    sidebarWidth = min(maximumSidebarWidth, sidebarWidth)
+                }
+            }
+        }
+
+        override public var size: SIMD2<Int> {
+            didSet {
+                if sidebarWidth > size.x {
+                    sidebarWidth = size.x
+                }
+            }
+        }
+
+        public init(leadingChild: Widget, trailingChild: Widget) {
+            self.leadingChild = leadingChild
+            self.trailingChild = trailingChild
+        }
+
+        public override func getChildren() -> [Widget] {
+            [leadingChild, trailingChild]
+        }
     }
 
     public func createScrollContainer(for child: Widget) -> Widget {
@@ -501,6 +386,15 @@ public final class DummyBackend:
         splitView.minimumSidebarWidth = minimumWidth
         splitView.maximumSidebarWidth = maximumWidth
     }
+}
+
+// MARK: Text views
+extension DummyBackend {
+    public class TextView: Widget {
+        public var content: String = ""
+        public var font: Font.Resolved?
+        public var color = Color.Resolved(red: 0.0, green: 0.0, blue: 0.0)
+    }
 
     public func size(
         of text: String,
@@ -547,6 +441,15 @@ public final class DummyBackend:
         textView.color = environment.suggestedForegroundColor.resolve(in: environment)
         textView.font = environment.resolvedFont
     }
+}
+
+// MARK: Image views
+extension DummyBackend {
+    public class ImageView: Widget {
+        public var rgbaData: [UInt8] = []
+        public var pixelWidth = 0
+        public var pixelHeight = 0
+    }
 
     public func createImageView() -> Widget {
         ImageView()
@@ -567,31 +470,14 @@ public final class DummyBackend:
         imageView.pixelWidth = width
         imageView.pixelHeight = height
     }
+}
 
-    public func createTable() -> Widget {
-        Table()
-    }
-
-    public func setRowCount(ofTable table: Widget, to rows: Int) {
-        (table as! Table).rowCount = rows
-    }
-
-    public func setColumnLabels(
-        ofTable table: Widget,
-        to labels: [String],
-        environment: EnvironmentValues
-    ) {
-        (table as! Table).columnLabels = labels
-    }
-
-    public func setCells(
-        ofTable table: Widget,
-        to cells: [Widget],
-        withRowHeights rowHeights: [Int]
-    ) {
-        let table = table as! Table
-        table.cells = cells
-        table.rowHeights = rowHeights
+// MARK: Buttons
+extension DummyBackend {
+    public class Button: Widget {
+        public var label = ""
+        public var font: Font.Resolved?
+        public var action: (() -> Void)?
     }
 
     public func createButton() -> Widget {
@@ -607,6 +493,34 @@ public final class DummyBackend:
         let button = button as! Button
         button.label = label
         button.action = action
+    }
+}
+
+// MARK: Toggles/Checkboxes/Switches
+extension DummyBackend {
+    public class ToggleButton: Widget {
+        public var label = ""
+        public var font: Font.Resolved?
+        public var toggleHandler: ((Bool) -> Void)?
+        public var state = false
+    }
+
+    public class ToggleSwitch: Widget {
+        public var toggleHandler: ((Bool) -> Void)?
+        public var state = false
+
+        override public var naturalSize: SIMD2<Int> {
+            SIMD2(20, 10)
+        }
+    }
+
+    public class Checkbox: Widget {
+        public var toggleHandler: ((Bool) -> Void)?
+        public var state = false
+
+        override public var naturalSize: SIMD2<Int> {
+            SIMD2(10, 10)
+        }
     }
 
     public func createToggle() -> Widget {
@@ -660,6 +574,21 @@ public final class DummyBackend:
     public func setState(ofCheckbox checkboxWidget: Widget, to state: Bool) {
         (checkboxWidget as! Checkbox).state = state
     }
+}
+
+// MARK: Sliders
+extension DummyBackend {
+    public class Slider: Widget {
+        public var value: Double = 0
+        public var minimumValue: Double = 0
+        public var maximumValue: Double = 100
+        public var decimalPlaces = 1
+        public var changeHandler: ((Double) -> Void)?
+
+        override public var naturalSize: SIMD2<Int> {
+            SIMD2(20, 10)
+        }
+    }
 
     public func createSlider() -> Widget {
         Slider()
@@ -682,6 +611,22 @@ public final class DummyBackend:
 
     public func setValue(ofSlider slider: Widget, to value: Double) {
         (slider as! Slider).value = value
+    }
+}
+
+// MARK: Text fields / secure fields
+extension DummyBackend {
+    public class TextField: Widget {
+        public var isSecure: Bool
+        public var value = ""
+        public var placeholder = ""
+        public var font: Font.Resolved?
+        public var changeHandler: ((String) -> Void)?
+        public var submitHandler: (() -> Void)?
+
+        init(isSecure: Bool) {
+            self.isSecure = isSecure
+        }
     }
 
     public func createTextField() -> Widget {
@@ -737,10 +682,95 @@ public final class DummyBackend:
     public func getContent(ofSecureField secureField: Widget) -> String {
         getContent(ofTextField: secureField)
     }
+}
 
-    // MARK: - Unimplemented Features
-    // FIXME: Implement them so we can test them
+// MARK: Corner radii
+extension DummyBackend: BackendFeatures.CornerRadius {
+    public func setCornerRadius(of widget: Widget, to radius: Int) {
+        widget.cornerRadius = radius
+    }
+}
 
+// MARK: Tables
+extension DummyBackend: BackendFeatures.Tables {
+    public class Table: Widget {
+        public var rowCount = 0
+        public var columnLabels: [String] = []
+        public var cells: [Widget] = []
+        public var rowHeights: [Int] = []
+
+        public override func getChildren() -> [Widget] {
+            cells
+        }
+    }
+
+    public func createTable() -> Widget {
+        Table()
+    }
+
+    public func setRowCount(ofTable table: Widget, to rows: Int) {
+        (table as! Table).rowCount = rows
+    }
+
+    public func setColumnLabels(
+        ofTable table: Widget,
+        to labels: [String],
+        environment: EnvironmentValues
+    ) {
+        (table as! Table).columnLabels = labels
+    }
+
+    public func setCells(
+        ofTable table: Widget,
+        to cells: [Widget],
+        withRowHeights rowHeights: [Int]
+    ) {
+        let table = table as! Table
+        table.cells = cells
+        table.rowHeights = rowHeights
+    }
+}
+
+// MARK: Colors
+extension DummyBackend: BackendFeatures.Colors {
+    public class Rectangle: Widget {
+        public var color = Color.Resolved(red: 0.0, green: 0.0, blue: 0.0, opacity: 0.0)
+    }
+
+    public func createColorableRectangle() -> Widget {
+        Rectangle()
+    }
+
+    public func setColor(ofColorableRectangle widget: Widget, to color: Color.Resolved) {
+        (widget as! Rectangle).color = color
+    }
+}
+
+// MARK: Windowing
+extension DummyBackend: BackendFeatures.Windowing {
+    public func setBehaviors(
+        ofWindow window: Window,
+        closable: Bool,
+        minimizable: Bool,
+        resizable: Bool
+    ) {
+        window.closable = closable
+        window.minimizable = minimizable
+        window.resizable = resizable
+    }
+
+    public func close(window: Window) {
+        window.closeHandler?()
+    }
+
+    public func setCloseHandler(ofWindow window: Window, to action: @escaping () -> Void) {
+        window.closeHandler = action
+    }
+}
+
+// MARK: - Unimplemented Features
+// TODO: Implement them so we can test them
+extension DummyBackend {
     public func createPicker(style: SwiftCrossUI.BackendPickerStyle) -> Widget {
         fatalError("\(Self.self): \(#function) not implemented")
     }

@@ -30,7 +30,10 @@ public class AnyWidget {
     ) -> Backend.Widget {
         guard let widget = widget as? Backend.Widget else {
             fatalError(
-                "AnyWidget used with incompatible backend \(backend); widget type is \(type(of: widget))"
+                """
+                AnyWidget used with incompatible backend \(backend); widget type is \
+                \(type(of: widget))
+                """
             )
         }
         return widget
@@ -46,7 +49,10 @@ public class AnyWidget {
     public func into<T>() -> T {
         guard let widget = widget as? T else {
             fatalError(
-                "AnyWidget used with incompatible widget type \(T.self); actual widget type is \(type(of: widget))"
+                """
+                AnyWidget used with incompatible widget type \(T.self); actual widget type is \
+                \(type(of: widget))
+                """
             )
         }
         return widget

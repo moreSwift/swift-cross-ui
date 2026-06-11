@@ -1,5 +1,6 @@
 extension Font {
-    /// A dynamic text style based off [Apple's typography guidelines](https://developer.apple.com/design/human-interface-guidelines/typography).
+    /// A dynamic text style based off
+    /// [Apple's typography guidelines](https://developer.apple.com/design/human-interface-guidelines/typography).
     public enum TextStyle: Hashable, Sendable, CaseIterable, Codable {
         /// The font style for large titles.
         case largeTitle

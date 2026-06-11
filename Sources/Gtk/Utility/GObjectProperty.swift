@@ -4,6 +4,7 @@ import CGtk
     @available(*, unavailable)
     public var wrappedValue: Value {
         get { fatalError("This wrapper only works on instance properties of GObjectRepresentable") }
+        // swiftlint:disable:next unused_setter_value
         set { fatalError("This wrapper only works on instance properties of GObjectRepresentable") }
     }
 

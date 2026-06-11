@@ -1,3 +1,6 @@
+// swiftlint:disable:next blanket_disable_command
+// swiftlint:disable line_length
+
 // //
 // //  Copyright © 2017 Tomas Linhart. All rights reserved.
 // //

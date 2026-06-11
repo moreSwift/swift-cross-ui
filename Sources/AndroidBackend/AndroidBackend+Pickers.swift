@@ -94,3 +94,4 @@ extension AndroidBackend: BackendFeatures.Pickers {
         }
     }
 }
+// swiftlint:enable force_try

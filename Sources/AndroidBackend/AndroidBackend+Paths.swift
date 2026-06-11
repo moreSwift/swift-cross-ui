@@ -207,3 +207,4 @@ extension AndroidBackend: BackendFeatures.Paths {
         }
     }
 }
+// swiftlint:enable force_try

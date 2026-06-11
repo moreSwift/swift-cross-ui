@@ -86,7 +86,7 @@ public struct EntryMacro: AccessorMacro, PeerMacro {
                 stringLiteral: """
                     private struct `__Key_\(trimmedIdentifier)`: \(enclosingType.keyName) {
                         \(defaultValueDeclaration)\(nameDeclaration)
-                    } 
+                    }
                     """
             )
         ]
@@ -95,7 +95,7 @@ public struct EntryMacro: AccessorMacro, PeerMacro {
     private static func ensureValidApplication(
         context: some SwiftSyntaxMacros.MacroExpansionContext,
         declaration: some SwiftSyntax.DeclSyntaxProtocol
-    ) throws -> (
+    ) throws -> ( // swiftlint:disable:this large_tuple
         enclosingType: EnclosingType,
         identifier: String,
         defaultValueDeclaration: String
@@ -108,7 +108,10 @@ public struct EntryMacro: AccessorMacro, PeerMacro {
             )
         else {
             throw MacroError(
-                "@Entry-annotated properties must be direct children of EnvironmentValues or AppStorageValues extensions."
+                """
+                @Entry-annotated properties must be direct children of EnvironmentValues or \
+                AppStorageValues extensions.
+                """
             )
         }
 

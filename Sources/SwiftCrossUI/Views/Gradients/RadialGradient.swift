@@ -1,6 +1,7 @@
 /// A radial gradient.
 public struct RadialGradient: ElementaryView {
-    /// The gradient represented as an array of color stops, each having a parametric location value.
+    /// The gradient represented as an array of color stops, each having a parametric location
+    /// value.
     public let gradient: Gradient
     /// The radius at which the first gradient stop will be placed.
     ///

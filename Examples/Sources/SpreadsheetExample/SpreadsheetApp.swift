@@ -41,7 +41,7 @@ struct SpreadsheetApp: App {
             #hotReloadable {
                 VStack(spacing: 0) {
                     VStack {
-                        if let greeting = greeting {
+                        if let greeting {
                             Text(greeting)
                         } else {
                             Text("Pending greeting...")

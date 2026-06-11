@@ -29,7 +29,7 @@ public enum MenuImplementationStyle<Widget, Menu> {
     ///
     /// ## See Also
     /// - ``BackendFeatures/MenuButtons/menuImplementationStyle-4blzf``
-    /// - ``BackendFeatures/MenuButtons/menuImplementationStyle-136z8`` <!-- default implementation -->
+    /// - ``BackendFeatures/MenuButtons/menuImplementationStyle-136z8`` <!-- default impl -->
     case dynamicPopover(any BackendFeatures.PopoverMenus<Widget, Menu>)
     /// The backend requires menus to be constructed and attached to buttons
     /// ahead of time.
@@ -54,6 +54,6 @@ public enum MenuImplementationStyle<Widget, Menu> {
     ///
     /// ## See Also
     /// - ``BackendFeatures/MenuButtons/menuImplementationStyle-4blzf``
-    /// - ``BackendFeatures/MenuButtons/menuImplementationStyle-29bja`` <!-- default implementation -->
+    /// - ``BackendFeatures/MenuButtons/menuImplementationStyle-29bja`` <!-- default impl -->
     case menuButton(any BackendFeatures.AttachedMenus<Widget, Menu>)
 }

@@ -8,7 +8,7 @@ struct PlaylistCover: View {
 
     var body: some View {
         Group {
-            if let image = image {
+            if let image {
                 Image(image)
                     .resizable()
             } else {

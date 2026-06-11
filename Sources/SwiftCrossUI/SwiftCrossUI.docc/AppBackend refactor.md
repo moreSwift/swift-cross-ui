@@ -42,7 +42,7 @@ comprehensive-ish list of changes:
 - The backends themselves have been updated for the new organization. Here are the backend protocols
   each backend conforms to:
   - ``BaseAppBackend``: all backends
-    - ``BackendFeatures/Toggles`` is stubbed for UIKitBackend on all platforms;
+    - ``BackendFeatures/ToggleButtons`` is stubbed for UIKitBackend on all platforms;
       ``BackendFeatures/Sliders`` is stubbed for UIKitBackend on tvOS.
   - ``BackendFeatures/ApplicationMenus``: all backends except UIKitBackend (except for Mac Catalyst
     where it _is_ implemented)

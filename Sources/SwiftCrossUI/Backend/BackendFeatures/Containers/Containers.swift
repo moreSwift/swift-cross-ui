@@ -11,8 +11,8 @@ extension BackendFeatures {
     ///
     /// ### Constituent Protocols
     /// - ``ScrollContainers``
-    /// - ``SelectableListView``
-    /// - ``SplitView``
+    /// - ``SelectableListViews``
+    /// - ``SplitViews``
     public typealias Containers =
         ScrollContainers & SelectableListViews & SplitViews
 }

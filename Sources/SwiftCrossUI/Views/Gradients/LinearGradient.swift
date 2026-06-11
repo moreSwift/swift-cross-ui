@@ -1,6 +1,7 @@
 /// A linear gradient.
 public struct LinearGradient: ElementaryView {
-    /// The gradient represented as an array of color stops, each having a parametric location value.
+    /// The gradient represented as an array of color stops, each having a parametric location
+    /// value.
     public let gradient: Gradient
     /// The normalized point where the gradient begins, defined in the view's coordinate space.
     ///

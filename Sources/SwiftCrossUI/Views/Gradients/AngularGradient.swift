@@ -2,13 +2,15 @@
 ///
 /// Currently unsupported on WinUIBackend and GtkBackend.
 public struct AngularGradient: ElementaryView {
-    /// The gradient represented as an array of color stops, each having a parametric location value.
+    /// The gradient represented as an array of color stops, each having a parametric location
+    /// value.
     public let gradient: Gradient
     /// The normalized center point of the gradient in its coordinate space.
     public let center: UnitPoint
     /// The angle at which the gradient starts drawing. 0° is trailing center.
     public let startAngle: Angle
-    /// The angle at which the gradient stops drawing. Everything after is filled with the last used color.
+    /// The angle at which the gradient stops drawing. Everything after is filled with the last used
+    /// color.
     ///
     /// Ends 360° from ``AngularGradient/startAngle`` when `nil`.
     public let endAngle: Angle?
@@ -29,7 +31,8 @@ public struct AngularGradient: ElementaryView {
 
     /// Creates an angular gradient that completes a partial rotation.
     ///
-    /// For each ``Gradient.Stop``, a location of 0 corresponds to 0°, and a location of 1 corresponds to 360°.
+    /// For each ``Gradient/Stop``, a location of 0 corresponds to 0°, and a location of 1
+    /// corresponds to 360°.
     public init(
         gradient: Gradient,
         center: UnitPoint,
@@ -119,7 +122,8 @@ extension AngularGradient {
         )
     }
 
-    /// Creates an angular gradient from a collection of color stops that completes a partial rotation.
+    /// Creates an angular gradient from a collection of color stops that completes a partial
+    /// rotation.
     ///
     /// Stops are expected to be in 360° unit space.
     public init(

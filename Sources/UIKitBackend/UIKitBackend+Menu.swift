@@ -72,7 +72,8 @@ extension UIKitBackend {
 
         let children =
             if previousSections.isEmpty {
-                // There are no dividers; just return the current section to keep the menu tree flat.
+                // There are no dividers; just return the current section to
+                // keep the menu tree flat.
                 currentSection
             } else {
                 // Create a list of submenus, each with the displayInline option set so that they

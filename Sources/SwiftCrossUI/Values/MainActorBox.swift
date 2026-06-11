@@ -1,4 +1,5 @@
+// NB: Implicitly Sendable due to @MainActor.
 @MainActor
-struct MainActorBox<T>: Sendable {
+struct MainActorBox<T> {
     var value: T
 }

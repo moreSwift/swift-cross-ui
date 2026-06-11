@@ -12,6 +12,7 @@
 --wrap-arguments before-first
 --wrap-parameters before-first
 --indent-strings true
+--extension-acl on-declarations
 --rules blockComments, consecutiveBlankLines, \
         consecutiveSpaces, consistentSwitchCaseSpacing, \
         docCommentsBeforeModifiers, duplicateImports, \

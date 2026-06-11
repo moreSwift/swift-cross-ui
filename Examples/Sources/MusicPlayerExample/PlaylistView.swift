@@ -125,7 +125,7 @@ struct PlaylistView: View {
                 }
             }
         }.onAppear {
-            if playlist.name == "" {
+            if playlist.name.isEmpty {
                 isEditing = true
             }
         }

@@ -76,7 +76,10 @@ public struct EnvironmentValues {
         get {
             guard let value = observableObjects[ObjectIdentifier(T.self)] as? T? else {
                 let message =
-                    "EnvironmentValues type mismatch: value for key '\(T.self).self' doesn't match expected type '\(T.self)'"
+                    """
+                    EnvironmentValues type mismatch: value for key '\(T.self).self' doesn't match \
+                    expected type '\(T.self)'
+                    """
                 logger.critical("\(message)")
                 fatalError(message)
             }

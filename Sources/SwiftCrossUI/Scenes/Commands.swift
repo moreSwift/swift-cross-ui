@@ -7,10 +7,6 @@ public struct Commands {
 
     var menus: [CommandMenu]
 
-    init(menus: [CommandMenu]) {
-        self.menus = menus
-    }
-
     /// Overlays `newCommands` onto `self`.
     ///
     /// If top-level menus in `newCommands` and `self` have conflicting names,

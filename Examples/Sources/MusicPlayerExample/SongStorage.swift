@@ -35,9 +35,9 @@ class SongStorage: SwiftCrossUI.ObservableObject {
         )
 
         guard
-            let file = contents.filter({ file in
+            let file = contents.first(where: { file in
                 file.deletingPathExtension().lastPathComponent == id.uuidString
-            }).first
+            })
         else {
             throw MusicPlayerError(message: "File not found for song '\(id.uuidString)'")
         }

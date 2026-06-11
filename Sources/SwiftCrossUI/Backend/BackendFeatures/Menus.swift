@@ -49,7 +49,7 @@ extension BackendFeatures {
         /// Sets a button's label and menu.
         ///
         /// Only used when ``BackendFeatures/MenuButtons/menuImplementationStyle`` is
-        /// ``MenuImplementationStyle/menuButton``.
+        /// ``MenuImplementationStyle/menuButton(_:)``.
         ///
         /// - Parameters:
         ///   - button: The button to update.
@@ -70,7 +70,7 @@ extension BackendFeatures {
         /// Shows the popover menu at a position relative to the given widget.
         ///
         /// Only used when ``BackendFeatures/MenuButtons/menuImplementationStyle`` is
-        /// ``MenuImplementationStyle/dynamicPopover``.
+        /// ``MenuImplementationStyle/dynamicPopover(_:)``.
         ///
         /// - Parameters:
         ///   - menu: The menu to show.
@@ -136,7 +136,8 @@ extension BackendFeatures.MenuButtons {
         *,
         unavailable,
         message: """
-            you need to conform to one of 'PopoverMenus' or 'AttachedMenus' for full 'MenuButtons' conformance
+            you need to conform to one of 'PopoverMenus' or 'AttachedMenus' for full 'MenuButtons' \
+            conformance
             """
     )
     public var menuImplementationStyle: MenuImplementationStyle<Widget, Menu> {

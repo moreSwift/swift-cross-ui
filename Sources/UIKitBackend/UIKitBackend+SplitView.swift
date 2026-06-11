@@ -39,7 +39,8 @@ import UIKit
             }
         }
 
-        // This is just a flag so that we don't call resizeHandler twice in one pass through the run loop.
+        // This is just a flag so that we don't call resizeHandler twice in one
+        // pass through the run loop.
         var hasCalledResizeHandler = false {
             willSet {
                 if newValue {

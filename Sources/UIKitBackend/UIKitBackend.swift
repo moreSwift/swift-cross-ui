@@ -281,7 +281,8 @@ extension App {
 
 /// The root class for application delegates of SwiftCrossUI apps.
 ///
-/// In order to use a custom application delegate, pass your class to ``UIKitBackend/init(appDelegateClass:)``:
+/// In order to use a custom application delegate, pass your class to
+/// ``UIKitBackend/init(appDelegateClass:)``:
 ///
 /// ```swift
 /// import SwiftCrossUI
@@ -355,7 +356,8 @@ open class ApplicationDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    /// Asks the delegate to open a resource specified by a URL, and provides a dictionary of launch options.
+    /// Asks the delegate to open a resource specified by a URL, and provides a dictionary of launch
+    /// options.
     ///
     /// If you override this method in a subclass, you should call
     /// `super.application(app, open: url, options: options` at some point in your

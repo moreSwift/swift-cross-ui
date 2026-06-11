@@ -43,7 +43,7 @@ extension AppKitBackend {
                         .name
                     case .emailAddress:
                         .emailAddress
-                    case .text, .digits(_), .decimal(_):
+                    case .text, .digits, .decimal:
                         nil
                 }
         }
@@ -100,7 +100,7 @@ extension AppKitBackend {
                         .name
                     case .emailAddress:
                         .emailAddress
-                    case .text, .digits(_), .decimal(_):
+                    case .text, .digits, .decimal:
                         nil
                 }
         }
@@ -156,7 +156,7 @@ extension AppKitBackend {
                         .name
                     case .emailAddress:
                         .emailAddress
-                    case .text, .digits(_), .decimal(_):
+                    case .text, .digits, .decimal:
                         nil
                 }
         }

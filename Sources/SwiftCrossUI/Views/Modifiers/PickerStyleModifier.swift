@@ -10,7 +10,9 @@ extension View {
         EnvironmentModifier(self) { environment in
             if !style.isSupported(backend: environment.backend) {
                 assertionFailure(
-                    "Picker style \(style) not supported by backend \(type(of: environment.backend))"
+                    """
+                    Picker style \(style) not supported by backend \(type(of: environment.backend))
+                    """
                 )
                 return environment.with(\.pickerStyle, .automatic)
             }

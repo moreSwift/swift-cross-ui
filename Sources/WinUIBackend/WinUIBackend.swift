@@ -11,6 +11,7 @@ import Mutex
 
 // Many force tries are required for the WinUI backend but we don't really want them
 // anywhere else so just disable the lint rule at a file level.
+// swiftlint:disable:next blanket_disable_command
 // swiftlint:disable force_try
 
 extension App {
@@ -173,7 +174,8 @@ public final class WinUIBackend:
                 //   let iinspectable =
                 //       application.resources.lookup("ToggleSwitchPreContentMargin")!
                 //       as! WindowsFoundation.IInspectable
-                //   let pv: __ABI_Windows_Foundation.IPropertyValue = try! iinspectable.QueryInterface()
+                //   let pv: __ABI_Windows_Foundation.IPropertyValue =
+                //       try! iinspectable.QueryInterface()
                 //   let value = try! pv.GetDoubleImpl()
 
                 self.measurementTextBlock = (self.createTextView() as! TextBlock)
@@ -910,7 +912,7 @@ public final class WinUIBackend:
         listView.selectionMode = .single
         listView.selectionChanged.addHandler { [weak listView] _, _ in
             guard let listView else { return }
-            guard listView.selectedRanges.count > 0 else {
+            guard !listView.selectedRanges.isEmpty else {
                 return
             }
             let selection = Int(listView.selectedRanges[0]!.firstIndex)
@@ -1106,7 +1108,7 @@ public final class WinUIBackend:
 
             // Only update options past this point, otherwise the early return
             // will cause issues.
-            guard options.count > 0 else {
+            guard !options.isEmpty else {
                 picker.options = []
                 return
             }
@@ -1238,8 +1240,8 @@ public final class WinUIBackend:
             switch textField {
                 case is TextBox:
                     switch textContentType {
-                        case .decimal(_): .number
-                        case .digits(_): .digits
+                        case .decimal: .number
+                        case .digits: .digits
                         case .emailAddress: .emailSmtpAddress
                         case .name: .personalFullName
                         case .phoneNumber: .telephoneNumber
@@ -1248,7 +1250,7 @@ public final class WinUIBackend:
                     }
                 case is PasswordBox:
                     switch textContentType {
-                        case .digits(_): .numericPin
+                        case .digits: .numericPin
                         case .text: .password
                         default: nil
                     }
@@ -2046,7 +2048,10 @@ public final class WinUIBackend:
 
         if components.contains(.hourMinuteAndSecond) {
             print(
-                "DatePickerComponents.hourMinuteAndSecond is not supported in WinUIBackend. Falling back to .hourAndMinute."
+                """
+                DatePickerComponents.hourMinuteAndSecond is not supported in WinUIBackend. \
+                Falling back to .hourAndMinute.
+                """
             )
         }
 
@@ -2384,9 +2389,9 @@ final class CustomDatePicker: StackPanel {
 
         var discriminator: Discriminator {
             switch self {
-                case .calendarView(_): .calendarView
-                case .calendarDatePicker(_): .calendarDatePicker
-                case .datePicker(_): .datePicker
+                case .calendarView: .calendarView
+                case .calendarDatePicker: .calendarDatePicker
+                case .datePicker: .datePicker
             }
         }
     }

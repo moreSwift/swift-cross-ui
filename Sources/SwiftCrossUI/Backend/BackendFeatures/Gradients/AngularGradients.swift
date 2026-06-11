@@ -9,7 +9,8 @@ extension BackendFeatures {
         /// Updates the widget of an ``AngularGradient``.
         /// - Parameters:
         ///   - widget: The widget to update.
-        ///   - gradient: The SwiftCrossUI struct housing the information for the gradient's rendering.
+        ///   - gradient: The SwiftCrossUI struct housing the information for the gradient's
+        ///     rendering.
         ///   - size: The new size of the widget.
         ///   - environment: The widget's environment, used to resolve its colors.
         func updateAngularGradientWidget(

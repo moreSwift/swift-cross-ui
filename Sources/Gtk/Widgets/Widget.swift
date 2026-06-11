@@ -24,7 +24,7 @@ open class Widget: GObject {
         }
     }
 
-    func didMoveToParent() {
+    open func didMoveToParent() {
         removeSignals()
         registerSignals()
     }

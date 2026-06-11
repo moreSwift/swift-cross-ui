@@ -1,4 +1,5 @@
-/// A color gradient represented as an array of color stops, each having a normalized location value.
+/// A color gradient represented as an array of color stops, each having a normalized location
+/// value.
 public struct Gradient: Sendable, Hashable {
     /// The array of color stops, ordered by location.
     public var stops: [Gradient.Stop]
@@ -6,7 +7,8 @@ public struct Gradient: Sendable, Hashable {
     /// Creates a gradient from an array of color stops ordered by location.
     ///
     /// - Parameters:
-    ///   - stops: The stops of the Gradient. If no stop is passed, the gradient will be fully transparent.
+    ///   - stops: The stops of the Gradient. If no stop is passed, the gradient will be fully
+    ///     transparent.
     init(stops: [Gradient.Stop]) {
         guard let first = stops.first else {
             let invisible = Color.black.opacity(0)
@@ -35,8 +37,9 @@ public struct Gradient: Sendable, Hashable {
 
     /// Creates a gradient from an array of colors.
     /// - Parameters:
-    ///   - colors: The colors of the gradient. The gradient synthesizes its location values to evenly
-    ///     space the colors along the gradient. If no color is passed, the gradient will be fully transparent.
+    ///   - colors: The colors of the gradient. The gradient synthesizes its location values to
+    ///     evenly space the colors along the gradient. If no color is passed, the gradient will be
+    ///     fully transparent.
     init(colors: [Color]) {
         guard let first = colors.first else {
             let invisible = Color.black.opacity(0)

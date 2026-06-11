@@ -50,12 +50,13 @@ public protocol View {
     /// A view is represented by the same widget instance for the whole time
     /// that it's visible even if its content is changing; keep that in mind
     /// while deciding the structure of the widget. For example, a view
-    /// displaying one of two children should use ``BackendFeatures/GenericContainers/createContainer()``
-    /// to create a container for the displayed child instead of just directly
-    /// returning the widget of the currently displayed child (which would
-    /// result in you not being able to ever switch to displaying the other
-    /// child). This constraint significantly simplifies view implementations
-    /// without requiring widgets to be re-created after every single update.
+    /// displaying one of two children should use
+    /// ``BackendFeatures/GenericContainers/createContainer()`` to create a
+    /// container for the displayed child instead of just directly returning
+    /// the widget of the currently displayed child (which would result in you
+    /// not being able to ever switch to displaying the other child). This
+    /// constraint significantly simplifies view implementations without
+    /// requiring widgets to be re-created after every single update.
     ///
     /// - Parameters:
     ///   - children: The view's children.

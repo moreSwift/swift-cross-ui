@@ -112,7 +112,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler8:
-        //     @convention(c) (UnsafeMutableRawPointer, GtkTextMark, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, GtkTextMark, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<GtkTextMark>.run(data, value1)
         //         }
@@ -143,7 +145,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler11:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }
@@ -171,7 +175,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler13:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }
@@ -183,7 +189,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler14:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }
@@ -195,7 +203,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler15:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }
@@ -207,7 +217,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler16:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }
@@ -219,7 +231,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler17:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }
@@ -231,7 +245,9 @@ open class TextBuffer: GObject {
         // }
 
         // let handler18:
-        //     @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
+        //     @convention(c) (
+        //         UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
+        //     ) -> Void =
         //         { _, value1, data in
         //             SignalBox1<OpaquePointer>.run(data, value1)
         //         }

@@ -29,7 +29,7 @@ struct SongEditor: View {
         Binding {
             song.album ?? ""
         } set: { newValue in
-            song.album = newValue == "" ? nil : newValue
+            song.album = newValue.isEmpty ? nil : newValue
         }
     }
 
@@ -37,7 +37,7 @@ struct SongEditor: View {
         Binding {
             song.artist ?? ""
         } set: { newValue in
-            song.artist = newValue == "" ? nil : newValue
+            song.artist = newValue.isEmpty ? nil : newValue
         }
     }
 

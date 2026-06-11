@@ -18,7 +18,7 @@ public final class LVGLBackend: AppBackend {
         }
 
         func postCreationAction(_ action: @escaping (LVObject) -> Void) {
-            if let widget = widget {
+            if let widget {
                 action(widget)
             } else {
                 let create = createWithParent
@@ -31,7 +31,7 @@ public final class LVGLBackend: AppBackend {
         }
 
         func create(withParent parent: LVObject) -> LVObject {
-            if let widget = widget {
+            if let widget {
                 return widget
             }
 

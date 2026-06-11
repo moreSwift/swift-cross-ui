@@ -100,16 +100,14 @@ public struct Binding<Value> {
     /// - Parameter keyPath: A key path from this binding's value type.
     /// - Returns: A binding to the property referenced by `keyPath`.
     public subscript<T>(dynamicMember keyPath: WritableKeyPath<Value, T>) -> Binding<T> {
-        get {
-            Binding<T>(
-                get: {
-                    self.wrappedValue[keyPath: keyPath]
-                },
-                set: { newValue in
-                    self.wrappedValue[keyPath: keyPath] = newValue
-                }
-            )
-        }
+        Binding<T>(
+            get: {
+                self.wrappedValue[keyPath: keyPath]
+            },
+            set: { newValue in
+                self.wrappedValue[keyPath: keyPath] = newValue
+            }
+        )
     }
 
     /// Returns a new binding that will perform an action whenever it is used to set
@@ -119,7 +117,7 @@ public struct Binding<Value> {
     /// - Returns: A binding that calls `action` with the new value after
     ///   setting it.
     public func onChange(_ action: @escaping (Value) -> Void) -> Binding<Value> {
-        return Binding<Value>(
+        Binding<Value>(
             get: getValue,
             set: { newValue in
                 self.setValue(newValue)

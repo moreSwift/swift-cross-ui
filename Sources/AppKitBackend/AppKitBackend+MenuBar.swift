@@ -1,6 +1,17 @@
 import AppKit
 import SwiftCrossUI
 
+extension AppKitBackend {
+    public func setApplicationMenu(
+        _ submenus: [ResolvedMenu.Submenu],
+        environment: EnvironmentValues
+    ) {
+        MenuBar.setUpMenuBar(extraMenus: submenus.map {
+            Self.renderSubmenu($0, environment: environment)
+        })
+    }
+}
+
 @MainActor
 enum MenuBar {
     // You may notice that multiple different base types are used in the

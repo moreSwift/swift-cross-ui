@@ -1376,7 +1376,6 @@ public final class Gtk3Backend:
                     handleResult(.cancelled)
             }
         }
-
     }
 
     private func showFileChooserDialog(
@@ -1401,7 +1400,7 @@ public final class Gtk3Backend:
         configure(chooser)
 
         chooser.registerSignals()
-        chooser.response = { (_: NativeDialog, response: Int) -> Void in
+        chooser.response = { (_: NativeDialog, response: Int) in
             // Release our intentional retain cycle which ironically only exists
             // because of this line. The retain cycle keeps the file chooser
             // around long enough for the user to respond (it gets released
@@ -1492,7 +1491,6 @@ public final class Gtk3Backend:
         // We don't actually care about leaking backends, but might as well use
         // a weak reference anyway.
         drawingArea.doDraw = { [weak self] cairo in
-            let scaleFactor = path.scaleFactor
             guard let self, let path = path.path else {
                 return
             }
@@ -1819,7 +1817,7 @@ final class TooltipContainer: Fixed {
                 deallocateText()
 
                 tooltip = .allocate(capacity: buf.count)
-                tooltip.initialize(from: buf)
+                _ = tooltip.initialize(from: buf)
             }
         }
 
@@ -1827,7 +1825,7 @@ final class TooltipContainer: Fixed {
     }
 
     private func deallocateText() {
-        if tooltip.count > 0 {
+        if !tooltip.isEmpty {
             tooltip.deinitialize()
             tooltip.deallocate()
         }

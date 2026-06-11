@@ -5,7 +5,7 @@ extension BackendFeatures {
     ///
     /// ### Constituent Protocols
     /// - ``Buttons``
-    /// - ``Toggles``
+    /// - ``ToggleButtons``
     /// - ``Switches``
     /// - ``Checkboxes``
     /// - ``Sliders``

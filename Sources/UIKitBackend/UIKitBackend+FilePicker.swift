@@ -34,7 +34,8 @@
                 allowedTypes.append("public.directory")
             }
 
-            // TODO(#235): Respect fileDialogOptions.allowedContentTypes and fileDialogOptions.allowOtherContentTypes
+            // TODO(#235): Respect fileDialogOptions.allowedContentTypes
+            //   and fileDialogOptions.allowOtherContentTypes
             if openDialogOptions.allowSelectingFiles {
                 allowedTypes.append("public.data")
             }

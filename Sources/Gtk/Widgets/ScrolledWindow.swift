@@ -7,10 +7,6 @@ public class ScrolledWindow: Widget {
         self.init(gtk_scrolled_window_new())
     }
 
-    open override func didMoveToParent() {
-        super.didMoveToParent()
-    }
-
     @GObjectProperty(named: "min-content-width") public var minimumContentWidth: Int
     @GObjectProperty(named: "max-content-width") public var maximumContentWidth: Int
 

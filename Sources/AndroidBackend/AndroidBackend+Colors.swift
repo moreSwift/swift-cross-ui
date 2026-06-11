@@ -74,3 +74,4 @@ extension AndroidBackend: BackendFeatures.Colors {
         return SwiftCrossUI.Color.Resolved(fromColorInt: colorInt)
     }
 }
+// swiftlint:enable force_try

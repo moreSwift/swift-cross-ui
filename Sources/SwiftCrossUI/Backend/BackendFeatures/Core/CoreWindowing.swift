@@ -144,7 +144,7 @@ extension BackendFeatures {
         /// useful for color space handling.
         ///
         /// If the root environment change handler (set by
-        /// ``setRootEnvironmentChangeHandler(to:)``) needs to be called for
+        /// ``BackendFeatures/Core/setRootEnvironmentChangeHandler(to:)``) needs to be called for
         /// whatever reason, the backend can skip calling `action` since the
         /// window's environment will be recomputed anyway.
         ///

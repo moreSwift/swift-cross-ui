@@ -75,7 +75,8 @@ extension Slider {
 //         _ inspectionPoints: InspectionPoints = .onCreate,
 //         _ action: @escaping @MainActor @Sendable (UIView) -> Void
 //     ) -> some View {
-//         InspectView(child: self, inspectionPoints: inspectionPoints) { (view: any WidgetProtocol) in
+//         InspectView(child: self, inspectionPoints: inspectionPoints) {
+//             (view: any WidgetProtocol) in
 //             if let view = view as? UITableViewPicker {
 //                 action(view.child)
 //             } else if let view = view as? UIPickerViewPicker {

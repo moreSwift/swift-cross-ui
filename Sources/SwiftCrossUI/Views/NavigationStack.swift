@@ -1,5 +1,5 @@
-/// Type to indicate the root of the NavigationStack. This is internal to prevent root accidentally showing instead
-/// of a detail view.
+/// Type to indicate the root of the NavigationStack. This is internal to prevent root accidentally
+/// showing instead of a detail view.
 struct NavigationStackRootPath: Codable {}
 
 /// A view that displays a root view and enables you to present additional views
@@ -14,7 +14,10 @@ public struct NavigationStack<Detail: View>: View {
                 content
             } else {
                 fatalError(
-                    "Failed to find detail view for \"\(element)\", make sure you have called .navigationDestination for this type."
+                    """
+                    Failed to find detail view for \"\(element)\", make sure you have called \
+                    .navigationDestination for this type.
+                    """
                 )
             }
         } else {
@@ -120,7 +123,10 @@ public struct NavigationStack<Detail: View>: View {
     func childOrCrash(for element: some Codable) -> Detail {
         guard let child = child(element) else {
             fatalError(
-                "Failed to find detail view for \"\(element)\", make sure you have called .navigationDestination for this type."
+                """
+                Failed to find detail view for \"\(element)\", make sure you have called \
+                .navigationDestination for this type.
+                """
             )
         }
 

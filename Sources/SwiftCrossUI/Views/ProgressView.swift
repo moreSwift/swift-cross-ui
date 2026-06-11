@@ -204,10 +204,6 @@ struct ProgressBarView: ElementaryView {
 
     var value: Double?
 
-    init(value: Double?) {
-        self.value = value
-    }
-
     func asWidget<Backend: BaseAppBackend>(backend: Backend) -> Backend.Widget {
         backend.createProgressBar()
     }
