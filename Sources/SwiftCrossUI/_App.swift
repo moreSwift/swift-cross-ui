@@ -1,5 +1,4 @@
 import Foundation
-import PerceptionCore
 
 // TODO: This could possibly be renamed to ``SceneGraph`` now that that's basically the role
 //   it has taken on since introducing scenes.

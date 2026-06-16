@@ -186,8 +186,8 @@ let package = Package(
             .upToNextMajor(from: "1.5.0")
         ),
         .package(
-            url: "https://github.com/pointfreeco/swift-perception.git",
-            from: "2.0.10"
+            url: "https://github.com/moreSwift/swift-observation-polyfill",
+            branch: "main"
         ),
         // .package(
         //     url: "https://github.com/stackotter/TermKit",
@@ -211,7 +211,8 @@ let package = Package(
                 .product(name: "ImageFormats", package: "swift-image-formats"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Mutex", package: "swift-mutex"),
-                .product(name: "PerceptionCore", package: "swift-perception"),
+                .product(name: "ObservationPolyfillCore", package: "swift-observation-polyfill"),
+                .product(name: "ObservationPolyfill", package: "swift-observation-polyfill"),
             ],
             exclude: [
                 "Builders/ViewBuilder.swift.gyb",
