@@ -1,5 +1,5 @@
 import Foundation
-import PerceptionCore
+import ObservationPolyfillCore
 
 // TODO: Document State properly, this is an important type.
 // - It supports value types
@@ -72,7 +72,7 @@ extension State {
     // NB: Needed to prevent deprecation warnings for `Observable` types, which
     // *are* supported
     @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
-    public init(wrappedValue initialValue: Value) where Value: Observable & AnyObject {
+    public init(wrappedValue initialValue: Value) where Value: Observation.Observable & AnyObject {
         implementation = StateImpl(initialStorage: Storage(initialValue))
     }
     
@@ -81,7 +81,7 @@ extension State {
         // *are* supported
         // Causes a compilation error on Windows and Linux where Perceptible just
         // uses Observable under the hood.
-        public init(wrappedValue initialValue: Value) where Value: Perceptible & AnyObject {
+        public init(wrappedValue initialValue: Value) where Value: ObservationPolyfillCore.Observable & AnyObject {
             implementation = StateImpl(initialStorage: Storage(initialValue))
         }
     #endif

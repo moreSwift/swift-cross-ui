@@ -177,8 +177,8 @@ let package = Package(
             .upToNextMinor(from: "0.0.6")
         ),
         .package(
-            url: "https://github.com/pointfreeco/swift-perception.git",
-            from: "2.0.10"
+            url: "https://github.com/moreSwift/swift-observation-polyfill",
+            branch: "main"
         ),
         // .package(
         //     url: "https://github.com/stackotter/TermKit",
@@ -202,7 +202,8 @@ let package = Package(
                 .product(name: "ImageFormats", package: "swift-image-formats"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Mutex", package: "swift-mutex"),
-                .product(name: "PerceptionCore", package: "swift-perception"),
+                .product(name: "ObservationPolyfillCore", package: "swift-observation-polyfill"),
+                .product(name: "ObservationPolyfill", package: "swift-observation-polyfill"),
 
                 // This import is purely required to fix a linker issue and a plugin build
                 // error that occur on macOS when building for non-Android platforms now that

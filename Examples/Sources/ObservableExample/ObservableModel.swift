@@ -1,5 +1,5 @@
 import Foundation
-import Perception // Also works with `Observation`
+import SwiftCrossUI
 
 private var animalList = [
     "Dog",
@@ -24,14 +24,14 @@ private var animalList = [
     "Owl",
 ]
 
-@Perceptible // Also works with `@Observable`
+@Observable
 class ObservableModel {
     var automaticModeIsOn = false
     var windowTitle: String = "Window Title"
     var windowText: String = "Window Text"
     var view1Text: String = "View 1 Text"
     var view2Text: String = "View 2 Text"
-    @PerceptionIgnored private var automaticModeTask: Task<Void, any Error>?
+    @ObservationIgnored private var automaticModeTask: Task<Void, any Error>?
     
     func startAutomaticMode() {
         guard !automaticModeIsOn else { return }

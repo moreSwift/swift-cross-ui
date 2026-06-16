@@ -1,5 +1,4 @@
 import Foundation
-import PerceptionCore
 
 /// Holds the view graph and window handle for a single window.
 @MainActor

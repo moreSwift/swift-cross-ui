@@ -1,5 +1,5 @@
 import Foundation
-import PerceptionCore
+import ObservationPolyfillCore
 
 /// This protocol can be adopted by classes responsible for handling part of the stateful hierarchy. It makes
 /// it easy to automatically update the view when observable models change.
@@ -55,7 +55,7 @@ extension ModelObserver {
     ) -> Result {
         let perceptionTrackingID = UUID()
         self.currentViewModelObservationID = perceptionTrackingID
-        return withPerceptionTracking {
+        return ObservationPolyfillCore.withObservationTracking {
             computation()
         } onChange: { [backend, weak self] in
             backend.runInMainThread {
