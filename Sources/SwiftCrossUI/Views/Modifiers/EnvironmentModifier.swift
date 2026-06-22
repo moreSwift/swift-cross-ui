@@ -50,6 +50,12 @@ package struct EnvironmentModifier<Child: View>: View {
             backend: backend
         )
     }
+
+    public var _asMenuItems: [MenuItem] {
+        self.body._asMenuItems.map { menuItem in
+            .modifiedEnvironment({ menuItem }, { self.modification })
+        }
+    }
 }
 
 extension View {

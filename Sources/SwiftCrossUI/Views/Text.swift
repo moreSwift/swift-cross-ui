@@ -57,6 +57,9 @@ public struct Text: Sendable {
 }
 
 extension Text: View {
+    public var _asMenuItems: [MenuItem] {
+        [.text(self)]
+    }
 }
 
 extension Text: ElementaryView {

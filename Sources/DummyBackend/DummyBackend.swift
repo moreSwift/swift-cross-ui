@@ -414,6 +414,10 @@ public final class DummyBackend:
         (widget as! Rectangle).color = color
     }
 
+    public func createCornerRadiusContainer(wrapping child: Widget) -> Widget {
+        child
+    }
+
     public func setCornerRadius(of widget: Widget, to radius: Int) {
         widget.cornerRadius = radius
     }

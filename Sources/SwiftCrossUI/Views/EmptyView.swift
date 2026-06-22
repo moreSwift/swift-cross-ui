@@ -61,6 +61,8 @@ public struct EmptyView: View, Sendable {
         environment: EnvironmentValues,
         backend: Backend
     ) {}
+
+    public var _asMenuItems: [MenuItem] { [] }
 }
 
 /// The children of a node with no children.
@@ -78,7 +80,5 @@ extension Never: View {
         return fatalError("Rendered Never")
     }
 
-    public init() {
-        fatalError("Cannot create never")
-    }
+    public var _asMenuItems: [MenuItem] { [] }
 }

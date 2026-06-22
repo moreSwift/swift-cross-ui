@@ -1,40 +1,77 @@
 package dev.swiftcrossui.androidbackend
 
 import android.app.Activity
-import android.util.Log
+import android.graphics.Canvas
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 
-class CustomEditText(
-    val activity: Activity,
-    var onChange: SwiftAction? = null,
-    var onSubmit: SwiftAction? = null,
-) : EditText(activity) {
+open class CustomEditText(activity: Activity) : EditText(activity) {
+    var onChange: SwiftAction? = null
+
+    private var onSubmit: SwiftAction? = null
+
+    // EditText calls onTextChanged with empty string multiple times before the initial render.
+    // Because it's multiple times, we can't just use a one-time flag that's cleared in
+    // onTextChanged. However, they all seem to happen before the first onDraw, so we can clear it
+    // there.
+    private var hasBeenRendered = false
+
+    private var isSettingText = false
+
+    private fun isSubmitAction(action: Int) =
+        action == EditorInfo.IME_ACTION_SEND ||
+            action == EditorInfo.IME_ACTION_GO ||
+            action == EditorInfo.IME_ACTION_SEARCH
+
     init {
         setOnEditorActionListener { v, actionId, event ->
-            Log.i("CustomEditText", "Editor action!")
-            if (
-                actionId == EditorInfo.IME_ACTION_SEND ||
-                    actionId == EditorInfo.IME_ACTION_GO ||
-                    actionId == EditorInfo.IME_ACTION_SEARCH
-            ) {
-                Log.i("CustomEditText", "Submit")
+            val action =
+                if (actionId == EditorInfo.IME_NULL) v.imeOptions and EditorInfo.IME_MASK_ACTION
+                else actionId
+
+            if (isSubmitAction(action)) {
                 onSubmit?.call()
-                true
+                onSubmit != null
             } else {
                 false
             }
         }
     }
 
-    override fun onTextChanged(
+    fun setOnSubmit(value: SwiftAction?) {
+        onSubmit = value
+        if (value != null) {
+            val currentOptions = imeOptions
+            if (!isSubmitAction(currentOptions and EditorInfo.IME_MASK_ACTION)) {
+                imeOptions =
+                    (currentOptions and EditorInfo.IME_MASK_ACTION.inv()) or
+                        EditorInfo.IME_ACTION_GO
+            }
+        }
+    }
+
+    fun setTextFromSwift(text: String) {
+        isSettingText = true
+        try {
+            setText(text as CharSequence)
+        } finally {
+            isSettingText = false
+        }
+    }
+
+    protected override fun onDraw(canvas: Canvas) {
+        hasBeenRendered = true
+        super.onDraw(canvas)
+    }
+
+    protected override fun onTextChanged(
         text: CharSequence,
         start: Int,
         lengthBefore: Int,
         lengthAfter: Int,
     ) {
-        Log.i("CustomEditText", "Text changed!")
-        Log.i("CustomEditText", getText().toString())
-        onChange?.call()
+        if (!isSettingText && hasBeenRendered) {
+            onChange?.call()
+        }
     }
 }

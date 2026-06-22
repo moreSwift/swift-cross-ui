@@ -38,6 +38,10 @@ extension ForEach: TypeSafeView, View where Child: View {
         return EmptyView()
     }
 
+    public var _asMenuItems: [MenuItem] {
+        elements.map(child).flatMap(\._asMenuItems)
+    }
+
     func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
@@ -421,52 +425,6 @@ extension ForEach where ID == Int {
         self.elements = elements
         self.child = child
         self.idKeyPath = nil
-    }
-}
-
-extension ForEach where Child == [MenuItem], ID == Int {
-    /// Creates a view that creates child views on demand based on a collection of data.
-    @available(
-        *,
-        deprecated,
-        message: """
-            ForEach requires an explicit 'id' parameter for non-Identifiable \
-            elements to correctly persist state across view updates
-            """
-    )
-    @_disfavoredOverload
-    public init(
-        menuItems elements: Items,
-        @MenuItemsBuilder _ child: @escaping (Items.Element) -> [MenuItem]
-    ) {
-        self.elements = elements
-        self.child = child
-        self.idKeyPath = nil
-    }
-}
-
-extension ForEach where Child == [MenuItem] {
-    /// Creates a view that creates child views on demand based on a collection of data.
-    public init(
-        menuItems elements: Items,
-        id keyPath: KeyPath<Items.Element, ID>,
-        @MenuItemsBuilder _ child: @escaping (Items.Element) -> [MenuItem]
-    ) {
-        self.elements = elements
-        self.child = child
-        self.idKeyPath = keyPath
-    }
-}
-
-extension ForEach where Items.Element: Identifiable, Child == [MenuItem], ID == Items.Element.ID {
-    /// Creates a view that creates child views on demand based on a collection of data.
-    public init(
-        menuItems elements: Items,
-        @MenuItemsBuilder _ child: @escaping (Items.Element) -> [MenuItem]
-    ) {
-        self.elements = elements
-        self.child = child
-        self.idKeyPath = \.id
     }
 }
 

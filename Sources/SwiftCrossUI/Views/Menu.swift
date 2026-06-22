@@ -15,9 +15,10 @@ public struct Menu {
     /// - Parameters:
     ///   - label: The menu's label.
     ///   - items: The menu's items.
-    public init(_ label: String, @MenuItemsBuilder items: () -> [MenuItem]) {
+    @MainActor
+    public init(_ label: String, @ViewBuilder items: () -> some View) {
         self.label = label
-        self.items = items()
+        self.items = items()._asMenuItems
     }
 
     /// Resolves the menu to a representation used by backends.
@@ -61,6 +62,8 @@ public struct Menu {
 @available(iOS 14, macCatalyst 14, tvOS 17, *)
 extension Menu: TypeSafeView {
     public var body: EmptyView { return EmptyView() }
+
+    public var _asMenuItems: [MenuItem] { [.submenu(self)] }
 
     func children<Backend: BaseAppBackend>(
         backend: Backend,

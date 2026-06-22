@@ -11,6 +11,9 @@ public struct OptionalView<V: View> {
 }
 
 extension OptionalView: View {
+    public var _asMenuItems: [MenuItem] {
+        view?._asMenuItems ?? []
+    }
 }
 
 extension OptionalView: TypeSafeView {

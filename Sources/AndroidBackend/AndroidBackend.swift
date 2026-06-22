@@ -418,7 +418,6 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
 
     public func createSimpleButton() -> Widget {
         AndroidKit.Button(Self.activity, environment: Self.env)
-            .as(AndroidKit.View.self)!
     }
 
     /// Converts a Swift String to a Java CharSequence.
@@ -442,48 +441,8 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         getTextStyle(from: environment).apply(to: button)
     }
 
-    public func createTextField() -> Widget {
-        CustomEditText(activity: Self.activity, environment: Self.env)
-            .as(AndroidKit.View.self)!
-    }
-
-    public func updateTextField(
-        _ textField: Widget,
-        placeholder: String,
-        environment: EnvironmentValues,
-        onChange: @escaping (String) -> Void,
-        onSubmit: @escaping () -> Void
-    ) {
-        // TODO(stackotter): Handle environment
-        let textField = textField.as(CustomEditText.self)!
-        textField.as(AndroidKit.TextView.self)!.setHint(charSequence(from: placeholder))
-        textField.setOnChange(
-            SwiftAction(environment: Self.env) {
-                // Don't take textField as a weak reference, because otherwise it
-                // gets dropped immediately (it's not actually held anywhere; it's
-                // just a wrapper around a Java class instance). This doesn't cause
-                // a reference cycle because textField doesn't hold the SwiftAction,
-                // (Java does).
-                let content = textField.as(AndroidKit.TextView.self)!.getText().toString()
-                onChange(content)
-            }
-        )
-        textField.setOnSubmit(SwiftAction(environment: Self.env, action: onSubmit))
-    }
-
-    public func setContent(ofTextField textField: Widget, to content: String) {
-        let textField = textField.as(AndroidKit.TextView.self)!
-        textField.setText(charSequence(from: content))
-    }
-
-    public func getContent(ofTextField textField: Widget) -> String {
-        let textField = textField.as(AndroidKit.TextView.self)!
-        return textField.getText().toString()
-    }
-
     public func createTextView() -> Widget {
         AndroidKit.TextView(Self.activity, environment: Self.env)
-            .as(AndroidKit.View.self)!
     }
 
     public func updateTextView(

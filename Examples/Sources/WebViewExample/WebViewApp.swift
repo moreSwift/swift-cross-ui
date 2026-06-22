@@ -26,12 +26,11 @@ struct WebViewApp: App {
             #hotReloadable {
                 VStack {
                     HStack {
-                        #if !canImport(AndroidBackend)
-                            TextField("URL", text: $urlInput)
-                                .onSubmit {
-                                    go(urlInput)
-                                }
-                        #endif
+                        TextField("URL", text: $urlInput)
+                            .textContentType(.url)
+                            .onSubmit {
+                                go(urlInput)
+                            }
 
                         Button("Go") {
                             go(urlInput)

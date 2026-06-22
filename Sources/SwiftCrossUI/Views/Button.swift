@@ -62,6 +62,10 @@ public struct Button<Label: View> {
 
 @MainActor
 extension Button: TypeSafeView {
+	public var _asMenuItems: [MenuItem] {
+        [.button(self)]
+    }
+
     public var body: TupleView1<Label> {
         label()
     }

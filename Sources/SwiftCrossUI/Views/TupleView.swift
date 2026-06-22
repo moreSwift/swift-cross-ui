@@ -95,6 +95,11 @@ public struct TupleView1<
 
 extension TupleView1: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        return result
+    }
 }
 
 extension TupleView1: TupleView {
@@ -144,6 +149,12 @@ public struct TupleView2<
 
 extension TupleView2: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        return result
+    }
 }
 
 extension TupleView2: TupleView {
@@ -196,6 +207,13 @@ public struct TupleView3<
 
 extension TupleView3: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        return result
+    }
 }
 
 extension TupleView3: TupleView {
@@ -251,6 +269,14 @@ public struct TupleView4<
 
 extension TupleView4: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        return result
+    }
 }
 
 extension TupleView4: TupleView {
@@ -309,6 +335,15 @@ public struct TupleView5<
 
 extension TupleView5: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        return result
+    }
 }
 
 extension TupleView5: TupleView {
@@ -371,6 +406,16 @@ public struct TupleView6<
 
 extension TupleView6: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        return result
+    }
 }
 
 extension TupleView6: TupleView {
@@ -436,6 +481,17 @@ public struct TupleView7<
 
 extension TupleView7: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        result += view6._asMenuItems
+        return result
+    }
 }
 
 extension TupleView7: TupleView {
@@ -505,6 +561,18 @@ public struct TupleView8<
 
 extension TupleView8: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        result += view6._asMenuItems
+        result += view7._asMenuItems
+        return result
+    }
 }
 
 extension TupleView8: TupleView {
@@ -577,6 +645,19 @@ public struct TupleView9<
 
 extension TupleView9: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        result += view6._asMenuItems
+        result += view7._asMenuItems
+        result += view8._asMenuItems
+        return result
+    }
 }
 
 extension TupleView9: TupleView {
@@ -662,6 +743,20 @@ public struct TupleView10<
 
 extension TupleView10: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        result += view6._asMenuItems
+        result += view7._asMenuItems
+        result += view8._asMenuItems
+        result += view9._asMenuItems
+        return result
+    }
 }
 
 extension TupleView10: TupleView {
@@ -752,6 +847,21 @@ public struct TupleView11<
 
 extension TupleView11: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        result += view6._asMenuItems
+        result += view7._asMenuItems
+        result += view8._asMenuItems
+        result += view9._asMenuItems
+        result += view10._asMenuItems
+        return result
+    }
 }
 
 extension TupleView11: TupleView {
@@ -846,6 +956,22 @@ public struct TupleView12<
 
 extension TupleView12: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        result += view6._asMenuItems
+        result += view7._asMenuItems
+        result += view8._asMenuItems
+        result += view9._asMenuItems
+        result += view10._asMenuItems
+        result += view11._asMenuItems
+        return result
+    }
 }
 
 extension TupleView12: TupleView {
@@ -944,6 +1070,23 @@ public struct TupleView13<
 
 extension TupleView13: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        result += view6._asMenuItems
+        result += view7._asMenuItems
+        result += view8._asMenuItems
+        result += view9._asMenuItems
+        result += view10._asMenuItems
+        result += view11._asMenuItems
+        result += view12._asMenuItems
+        return result
+    }
 }
 
 extension TupleView13: TupleView {
@@ -1048,6 +1191,24 @@ public struct TupleView14<
 
 extension TupleView14: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        result += view6._asMenuItems
+        result += view7._asMenuItems
+        result += view8._asMenuItems
+        result += view9._asMenuItems
+        result += view10._asMenuItems
+        result += view11._asMenuItems
+        result += view12._asMenuItems
+        result += view13._asMenuItems
+        return result
+    }
 }
 
 extension TupleView14: TupleView {
@@ -1156,6 +1317,25 @@ public struct TupleView15<
 
 extension TupleView15: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        result += view6._asMenuItems
+        result += view7._asMenuItems
+        result += view8._asMenuItems
+        result += view9._asMenuItems
+        result += view10._asMenuItems
+        result += view11._asMenuItems
+        result += view12._asMenuItems
+        result += view13._asMenuItems
+        result += view14._asMenuItems
+        return result
+    }
 }
 
 extension TupleView15: TupleView {
@@ -1270,6 +1450,26 @@ public struct TupleView16<
 
 extension TupleView16: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        result += view6._asMenuItems
+        result += view7._asMenuItems
+        result += view8._asMenuItems
+        result += view9._asMenuItems
+        result += view10._asMenuItems
+        result += view11._asMenuItems
+        result += view12._asMenuItems
+        result += view13._asMenuItems
+        result += view14._asMenuItems
+        result += view15._asMenuItems
+        return result
+    }
 }
 
 extension TupleView16: TupleView {
@@ -1388,6 +1588,27 @@ public struct TupleView17<
 
 extension TupleView17: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        result += view6._asMenuItems
+        result += view7._asMenuItems
+        result += view8._asMenuItems
+        result += view9._asMenuItems
+        result += view10._asMenuItems
+        result += view11._asMenuItems
+        result += view12._asMenuItems
+        result += view13._asMenuItems
+        result += view14._asMenuItems
+        result += view15._asMenuItems
+        result += view16._asMenuItems
+        return result
+    }
 }
 
 extension TupleView17: TupleView {
@@ -1510,6 +1731,28 @@ public struct TupleView18<
 
 extension TupleView18: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        result += view6._asMenuItems
+        result += view7._asMenuItems
+        result += view8._asMenuItems
+        result += view9._asMenuItems
+        result += view10._asMenuItems
+        result += view11._asMenuItems
+        result += view12._asMenuItems
+        result += view13._asMenuItems
+        result += view14._asMenuItems
+        result += view15._asMenuItems
+        result += view16._asMenuItems
+        result += view17._asMenuItems
+        return result
+    }
 }
 
 extension TupleView18: TupleView {
@@ -1636,6 +1879,29 @@ public struct TupleView19<
 
 extension TupleView19: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        result += view6._asMenuItems
+        result += view7._asMenuItems
+        result += view8._asMenuItems
+        result += view9._asMenuItems
+        result += view10._asMenuItems
+        result += view11._asMenuItems
+        result += view12._asMenuItems
+        result += view13._asMenuItems
+        result += view14._asMenuItems
+        result += view15._asMenuItems
+        result += view16._asMenuItems
+        result += view17._asMenuItems
+        result += view18._asMenuItems
+        return result
+    }
 }
 
 extension TupleView19: TupleView {
@@ -1767,6 +2033,30 @@ public struct TupleView20<
 
 extension TupleView20: View {
     public typealias Content = EmptyView
+    public var _asMenuItems: [MenuItem] {
+        var result: [MenuItem] = []
+        result += view0._asMenuItems
+        result += view1._asMenuItems
+        result += view2._asMenuItems
+        result += view3._asMenuItems
+        result += view4._asMenuItems
+        result += view5._asMenuItems
+        result += view6._asMenuItems
+        result += view7._asMenuItems
+        result += view8._asMenuItems
+        result += view9._asMenuItems
+        result += view10._asMenuItems
+        result += view11._asMenuItems
+        result += view12._asMenuItems
+        result += view13._asMenuItems
+        result += view14._asMenuItems
+        result += view15._asMenuItems
+        result += view16._asMenuItems
+        result += view17._asMenuItems
+        result += view18._asMenuItems
+        result += view19._asMenuItems
+        return result
+    }
 }
 
 extension TupleView20: TupleView {

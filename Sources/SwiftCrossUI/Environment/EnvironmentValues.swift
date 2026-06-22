@@ -465,6 +465,10 @@ extension EnvironmentValues {
     public var buttonPadding: SIMD2<Int> {
         backend.buttonPadding(in: self)
     }
+
+	/// The device class of the current device.
+    @MainActor
+    public var deviceClass: DeviceClass { backend.deviceClass }
 }
 
 /// A key that can be used to extend the environment with new properties.

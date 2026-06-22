@@ -639,6 +639,12 @@ public final class Gtk3Backend:
         widget.css.set(property: CSSProperty(key: "background-clip", value: "border-box"))
     }
 
+    // TODO(bbrk24): Create a custom clipping container. Setting the CSS corner radius doesn't work
+    //   if the widget is already a container widget.
+    public func createCornerRadiusContainer(wrapping child: Widget) -> Widget {
+        child
+    }
+
     public func setCornerRadius(of widget: Widget, to radius: Int) {
         widget.css.set(property: .cornerRadius(radius))
     }

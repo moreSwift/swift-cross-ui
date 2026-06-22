@@ -22,7 +22,7 @@ import SwiftJava
 /// - ``onPause(of:env:)``
 /// - ``onStop(of:env:)``
 /// - ``onDestroy(of:env:)``
-public protocol ActivityDelegate {
+public protocol ActivityDelegate { // swiftlint:disable:this class_delegate_protocol
     func onCreate(of activity: FragmentActivity, env: JNIEnvironment?)
     func onStart(of activity: FragmentActivity, env: JNIEnvironment?)
     func onResume(of activity: FragmentActivity, env: JNIEnvironment?)

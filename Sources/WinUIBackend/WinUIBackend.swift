@@ -539,6 +539,10 @@ public final class WinUIBackend:
         canvas.background = brush
     }
 
+    public func createCornerRadiusContainer(wrapping child: Widget) -> Widget {
+        child
+    }
+
     public func setCornerRadius(of widget: Widget, to radius: Int) {
         let visual: WinAppSDK.Visual = try! widget.getVisualInternal()
 

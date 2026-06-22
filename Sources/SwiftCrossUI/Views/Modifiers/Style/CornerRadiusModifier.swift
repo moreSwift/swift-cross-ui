@@ -1,38 +1,43 @@
 extension View {
     public func cornerRadius(_ radius: Int) -> some View {
-        CornerRadiusModifier(body: self, cornerRadius: radius)
+        CornerRadiusModifier(content: self, cornerRadius: radius)
     }
 }
 
-struct CornerRadiusModifier<Content: View>: View {
-    var body: Content
+struct CornerRadiusModifier<Content: View>: View, TypeSafeView {
+    var content: Content
     var cornerRadius: Int
+
+    var body: TupleView1<Content> { content }
+
+    typealias Children = TupleView1<Content>.Children
 
     func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
-    ) -> any ViewGraphNodeChildren {
+    ) -> Children {
         body.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
+    @CastBackend<BackendFeatures.CornerRadius>(returnsWidget: true)
     func asWidget<Backend: BaseAppBackend>(
-        _ children: any ViewGraphNodeChildren,
+        _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
-        body.asWidget(children, backend: backend)
+        backend.createCornerRadiusContainer(wrapping: body.asWidget(children, backend: backend))
     }
 
     func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
-        children: any ViewGraphNodeChildren
+        children: Children
     ) -> [LayoutSystem.LayoutableChild] {
         body.layoutableChildren(backend: backend, children: children)
     }
 
     func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
-        children: any ViewGraphNodeChildren,
+        children: Children,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
         backend: Backend
@@ -46,37 +51,16 @@ struct CornerRadiusModifier<Content: View>: View {
         )
     }
 
+    @CastBackend<BackendFeatures.CornerRadius>
     func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
-        children: any ViewGraphNodeChildren,
+        children: Children,
         layout: ViewLayoutResult,
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        // We used to wrap the child content in a container and then set the corner
-        // radius on that, since it was the simplest approach. But Gtk3Backend has
-        // extremely poor corner radius support and only applies the corner radius
-        // to the background of view with the corner radius property set. This means
-        // that corner radii don't work in many cases with Gtk3Backend, but if we
-        // implement the modifier this way then you can at the very least set the
-        // cornerRadius of a coloured rectangle, which is quite a common thing to
-        // want to do.
-        body.commit(
-            widget,
-            children: children,
-            layout: layout,
-            environment: environment,
-            backend: backend
-        )
-
-        guard let backend = backend as? any BackendFeatures.CornerRadius else {
-            logger.warnOnce("\(Backend.self) doesn't support setting corner radii")
-            return
-        }
-
-        setRadius(backend: backend)
-        func setRadius<Backend2: BackendFeatures.CornerRadius>(backend: Backend2) {
-            backend.setCornerRadius(of: widget as! Backend2.Widget, to: cornerRadius)
-        }
+        let size = children.child0.commit().size
+        backend.setSize(of: widget, to: size.vector)
+        backend.setCornerRadius(of: widget, to: cornerRadius)
     }
 }

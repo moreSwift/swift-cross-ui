@@ -59,7 +59,7 @@ extension AndroidBackend {
             typedValue.applyDimension(
                 typedValue.COMPLEX_UNIT_SP,
                 Float(resolvedFont.lineHeight),
-                Self.activity.getResources().getDisplayMetrics()
+                environment.androidActivity.getResources().getDisplayMetrics()
             )
         )
 
@@ -96,7 +96,6 @@ extension AndroidBackend {
         // but makes it match other platforms a bit more closely.
         let lineHeight = Double(textSize) * 1.15
 
-        // TODO(bbrk24): Update this once everything else uses dp
         return SwiftCrossUI.Font.TextStyle.Resolved(
             pointSize: Double(textSize),
             weight: textStyle == .headline ? .semibold : .regular,

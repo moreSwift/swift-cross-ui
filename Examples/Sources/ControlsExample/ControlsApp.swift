@@ -129,19 +129,19 @@ struct ControlsApp: App {
                                     Text("Value: \(String(format: "%.02f", sliderValue))")
                                 }
                             #endif
-
-                            VStack {
-                                Text("Text field")
-                                TextField("Text field", text: $text)
-                                Text("Value: \(text)")
-                            }
-
-                            VStack {
-                                Text("Secure text field")
-                                SecureField("Secure text field", text: $secureText)
-                                Text("Value: \(secureText)")
-                            }
                         #endif
+
+                        VStack {
+                            Text("Text field")
+                            TextField("Text field", text: $text)
+                            Text("Value: \(text)")
+                        }
+
+                        VStack {
+                            Text("Secure text field")
+                            SecureField("Secure text field", text: $secureText)
+                            Text("Value: \(secureText)")
+                        }
 
                         #if !os(tvOS)
                             VStack {

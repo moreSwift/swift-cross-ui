@@ -5,7 +5,7 @@ import AndroidKit
     "dev.swiftcrossui.androidbackend.CustomWebView",
     extends: AndroidKit.WebView.self
 )
-class CustomWebView: JavaObject {
+class CustomWebView: AndroidKit.WebView {
     @JavaMethod
     @_nonoverride convenience init(
         _ activity: Activity?,
@@ -14,9 +14,6 @@ class CustomWebView: JavaObject {
 
     @JavaMethod
     func setOnNavigate(_ action: SwiftAction?)
-
-    @JavaMethod
-    func loadUrl(_ url: String)
 
     @JavaMethod
     func getLoadingUrl() -> JavaString?

@@ -19,8 +19,8 @@ class _App<AppRoot: App> {
     var dynamicPropertyUpdater: DynamicPropertyUpdater<AppRoot>
 
     /// Wraps a user's app implementation.
-    init(_ app: AppRoot) {
-        backend = app.backend
+    init(_ app: AppRoot, backend: AppRoot.Backend) {
+        self.backend = backend
         self.app = app
         self.environment = EnvironmentValues(backend: backend)
         self.cancellables = []

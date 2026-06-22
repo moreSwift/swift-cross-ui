@@ -188,6 +188,10 @@ extension UIKitBackend {
         widget.view.backgroundColor = color.uiColor
     }
 
+    public func createCornerRadiusContainer(wrapping child: Widget) -> Widget {
+        child
+    }
+
     public func setCornerRadius(of widget: Widget, to radius: Int) {
         widget.view.layer.cornerRadius = CGFloat(radius)
         widget.view.layer.masksToBounds = true

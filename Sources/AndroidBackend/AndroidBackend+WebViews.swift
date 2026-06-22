@@ -4,7 +4,7 @@ import SwiftCrossUI
 
 extension AndroidBackend: BackendFeatures.WebViews {
     public func createWebView() -> Widget {
-        CustomWebView(Self.activity, environment: Self.env).as(AndroidKit.View.self)!
+        CustomWebView(Self.activity, environment: Self.env)
     }
 
     public func updateWebView(
