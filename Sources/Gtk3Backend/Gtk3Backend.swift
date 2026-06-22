@@ -1692,20 +1692,28 @@ public final class Gtk3Backend:
         }
 
         if isControl {
-            switch environment.colorScheme {
-                case .light:
-                    properties.append(.border(color: Color.eightBit(209, 209, 209), width: 1))
-                    properties.append(.backgroundColor(Color(1, 1, 1, 1)))
-                    properties.append(.caretColor(Color.eightBit(139, 142, 143)))
-                case .dark:
-                    properties.append(.border(color: Color.eightBit(32, 32, 32), width: 1))
-                    properties.append(.backgroundColor(Color(1, 1, 1, 0.1)))
-                    properties.append(.caretColor(Color(1, 1, 1)))
-            }
-            properties.append(.init(key: "box-shadow", value: "none"))
+            properties.append(contentsOf: controlCSS(for: environment))
         }
 
         return properties
+    }
+    
+    static func controlCSS(for environment: EnvironmentValues) -> [CSSProperty]{
+        let themeDependentCSS: [CSSProperty] = switch environment.colorScheme {
+            case .light:
+                [
+                    .border(color: Color.eightBit(209, 209, 209), width: 1),
+                    .backgroundColor(Color(1, 1, 1, 1)),
+                    .caretColor(Color.eightBit(139, 142, 143))
+                ]
+            case .dark:
+                [
+                    .border(color: Color.eightBit(32, 32, 32), width: 1),
+                    .backgroundColor(Color(1, 1, 1, 0.1)),
+                    .caretColor(Color(1, 1, 1))
+                ]
+        }
+        return themeDependentCSS + [.init(key: "box-shadow", value: "none")]
     }
 
     // MARK: - Unimplemented Features
