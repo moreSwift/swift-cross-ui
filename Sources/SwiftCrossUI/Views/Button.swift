@@ -33,15 +33,15 @@ public struct Button<Label: View> {
         self.action = action
     }
 
-    private struct ConstrainedButtonLabel<Label: View>: View {
+    private struct ConstrainedButtonLabel<ConstrainedLabel: View>: View {
         @Environment(\.buttonPadding.x) var horizontalPadding
 
-        var content: Label
+        var content: ConstrainedLabel
         var width: Int?
 
         var body: some View {
             content.ifLet(width) { view, width in
-                view.frame(width: width - horizontalPadding)
+                view.frame(width: Double(width - horizontalPadding))
             }
         }
     }
