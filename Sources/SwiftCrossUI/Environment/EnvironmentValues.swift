@@ -466,7 +466,7 @@ extension EnvironmentValues {
         backend.buttonPadding(in: self)
     }
 
-	/// The device class of the current device.
+    /// The device class of the current device.
     @MainActor
     public var deviceClass: DeviceClass { backend.deviceClass }
 }

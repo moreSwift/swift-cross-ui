@@ -61,7 +61,7 @@ public final class Gtk3Backend:
     var windows: [Window] = []
 
     private var rootEnvironmentChangeHandler: (() -> Void)?
-    
+
     var borderedButtonPadding: SIMD2<Int>?
 
     private struct LogLocation: Hashable, Equatable {
@@ -1703,7 +1703,7 @@ public final class Gtk3Backend:
 
         return properties
     }
-    
+
     static func controlCSS(for environment: EnvironmentValues) -> [CSSProperty]{
         let themeDependentCSS: [CSSProperty] = switch environment.colorScheme {
             case .light:

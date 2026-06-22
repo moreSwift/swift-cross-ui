@@ -74,7 +74,7 @@ public final class GtkBackend:
     private var rootEnvironmentChangeHandler: (() -> Void)?
 
     private var measurementCustomLabel: CustomLabel!
-    
+
     var borderedButtonPadding: SIMD2<Int>?
 
     private struct LogLocation: Hashable, Equatable {
@@ -1882,7 +1882,7 @@ public final class GtkBackend:
 
         return properties
     }
-    
+
     static func controlBackgroundColor(for environment: borrowing EnvironmentValues) -> Gtk.Color {
         switch environment.colorScheme {
             case .light:

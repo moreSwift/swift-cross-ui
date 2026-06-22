@@ -62,10 +62,6 @@ public struct Button<Label: View> {
 
 @MainActor
 extension Button: TypeSafeView {
-	public var _asMenuItems: [MenuItem] {
-        [.button(self)]
-    }
-
     public var body: TupleView1<Label> {
         label()
     }
@@ -136,5 +132,12 @@ extension Button: TypeSafeView {
     ) {
         _ = children.child0.commit()
         backend.setSize(of: widget, to: layout.size.vector)
+    }
+}
+
+@MainActor
+extension Button where Label == TupleView1<Text> {
+    public var _asMenuItems: [MenuItem] {
+        [.button(self)]
     }
 }

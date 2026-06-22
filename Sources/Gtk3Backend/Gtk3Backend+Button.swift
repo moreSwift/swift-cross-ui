@@ -62,7 +62,7 @@ fileprivate final class GtkCustomButton: Gtk3.Button {
     // This value is the result of measurements.
     // Runtime computing it is not viable.
     static let buttonPadding = SIMD2<Int>(33, 17)
-    
+
     fileprivate var buttonStyle: ButtonStyle.Kind = .bordered {
         willSet {
             buttonStyle.removeClass(from: self)
@@ -84,7 +84,7 @@ fileprivate final class GtkCustomButton: Gtk3.Button {
         let borderedCSS = Gtk3Backend.controlCSS(for: environment).map { property in
             "\(property.key): \(property.value);"
         }.joined(separator: "\n")
-        
+
         cssProvider.loadCss(from: """
                 button.customButton {
                     min-width: 0px;

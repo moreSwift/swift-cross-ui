@@ -101,7 +101,7 @@ public final class WinUIBackend:
     public var scrollBarWidth: Int {
         12
     }
-    
+
     var borderedButtonPadding: SIMD2<Int>?
 
     class InternalState {

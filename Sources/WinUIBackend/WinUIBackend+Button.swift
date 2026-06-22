@@ -30,24 +30,24 @@ extension WinUIBackend {
     }
 
     public func defaultButtonStyle() -> ButtonStyle { .bordered }
-    
+
     func measureBorderedButtonPadding() -> SIMD2<Int> {
         if let borderedButtonPadding { return borderedButtonPadding }
-        
+
         let testString = "E"
         let dummyButton = Button()
         let block = TextBlock()
         block.text = testString
         dummyButton.content = block
-        
+
         let buttonSize = Self.naturalSize(of: dummyButton)
         let textSize = Self.naturalSize(of: block)
-        
+
         let result = SIMD2(
             Int(buttonSize.x - textSize.x),
             Int(buttonSize.y - textSize.y)
         )
-        
+
         borderedButtonPadding = result
         return result
     }

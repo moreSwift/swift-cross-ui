@@ -55,22 +55,22 @@ extension GtkBackend {
     public func defaultButtonStyle() -> ButtonStyle {
         .bordered
     }
-    
+
     func measureBorderedButtonPadding() -> SIMD2<Int> {
         if let borderedButtonPadding { return borderedButtonPadding }
-        
+
         // Use root environment for consistency.
         let rootEnvironment = computeRootEnvironment(
             defaultEnvironment: EnvironmentValues(backend: self)
         )
-        
+
         // The test string needs to be long enough to be bigger than minSize.
         let testString = "Teststring"
         let dummyButton = Button()
         dummyButton.label = testString
         dummyButton.css.clear()
         dummyButton.css.set(properties: Self.cssProperties(for: rootEnvironment, isControl: true))
-        
+
         let textView = CustomLabel(string: testString)
         textView.css.clear()
         // css needs to be set, otherwise text measures way too big.
@@ -82,14 +82,14 @@ extension GtkBackend {
             proposedHeight: nil,
             environment: rootEnvironment
         )
-        
+
         let buttonSize = naturalSize(of: dummyButton)
-        
+
         let result = SIMD2(
             Int(buttonSize.x - textSize.x),
             Int(buttonSize.y - textSize.y)
         )
-        
+
         borderedButtonPadding = result
         return result
     }
