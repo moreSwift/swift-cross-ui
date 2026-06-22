@@ -1,13 +1,13 @@
 {
-  "originHash" : "3f78b4201a2b283fa0247a8d63a937c8d8195da44b7445818adfa8c6d2bc6cba",
+  "originHash" : "c8d47b833ed13bcd80c0959e98b2495c4638c8f78642a6c80eda9fe78e286dda",
   "pins" : [
     {
       "identity" : "androidkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/moreSwift/AndroidKit",
       "state" : {
-        "revision" : "ed371b3becaab639cada60f5c65f0ee8f0d6d149",
-        "version" : "0.8.0"
+        "revision" : "d5142b5a9b90fa940be54a2a41d7fd5842f21111",
+        "version" : "0.8.1"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser",
       "state" : {
-        "revision" : "ca37474853a4b5f59a22c74bfdd449b1f6bc4cc2",
-        "version" : "1.8.1"
+        "revision" : "6a52f3251125d74daf04fcbd5e6f08a75d074382",
+        "version" : "1.8.2"
       }
     },
     {

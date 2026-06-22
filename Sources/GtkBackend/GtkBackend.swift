@@ -74,6 +74,8 @@ public final class GtkBackend:
     private var rootEnvironmentChangeHandler: (() -> Void)?
 
     private var measurementCustomLabel: CustomLabel!
+    
+    var borderedButtonPadding: SIMD2<Int>?
 
     private struct LogLocation: Hashable, Equatable {
         let file: String

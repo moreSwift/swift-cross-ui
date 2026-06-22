@@ -46,17 +46,41 @@ extension GtkBackend {
 
     public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
         switch environment.resolvedButtonStyle.kind {
-            case .bordered:
-                SIMD2<Int>(
-                    Int(GtkCustomButton.horizontalPadding * 2),
-                    Int(GtkCustomButton.verticalPadding * 2)
-                )
+            case .bordered: measureBorderedButtonPadding(environment: environment)
             case .plain, .borderless: SIMD2<Int>(0, 0)
         }
     }
 
     public func defaultButtonStyle() -> ButtonStyle {
         .bordered
+    }
+    
+    func measureBorderedButtonPadding(environment: EnvironmentValues) -> SIMD2<Int> {
+        if let borderedButtonPadding { return borderedButtonPadding }
+        
+        // The test string needs to be long enough to be bigger than minSize
+        let testString = "Teststring"
+        let dummyButton = Button()
+        dummyButton.label = testString
+        
+        let field = CustomLabel.init(string: testString)
+        let textSize = size(
+            of: testString,
+            whenDisplayedIn: field,
+            proposedWidth: nil,
+            proposedHeight: nil,
+            environment: environment
+        )
+        
+        let buttonSize = naturalSize(of: dummyButton)
+        
+        let result = SIMD2(
+            Int(buttonSize.x - textSize.x),
+            Int(buttonSize.y - textSize.y)
+        )
+        
+        borderedButtonPadding = result
+        return result
     }
 }
 
