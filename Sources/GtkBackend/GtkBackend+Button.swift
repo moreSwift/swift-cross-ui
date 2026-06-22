@@ -42,7 +42,7 @@ extension GtkBackend {
         button.clicked = { _ in action() }
         button.buttonStyle = environment.resolvedButtonStyle.kind
         button.sensitive = environment.isEnabled
-        button.css.set(properties: Self.cssProperties(for: environment, isControl: true))
+        button.loadCSS(environment: environment)
     }
 
     public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
@@ -99,16 +99,19 @@ fileprivate final class GtkCustomButton: Gtk.Button {
         super.init(gtk_button_new())
 
         gtk_widget_add_css_class(widgetPointer, "customButton")
-
-        loadCSS()
     }
 
-    private func loadCSS() {
+    @MainActor
+    func loadCSS(environment: EnvironmentValues) {
+        let backgroundColor = GtkBackend.controlBackgroundColor(for: environment)
         cssProvider.loadCss(from: """
                 button.customButton {
                     min-width: 0px;
                     min-height: 0px;
                     padding: 0px;
+                    background: \(CSSProperty.rgba(backgroundColor));
+                    border: none;
+                    box-shadow: none;
                 }
 
                 button.customButton.flat:active,
@@ -117,7 +120,7 @@ fileprivate final class GtkCustomButton: Gtk.Button {
                 }
 
                 button.customButton.flat {
-                    background-color: transparent;
+                    background: transparent;
                 }
 
                 button.customButton.flat:focus {

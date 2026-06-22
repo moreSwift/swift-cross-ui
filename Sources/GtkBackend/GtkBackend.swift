@@ -1871,17 +1871,21 @@ public final class GtkBackend:
         }
 
         if isControl {
-            switch environment.colorScheme {
-                case .light:
-                    properties.append(.backgroundColor(Color(0.9, 0.9, 0.9, 1)))
-                case .dark:
-                    properties.append(.backgroundColor(Color(1, 1, 1, 0.1)))
-            }
+            properties.append(.backgroundColor(controlBackgroundColor(for: environment)))
             properties.append(CSSProperty(key: "border", value: "none"))
             properties.append(CSSProperty(key: "box-shadow", value: "none"))
         }
 
         return properties
+    }
+    
+    static func controlBackgroundColor(for environment: borrowing EnvironmentValues) -> Gtk.Color {
+        switch environment.colorScheme {
+            case .light:
+                Color(0.9, 0.9, 0.9, 1)
+            case .dark:
+                Color(1, 1, 1, 0.1)
+        }
     }
 
     public func createSheet(content: Widget) -> Sheet {
