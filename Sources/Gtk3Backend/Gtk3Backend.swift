@@ -61,6 +61,8 @@ public final class Gtk3Backend:
     var windows: [Window] = []
 
     private var rootEnvironmentChangeHandler: (() -> Void)?
+    
+    var borderedButtonPadding: SIMD2<Int>?
 
     private struct LogLocation: Hashable, Equatable {
         let file: String

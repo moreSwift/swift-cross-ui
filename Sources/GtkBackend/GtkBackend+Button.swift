@@ -42,6 +42,7 @@ extension GtkBackend {
         button.clicked = { _ in action() }
         button.buttonStyle = environment.resolvedButtonStyle.kind
         button.sensitive = environment.isEnabled
+        button.css.set(properties: Self.cssProperties(for: environment, isControl: true))
     }
 
     public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
@@ -63,7 +64,7 @@ extension GtkBackend {
         let dummyButton = Button()
         dummyButton.label = testString
         
-        let field = CustomLabel.init(string: testString)
+        let field = CustomLabel(string: testString)
         let textSize = size(
             of: testString,
             whenDisplayedIn: field,
@@ -85,9 +86,6 @@ extension GtkBackend {
 }
 
 fileprivate final class GtkCustomButton: Gtk.Button {
-    static let horizontalPadding: Double = 12
-    static let verticalPadding: Double = 6
-
     fileprivate var buttonStyle: ButtonStyle.Kind = .bordered {
         willSet {
             buttonStyle.removeClass(from: self)
