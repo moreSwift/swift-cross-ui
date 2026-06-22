@@ -142,9 +142,10 @@ extension App {
     public static func main() {
         extractMetadataAndInitializeLogging()
         let app = Self()
-        let _app = _App(app)
+        let backend = app.backend
+        let _app = _App(app, backend: backend)
         _forceRefresh = {
-            app.backend.runInMainThread {
+            backend.runInMainThread {
                 _app.refreshSceneGraph()
             }
         }
