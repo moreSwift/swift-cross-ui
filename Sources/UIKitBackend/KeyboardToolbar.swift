@@ -190,6 +190,7 @@ extension ToolbarItem {
     ///
     /// If `width` is positive, the item will have that exact width. If `width` is zero or
     /// nil, the item will have its natural size.
+    @_disfavoredOverload
     public func frame(width: Double?) -> any ToolbarItem {
         if #available(iOS 14, macCatalyst 14, *),
            self is Spacer || self is FixedWidthSpacerItem
