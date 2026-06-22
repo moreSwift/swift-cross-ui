@@ -139,7 +139,7 @@ final class UICustomButton: UIButton {
     override public var isHighlighted: Bool {
         didSet {
             UIView.animate(
-                withDuration: isHighlighted ? 0.1: 0.3,
+                withDuration: isHighlighted ? 0.1 : 0.3,
                 delay: 0,
                 options: [.allowUserInteraction],
                 animations: { [weak self] in

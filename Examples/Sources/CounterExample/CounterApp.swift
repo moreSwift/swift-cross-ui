@@ -14,23 +14,15 @@ struct CounterApp: App {
         WindowGroup("CounterExample: \(count)") {
             #hotReloadable {
                 HStack(spacing: 20) {
-                    Button {
+                    Button("-") {
                         count -= 1
-                    } label: {
-                        Text("-")
-                            .background(Color.green)
-                    }.background(Color.blue)
+                    }
                     
                     Text("Count: \(count)")
-                    Button {
+                    Button("+") {
                         count += 1
-                    } label: {
-                        Text("+")
-                            .background(Color.green)
                     }
-                    .background(Color.blue)
                 }
-                .background(Color.red)
                 .padding()
             }
         }

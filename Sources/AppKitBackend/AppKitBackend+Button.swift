@@ -56,9 +56,7 @@ extension AppKitBackend {
         }
     }
 
-    public func defaultButtonStyle() -> ButtonStyle {
-        .bordered
-    }
+    public func defaultButtonStyle() -> ButtonStyle { .bordered }
 
     func measureBorderedButtonPadding() -> SIMD2<Int> {
         if let borderedButtonPadding { return borderedButtonPadding }

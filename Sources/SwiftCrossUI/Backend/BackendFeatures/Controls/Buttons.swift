@@ -85,7 +85,7 @@ extension BackendFeatures {
     }
 }
 
-// MARK: - Default Implementationsv
+// MARK: - Default Implementations
 extension BackendFeatures.ViewLabelButtons {
     public func computeButtonLabelEnvironment(
         from environment: EnvironmentValues
@@ -114,7 +114,7 @@ extension BackendFeatures.ViewLabelButtons {
             deviceClass == .desktop
         {
             // Approximately equivalent to Color.secondary in SwiftUI.
-            let opacity = environment.colorScheme == .dark ? 0.7: 0.5
+            let opacity = environment.colorScheme == .dark ? 0.7 : 0.5
             labelEnvironment = labelEnvironment.with(
                 \.foregroundColor,
                 environment.foregroundColor ?? environment.suggestedForegroundColor.opacity(opacity)

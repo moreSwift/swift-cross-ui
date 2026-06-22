@@ -24,21 +24,36 @@ extension WinUIBackend {
 
     public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
         switch environment.resolvedButtonStyle.kind {
-            case .bordered: SIMD2(
-                    CustomButton.horizontalPadding * 2,
-                    CustomButton.verticalPadding * 2,
-                )
+            case .bordered: measureBorderedButtonPadding()
             case .plain, .borderless: SIMD2(0, 0)
         }
     }
 
     public func defaultButtonStyle() -> ButtonStyle { .bordered }
+    
+    func measureBorderedButtonPadding() -> SIMD2<Int> {
+        if let borderedButtonPadding { return borderedButtonPadding }
+        
+        let testString = "E"
+        let dummyButton = Button()
+        let block = TextBlock()
+        block.text = testString
+        dummyButton.content = block
+        
+        let buttonSize = Self.naturalSize(of: dummyButton)
+        let textSize = Self.naturalSize(of: block)
+        
+        let result = SIMD2(
+            Int(buttonSize.x - textSize.x),
+            Int(buttonSize.y - textSize.y)
+        )
+        
+        borderedButtonPadding = result
+        return result
+    }
 }
 
 fileprivate final class CustomButton: WinUI.Button {
-    static let horizontalPadding: Int = 11
-    static let verticalPadding: Int = 4
-
     fileprivate var action: (() -> Void)?
 
     private var isPointerCaptured = false
