@@ -74,6 +74,15 @@ extension SwiftCrossUI.WebView {
     }
 }
 
+extension SwiftCrossUI.List {
+    public func inspect(
+        _ inspectionPoints: InspectionPoints = .onCreate,
+        _ action: @escaping @MainActor @Sendable (AndroidKit.ListView) -> Void
+    ) -> some SwiftCrossUI.View {
+        InspectView(child: self, inspectionPoints: inspectionPoints, action: action)
+    }
+}
+
 extension Activity {
     @JavaMethod
     public func getWindow() -> AndroidKit.Window?

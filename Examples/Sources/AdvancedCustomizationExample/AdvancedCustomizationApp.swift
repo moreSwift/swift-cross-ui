@@ -172,31 +172,33 @@ struct CounterApp: App {
                         #endif
                     }.frame(height: 200)
 
-                    #if !canImport(AndroidBackend)
-                        List(["Red", "Green", "Blue"], id: \.self, selection: $color) { color in
-                            Text(color)
-                        }.inspect(.afterUpdate) { table in
-                            #if canImport(AppKitBackend)
-                                table.usesAlternatingRowBackgroundColors = true
-                            #elseif canImport(UIKitBackend)
-                                table.isEditing = true
-                            #elseif canImport(WinUIBackend)
-                                let brush = WinUI.SolidColorBrush()
-                                brush.color = .init(a: 255, r: 255, g: 0, b: 255)
-                                table.borderBrush = brush
-                                table.borderThickness = .init(
-                                    left: 1,
-                                    top: 1,
-                                    right: 1,
-                                    bottom: 1
-                                )
-                            #elseif canImport(GtkBackend)
-                                table.showSeparators = true
-                            #elseif canImport(Gtk3Backend)
-                                table.selectionMode = .multiple
-                            #endif
-                        }
+                    List(["Red", "Green", "Blue"], id: \.self, selection: $color) { color in
+                        Text(color)
+                    }.inspect(.afterUpdate) { table in
+                        #if canImport(AppKitBackend)
+                            table.usesAlternatingRowBackgroundColors = true
+                        #elseif canImport(UIKitBackend)
+                            table.isEditing = true
+                        #elseif canImport(WinUIBackend)
+                            let brush = WinUI.SolidColorBrush()
+                            brush.color = .init(a: 255, r: 255, g: 0, b: 255)
+                            table.borderBrush = brush
+                            table.borderThickness = .init(
+                                left: 1,
+                                top: 1,
+                                right: 1,
+                                bottom: 1
+                            )
+                        #elseif canImport(GtkBackend)
+                            table.showSeparators = true
+                        #elseif canImport(Gtk3Backend)
+                            table.selectionMode = .multiple
+                        #elseif canImport(AndroidBackend)
+                            table.setDividerHeight(2)
+                        #endif
+                    }
 
+                    #if !canImport(AndroidBackend)
                         Image(Bundle.module.bundleURL.appendingPathComponent("Banner.png"))
                             .resizable()
                             .inspect(.afterUpdate) { image in
