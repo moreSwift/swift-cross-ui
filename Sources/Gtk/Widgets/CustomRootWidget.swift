@@ -64,4 +64,8 @@ public class CustomRootWidget: Widget {
             Unmanaged.passRetained(box).toOpaque()
         )
     }
+
+    public func setFocus(to widget: Widget?) {
+        gtk_root_set_focus(self.opaquePointer, widget?.widgetPointer)
+    }
 }

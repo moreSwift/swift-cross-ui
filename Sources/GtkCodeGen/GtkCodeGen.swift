@@ -146,6 +146,7 @@ struct GtkCodeGen {
             "ListBox",
             "EventControllerMotion",
             "EventControllerKey",
+            "EventControllerFocus",
         ]
 
         for class_ in gir.namespace.classes {

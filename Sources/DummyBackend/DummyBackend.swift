@@ -7,7 +7,9 @@ public final class DummyBackend:
     BackendFeatures.CornerRadius,
     BackendFeatures.Tables,
     BackendFeatures.Colors,
-    BackendFeatures.Windowing
+    BackendFeatures.Windowing,
+    BackendFeatures.Focus,
+    BackendFeatures.FocusDisabling
 {
     public class Window {
         static let defaultSize = SIMD2<Int>(400, 200)
@@ -72,20 +74,36 @@ public final class DummyBackend:
         }
     }
 
-    public class Button: Widget {
+    public class Control: Widget {
+        public enum Signal {
+            case focusDidChange
+        }
+
+        public var signalHandlers = [Signal: [(Control) -> Void]]()
+
+        var isFocused: Bool = false {
+            didSet {
+                for handler in signalHandlers[.focusDidChange, default: []] {
+                    handler(self)
+                }
+            }
+        }
+    }
+
+    public class Button: Control {
         public var label = ""
         public var font: Font.Resolved?
         public var action: (() -> Void)?
     }
 
-    public class ToggleButton: Widget {
+    public class ToggleButton: Control {
         public var label = ""
         public var font: Font.Resolved?
         public var toggleHandler: ((Bool) -> Void)?
         public var state = false
     }
 
-    public class ToggleSwitch: Widget {
+    public class ToggleSwitch: Control {
         public var toggleHandler: ((Bool) -> Void)?
         public var state = false
 
@@ -94,7 +112,7 @@ public final class DummyBackend:
         }
     }
 
-    public class Checkbox: Widget {
+    public class Checkbox: Control {
         public var toggleHandler: ((Bool) -> Void)?
         public var state = false
 
@@ -103,7 +121,7 @@ public final class DummyBackend:
         }
     }
 
-    public class Slider: Widget {
+    public class Slider: Control {
         public var value: Double = 0
         public var minimumValue: Double = 0
         public var maximumValue: Double = 100
@@ -115,7 +133,7 @@ public final class DummyBackend:
         }
     }
 
-    public class TextField: Widget {
+    public class TextField: Control {
         public var isSecure: Bool
         public var value = ""
         public var placeholder = ""
@@ -128,7 +146,7 @@ public final class DummyBackend:
         }
     }
 
-    public class TextView: Widget {
+    public class TextView: Control {
         public var content: String = ""
         public var font: Font.Resolved?
         public var color = Color.Resolved(red: 0.0, green: 0.0, blue: 0.0)
@@ -249,6 +267,64 @@ public final class DummyBackend:
         }
     }
 
+    public class FocusContainer: Container {
+        var focusability: Focusability = .unmodified
+    }
+
+    class FocusStateManager: NSObject {
+        private var focusData = [ObjectIdentifier: Set<FocusData>]()
+        private let backend: DummyBackend!
+
+        init(backend: DummyBackend) {
+            self.backend = backend
+        }
+
+        @MainActor
+        func register(_ data: [FocusData], for widget: Widget) {
+            let id = ObjectIdentifier(widget)
+            focusData[id] = Set(data)
+
+            if let control = widget as? Control {
+                control.signalHandlers[.focusDidChange] = [
+                    { widget in
+                        self.handleFocusChange(of: id, toState: widget.isFocused)
+                    }
+                ]
+
+                if control.isFocused, data.contains(where: \.shouldUnfocus) {
+                    backend.resignFocusedWidget()
+                }
+            }
+
+            if data.contains(where: \.matches) {
+                backend.focus(widget)
+            }
+        }
+
+        private func handleFocusChange(of identifier: ObjectIdentifier, toState isFocused: Bool) {
+            guard let data = focusData[identifier] else {
+                return
+            }
+            if isFocused {
+                data.forEach { binding in
+                    binding.set()
+                }
+            } else {
+                data.forEach { binding in
+                    binding.reset()
+                }
+            }
+        }
+    }
+
+    public class Menu {}
+
+    public class Alert {}
+
+    public class Path {}
+
+    public class Sheet {}
+
     public var defaultTableRowContentHeight = 10
     public var defaultTableCellVerticalPadding = 10
     public var defaultPaddingAmount = 10
@@ -260,10 +336,15 @@ public final class DummyBackend:
     public var supportedPickerStyles: [BackendPickerStyle] = []
     public let canOverrideWindowColorScheme = true
 
+    public var focusedWidget: Control?
+    private var focusStateManager: FocusStateManager!
+
     public var incomingURLHandler: ((URL) -> Void)?
     public var appPhase = AppPhase.active
 
-    public init() {}
+    public init() {
+        focusStateManager = FocusStateManager(backend: self)
+    }
 
     public func runMainLoop(_ callback: @escaping @MainActor () -> Void) {
         callback()
@@ -800,4 +881,177 @@ public final class DummyBackend:
     public func getContent(ofTextEditor textEditor: Widget) -> String {
         fatalError("\(Self.self): \(#function) not implemented")
     }
+
+    public func createFocusContainer() -> Widget {
+        FocusContainer()
+    }
+
+    public func updateFocusContainer(
+        _ widget: Widget,
+        focusability: Focusability
+    ) {
+        (widget as! FocusContainer).focusability = focusability
+    }
+
+    public func registerFocusObservers(
+        _ data: [FocusData],
+        on widget: Widget
+    ) {
+        focusStateManager.register(data, for: widget)
+    }
+
+    // not part of AppBackend
+    public func focus(_ widget: Widget) {
+        focusedWidget?.isFocused = false
+        guard let control = widget as? Control else { return }
+        control.isFocused = true
+        focusedWidget = control
+    }
+
+    public func resignFocusedWidget() {
+        focusedWidget?.isFocused = false
+        focusedWidget = nil
+    }
+
+    public func setFocusEffectDisabled(on widget: Widget, disabled: Bool) {}
+
+    // public func createTextEditor() -> Widget {
+
+    // }
+
+    // public func updateTextEditor(_ textEditor: Widget, environment: SwiftCrossUI.EnvironmentValues, onChange: @escaping (String) -> Void) {
+
+    // }
+
+    // public func setContent(ofTextEditor textEditor: Widget, to content: String) {
+
+    // }
+
+    // public func getContent(ofTextEditor textEditor: Widget) -> String {
+
+    // }
+
+    // public func createPicker() -> Widget {
+
+    // }
+
+    // public func updatePicker(_ picker: Widget, options: [String], environment: SwiftCrossUI.EnvironmentValues, onChange: @escaping (Int?) -> Void) {
+
+    // }
+
+    // public func setSelectedOption(ofPicker picker: Widget, to selectedOption: Int?) {
+
+    // }
+
+    // public func createProgressSpinner() -> Widget {
+
+    // }
+
+    // public func createProgressBar() -> Widget {
+
+    // }
+
+    // public func updateProgressBar(_ widget: Widget, progressFraction: Double?, environment: SwiftCrossUI.EnvironmentValues) {
+
+    // }
+
+    // public func createPopoverMenu() -> Menu {
+
+    // }
+
+    // public func updatePopoverMenu(_ menu: Menu, content: SwiftCrossUI.ResolvedMenu, environment: SwiftCrossUI.EnvironmentValues) {
+
+    // }
+
+    // public func showPopoverMenu(_ menu: Menu, at position: SIMD2<Int>, relativeTo widget: Widget, closeHandler handleClose: @escaping () -> Void) {
+
+    // }
+
+    // public func createAlert() -> Alert {
+
+    // }
+
+    // public func updateAlert(_ alert: Alert, title: String, actionLabels: [String], environment: SwiftCrossUI.EnvironmentValues) {
+
+    // }
+
+    // public func showAlert(_ alert: Alert, window: Window?, responseHandler handleResponse: @escaping (Int) -> Void) {
+
+    // }
+
+    // public func dismissAlert(_ alert: Alert, window: Window?) {
+
+    // }
+
+    // public func createSheet(content: Widget) -> Sheet {
+
+    // }
+
+    // public func updateSheet(_ sheet: Sheet, window: Window, environment: SwiftCrossUI.EnvironmentValues, size: SIMD2<Int>, onDismiss: @escaping () -> Void, cornerRadius: Double?, detents: [SwiftCrossUI.PresentationDetent], dragIndicatorVisibility: SwiftCrossUI.Visibility, backgroundColor: SwiftCrossUI.Color.Resolved?, interactiveDismissDisabled: Bool) {
+
+    // }
+
+    // public func presentSheet(_ sheet: Sheet, window: Window, parentSheet: Sheet?) {
+
+    // }
+
+    // public func dismissSheet(_ sheet: Sheet, window: Window, parentSheet: Sheet?) {
+
+    // }
+
+    // public func size(ofSheet sheet: Sheet) -> SIMD2<Int> {
+
+    // }
+
+    // public func showOpenDialog(fileDialogOptions: SwiftCrossUI.FileDialogOptions, openDialogOptions: SwiftCrossUI.OpenDialogOptions, window: Window?, resultHandler handleResult: @escaping (SwiftCrossUI.DialogResult<[URL]>) -> Void) {
+
+    // }
+
+    // public func showSaveDialog(fileDialogOptions: SwiftCrossUI.FileDialogOptions, saveDialogOptions: SwiftCrossUI.SaveDialogOptions, window: Window?, resultHandler handleResult: @escaping (SwiftCrossUI.DialogResult<URL>) -> Void) {
+
+    // }
+
+    // public func createTapGestureTarget(wrapping child: Widget, gesture: SwiftCrossUI.TapGesture) -> Widget {
+
+    // }
+
+    // public func updateTapGestureTarget(_ tapGestureTarget: Widget, gesture: SwiftCrossUI.TapGesture, environment: SwiftCrossUI.EnvironmentValues, action: @escaping () -> Void) {
+
+    // }
+
+    // public func createHoverTarget(wrapping child: Widget) -> Widget {
+
+    // }
+
+    // public func updateHoverTarget(_ hoverTarget: Widget, environment: SwiftCrossUI.EnvironmentValues, action: @escaping (Bool) -> Void) {
+
+    // }
+
+    // public func createPathWidget() -> Widget {
+
+    // }
+
+    // public func createPath() -> Path {
+
+    // }
+
+    // public func updatePath(_ path: Path, _ source: SwiftCrossUI.Path, bounds: SwiftCrossUI.Path.Rect, pointsChanged: Bool, environment: SwiftCrossUI.EnvironmentValues) {
+
+    // }
+
+    // public func renderPath(_ path: Path, container: Widget, strokeColor: SwiftCrossUI.Color.Resolved, fillColor: SwiftCrossUI.Color.Resolved, overrideStrokeStyle: SwiftCrossUI.StrokeStyle?) {
+
+    // }
+
+    // public func createWebView() -> Widget {
+
+    // }
+
+    // public func updateWebView(_ webView: Widget, environment: SwiftCrossUI.EnvironmentValues, onNavigate: @escaping (URL) -> Void) {
+
+    // }
+
+    // public func navigateWebView(_ webView: Widget, to url: URL) {
+
+    // }
 }

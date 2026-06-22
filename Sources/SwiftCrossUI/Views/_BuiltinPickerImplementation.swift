@@ -69,7 +69,8 @@ public struct _BuiltinPickerImplementation: TypeSafeView {
         } else {
             size = ViewSize(naturalSize)
         }
-        return ViewLayoutResult.leafView(size: size)
+        return ViewLayoutResult
+            .leafView(size: size)
     }
 
     func commit<Backend: BaseAppBackend>(
@@ -79,6 +80,27 @@ public struct _BuiltinPickerImplementation: TypeSafeView {
         environment: EnvironmentValues,
         backend: Backend
     ) {
+        if let backend2 = backend as? any BackendFeatures.Focus {
+            setFocusData(on: backend2)
+        } else if
+            !environment.focusObservers.isEmpty ||
+            environment.focusEffectDisabled
+        {
+            logger.warnOnce("\(Backend.self) doesn't support focus control/tracking.")
+        }
+
+        func setFocusData<Backend2: BackendFeatures.Focus>(on backend: Backend2) {
+            backend.registerFocusObservers(
+                environment.focusObservers,
+                on: children.picker!.widget as! Backend2.Widget
+            )
+
+            backend.setFocusEffectDisabled(
+                on: children.picker!.widget as! Backend2.Widget,
+                disabled: environment.focusEffectDisabled
+            )
+        }
+
         backend.setSize(of: widget, to: layout.size.vector)
         backend.setSize(
             of: children.picker!.widget as! Backend.Widget,

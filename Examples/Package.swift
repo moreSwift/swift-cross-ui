@@ -104,6 +104,14 @@ let package = Package(
             dependencies: exampleDependencies
         ),
         .executableTarget(
+            name: "ControlFocusabilityTest",
+            dependencies: exampleDependencies
+        ),
+        .executableTarget(
+            name: "WidgetGallery",
+            dependencies: exampleDependencies
+        ),
+        .executableTarget(
             name: "GradientsExample",
             dependencies: exampleDependencies
         ),

@@ -105,9 +105,13 @@ struct SheetDemo: View {
     struct SheetBody: View {
         @State var isNestedSheetPresented = false
         @Environment(\.dismiss) var dismiss
+        @State var text = ""
 
         var body: some View {
             VStack {
+                TextField("", text: $text)
+                    .focusEffectDisabled()
+
                 Text("Root sheet")
                 Button("Present a nested sheet") {
                     isNestedSheetPresented = true

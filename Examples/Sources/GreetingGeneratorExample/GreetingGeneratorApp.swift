@@ -12,11 +12,19 @@ struct GreetingGeneratorApp: App {
     @State var greetings: [String] = []
     @State var isGreetingSelectable = false
 
+    @State var isTextFocusable = true
+
     var body: some Scene {
         WindowGroup("Greeting Generator") {
             #hotReloadable {
                 VStack {
                     TextField("Name", text: $name)
+                        .foregroundColor(.white)
+                        .sheet(
+                            isPresented: .init(get: { return false }, set: { _ in }),
+                            content: { Text("") }
+                        )
+
                     HStack {
                         Button("Generate") {
                             greetings.append("Hello, \(name)!")

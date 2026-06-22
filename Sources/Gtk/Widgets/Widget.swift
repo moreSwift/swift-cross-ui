@@ -35,7 +35,19 @@ open class Widget: GObject {
     public lazy var css: CSSBlock = CSSBlock(forClass: customCSSClass) {
         didSet {
             guard oldValue != css else { return }
-            cssProvider.loadCss(from: css.stringRepresentation)
+            cssProvider.loadCss(
+                from: "\(focusCSS.stringRepresentation)\n\(css.stringRepresentation)"
+            )
+        }
+    }
+
+    /// The CSS rules applied directly to this widget.
+    public lazy var focusCSS: CSSBlock = CSSBlock(forClass: "\(customCSSClass):focus") {
+        didSet {
+            guard oldValue != focusCSS else { return }
+            cssProvider.loadCss(
+                from: "\(focusCSS.stringRepresentation)\n\(css.stringRepresentation)"
+            )
         }
     }
 
@@ -126,6 +138,59 @@ open class Widget: GObject {
         gtk_widget_add_controller(widgetPointer, controller.opaquePointer)
         eventControllers.append(controller)
         controller.registerSignals()
+    }
+
+    /// Whether the widget is currently visible.
+    public var isVisible: Bool { gtk_widget_is_visible(widgetPointer).toBool() }
+
+    /// Whether the widget participates in the focus-chain.
+    public var isFocusable: Bool {
+        get {
+            gtk_widget_get_focusable(widgetPointer).toBool()
+        }
+        set {
+            gtk_widget_set_focusable(widgetPointer, newValue.toGBoolean())
+        }
+    }
+
+    /// Whether the widget or any of its descendents can accept the input focus.
+    /// Set to `false` to disable everything below it.
+    public var canFocus: Bool {
+        get {
+            gtk_widget_get_can_focus(widgetPointer).toBool()
+        }
+        set {
+            gtk_widget_set_can_focus(widgetPointer, newValue.toGBoolean())
+        }
+    }
+
+    public var containsFocused: Bool {
+        let flags = gtk_widget_get_state_flags(widgetPointer)
+        return flags.rawValue & GTK_STATE_FLAG_FOCUS_WITHIN.rawValue != 0
+    }
+
+    public var root: Gtk.CustomRootWidget? {
+        guard let ptr = gtk_widget_get_root(widgetPointer) else { return nil }
+        return CustomRootWidget(ptr)
+    }
+
+    /// Makes the widget the key view in the window it belongs to.
+    /// Equivalent to `NSWindow/makeFirstResponder(_)`.
+    public func makeKey() {
+        g_idle_add(
+            { (data) -> Int32 in
+                gtk_widget_grab_focus(data?.assumingMemoryBound(to: GtkWidget.self))
+
+                if let window = gtk_widget_get_root(
+                    data?.assumingMemoryBound(to: GtkWidget.self)
+                ) {
+                    let windowPtr = UnsafeMutablePointer<GtkWindow>(window)
+                    gtk_window_set_focus_visible(windowPtr, true.toGBoolean())
+                }
+                return 0
+            },
+            widgetPointer
+        )
     }
 
     @GObjectProperty(named: "name") public var name: String?

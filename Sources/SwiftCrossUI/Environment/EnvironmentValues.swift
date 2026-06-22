@@ -58,6 +58,10 @@ public struct EnvironmentValues {
     /// Backing storage for observable subscript
     private var observableObjects: [ObjectIdentifier: any ObservableObject]
 
+    public var focusObservers: [FocusData]
+
+    public var focusEffectDisabled: Bool
+
     /// Gets an environment value given an environment key's metatype.
     ///
     /// - Parameter key: The type of the key.
@@ -215,6 +219,8 @@ public struct EnvironmentValues {
         } else {
             self.supportedDatePickerStyles = [.automatic]
         }
+        focusObservers = []
+        focusEffectDisabled = false
     }
 
     /// Returns a copy of the environment with the specified property set to the

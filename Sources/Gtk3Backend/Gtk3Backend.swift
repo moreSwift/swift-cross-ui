@@ -1666,6 +1666,7 @@ public final class Gtk3Backend:
             }
         }
     }
+
     // MARK: Helpers
 
     private static func cssProperties(

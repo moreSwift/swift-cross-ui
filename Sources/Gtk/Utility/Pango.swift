@@ -21,14 +21,16 @@ public class Pango {
     /// Uses the `PANGO_WRAP_WORD_CHAR` text wrapping mode.
     public func getTextSize(
         _ text: String,
-        ellipsize: EllipsizeMode,
+        ellipsize: EllipsizeMode?,
         proposedWidth: Double? = nil,
         proposedHeight: Double? = nil
     ) -> (width: Int, height: Int) {
         let layout = pango_layout_new(pangoContext)!
         pango_layout_set_text(layout, text, Int32(text.utf8.count))
         pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR)
-        pango_layout_set_ellipsize(layout, ellipsize.toGtk())
+        if let ellipsize {
+            pango_layout_set_ellipsize(layout, ellipsize.toGtk())
+        }
 
         if let proposedWidth {
             pango_layout_set_width(

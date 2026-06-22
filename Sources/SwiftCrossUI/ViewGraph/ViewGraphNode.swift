@@ -142,6 +142,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         // First we compute what size the view will be after the update. If it will change size,
         // propagate the update to this node's parent instead of updating straight away.
         let currentSize = currentLayout?.size
+
         let newLayout = self.computeLayout(
             proposedSize: lastProposedSize,
             environment: parentEnvironment
@@ -181,6 +182,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues
     ) -> ViewLayoutResult {
+
         // Defensively ensure that all future scene implementations obey this
         // precondition. By putting the check here instead of only in views
         // that require `environment.window` (such as the alert modifier view),
@@ -255,6 +257,29 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
     /// - Returns: The most recently computed layout. Guaranteed to match the
     ///   result of the last call to ``computeLayout(with:proposedSize:environment:)``.
     public func commit() -> ViewLayoutResult {
+        if currentLayout?.shouldSetFocusData == true {
+            if let backend2 = backend as? any BackendFeatures.Focus {
+                setFocusData(on: backend2)
+            } else if
+                !parentEnvironment.focusObservers.isEmpty ||
+                parentEnvironment.focusEffectDisabled
+            {
+                logger.warnOnce("\(Backend.self) doesn't support focus control/tracking.")
+            }
+
+            func setFocusData<Backend2: BackendFeatures.Focus>(on backend: Backend2) {
+                backend.registerFocusObservers(
+                    parentEnvironment.focusObservers,
+                    on: widget as! Backend2.Widget
+                )
+
+                backend.setFocusEffectDisabled(
+                    on: widget as! Backend2.Widget,
+                    disabled: parentEnvironment.focusEffectDisabled
+                )
+            }
+        }
+
         guard let currentLayout else {
             logger.warning("layout committed before being computed, ignoring")
             return .leafView(size: .zero)
