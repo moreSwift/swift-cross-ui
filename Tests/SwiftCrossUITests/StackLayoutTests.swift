@@ -12,7 +12,7 @@ struct StackLayoutTests {
     @MainActor
     init() {
         backend = DummyBackend()
-        window = backend.createWindow(withDefaultSize: nil)
+        window = backend.createWindow(withDefaultSize: nil, id: "window")
         environment = EnvironmentValues(backend: backend).with(\.window, window)
     }
 

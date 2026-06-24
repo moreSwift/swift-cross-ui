@@ -29,7 +29,7 @@ struct Benchmarks {
         let backend = DummyBackend()
         let defaultEnvironment = EnvironmentValues(backend: backend)
         let environment = backend.computeRootEnvironment(defaultEnvironment: defaultEnvironment)
-            .with(\.window, backend.createWindow(withDefaultSize: nil))
+            .with(\.window, backend.createWindow(withDefaultSize: nil, id: "window"))
 
         @MainActor
         func makeNode<V: View>(_ view: V) -> ViewGraphNode<V, DummyBackend> {

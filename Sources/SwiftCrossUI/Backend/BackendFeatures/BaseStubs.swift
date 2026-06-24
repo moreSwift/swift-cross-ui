@@ -416,7 +416,11 @@ extension BackendFeatures.BaseStubs {
         todo()
     }
 
-    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
+    public var restoresWindowFrames: Bool {
+        todo()
+    }
+
+    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?, id: String) -> Window {
         todo()
     }
 

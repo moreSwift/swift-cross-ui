@@ -97,6 +97,7 @@ public final class WinUIBackend:
     ]
     public let supportedPickerStyles: [BackendPickerStyle] = [.menu, .radioGroup]
     public let canOverrideWindowColorScheme = true
+    public let restoresWindowFrames = false
 
     public var scrollBarWidth: Int {
         12
@@ -184,7 +185,7 @@ public final class WinUIBackend:
         WinUIApplication.main()
     }
 
-    public func createWindow(withDefaultSize size: SIMD2<Int>?) -> Window {
+    public func createWindow(withDefaultSize size: SIMD2<Int>?, id: String) -> Window {
         let window = CustomWindow()
         windows.append(window)
         window.closed.addHandler { _, _ in

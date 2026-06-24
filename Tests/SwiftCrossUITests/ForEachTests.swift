@@ -9,7 +9,7 @@ struct ForEachTests {
     @Test("Duplicate ids", .bug("https://github.com/moreSwift/swift-cross-ui/issues/456"))
     func duplicateIds() {
         let backend = DummyBackend()
-        let window = backend.createWindow(withDefaultSize: nil)
+        let window = backend.createWindow(withDefaultSize: nil, id: "window")
         let environment = EnvironmentValues(backend: backend).with(\.window, window)
 
         let view = ForEach([1, 1], id: \.self) { x in
@@ -38,7 +38,7 @@ struct ForEachTests {
     @Test("Reordered children")
     func reorderedChildren() {
         let backend = DummyBackend()
-        let window = backend.createWindow(withDefaultSize: nil)
+        let window = backend.createWindow(withDefaultSize: nil, id: "window")
         let environment = EnvironmentValues(backend: backend).with(\.window, window)
 
         func makeView(_ ids: [Int]) -> ForEach<[Int], Int, TupleView1<Text>> {

@@ -59,6 +59,7 @@ public final class GtkBackend:
     public let supportedDatePickerStyles: [DatePickerStyle] = [.automatic, .graphical]
     public let supportedPickerStyles: [BackendPickerStyle] = [.menu]
     public let canOverrideWindowColorScheme = false
+    public let restoresWindowFrames = false
 
     var gtkApp: Application
 
@@ -167,7 +168,7 @@ public final class GtkBackend:
         }
     }
 
-    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
+    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?, id: String) -> Window {
         let window: Gtk.ApplicationWindow
         if let precreatedWindow {
             self.precreatedWindow = nil

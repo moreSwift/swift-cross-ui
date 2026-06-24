@@ -21,14 +21,19 @@ final class WindowReference<SceneType: WindowingScene> {
     /// - Parameters:
     ///   - closeHandler: The action to perform when the window is closed. Should
     ///     dispose of the scene's reference to this `WindowReference`.
+    ///   - id: A unique id to use when restoring the window's frame from disk (if present).
     init<Backend: BaseAppBackend>(
         scene: SceneType,
         backend: Backend,
         environment: EnvironmentValues,
-        onClose closeHandler: @escaping @Sendable @MainActor () -> Void
+        onClose closeHandler: @escaping @Sendable @MainActor () -> Void,
+        id: String
     ) {
         self.scene = scene
-        let window = backend.createWindow(withDefaultSize: environment.defaultWindowSize)
+        let window = backend.createWindow(
+            withDefaultSize: environment.defaultWindowSize,
+            id: id
+        )
 
         viewGraph = ViewGraph(
             for: scene.content(),
@@ -93,7 +98,7 @@ final class WindowReference<SceneType: WindowingScene> {
 
         let proposedWindowSize: SIMD2<Int>
         let usedDefaultSize: Bool
-        if isFirstUpdate && isProgramaticallyResizable {
+        if isFirstUpdate && isProgramaticallyResizable && !backend.restoresWindowFrames {
             proposedWindowSize = environment.defaultWindowSize
             usedDefaultSize = true
         } else {

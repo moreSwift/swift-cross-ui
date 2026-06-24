@@ -28,6 +28,7 @@ public final class AppKitBackend: FullAppBackend {
         .radioGroup,
     ]
     public let canOverrideWindowColorScheme = true
+    public let restoresWindowFrames = true
 
     public var scrollBarWidth: Int {
         // We assume that all scrollers have their controlSize set to `.regular` by default.
@@ -61,7 +62,7 @@ public final class AppKitBackend: FullAppBackend {
         NSApplication.shared.run()
     }
 
-    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
+    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?, id: String) -> Window {
         // For bundled apps, the default activation policy is `regular`, but for unbundled
         // apps without an Info.plist the default is `prohibited` -- i.e. the app can't
         // create windows. We override that here.
@@ -79,11 +80,57 @@ public final class AppKitBackend: FullAppBackend {
             defer: true
         )
         window.delegate = window.customDelegate
+        window.windowController?.shouldCascadeWindows = false
 
         // NB: If this isn't set, AppKit will crash within -[NSApplication run]
         // the *second* time `openWindow` is called. I have absolutely no idea
         // why.
         window.isReleasedWhenClosed = false
+
+        // For some strange reason, AppKit is refusing to restore the window's
+        // persisted size, so for now we just fetch the persisted state ourselves
+        // to parse out the window size and manually apply it to the restored window.
+        let savedSize: SIMD2<Int>?
+        if let state = UserDefaults.standard.string(forKey: "NSWindow Frame \(id)") {
+            // Format: window.x window.y window.w window.h screen.x screen.y screen.w screen.h
+            //   E.g. "10 25 100 100 0 0 3440 1440"
+            let parts = state.split(separator: " ")
+            if parts.count == 8 {
+                let widthString = parts[2]
+                let heightString = parts[3]
+                if let width = Int(widthString), let height = Int(heightString) {
+                    savedSize = SIMD2(width, height)
+                } else {
+                    savedSize = nil
+                }
+            } else {
+                savedSize = nil
+            }
+        } else {
+            savedSize = nil
+
+            // Note that window.center doesn't actually center the window. It centers
+            // it horizontally, but its vertical location is chosen by AppKit to be
+            // "pleasing" (based off the golden ratio apparently?)
+            window.center()
+        }
+
+        _ = window.setFrameAutosaveName(id)
+
+        if let savedSize {
+            var frame = window.frame
+            frame.origin.y -= CGFloat(savedSize.y) - frame.size.height
+            frame.size = CGSize(width: savedSize.x, height: savedSize.y)
+
+            // If we set the window bigger than its target screen, then AppKit crashes,
+            // so we limit the restored window size to the size of the target screen.
+            if let screenFrame = window.screen?.visibleFrame {
+                frame.size.width = min(frame.size.width, screenFrame.size.width)
+                frame.size.height = min(frame.size.height, screenFrame.size.height)
+            }
+
+            window.setFrame(frame, display: true, animate: false)
+        }
 
         return window
     }

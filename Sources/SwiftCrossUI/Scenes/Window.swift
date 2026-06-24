@@ -58,7 +58,8 @@ public final class WindowNode<Content: View>: SceneGraphNode {
                 scene: scene,
                 backend: backend,
                 environment: environment,
-                onClose: { self.windowReference = nil }
+                onClose: { self.windowReference = nil },
+                id: scene.id
             )
         }
     }
@@ -90,7 +91,8 @@ public final class WindowNode<Content: View>: SceneGraphNode {
                     scene: scene,
                     backend: backend,
                     environment: environment,
-                    onClose: { self.windowReference = nil }
+                    onClose: { self.windowReference = nil },
+                    id: scene.id
                 )
                 windowReference = reference
 

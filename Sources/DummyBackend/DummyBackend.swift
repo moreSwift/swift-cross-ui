@@ -13,6 +13,7 @@ public final class DummyBackend:
         static let defaultSize = SIMD2<Int>(400, 200)
 
         public var size: SIMD2<Int>
+        public var id: String
         public var minimumSize: SIMD2<Int> = .zero
         public var maximumSize: SIMD2<Int>?
         public var title = "Window"
@@ -25,8 +26,9 @@ public final class DummyBackend:
         public var phase = ScenePhase.inactive
         public var colorScheme = ColorScheme.light
 
-        public init(defaultSize: SIMD2<Int>?) {
+        public init(defaultSize: SIMD2<Int>?, id: String) {
             size = defaultSize ?? Self.defaultSize
+            self.id = id
         }
     }
 
@@ -259,6 +261,7 @@ public final class DummyBackend:
     public var supportsMultipleWindows = true
     public var supportedPickerStyles: [BackendPickerStyle] = []
     public let canOverrideWindowColorScheme = true
+    public let restoresWindowFrames = false
 
     public var incomingURLHandler: ((URL) -> Void)?
     public var appPhase = AppPhase.active
@@ -269,8 +272,8 @@ public final class DummyBackend:
         callback()
     }
 
-    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
-        Window(defaultSize: defaultSize)
+    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?, id: String) -> Window {
+        Window(defaultSize: defaultSize, id: id)
     }
 
     public func updateWindow(_ window: Window, environment: EnvironmentValues) {

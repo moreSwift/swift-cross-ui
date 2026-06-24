@@ -48,6 +48,7 @@ public final class Gtk3Backend:
     public let deviceClass = DeviceClass.desktop
     public let supportedPickerStyles: [BackendPickerStyle] = []
     public let canOverrideWindowColorScheme = false
+    public let restoresWindowFrames = false
 
     var gtkApp: Application
 
@@ -169,7 +170,7 @@ public final class Gtk3Backend:
         }
     }
 
-    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
+    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?, id: String) -> Window {
         let window: Gtk3.ApplicationWindow
         if let precreatedWindow {
             self.precreatedWindow = nil

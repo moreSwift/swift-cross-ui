@@ -103,6 +103,7 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
     public let defaultPaddingAmount = 10
     public let supportsMultipleWindows = false
     public let canOverrideWindowColorScheme = false
+    public let restoresWindowFrames = false
 
     static var fileDialogCallback: (([Foundation.URL]) -> Void)?
     static var folderDialogCallback: ((Foundation.URL?) -> Void)?
@@ -176,7 +177,7 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         callback()
     }
 
-    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
+    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?, id: String) -> Window {
         // TODO(stackotter): Properly support multiple calls to createWindow
         return Window()
     }
