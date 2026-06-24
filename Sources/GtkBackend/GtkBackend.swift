@@ -724,10 +724,26 @@ public final class GtkBackend:
         to items: [Widget],
         withRowHeights rowHeights: [Int]
     ) {
+        // NOTE: This implementation works under the same assumptions as
+        //   AppKitBackend's implementation. Read the comment in
+        //   AppKitBackend.setItems for more details. In short, we assume
+        //   that modifications made to `items` between `setItems` calls
+        //   are either all pops, or all appends (not a mix).
+
         let listView = listView as! CustomListBox
-        listView.removeAll()
-        for item in items {
-            listView.append(item)
+
+        let previousRowCount = listView.cachedRowCount
+        listView.cachedRowCount = items.count
+
+        if items.count > previousRowCount {
+            for item in items[previousRowCount...] {
+                print("Appending item")
+                listView.append(item)
+            }
+        } else if items.count < previousRowCount {
+            for _ in 0..<(previousRowCount - items.count) {
+                listView.removeRow(at: items.count)
+            }
         }
     }
 
@@ -750,15 +766,13 @@ public final class GtkBackend:
     }
 
     public func setSelectedItem(ofSelectableListView listView: Widget, toItemAt index: Int?) {
-        let listView = listView as! ListBox
-        let handler = listView.rowSelected
-        listView.rowSelected = nil
+        let listView = listView as! CustomListBox
+        listView.cachedSelection = index
         if let index {
             listView.selectRow(at: index)
         } else {
             listView.unselectAll()
         }
-        listView.rowSelected = handler
     }
 
     public func createTooltipContainer(wrapping child: Widget) -> Widget {
@@ -814,7 +828,7 @@ public final class GtkBackend:
         let ellipsize: EllipsizeMode
         if let widget = widget as? CustomLabel {
             ellipsize = widget.ellipsize
-        } else if let widget = widget as? TextView {
+        } else if widget as? TextView != nil {
             // We don't ellipsize multi-line text editors
             ellipsize = .none
         } else {
@@ -2026,6 +2040,7 @@ extension UnsafeMutablePointer {
 
 class CustomListBox: ListBox {
     var cachedSelection: Int? = nil
+    var cachedRowCount = 0
 }
 
 /// A custom label subclass that supports ellipsizing multi-line text. Regular
