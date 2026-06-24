@@ -31,6 +31,10 @@ struct Note: Codable, Equatable, Identifiable {
     }
 }
 
+extension AppStorageValues {
+    @Entry var previewLines = 1
+}
+
 struct ContentView: View {
     let notesFile = URL(fileURLWithPath: "notes.json")
 
@@ -45,6 +49,8 @@ struct ContentView: View {
     @State var selectedNoteId: UUID?
 
     @State var error: String?
+
+    @AppStorage(\.previewLines) var previewLines
 
     var selectedNote: Binding<Note>? {
         guard let id = selectedNoteId else {
@@ -77,23 +83,33 @@ struct ContentView: View {
                     List(notes, selection: $selectedNoteId) { note in
                         VStack(alignment: .leading, spacing: 0) {
                             Text(note.title.isEmpty ? "Untitled" : note.title)
-                            Text(note.truncatedDescription)
+                            Text(note.content)
                                 .foregroundColor(.gray)
                                 .font(.system(size: 12))
+                                .lineLimit(previewLines)
                         }
                     }
-                    .padding(10)
+                    .padding()
                 }
                 if let error = error {
                     Text(error)
                         .foregroundColor(.red)
                 }
-                Button("New note") {
-                    let note = Note(title: "", content: "")
-                    notes.append(note)
-                    selectedNoteId = note.id
+
+                VStack {
+                    Button("New note") {
+                        let note = Note(title: "", content: "")
+                        notes.append(note)
+                        selectedNoteId = note.id
+                    }
+                    Divider()
+
+                    VStack(alignment: .leading) {
+                        Text("Max preview lines: \(previewLines)")
+                        Slider(value: $previewLines, in: 1...4)
+                    }.padding([.leading, .trailing])
                 }
-                .padding(10)
+                .padding([.top, .bottom])
             }
             .onChange(of: notes) {
                 do {
@@ -126,6 +142,21 @@ struct ContentView: View {
                             HStack(spacing: 4) {
                                 Text("Title")
                                 TextField("Title", text: selectedNote.title)
+
+                                Button("Delete note") {
+                                    guard
+                                        let index = notes.firstIndex(of: selectedNote.wrappedValue)
+                                    else {
+                                        return
+                                    }
+                                    notes.remove(at: index)
+                                    if notes.count == 0 {
+                                        selectedNoteId = nil
+                                    } else {
+                                        let newIndex = max(index - 1, 0)
+                                        selectedNoteId = notes[newIndex].id
+                                    }
+                                }
                             }
 
                             TextEditor(text: selectedNote.content)
@@ -141,7 +172,7 @@ struct ContentView: View {
                         }
                     }
                     .padding()
-                    .frame(minHeight: Int(proxy.size.height))
+                    .frame(minHeight: proxy.size.height)
                 }
             }
         }
