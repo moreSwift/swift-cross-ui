@@ -8,7 +8,8 @@ extension ListBox {
 
     /// Removes all rows in the list box.
     public func removeAll() {
-        gtk_list_box_remove_all(opaquePointer)
+        // gtk_list_box_remove_all was introduced in 4.12 (too late for us)
+        while removeRow(at: 0) {}
     }
 
     /// Removes the row at the given index.
