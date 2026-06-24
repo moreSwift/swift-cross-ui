@@ -737,7 +737,6 @@ public final class GtkBackend:
 
         if items.count > previousRowCount {
             for item in items[previousRowCount...] {
-                print("Appending item")
                 listView.append(item)
             }
         } else if items.count < previousRowCount {
