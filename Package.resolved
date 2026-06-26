@@ -1,5 +1,5 @@
 {
-  "originHash" : "89559caa77ab2e6884fe8448f5a864bffa06c87d3250478a907d860967da63a8",
+  "originHash" : "a9dfa341acb293bdcb1f600fefe94ce02ae96b209d8daf249f85f203568d1a05",
   "pins" : [
     {
       "identity" : "androidkit",
@@ -177,8 +177,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/moreSwift/swift-winui",
       "state" : {
-        "revision" : "7cce3fcd0b55c48e6d8993fd2c7c392e8bc945c4",
-        "version" : "0.2.0"
+        "revision" : "df7642fbb88e23a9cc1bbd366c7d6d3780fd0251",
+        "version" : "0.2.1"
       }
     },
     {
