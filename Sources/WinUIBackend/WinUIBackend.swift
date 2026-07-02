@@ -349,7 +349,15 @@ public final class WinUIBackend:
     }
 
     public func openExternalURL(_ url: URL) throws {
-        _ = UWP.Launcher.launchUriAsync(WindowsFoundation.Uri(url.absoluteString))
+        let promise = UWP.Launcher.launchUriAsync(WindowsFoundation.Uri(url.absoluteString))!
+        let semaphore = DispatchSemaphore(value: 0)
+        promise.completed = { _, status in
+            semaphore.signal()
+            if status != .completed {
+                logger.warning("Failed to open external URL \(url)")
+            }
+        }
+        semaphore.wait()
     }
 
     public func runInMainThread(action: @escaping @MainActor () -> Void) {
