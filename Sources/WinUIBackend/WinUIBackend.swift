@@ -135,6 +135,22 @@ public final class WinUIBackend:
         }
     }
 
+    public static func earlySetup() {
+        do {
+            try Self.attachToParentConsole()
+        } catch {
+            // We essentially just ignore if this fails because it's just a QoL
+            // debugging feature, and if it fails then any warning we print likely
+            // won't get seen anyway. But I don't trust my Windows knowledge enough
+            // to assert that it's impossible to view logs on failure, so let's
+            // print a warning anyway.
+            logger.warning(
+                "failed to attach to parent console",
+                metadata: ["error": "\(error)"]
+            )
+        }
+    }
+
     public func runMainLoop(_ callback: @escaping @MainActor () -> Void) {
         do {
             try Self.attachToParentConsole()

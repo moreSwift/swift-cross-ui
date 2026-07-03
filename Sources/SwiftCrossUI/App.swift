@@ -140,6 +140,8 @@ extension App {
 
     /// Runs the application.
     public static func main() {
+        Backend.earlySetup()
+
         extractMetadataAndInitializeLogging()
         let app = Self()
         let backend = app.backend
