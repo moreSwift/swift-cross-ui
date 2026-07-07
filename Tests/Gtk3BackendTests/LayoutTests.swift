@@ -22,7 +22,7 @@ struct LayoutTests {
     func reproduce464() {
         let backend = Gtk3Backend()
         backend.runMainLoop {
-            let window = backend.createWindow(withDefaultSize: nil)
+            let window = backend.createWindow(withDefaultSize: nil, id: "window")
             let environment = EnvironmentValues(backend: backend).with(\.window, window)
 
             @MainActor

@@ -166,7 +166,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/moreSwift/swift-winui",
-            .upToNextMinor(from: "0.2.0")
+            .upToNextMinor(from: "0.2.1")
         ),
         .package(
             url: "https://github.com/stackotter/swift-benchmark",
@@ -306,6 +306,8 @@ let package = Package(
                 "SwiftCrossUI",
                 "WinUIInterop",
                 .product(name: "WinUI", package: "swift-winui"),
+                .product(name: "UWP", package: "swift-winui"),
+                .product(name: "CWinRT", package: "swift-winui"),
                 .product(name: "WinAppSDK", package: "swift-winui"),
                 .product(name: "WindowsFoundation", package: "swift-winui"),
                 .product(name: "Mutex", package: "swift-mutex"),
@@ -400,6 +402,7 @@ if androidBackendSupported {
             dependencies: [
                 "SwiftCrossUI",
                 "AndroidBackendShim",
+                .product(name: "Mutex", package: "swift-mutex"),
 
                 // These two dependencies have to be marked as only included on Android
                 // (even though this target is only used on Android) because SwiftPM requires

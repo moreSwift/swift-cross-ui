@@ -37,6 +37,7 @@ public final class UIKitBackend:
 
     public let supportsMultipleWindows = false
     public let canOverrideWindowColorScheme = true
+    public let restoresWindowFrames = false
 
     public var deviceClass: DeviceClass {
         switch UIDevice.current.userInterfaceIdiom {

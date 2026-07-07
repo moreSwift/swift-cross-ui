@@ -120,15 +120,13 @@ struct ControlsApp: App {
                             Text("Currently enabled: \(exampleCheckboxState)")
                         }
 
-                        #if !canImport(AndroidBackend)
-                            #if !os(tvOS)
-                                VStack {
-                                    Text("Slider")
-                                    Slider(value: $sliderValue, in: 0...10)
-                                        .frame(maxWidth: 200)
-                                    Text("Value: \(String(format: "%.02f", sliderValue))")
-                                }
-                            #endif
+                        #if !os(tvOS)
+                            VStack {
+                                Text("Slider")
+                                Slider(value: $sliderValue, in: 0...10)
+                                    .frame(maxWidth: 200)
+                                Text("Value: \(String(format: "%.02f", sliderValue))")
+                            }
                         #endif
 
                         VStack {
@@ -149,9 +147,7 @@ struct ControlsApp: App {
                                     "Enable ProgressView resizability",
                                     isOn: $isProgressViewResizable
                                 )
-                                #if !canImport(AndroidBackend)
-                                    Slider(value: $progressViewSize, in: 10...100)
-                                #endif
+                                Slider(value: $progressViewSize, in: 10...100)
                                 ProgressView()
                                     .resizable(isProgressViewResizable)
                                     .frame(width: progressViewSize, height: progressViewSize)
@@ -185,7 +181,7 @@ struct ControlsApp: App {
                                 Text("You chose: \(flavor ?? "Nothing yet!")")
                             }
 
-                            #if !os(tvOS) && !canImport(AndroidBackend)
+                            #if !os(tvOS)
                                 VStack {
                                     Text("Selected date: \(date)")
 

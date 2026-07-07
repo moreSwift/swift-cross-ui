@@ -4,6 +4,7 @@ import SwiftCrossUI
 import AndroidKit
 import AndroidGraphics
 import AndroidBackendShim
+import Mutex
 
 // Many force tries are required for the Android backend but we don't really want them
 // anywhere else so just disable the lint rule at a file level.
@@ -78,9 +79,7 @@ extension EnvironmentValues {
     @Entry public var jniEnv: UnsafeMutablePointer<JNIEnv?>? = nil
 }
 
-// TODO: Implement the rest of `BaseAppBackend` so we can move off of `BaseStubs`
-
-public final class AndroidBackend: BackendFeatures.BaseStubs {
+public final class AndroidBackend: BaseAppBackend {
     public final class Window {
         var content: Widget?
     }
@@ -90,19 +89,19 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
     static let stdoutPipe = Pipe()
     static let stderrPipe = Pipe()
 
-    public lazy var deviceClass: DeviceClass =
-        switch helpers.getDeviceClass(Self.activity) {
-            case 0: .desktop
-            case 1: .phone
-            case 2: .tablet
-            case 3: .tv
-            case 4: .watch
-            case let x: fatalError("helpers.getDeviceClass returned unexpected value \(x)")
-        }
+    private let _supportedDatePickerStyles = Mutex<[DatePickerStyle]>([.automatic, .compact])
+
+    public nonisolated var supportedDatePickerStyles: [DatePickerStyle] {
+        _supportedDatePickerStyles.withLock { copy $0 }
+    }
+
+    // .phone is a placeholder value -- the real value is set in `computeRootEnvironment`.
+    public private(set) var deviceClass = DeviceClass.phone
 
     public let defaultPaddingAmount = 10
     public let supportsMultipleWindows = false
     public let canOverrideWindowColorScheme = false
+    public let restoresWindowFrames = false
 
     static var fileDialogCallback: (([Foundation.URL]) -> Void)?
     static var folderDialogCallback: ((Foundation.URL?) -> Void)?
@@ -176,7 +175,7 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         callback()
     }
 
-    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
+    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?, id: String) -> Window {
         // TODO(stackotter): Properly support multiple calls to createWindow
         return Window()
     }
@@ -313,6 +312,32 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
 
         environment
             .appStorageProvider = SharedPreferencesAppStorageProvider(activity: Self.activity)
+
+        // The graphical DatePicker style is ginormous -- the clock and calendar individually are
+        // ~350dp wide each, so when stacked next to each other they don't fit on all tablets, and
+        // even just one of them doesn't fit by itself on some phones. Watch renders them a bit
+        // smaller so they almost fit, but again they don't both fit at the same time.
+        _supportedDatePickerStyles.withLock { supportedDatePickerStyles in
+            switch helpers.getDeviceClass(Self.activity) {
+                case 0:
+                    deviceClass = .desktop
+                    supportedDatePickerStyles = [.automatic, .compact, .graphical]
+                case 1:
+                    deviceClass = .phone
+                    supportedDatePickerStyles = [.automatic, .compact]
+                case 2:
+                    deviceClass = .tablet
+                    supportedDatePickerStyles = [.automatic, .compact]
+                case 3:
+                    deviceClass = .tv
+                    supportedDatePickerStyles = [.automatic, .compact, .graphical]
+                case 4:
+                    deviceClass = .watch
+                    supportedDatePickerStyles = [.automatic, .compact]
+                case let x:
+                    fatalError("helpers.getDeviceClass returned unexpected value \(x)")
+            }
+        }
 
         return environment
     }
@@ -486,5 +511,28 @@ public final class AndroidBackend: BackendFeatures.BaseStubs {
         let width = Double(widget.getMeasuredWidth()) / environment.windowScaleFactor
         let height = Double(widget.getMeasuredHeight()) / environment.windowScaleFactor
         return SIMD2(Int(width.rounded(.up)), Int(height.rounded(.up)))
+    }
+
+    public func createSplitView(leadingChild: Widget, trailingChild: Widget) -> Widget {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setResizeHandler(
+        ofSplitView splitView: Widget,
+        to action: @escaping () -> Void
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func sidebarWidth(ofSplitView splitView: Widget) -> Int {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setSidebarWidthBounds(
+        ofSplitView splitView: Widget,
+        minimum minimumWidth: Int,
+        maximum maximumWidth: Int
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
     }
 }

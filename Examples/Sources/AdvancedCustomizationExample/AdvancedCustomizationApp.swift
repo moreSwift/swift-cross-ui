@@ -76,7 +76,7 @@ struct CounterApp: App {
                         }
                     }
 
-                    #if !os(tvOS) && !canImport(AndroidBackend)
+                    #if !os(tvOS)
                         Slider(value: $value, in: 0...10)
                             .inspect { slider in
                                 #if canImport(AppKitBackend)

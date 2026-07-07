@@ -28,6 +28,7 @@ public final class AppKitBackend: FullAppBackend {
         .radioGroup,
     ]
     public let canOverrideWindowColorScheme = true
+    public let restoresWindowFrames = true
 
     var borderedButtonPadding: SIMD2<Int>?
 
@@ -63,7 +64,7 @@ public final class AppKitBackend: FullAppBackend {
         NSApplication.shared.run()
     }
 
-    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
+    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?, id: String) -> Window {
         // For bundled apps, the default activation policy is `regular`, but for unbundled
         // apps without an Info.plist the default is `prohibited` -- i.e. the app can't
         // create windows. We override that here.
@@ -81,11 +82,57 @@ public final class AppKitBackend: FullAppBackend {
             defer: true
         )
         window.delegate = window.customDelegate
+        window.windowController?.shouldCascadeWindows = false
 
         // NB: If this isn't set, AppKit will crash within -[NSApplication run]
         // the *second* time `openWindow` is called. I have absolutely no idea
         // why.
         window.isReleasedWhenClosed = false
+
+        // For some strange reason, AppKit is refusing to restore the window's
+        // persisted size, so for now we just fetch the persisted state ourselves
+        // to parse out the window size and manually apply it to the restored window.
+        let savedSize: SIMD2<Int>?
+        if let state = UserDefaults.standard.string(forKey: "NSWindow Frame \(id)") {
+            // Format: window.x window.y window.w window.h screen.x screen.y screen.w screen.h
+            //   E.g. "10 25 100 100 0 0 3440 1440"
+            let parts = state.split(separator: " ")
+            if parts.count == 8 {
+                let widthString = parts[2]
+                let heightString = parts[3]
+                if let width = Int(widthString), let height = Int(heightString) {
+                    savedSize = SIMD2(width, height)
+                } else {
+                    savedSize = nil
+                }
+            } else {
+                savedSize = nil
+            }
+        } else {
+            savedSize = nil
+
+            // Note that window.center doesn't actually center the window. It centers
+            // it horizontally, but its vertical location is chosen by AppKit to be
+            // "pleasing" (based off the golden ratio apparently?)
+            window.center()
+        }
+
+        _ = window.setFrameAutosaveName(id)
+
+        if let savedSize {
+            var frame = window.frame
+            frame.origin.y -= CGFloat(savedSize.y) - frame.size.height
+            frame.size = CGSize(width: savedSize.x, height: savedSize.y)
+
+            // If we set the window bigger than its target screen, then AppKit crashes,
+            // so we limit the restored window size to the size of the target screen.
+            if let screenFrame = window.screen?.visibleFrame {
+                frame.size.width = min(frame.size.width, screenFrame.size.width)
+                frame.size.height = min(frame.size.height, screenFrame.size.height)
+            }
+
+            window.setFrame(frame, display: true, animate: false)
+        }
 
         return window
     }
@@ -899,11 +946,49 @@ public final class AppKitBackend: FullAppBackend {
         to items: [Widget],
         withRowHeights rowHeights: [Int]
     ) {
-        let listView = (listView as! NSScrollView).documentView! as! NSCustomTableView
-        listView.customDelegate.rowCount = items.count
-        listView.customDelegate.widgets = items
-        listView.customDelegate.rowHeights = rowHeights
-        listView.reloadData()
+        // NOTE: This implementation works under the assumption that items that
+        //   share an index in the new `items` and the previous `items` also
+        //   share a widget. This assumption lets us conclude that the only new
+        //   widgets are those added to the end of the list when the row count
+        //   increases, and the only widgets removed are those removed from the
+        //   end of the list when the row count decreases. These assumptions
+        //   allow us to avoid calling reloadData, which is too heavy handed for
+        //   what we want to do. reloadData also clobbers the selected row index,
+        //   and workarounds that I tried didn't appear to have any effect.
+        //
+        //   I believe that the assumption is technically possible to break if
+        //   a list view's data source changes state multiple times within a
+        //   single view layout cycle, but we can deal with that when we get to it.
+        //
+        //   Eventually once List supports identity, we'll want to update the
+        //   SelectableListViews API to provide a list of row operations instead
+        //   of an entirely new array of widgets every time, which should allow us
+        //   to resolve any worries that arise from the assumptions that we
+        //   currently have to make.
+
+        let table = (listView as! NSScrollView).documentView! as! NSCustomTableView
+
+        let previousRowCount = table.customDelegate.rowCount
+        let previousRowHeights = table.customDelegate.rowHeights
+        table.customDelegate.rowCount = items.count
+        table.customDelegate.widgets = items
+        table.customDelegate.rowHeights = rowHeights
+
+        if rowHeights != previousRowHeights {
+            // Use an animation group to disable the default animation for row
+            // height changes
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0
+
+                table.noteHeightOfRows(
+                    withIndexesChanged: IndexSet(0..<min(previousRowCount, items.count))
+                )
+            }
+        }
+
+        if items.count != previousRowCount {
+            table.noteNumberOfRowsChanged()
+        }
     }
 
     public func setSelectionHandler(
@@ -916,7 +1001,18 @@ public final class AppKitBackend: FullAppBackend {
 
     public func setSelectedItem(ofSelectableListView listView: Widget, toItemAt index: Int?) {
         let listView = (listView as! NSScrollView).documentView! as! NSCustomTableView
-        listView.selectRowIndexes(IndexSet([index].compactMap { $0 }), byExtendingSelection: false)
+
+        // We want to process row selections asynchronously, because previous calls to
+        // data reloading related NSTableView methods generally don't take effect
+        // immediately, and they often clear the selected row. Putting this in an async
+        // block appears to resolve some unselection issues we were facing that were
+        // caused by setItems(ofSelectableListView:to:withRowHeights:)
+        DispatchQueue.main.async {
+            listView.selectRowIndexes(
+                IndexSet([index].compactMap { $0 }),
+                byExtendingSelection: false
+            )
+        }
     }
 
     public func createSplitView(leadingChild: Widget, trailingChild: Widget) -> Widget {

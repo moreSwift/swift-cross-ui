@@ -111,6 +111,7 @@ struct SheetDemo: View {
                 Text("Root sheet")
                 Button("Present a nested sheet") {
                     isNestedSheetPresented = true
+                    print("Presented a nested sheet")
                 }
                 Button("Dismiss") {
                     dismiss()

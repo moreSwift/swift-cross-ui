@@ -2,9 +2,8 @@ import AndroidKit
 import SwiftCrossUI
 import SwiftJava
 
-extension AndroidBackend: BackendFeatures.TextFields, BackendFeatures.SecureFields,
-    BackendFeatures.TextEditors
-{
+// implements BackendFeatures.TextFields & BackendFeatures.SecureFields & BackendFeatures.TextEditors
+extension AndroidBackend {
     public func createTextField() -> Widget {
         CustomEditText(activity: Self.activity, environment: Self.env)
     }

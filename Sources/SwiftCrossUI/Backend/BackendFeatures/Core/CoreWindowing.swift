@@ -17,6 +17,17 @@ extension BackendFeatures {
         /// modifier as a nicer failure mode.
         var canOverrideWindowColorScheme: Bool { get }
 
+        /// Whether the backend handles restoring window frames from previous sessions.
+        ///
+        /// If `true`, the backend is expected to handle the default size by itself, and
+        /// calls to ``CoreWindowing/size(ofWindow)`` should return either the window's
+        /// default size, or its restored size.
+        ///
+        /// If `false`, then SwiftCrossUI will always use `defaultSize` as the window's
+        /// initial size, because it will presume that the backend's size restoration/defaulting
+        /// support is minimal.
+        var restoresWindowFrames: Bool { get }
+
         /// Creates a new window.
         ///
         /// For some backends it may make sense for this method to return the
@@ -26,11 +37,14 @@ extension BackendFeatures {
         /// A window's content size has precendence over the default size. The
         /// window should always be at least the size of its content.
         ///
-        /// - Parameter defaultSize: The default size of the window. This is only a
-        ///   suggestion; for example some backends may choose to restore the user's
-        ///   preferred window size from a previous session.
+        /// - Parameters:
+        ///   - defaultSize: The default size of the window. This is only a
+        ///     suggestion; for example some backends may choose to restore the user's
+        ///     preferred window size from a previous session.
+        ///   - id: A "unique" id for the window, to be used for restoring the window's
+        ///     position and size from disk if it has been opened before.
         /// - Returns: The created window.
-        func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window
+        func createWindow(withDefaultSize defaultSize: SIMD2<Int>?, id: String) -> Window
 
         /// Updates a window, generally to react to the current color scheme from the
         /// environment.

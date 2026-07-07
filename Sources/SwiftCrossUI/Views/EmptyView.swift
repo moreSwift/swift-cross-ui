@@ -51,7 +51,7 @@ public struct EmptyView: View, Sendable {
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
-        ViewLayoutResult.leafView(size: .zero)
+        ViewLayoutResult(size: .zero, childResults: [], participateInStackLayoutsWhenEmpty: false)
     }
 
     public func commit<Backend: BaseAppBackend>(

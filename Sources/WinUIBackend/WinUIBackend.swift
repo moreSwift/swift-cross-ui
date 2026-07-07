@@ -97,6 +97,7 @@ public final class WinUIBackend:
     ]
     public let supportedPickerStyles: [BackendPickerStyle] = [.menu, .radioGroup]
     public let canOverrideWindowColorScheme = true
+    public let restoresWindowFrames = false
 
     public var scrollBarWidth: Int {
         12
@@ -133,6 +134,22 @@ public final class WinUIBackend:
 
         var errorDescription: String? {
             message
+        }
+    }
+
+    public static func earlySetup() {
+        do {
+            try Self.attachToParentConsole()
+        } catch {
+            // We essentially just ignore if this fails because it's just a QoL
+            // debugging feature, and if it fails then any warning we print likely
+            // won't get seen anyway. But I don't trust my Windows knowledge enough
+            // to assert that it's impossible to view logs on failure, so let's
+            // print a warning anyway.
+            logger.warning(
+                "failed to attach to parent console",
+                metadata: ["error": "\(error)"]
+            )
         }
     }
 
@@ -186,7 +203,7 @@ public final class WinUIBackend:
         WinUIApplication.main()
     }
 
-    public func createWindow(withDefaultSize size: SIMD2<Int>?) -> Window {
+    public func createWindow(withDefaultSize size: SIMD2<Int>?, id: String) -> Window {
         let window = CustomWindow()
         windows.append(window)
         window.closed.addHandler { _, _ in
@@ -350,7 +367,18 @@ public final class WinUIBackend:
     }
 
     public func openExternalURL(_ url: URL) throws {
-        _ = UWP.Launcher.launchUriAsync(WindowsFoundation.Uri(url.absoluteString))
+        let promise = UWP.Launcher.launchUriAsync(WindowsFoundation.Uri(url.absoluteString))!
+        let semaphore = DispatchSemaphore(value: 0)
+        promise.completed = { _, status in
+            semaphore.signal()
+
+            if status != .completed {
+                logger.warning("Failed to open external URL \(url)")
+            }
+        }
+
+        // Block until the URL has been launched
+        semaphore.wait()
     }
 
     public func runInMainThread(action: @escaping @MainActor () -> Void) {

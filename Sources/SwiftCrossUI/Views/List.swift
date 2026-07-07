@@ -265,8 +265,8 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
             selectedIndex = nil
         }
 
-        backend.setSelectedItem(ofSelectableListView: widget, toItemAt: selectedIndex)
         backend.updateSelectableListView(widget, environment: environment)
+        backend.setSelectedItem(ofSelectableListView: widget, toItemAt: selectedIndex)
     }
 }
 

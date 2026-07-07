@@ -432,7 +432,73 @@ extension ForEach where Items.Element: Identifiable, ID == Items.Element.ID {
     /// Creates a view that creates child views on demand based on a collection of identifiable data.
     public init(
         _ elements: Items,
-        child: @escaping (Items.Element) -> Child
+        @ViewBuilder _ child: @escaping (Items.Element) -> Child
+    ) {
+        self.elements = elements
+        self.child = child
+        self.idKeyPath = \.id
+    }
+}
+
+// MARK: Deprecated MenuItem-based inits
+
+extension ForEach where ID == Int {
+    /// Creates a view that creates child views on demand based on a collection of data.
+    @available(
+        *,
+        deprecated,
+        message: """
+            ForEach requires an explicit 'id' parameter for non-Identifiable \
+            elements to correctly persist state across view updates
+            """
+    )
+    @_disfavoredOverload
+    public init(
+        menuItems elements: Items,
+        @ViewBuilder _ child: @escaping (Items.Element) -> Child
+    ) {
+        self.elements = elements
+        self.child = child
+        self.idKeyPath = nil
+    }
+}
+
+extension ForEach {
+    /// Creates a view that creates child views on demand based on a collection of data.
+    @available(
+        *,
+        deprecated,
+        renamed: "init(_:id:_:)",
+        message: """
+            Special treatment of menu item ForEach blocks is no longer necessary. \
+            Remove the menuItems parameter label.
+            """
+    )
+    public init(
+        menuItems elements: Items,
+        id keyPath: KeyPath<Items.Element, ID>,
+        @ViewBuilder _ child: @escaping (Items.Element) -> Child
+    ) {
+        self.elements = elements
+        self.child = child
+        self.idKeyPath = keyPath
+    }
+}
+
+extension ForEach where Items.Element: Identifiable, ID == Items.Element.ID {
+    /// Creates a view that creates child views on demand based on a collection of data.
+    @available(
+        *,
+        deprecated,
+        renamed: "init(_:_:)",
+        message: """
+            Special treatment of menu item ForEach blocks is no longer necessary. \
+            Remove the menuItems parameter label.
+            """
+    )
+    public init(
+        menuItems elements: Items,
+        @ViewBuilder _ child: @escaping (Items.Element) -> Child
     ) {
         self.elements = elements
         self.child = child
