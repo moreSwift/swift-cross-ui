@@ -26,16 +26,14 @@ func connectSignal<T>(
     data: UnsafeRawPointer,
     connectFlags: ConnectFlags = .after,
     handler: @escaping GCallback
-) -> UInt {
-    return UInt(
-        g_signal_connect_data(
-            instance,
-            name,
-            handler,
-            data.cast(),
-            nil,
-            connectFlags.toGConnectFlags()
-        )
+) -> gulong {
+    return g_signal_connect_data(
+        instance,
+        name,
+        handler,
+        data.cast(),
+        nil,
+        connectFlags.toGConnectFlags()
     )
 }
 
@@ -45,12 +43,10 @@ func connectSignal<T>(
     name: String,
     connectFlags: ConnectFlags = .after,
     handler: @escaping GCallback
-) -> UInt {
-    return .init(
-        g_signal_connect_data(instance, name, handler, nil, nil, connectFlags.toGConnectFlags())
-    )
+) -> gulong {
+    return g_signal_connect_data(instance, name, handler, nil, nil, connectFlags.toGConnectFlags())
 }
 
-func disconnectSignal<T>(_ instance: UnsafeMutablePointer<T>?, handlerId: UInt) {
-    g_signal_handler_disconnect(instance, .init(handlerId))
+func disconnectSignal<T>(_ instance: UnsafeMutablePointer<T>?, handlerId: gulong) {
+    g_signal_handler_disconnect(instance, handlerId)
 }

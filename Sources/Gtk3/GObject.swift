@@ -27,7 +27,7 @@ open class GObject: GObjectRepresentable {
         g_object_unref(gobjectPointer)
     }
 
-    private var signals: [(UInt, Any)] = []
+    private var signals: [(gulong, Any)] = []
 
     open func registerSignals() {}
 

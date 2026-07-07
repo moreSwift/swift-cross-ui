@@ -1555,6 +1555,30 @@ public final class WinUIBackend:
         window: Window?,
         resultHandler handleResult: @escaping (DialogResult<[URL]>) -> Void
     ) {
+        switch openDialogOptions.singleKindSelectionMode {
+            case .files:
+                showFileOpenDialog(
+                    fileDialogOptions: fileDialogOptions,
+                    openDialogOptions: openDialogOptions,
+                    window: window,
+                    resultHandler: handleResult
+                )
+            case .directories:
+                showFolderOpenDialog(
+                    fileDialogOptions: fileDialogOptions,
+                    openDialogOptions: openDialogOptions,
+                    window: window,
+                    resultHandler: handleResult
+                )
+        }
+    }
+
+    private func showFileOpenDialog(
+        fileDialogOptions: FileDialogOptions,
+        openDialogOptions: OpenDialogOptions,
+        window: Window?,
+        resultHandler handleResult: @escaping (DialogResult<[URL]>) -> Void
+    ) {
         let picker = FileOpenPicker()
 
         let window = window ?? windows[0]
@@ -1594,6 +1618,42 @@ public final class WinUIBackend:
                 }
                 handleResult(result)
             }
+        }
+    }
+
+    private func showFolderOpenDialog(
+        fileDialogOptions: FileDialogOptions,
+        openDialogOptions: OpenDialogOptions,
+        window: Window?,
+        resultHandler handleResult: @escaping (DialogResult<[URL]>) -> Void
+    ) {
+        precondition(
+            !openDialogOptions.allowMultipleSelections,
+            "WinUIBackend does not support selecting multiple folders"
+        )
+
+        let picker = FolderPicker()
+
+        let window = window ?? windows[0]
+        let hwnd = window.getHWND()!
+        let interface: SwiftIInitializeWithWindow = try! picker.thisPtr.QueryInterface()
+        try! interface.initialize(with: hwnd)
+
+        picker.commitButtonText = fileDialogOptions.defaultButtonLabel
+        picker.fileTypeFilter.append("*")
+
+        let promise = try! picker.pickSingleFolderAsync()!
+        promise.completed = { operation, status in
+            let result: DialogResult<[URL]> = Self.handleAsyncOperationCompletion(
+                operation,
+                status
+            ) { result in
+                let folder = URL(fileURLWithPath: result.path)
+                return .success([folder])
+            } onFailure: {
+                return .cancelled
+            }
+            handleResult(result)
         }
     }
 

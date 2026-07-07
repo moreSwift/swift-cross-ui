@@ -29,7 +29,7 @@ GtkSizeRequestMode gtk_custom_root_widget_size_request_mode(GtkWidget *widget) {
     return GTK_SIZE_REQUEST_HEIGHT_FOR_WIDTH;
 }
 
-int max(int a, int b) {
+static int scui_max(int a, int b) {
     if (a > b) {
         return a;
     } else {
@@ -44,7 +44,7 @@ void gtk_custom_root_widget_get_preferred_width(
 ) {
     GtkCustomRootWidget *root_widget = GTK_CUSTOM_ROOT_WIDGET(widget);
     *minimum = root_widget->minimum_width;
-    *natural = max(root_widget->natural_width, root_widget->minimum_width);
+    *natural = scui_max(root_widget->natural_width, root_widget->minimum_width);
 }
 
 void gtk_custom_root_widget_get_preferred_height(
@@ -54,7 +54,7 @@ void gtk_custom_root_widget_get_preferred_height(
 ) {
     GtkCustomRootWidget *root_widget = GTK_CUSTOM_ROOT_WIDGET(widget);
     *minimum = root_widget->minimum_height;
-    *natural = max(root_widget->natural_height, root_widget->minimum_height);
+    *natural = scui_max(root_widget->natural_height, root_widget->minimum_height);
 }
 
 void gtk_custom_root_widget_size_allocate(

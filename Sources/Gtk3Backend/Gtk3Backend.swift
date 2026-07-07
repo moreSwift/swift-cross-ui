@@ -1349,9 +1349,16 @@ public final class Gtk3Backend:
         window: Window?,
         resultHandler handleResult: @escaping (DialogResult<[URL]>) -> Void
     ) {
+        let action: FileChooserAction = switch openDialogOptions.singleKindSelectionMode {
+            case .files:
+                .open
+            case .directories:
+                .selectFolder
+        }
+
         showFileChooserDialog(
             fileDialogOptions: fileDialogOptions,
-            action: .open,
+            action: action,
             configure: { chooser in
                 chooser.selectMultiple = openDialogOptions.allowMultipleSelections
             },
