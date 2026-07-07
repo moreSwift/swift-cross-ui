@@ -17,7 +17,6 @@ struct CounterApp: App {
                     Button("-") {
                         count -= 1
                     }
-
                     Text("Count: \(count)")
                     Button("+") {
                         count += 1

@@ -61,7 +61,7 @@ extension Gtk3Backend {
 fileprivate final class GtkCustomButton: Gtk3.Button {
     // This value is the result of measurements.
     // Runtime computing it is not viable.
-    static let buttonPadding = SIMD2<Int>(33, 17)
+    static let buttonPadding = SIMD2<Int>(34, 18)
 
     fileprivate var buttonStyle: ButtonStyle.Kind = .bordered {
         willSet {
