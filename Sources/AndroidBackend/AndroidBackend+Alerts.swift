@@ -1,5 +1,5 @@
 import AndroidKit
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 extension AndroidBackend: BackendFeatures.Alerts {
     public typealias Alert = AlertFragment

@@ -10,7 +10,7 @@ import Logging
 nonisolated(unsafe) private var _logger: Logger?
 
 /// The global logger.
-package var logger: Logger {
+@_spi(Backends) public var logger: Logger {
     guard let _logger else {
         let logger = Logger(label: "TestLogger")
         logger.trace("logger used before initialization")

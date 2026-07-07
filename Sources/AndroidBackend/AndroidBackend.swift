@@ -1,6 +1,6 @@
 import Android
 import Foundation
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import AndroidKit
 import AndroidGraphics
 import AndroidBackendShim

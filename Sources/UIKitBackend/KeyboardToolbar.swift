@@ -1,4 +1,4 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import UIKit
 
 /// An item which can be displayed in a keyboard toolbar. Implementers of this do not have
@@ -328,11 +328,9 @@ extension View {
         animateChanges: Bool = true,
         @ToolbarBuilder body: @escaping @Sendable @MainActor () -> ToolbarBuilder.FinalResult
     ) -> some View {
-        EnvironmentModifier(self) { environment in
-            environment.with(\.updateToolbar) { toolbar, environment in
-                toolbar.setItems(body(), animated: animateChanges, in: environment)
-                toolbar.sizeToFit()
-            }
+        environment(\.updateToolbar) { toolbar, environment in
+            toolbar.setItems(body(), animated: animateChanges, in: environment)
+            toolbar.sizeToFit()
         }
     }
 }

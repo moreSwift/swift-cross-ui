@@ -1,5 +1,5 @@
 import AndroidKit
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 // swiftlint:disable force_try
 

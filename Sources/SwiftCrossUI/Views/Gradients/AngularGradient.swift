@@ -137,7 +137,7 @@ extension AngularGradient {
     }
 
     /// Stops adjusted to accomodate endAngle on backends without native support.
-    package var adjustedStops: [Gradient.Stop] {
+    @_spi(Backends) public var adjustedStops: [Gradient.Stop] {
         guard let endAngle else { return gradient.stops }
 
         var stops = gradient.stops

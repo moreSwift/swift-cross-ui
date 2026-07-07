@@ -1,5 +1,5 @@
 import UIKit
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 protocol CheckboxWidget: WidgetProtocol {
     var state: Bool { get set }

@@ -2,7 +2,7 @@ import CGtk3
 import Gtk3CHelpers
 import Foundation
 import Gtk3
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 extension App {
     public typealias Backend = Gtk3Backend

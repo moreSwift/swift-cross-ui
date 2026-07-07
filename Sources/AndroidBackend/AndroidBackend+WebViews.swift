@@ -1,6 +1,6 @@
 import AndroidKit
 import Foundation
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 extension AndroidBackend: BackendFeatures.WebViews {
     public func createWebView() -> Widget {

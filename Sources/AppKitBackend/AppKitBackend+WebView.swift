@@ -1,5 +1,5 @@
 import AppKit
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import WebKit
 
 extension AppKitBackend {

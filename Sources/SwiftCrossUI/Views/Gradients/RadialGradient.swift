@@ -95,7 +95,7 @@ extension RadialGradient {
     }
 
     /// Stops adjusted to accomodate startRadius on backends without native support.
-    package var adjustedStops: [Gradient.Stop] {
+    @_spi(Backends) public var adjustedStops: [Gradient.Stop] {
         guard startRadius != 0 else { return gradient.stops }
 
         let range = endRadius - startRadius

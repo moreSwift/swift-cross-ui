@@ -1,5 +1,5 @@
 import Gtk3
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 /// The context associated with an instance of ``Representable``.
 @MainActor

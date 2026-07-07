@@ -29,7 +29,7 @@ public struct ViewSize: Hashable, Sendable {
     }
 
     /// Gets the view size as a vector.
-    package var vector: SIMD2<Int> {
+    @_spi(Backends) public var vector: SIMD2<Int> {
         SIMD2<Int>(
             LayoutSystem.roundSize(width),
             LayoutSystem.roundSize(height)

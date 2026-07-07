@@ -2,7 +2,7 @@ import Testing
 import Foundation
 
 import DummyBackend
-@testable import SwiftCrossUI
+@testable @_spi(Backends) import SwiftCrossUI
 
 #if canImport(AppKitBackend)
     import AppKit

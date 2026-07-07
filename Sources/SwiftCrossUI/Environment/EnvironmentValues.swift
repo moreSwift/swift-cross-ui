@@ -22,7 +22,7 @@ public struct EnvironmentValues {
     /// because it would be weird to have two pretty equivalent ways of resolving
     /// fonts.
     @MainActor
-    package var resolvedFont: Font.Resolved {
+    @_spi(Backends) public var resolvedFont: Font.Resolved {
         font.resolve(in: fontResolutionContext)
     }
 
@@ -40,7 +40,7 @@ public struct EnvironmentValues {
     /// Each view graph node sets its own handler when passing the environment
     /// on to its children, setting up a bottom-up update chain up which resize
     /// events can propagate.
-    package var onResize: @MainActor (_ newSize: ViewSize) -> Void
+    @_spi(Backends) public var onResize: @MainActor (_ newSize: ViewSize) -> Void
 
     /// Backing storage for extensible subscript
     private var values: [ObjectIdentifier: Any]
@@ -203,7 +203,7 @@ public struct EnvironmentValues {
     ///
     /// - Parameters:
     ///   - backend: The app's backend.
-    package init<Backend: BaseAppBackend>(backend: Backend) {
+    @_spi(Backends) public init<Backend: BaseAppBackend>(backend: Backend) {
         self.backend = backend
 
         onResize = { _ in }
@@ -299,7 +299,7 @@ extension EnvironmentValues {
     @Entry public var scrollDismissesKeyboardMode: ScrollDismissesKeyboardMode = .automatic
 
     /// The style of list to use.
-    @Entry package var listStyle: ListStyle = .default
+    @Entry @_spi(Backends) public var listStyle: ListStyle = .default
 
     /// The style of toggle to use.
     @Entry public var toggleStyle: ToggleStyle = .button
@@ -391,7 +391,7 @@ extension EnvironmentValues {
     /// in, if any.
     ///
     /// This is a very internal detail that should never get exposed to users.
-    package var window: Any? {
+    @_spi(Backends) public var window: Any? {
         get {
             windowStore.wrappedValue
         }
@@ -408,7 +408,7 @@ extension EnvironmentValues {
     /// in, if any.
     ///
     /// This is a very internal detail that should never get exposed to users.
-    package var sheet: Any? {
+    @_spi(Backends) public var sheet: Any? {
         get {
             sheetStore.wrappedValue
         }

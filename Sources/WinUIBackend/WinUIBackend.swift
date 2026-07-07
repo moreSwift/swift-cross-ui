@@ -1,6 +1,6 @@
 import CWinRT
 import Foundation
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import UWP
 import WinAppSDK
 import WinSDK

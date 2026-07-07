@@ -6,7 +6,7 @@ public enum ColorScheme: Sendable {
     case dark
 
     /// The opposite of this color scheme.
-    package var opposite: ColorScheme {
+    @_spi(Backends) public var opposite: ColorScheme {
         switch self {
             case .light: .dark
             case .dark: .light

@@ -2,7 +2,7 @@ import Testing
 
 import CGtk3
 @testable import Gtk3Backend
-@testable import SwiftCrossUI
+@testable @_spi(Backends) import SwiftCrossUI
 
 @Suite(
     "Testing for Gtk3 layout",

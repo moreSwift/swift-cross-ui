@@ -1,4 +1,4 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 #if canImport(WebKit)
     import WebKit

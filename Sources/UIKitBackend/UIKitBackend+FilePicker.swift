@@ -1,5 +1,5 @@
 #if !os(tvOS)
-    import SwiftCrossUI
+    @_spi(Backends) import SwiftCrossUI
     import UIKit
 
     extension UIKitBackend: BackendFeatures.FileOpenDialogs {

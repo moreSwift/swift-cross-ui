@@ -1,5 +1,5 @@
 import AndroidKit
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 // implements BackendFeatures.ScrollContainers
 extension AndroidBackend {
