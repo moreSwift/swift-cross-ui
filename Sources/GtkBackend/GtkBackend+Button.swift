@@ -1,7 +1,7 @@
 import Gtk
 import CGtk
 import GtkCHelpers
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 extension GtkBackend {
     public func createSimpleButton() -> Widget {
