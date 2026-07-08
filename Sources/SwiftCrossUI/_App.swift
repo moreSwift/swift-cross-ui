@@ -59,9 +59,9 @@ class _App<AppRoot: App> {
 
             dynamicPropertyUpdater.update(app, with: environment, previousValue: nil)
 
-            forEachField(of: app) { name, _, field in
+            forEachField(of: app) { name, _, fieldValue in
                 #if DEBUG
-                    if name == "state", field is ObservableObject {
+                    if name == "state", fieldValue is ObservableObject {
                         logger.warning(
                             """
                             the App.state protocol requirement has been removed in favour of \
@@ -72,7 +72,7 @@ class _App<AppRoot: App> {
                     }
                 #endif
 
-                guard let value = field as? any ObservableProperty else {
+                guard let value = fieldValue as? any ObservableProperty else {
                     return // i.e. continue
                 }
 

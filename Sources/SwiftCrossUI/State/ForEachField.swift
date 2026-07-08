@@ -51,7 +51,7 @@ private func getChild<T>(
 ///     field, and the field's value.
 func forEachField<Value>(
     of value: Value,
-    body: (_ name: String?, _ offset: Int, _ field: Any) -> Void
+    body: (_ name: String?, _ offset: Int, _ fieldValue: Any) -> Void
 ) {
     let childCount = getRecursiveChildCount(of: Value.self)
     for index in 0..<childCount {

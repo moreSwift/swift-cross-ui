@@ -36,8 +36,8 @@ struct DynamicPropertyUpdater<Base> {
             return
         }
 
-        forEachField(of: value) { _, offset, field in
-            if let type = type(of: field) as? any DynamicProperty.Type {
+        forEachField(of: value) { _, offset, fieldValue in
+            if let type = type(of: fieldValue) as? any DynamicProperty.Type {
                 propertyOffsets.append((offset, type))
             }
         }

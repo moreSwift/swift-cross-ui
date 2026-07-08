@@ -109,9 +109,9 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         backend.tag(widget: widget, as: tag)
 
         // Update the view and its children when state changes (children are always updated first).
-        forEachField(of: view) { name, _, field in
+        forEachField(of: view) { name, _, fieldValue in
             #if DEBUG
-                if name == "state", field is ObservableObject {
+                if name == "state", fieldValue is ObservableObject {
                     logger.warning(
                         """
                         the View.state protocol requirement has been removed in favour of \
@@ -122,7 +122,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
                 }
             #endif
 
-            guard let value = field as? any ObservableProperty else {
+            guard let value = fieldValue as? any ObservableProperty else {
                 return // i.e. continue
             }
 
