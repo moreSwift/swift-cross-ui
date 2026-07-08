@@ -15,6 +15,7 @@ open class Window: Bin {
     @GObjectProperty(named: "deletable") public var deletable: Bool
     @GObjectProperty(named: "modal") public var isModal: Bool
     @GObjectProperty(named: "decorated") public var isDecorated: Bool
+    @GObjectProperty(named: "destroy-with-parent") public var destroyWithParent: Bool
 
     public var isActive: Bool {
         gtk_window_is_active(castedPointer()).toBool()
@@ -71,6 +72,19 @@ open class Window: Bin {
         gtk_window_close(castedPointer())
     }
 
+    public func setEscapeKeyPressedHandler(to handler: (() -> Void)?) {
+        escapeKeyPressed = handler
+
+        guard escapeKeyEventController == nil else { return }
+
+        let keyEventController = EventControllerKey(widget: widgetPointer)
+        keyEventController.keyPressed = { [weak self] _, keyval, _, _ in
+            guard keyval == GDK_KEY_Escape else { return }
+            self?.escapeKeyPressed?()
+        }
+        escapeKeyEventController = keyEventController
+    }
+
     public func setMinimumSize(to minimumSize: Size) {
         gtk_widget_set_size_request(
             castedPointer(),
@@ -112,4 +126,8 @@ open class Window: Bin {
             }
         }
     }
+
+    private var escapeKeyEventController: EventControllerKey?
+    public var onDestroy: ((Window) -> Void)?
+    public var escapeKeyPressed: (() -> Void)?
 }

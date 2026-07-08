@@ -1499,7 +1499,6 @@ public final class Gtk3Backend:
         // We don't actually care about leaking backends, but might as well use
         // a weak reference anyway.
         drawingArea.doDraw = { [weak self] cairo in
-            let scaleFactor = path.scaleFactor
             guard let self, let path = path.path else {
                 return
             }
@@ -1826,7 +1825,7 @@ final class TooltipContainer: Fixed {
                 deallocateText()
 
                 tooltip = .allocate(capacity: buf.count)
-                tooltip.initialize(from: buf)
+                _ = tooltip.initialize(from: buf)
             }
         }
 
