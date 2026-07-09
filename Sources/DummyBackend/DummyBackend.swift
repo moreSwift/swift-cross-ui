@@ -1,5 +1,5 @@
 import Foundation
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 public final class DummyBackend:
     BaseAppBackend,

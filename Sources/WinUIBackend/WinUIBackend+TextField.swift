@@ -1,4 +1,4 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import WinUI
 
 // Many force tries are required for the WinUI backend but we don't really want them

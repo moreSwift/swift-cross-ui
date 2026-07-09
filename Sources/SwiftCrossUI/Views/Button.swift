@@ -1,9 +1,9 @@
 /// A control that initiates an action.
 public struct Button: Sendable {
     /// The label to show on the button.
-    package var label: String
+    @_spi(Backends) public var label: String
     /// The action to be performed when the button is clicked.
-    package var action: @MainActor @Sendable () -> Void
+    @_spi(Backends) public var action: @MainActor @Sendable () -> Void
     /// The button's forced width if provided.
     var width: Int?
 

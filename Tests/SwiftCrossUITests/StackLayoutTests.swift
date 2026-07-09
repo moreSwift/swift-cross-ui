@@ -1,7 +1,7 @@
 import Testing
 
 import DummyBackend
-@testable import SwiftCrossUI
+@testable @_spi(Backends) import SwiftCrossUI
 
 @Suite("Testing for stack layouts")
 struct StackLayoutTests {

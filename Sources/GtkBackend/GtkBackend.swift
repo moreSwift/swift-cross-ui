@@ -1,7 +1,7 @@
 import CGtk
 import Foundation
 import Gtk
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import GtkCHelpers
 
 extension App {

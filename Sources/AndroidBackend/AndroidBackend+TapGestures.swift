@@ -1,5 +1,5 @@
 import AndroidKit
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 extension AndroidBackend: BackendFeatures.TapGestures {
     public func createTapGestureTarget(wrapping child: Widget, gesture: TapGesture) -> Widget {

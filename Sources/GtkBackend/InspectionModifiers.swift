@@ -1,5 +1,5 @@
 import Gtk
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 extension View {
     /// Inspects the native window that backs the window scene enclosing this view.

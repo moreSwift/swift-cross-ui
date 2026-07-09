@@ -1,5 +1,5 @@
 import AndroidKit
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 extension SwiftCrossUI.Color.Resolved {
     func asColorInt() -> Int32 {

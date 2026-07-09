@@ -11,7 +11,7 @@ extension Color {
 
     /// An adaptive color that follows the design guidelines of the target platform.
     public struct SystemAdaptive: Sendable, Equatable, Hashable {
-        package enum Kind: Sendable, Equatable, Hashable {
+        @_spi(Backends) public enum Kind: Sendable, Equatable, Hashable {
             case blue
             case brown
             case gray
@@ -22,8 +22,8 @@ extension Color {
             case yellow
         }
 
-        package var kind: Kind
-        package init(kind: Kind) { self.kind = kind }
+        @_spi(Backends) public var kind: Kind
+        @_spi(Backends) public init(kind: Kind) { self.kind = kind }
 
         public static let blue = Self(kind: .blue)
         public static let brown = Self(kind: .brown)

@@ -1,4 +1,4 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 extension AndroidBackend: BackendFeatures.Tooltips {
     public func createTooltipContainer(wrapping child: Widget) -> Widget {

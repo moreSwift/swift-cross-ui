@@ -1,5 +1,5 @@
 import Logging
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import UIKit
 
 public final class UIKitBackend:

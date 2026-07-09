@@ -7,7 +7,7 @@ public enum LayoutSystem {
         Double(width) / aspectRatio
     }
 
-    package static func roundSize(_ size: Double) -> Int {
+    @_spi(Backends) public static func roundSize(_ size: Double) -> Int {
         if size.isInfinite {
             logger.warning("LayoutSystem.roundSize(_:) called with infinite size")
         }

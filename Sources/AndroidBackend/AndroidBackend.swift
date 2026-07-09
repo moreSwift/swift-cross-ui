@@ -1,9 +1,10 @@
 import Android
 import Foundation
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import AndroidKit
 import AndroidGraphics
 import AndroidBackendShim
+import Mutex
 
 // Many force tries are required for the Android backend but we don't really want them
 // anywhere else so just disable the lint rule at a file level.
@@ -88,15 +89,14 @@ public final class AndroidBackend: BaseAppBackend {
     static let stdoutPipe = Pipe()
     static let stderrPipe = Pipe()
 
-    public lazy var deviceClass: DeviceClass =
-        switch helpers.getDeviceClass(Self.activity) {
-            case 0: .desktop
-            case 1: .phone
-            case 2: .tablet
-            case 3: .tv
-            case 4: .watch
-            case let x: fatalError("helpers.getDeviceClass returned unexpected value \(x)")
-        }
+    private let _supportedDatePickerStyles = Mutex<[DatePickerStyle]>([.automatic, .compact])
+
+    public nonisolated var supportedDatePickerStyles: [DatePickerStyle] {
+        _supportedDatePickerStyles.withLock { copy $0 }
+    }
+
+    // .phone is a placeholder value -- the real value is set in `computeRootEnvironment`.
+    public private(set) var deviceClass = DeviceClass.phone
 
     public let defaultPaddingAmount = 10
     public let supportsMultipleWindows = false
@@ -312,6 +312,32 @@ public final class AndroidBackend: BaseAppBackend {
 
         environment
             .appStorageProvider = SharedPreferencesAppStorageProvider(activity: Self.activity)
+
+        // The graphical DatePicker style is ginormous -- the clock and calendar individually are
+        // ~350dp wide each, so when stacked next to each other they don't fit on all tablets, and
+        // even just one of them doesn't fit by itself on some phones. Watch renders them a bit
+        // smaller so they almost fit, but again they don't both fit at the same time.
+        _supportedDatePickerStyles.withLock { supportedDatePickerStyles in
+            switch helpers.getDeviceClass(Self.activity) {
+                case 0:
+                    deviceClass = .desktop
+                    supportedDatePickerStyles = [.automatic, .compact, .graphical]
+                case 1:
+                    deviceClass = .phone
+                    supportedDatePickerStyles = [.automatic, .compact]
+                case 2:
+                    deviceClass = .tablet
+                    supportedDatePickerStyles = [.automatic, .compact]
+                case 3:
+                    deviceClass = .tv
+                    supportedDatePickerStyles = [.automatic, .compact, .graphical]
+                case 4:
+                    deviceClass = .watch
+                    supportedDatePickerStyles = [.automatic, .compact]
+                case let x:
+                    fatalError("helpers.getDeviceClass returned unexpected value \(x)")
+            }
+        }
 
         return environment
     }

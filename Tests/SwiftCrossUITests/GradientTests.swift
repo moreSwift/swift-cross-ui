@@ -1,5 +1,5 @@
 import Testing
-@testable import SwiftCrossUI
+@testable @_spi(Backends) import SwiftCrossUI
 
 @Suite("Test Gradients")
 @MainActor
