@@ -1,10 +1,10 @@
 /// A control that initiates an action.
 public struct Button<Label: View> {
     public typealias Content = TupleView1<Label>
+    /// The label to show on the button.
     @_spi(Backends) public var label: () -> Label
     /// The action to be performed when the button is clicked.
     @_spi(Backends) public var action: @MainActor @Sendable () -> Void
-
 
     /// Creates a button that displays a text label.
     ///
