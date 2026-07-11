@@ -152,7 +152,8 @@ public final class WinUIBackend:
     nonisolated(unsafe) private var dispatcherQueue: WinAppSDK.DispatcherQueue?
     /// WinUI only allows one dialog at a time (subsequent dialogs throw
     /// exceptions), so we limit ourselves.
-    private var dialogSemaphore = DispatchSemaphore(value: 1)
+    private var isDialogPresented = false
+    private var queuedDialogActions: [() -> Void] = []
 
     private var windows: [Window] = []
 
@@ -1561,34 +1562,79 @@ public final class WinUIBackend:
         window: Window?,
         responseHandler handleResponse: @escaping (Int) -> Void
     ) {
-        // WinUI only allows one dialog at a time so we limit ourselves using
-        // a semaphore.
         guard let window = window ?? windows.first else {
             logger.warning("WinUI can't show alert without window")
             return
         }
 
-        alert.xamlRoot = window.content.xamlRoot
-        dialogSemaphore.wait()
-        let promise = try! alert.showAsync()!
-        promise.completed = { operation, status in
-            self.dialogSemaphore.signal()
-            guard
-                status == .completed,
-                let operation,
-                let result = try? operation.getResults()
-            else {
+        enqueueDialogPresentation {
+            guard let xamlRoot = window.content.xamlRoot else {
+                logger.warning("WinUI can't show alert before window XamlRoot is available")
+                self.finishDialogPresentation()
+                handleResponse(0)
                 return
             }
-            let index =
-                switch result {
-                    case .primary: 0
-                    case .secondary: 1
-                    case .none: 2
-                    default:
-                        fatalError("WinUIBackend: Invalid dialog response")
+
+            alert.xamlRoot = xamlRoot
+
+            do {
+                guard let promise = try alert.showAsync() else {
+                    logger.warning("WinUI alert showAsync returned nil")
+                    self.finishDialogPresentation()
+                    handleResponse(0)
+                    return
                 }
-            handleResponse(index)
+
+                promise.completed = { operation, status in
+                    self.runInMainThread {
+                        defer {
+                            self.finishDialogPresentation()
+                        }
+
+                        guard
+                            status == .completed,
+                            let operation,
+                            let result = try? operation.getResults()
+                        else {
+                            handleResponse(0)
+                            return
+                        }
+
+                        let index =
+                            switch result {
+                                case .primary: 0
+                                case .secondary: 1
+                                case .none: 2
+                                default:
+                                    fatalError("WinUIBackend: Invalid dialog response")
+                            }
+                        handleResponse(index)
+                    }
+                }
+            } catch {
+                logger.warning("WinUI failed to show alert: \(error)")
+                self.finishDialogPresentation()
+                handleResponse(0)
+                return
+            }
+        }
+    }
+
+    private func enqueueDialogPresentation(_ action: @escaping () -> Void) {
+        if isDialogPresented {
+            queuedDialogActions.append(action)
+        } else {
+            isDialogPresented = true
+            action()
+        }
+    }
+
+    private func finishDialogPresentation() {
+        if queuedDialogActions.isEmpty {
+            isDialogPresented = false
+        } else {
+            let nextAction = queuedDialogActions.removeFirst()
+            nextAction()
         }
     }
 
