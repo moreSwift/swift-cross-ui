@@ -10,6 +10,13 @@ import WinSDK
 extension WinUIBackend: BackendFeatures.Sheets {
     public class Sheet: ContentDialog {
         var dismissHandler: (() -> Void)?
+        var nestedSheet: Sheet?
+        weak var parentSheet: Sheet?
+        weak var window: Window?
+        var isProgrammaticDismissal = false
+        var isSuspendedForNestedSheet = false
+        var pendingNestedPresentation: Sheet?
+        var isPresenting = false
     }
 
     public func createSheet(content: Widget) -> Sheet {
@@ -33,7 +40,6 @@ extension WinUIBackend: BackendFeatures.Sheets {
         accelerator.invoked.addHandler { [weak sheet] _, _ in
             guard let sheet else { return }
             try! sheet.hide()
-            sheet.dismissHandler?()
         }
         sheet.keyboardAccelerators.append(accelerator)
         sheet.keyboardAcceleratorPlacementMode = .hidden
@@ -86,28 +92,93 @@ extension WinUIBackend: BackendFeatures.Sheets {
         window: Window,
         parentSheet: Sheet?
     ) {
+        sheet.window = window
+        sheet.parentSheet = parentSheet
+
+        if let parentSheet {
+            parentSheet.nestedSheet = sheet
+            parentSheet.pendingNestedPresentation = sheet
+            parentSheet.isSuspendedForNestedSheet = true
+            do {
+                try parentSheet.hide()
+            } catch {
+                print("Error: \(error)")
+                presentSheetNow(sheet, window: window)
+            }
+            return
+        }
+
+        presentSheetNow(sheet, window: window)
+    }
+
+    private func presentSheetNow(_ sheet: Sheet, window: Window) {
         sheet.xamlRoot = window.content.xamlRoot
+        sheet.window = window
+        sheet.isPresenting = true
         do {
             let promise = try sheet.showAsync()!
-            promise.completed = { [weak sheet] _, status in
-                guard let sheet, status == .completed else {
+            promise.completed = { [weak self, weak sheet, weak window] _, status in
+                guard let self, let sheet, status == .completed else {
+                    return
+                }
+
+                sheet.isPresenting = false
+
+                if sheet.isSuspendedForNestedSheet {
+                    sheet.isSuspendedForNestedSheet = false
+                    if
+                        let nestedSheet = sheet.pendingNestedPresentation,
+                        let window = sheet.window ?? window
+                    {
+                        sheet.pendingNestedPresentation = nil
+                        self.presentSheetNow(nestedSheet, window: window)
+                    }
+                    return
+                }
+
+                let wasProgrammaticDismissal = sheet.isProgrammaticDismissal
+                sheet.isProgrammaticDismissal = false
+
+                if let parentSheet = sheet.parentSheet {
+                    parentSheet.nestedSheet = nil
+                    sheet.parentSheet = nil
+
+                    if let window = parentSheet.window ?? window {
+                        self.presentSheetNow(parentSheet, window: window)
+                    }
+                }
+
+                guard !wasProgrammaticDismissal else {
                     return
                 }
 
                 sheet.dismissHandler?()
             }
         } catch {
-            // Force tries don't print properly in some Windows environments, and this
-            // is a particularly useful error to have access to, because there are legitimate
-            // edge cases under which this could be triggered
+            // WinUI only allows a single ContentDialog per XamlRoot. Nested
+            // sheets suspend their parent before presenting; any error that
+            // still reaches this point should be visible without crashing the
+            // process.
             print("Error: \(error)")
-            fatalError("\(error)")
+            sheet.isPresenting = false
         }
     }
 
     public func dismissSheet(_ sheet: Sheet, window: Window, parentSheet: Sheet?) {
-        print("Dismissing sheet programmatically")
-        try! sheet.hide()
+        if let nestedSheet = sheet.nestedSheet {
+            dismissSheet(nestedSheet, window: window, parentSheet: sheet)
+            nestedSheet.dismissHandler?()
+        }
+
+        sheet.isProgrammaticDismissal = true
+        sheet.isSuspendedForNestedSheet = false
+        sheet.pendingNestedPresentation = nil
+        parentSheet?.nestedSheet = nil
+        do {
+            try sheet.hide()
+        } catch {
+            print("Error: \(error)")
+        }
     }
 
     public func size(ofSheet sheet: Sheet) -> SIMD2<Int> {
