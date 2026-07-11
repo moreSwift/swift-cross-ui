@@ -23,8 +23,14 @@ extension App {
 
 class WinUIApplication: SwiftApplication, @unchecked Sendable {
     static let callback = Mutex<(@MainActor (WinUIApplication) -> Void)?>(nil)
+    static let queuedURLs = Mutex<[URL]>([])
+    static let onReceiveURL = Mutex<((URL) -> Void)?>(nil)
 
     override func onLaunched(_ args: WinUI.LaunchActivatedEventArgs) {
+        if let url = Self.url(fromLaunchArguments: args.arguments) {
+            Self.receive(url)
+        }
+
         Self.callback.withLock { callback in
             // We can't explicitly hop to the main actor because we haven't set up
             // our WinUI MainActor fix yet.
@@ -32,6 +38,35 @@ class WinUIApplication: SwiftApplication, @unchecked Sendable {
                 callback?(self)
             }
         }
+    }
+
+    private static func receive(_ url: URL) {
+        if let handler = onReceiveURL.withLock({ $0 }) {
+            handler(url)
+        } else {
+            queuedURLs.withLock { urls in
+                urls.append(url)
+            }
+        }
+    }
+
+    private static func url(fromLaunchArguments arguments: String) -> URL? {
+        let trimmed = arguments.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            return nil
+        }
+
+        if let url = URL(string: trimmed), url.scheme != nil {
+            return url
+        }
+
+        for argument in CommandLine.arguments.dropFirst() {
+            if let url = URL(string: argument), url.scheme != nil {
+                return url
+            }
+        }
+
+        return nil
     }
 }
 
@@ -503,8 +538,16 @@ public final class WinUIBackend:
     }
 
     public func setIncomingURLHandler(to action: @escaping (URL) -> Void) {
-        // TODO: Implement WinUIBackend setIncomingURLHandler
-        logger.warning("\(#function) not implemented")
+        WinUIApplication.queuedURLs.withLock { urls in
+            for url in urls {
+                action(url)
+            }
+            urls = []
+        }
+
+        WinUIApplication.onReceiveURL.withLock { handler in
+            handler = action
+        }
     }
 
     public func createContainer() -> Widget {
