@@ -108,7 +108,7 @@ open class Widget: GObject {
             self.styleUpdated?()
         }
     }
-  
+
     public func queueDraw() {
         gtk_widget_queue_draw(widgetPointer)
     }
