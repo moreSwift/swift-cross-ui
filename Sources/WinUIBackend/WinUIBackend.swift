@@ -249,31 +249,7 @@ public final class WinUIBackend:
             self.dispatcherQueue = window.dispatcherQueue
         }
 
-        // import WinSDK
-        // import CWinRT
-        // @_spi(WinRTInternal) import WindowsFoundation
-        // let minSizeHook: HOOKPROC = { (nCode: Int32, wParam: WPARAM, lParam: LPARAM) in
-        //     if nCode >= 0 {
-        //         let ptr = UnsafeRawPointer(bitPattern: Int(lParam))?
-        //             .assumingMemoryBound(to: CWPRETSTRUCT.self)
-        //         if let msgInfo = ptr?.pointee, msgInfo.message == WM_GETMINMAXINFO {
-        //             print("Received WM_GETMINMAXINFO")
-
-        //             // var value: HWND = .init(0)
-        //             _ = try! window._inner.perform(
-        //                 as: __x_ABI_CMicrosoft_CUI_CXaml_CIWindowNative.self
-        //             ) { pThis in
-        //                 try! CHECKED(pThis.pointee.lpVtbl.pointee.get_WindowHandle(pThis, nil))
-        //             }
-        //         }
-        //     }
-        //     return CallNextHookEx(nil, nCode, wParam, lParam)
-        // }
-
-        // _ = SetWindowsHookExW(WH_CALLWNDPROCRET, minSizeHook, nil, GetCurrentThreadId())
-        // print("Registered")
-
-        // print(GetDpiForWindow(nil))
+        window.installSizeLimitHandler()
 
         if let size {
             setSize(ofWindow: window, to: size)
@@ -329,7 +305,8 @@ public final class WinUIBackend:
         minimum minimumSize: SIMD2<Int>,
         maximum maximumSize: SIMD2<Int>?
     ) {
-        debugLogOnce("\(#function) unimplemented")
+        window.minimumContentSize = minimumSize
+        window.maximumContentSize = maximumSize
     }
 
     public func setResizeHandler(
@@ -2394,8 +2371,12 @@ public class CustomWindow: WinUI.Window {
     var grid: WinUI.Grid
     var cachedAppWindow: WinAppSDK.AppWindow!
     var isActive = false
+    var minimumContentSize = SIMD2<Int>(0, 0)
+    var maximumContentSize: SIMD2<Int>?
+    var originalWindowProc: WNDPROC?
 
     private(set) var menuBarIsVisible = false
+    private static var windowsByHWND: [Int: CustomWindow] = [:]
 
     /// The amount of height to subtract off the window height to obtain the
     /// window's available content height.
@@ -2458,9 +2439,70 @@ public class CustomWindow: WinUI.Window {
         // Caching appWindow is apparently a good idea in terms of performance:
         // https://github.com/thebrowsercompany/swift-winrt/issues/199#issuecomment-2611006020
         cachedAppWindow = appWindow
+        installSizeLimitHandler()
 
         // Default to not showing the menu bar; we only want to show it when it's non-empty
         setMenuBarVisible(menuBarIsVisible)
+    }
+
+    func installSizeLimitHandler() {
+        guard originalWindowProc == nil else {
+            return
+        }
+
+        guard let hwnd = cachedAppWindow.getHWND() else {
+            logger.warning("failed to install WinUI size limit handler; window handle unavailable")
+            return
+        }
+
+        Self.windowsByHWND[Int(bitPattern: hwnd)] = self
+        let previous = SetWindowLongPtrW(
+            hwnd,
+            GWLP_WNDPROC,
+            LONG_PTR(bitPattern: UInt64(UInt(bitPattern: unsafeBitCast(
+                Self.windowProc,
+                to: UnsafeRawPointer.self
+            ))))
+        )
+        originalWindowProc = unsafeBitCast(previous, to: WNDPROC.self)
+    }
+
+    private static let windowProc: WNDPROC = { hwnd, message, wParam, lParam in
+        if message == WM_GETMINMAXINFO,
+           let hwnd,
+           let window = CustomWindow.windowsByHWND[Int(bitPattern: hwnd)],
+           let info = UnsafeMutableRawPointer(bitPattern: Int(lParam))?
+               .assumingMemoryBound(to: MINMAXINFO.self)
+        {
+            let scaleFactor = window.scaleFactor
+
+            info.pointee.ptMinTrackSize.x = LONG(
+                (Double(window.minimumContentSize.x) * scaleFactor).rounded(.awayFromZero)
+            )
+            info.pointee.ptMinTrackSize.y = LONG(
+                (Double(window.minimumContentSize.y + window.contentHeightAdjustment) * scaleFactor)
+                    .rounded(.awayFromZero)
+            )
+
+            if let maximumContentSize = window.maximumContentSize {
+                info.pointee.ptMaxTrackSize.x = LONG(
+                    (Double(maximumContentSize.x) * scaleFactor).rounded(.awayFromZero)
+                )
+                info.pointee.ptMaxTrackSize.y = LONG(
+                    (Double(maximumContentSize.y + window.contentHeightAdjustment) * scaleFactor)
+                        .rounded(.awayFromZero)
+                )
+            }
+        }
+
+        if let hwnd,
+           let window = CustomWindow.windowsByHWND[Int(bitPattern: hwnd)],
+           let originalWindowProc = window.originalWindowProc
+        {
+            return CallWindowProcW(originalWindowProc, hwnd, message, wParam, lParam)
+        } else {
+            return DefWindowProcW(hwnd, message, wParam, lParam)
+        }
     }
 
     /// Sets whether the menu bar of the current window is visible. The menu bar
@@ -2478,6 +2520,22 @@ public class CustomWindow: WinUI.Window {
         self.child = child
         grid.children.append(child)
         WinUI.Grid.setRow(child, 1)
+    }
+
+    deinit {
+        if let hwnd = cachedAppWindow?.getHWND() {
+            Self.windowsByHWND.removeValue(forKey: Int(bitPattern: hwnd))
+            if let originalWindowProc {
+                SetWindowLongPtrW(
+                    hwnd,
+                    GWLP_WNDPROC,
+                    LONG_PTR(bitPattern: UInt64(UInt(bitPattern: unsafeBitCast(
+                        originalWindowProc,
+                        to: UnsafeRawPointer.self
+                    ))))
+                )
+            }
+        }
     }
 }
 
