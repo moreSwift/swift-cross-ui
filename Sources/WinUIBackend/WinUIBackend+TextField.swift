@@ -12,7 +12,13 @@ extension WinUIBackend {
         let textField = TextBox()
         textField.textChanged.addHandler { [weak internalState] _, _ in
             guard let internalState else { return }
-            internalState.textFieldChangeActions[ObjectIdentifier(textField)]?(textField.text)
+            let identifier = ObjectIdentifier(textField)
+            let text = textField.text
+            guard internalState.textFieldContents[identifier] != text else {
+                return
+            }
+            internalState.textFieldContents[identifier] = text
+            internalState.textFieldChangeActions[identifier]?(text)
         }
         textField.keyUp.addHandler { [weak internalState] _, event in
             guard let internalState else { return }
@@ -41,7 +47,13 @@ extension WinUIBackend {
     }
 
     public func setContent(ofTextField textField: Widget, to content: String) {
-        (textField as! TextBox).text = content
+        let textField = textField as! TextBox
+        let identifier = ObjectIdentifier(textField)
+        internalState.textFieldContents[identifier] = content
+        guard textField.text != content else {
+            return
+        }
+        textField.text = content
     }
 
     public func getContent(ofTextField textField: Widget) -> String {
@@ -56,9 +68,13 @@ extension WinUIBackend {
         let secureField = PasswordBox()
         secureField.passwordChanged.addHandler { [weak internalState] _, _ in
             guard let internalState else { return }
-            internalState.textFieldChangeActions[ObjectIdentifier(secureField)]?(
-                secureField.password
-            )
+            let identifier = ObjectIdentifier(secureField)
+            let password = secureField.password
+            guard internalState.textFieldContents[identifier] != password else {
+                return
+            }
+            internalState.textFieldContents[identifier] = password
+            internalState.textFieldChangeActions[identifier]?(password)
         }
         secureField.keyUp.addHandler { [weak internalState] _, event in
             guard let internalState else { return }
@@ -87,7 +103,13 @@ extension WinUIBackend {
     }
 
     public func setContent(ofSecureField secureField: Widget, to content: String) {
-        (secureField as! PasswordBox).password = content
+        let secureField = secureField as! PasswordBox
+        let identifier = ObjectIdentifier(secureField)
+        internalState.textFieldContents[identifier] = content
+        guard secureField.password != content else {
+            return
+        }
+        secureField.password = content
     }
 
     public func getContent(ofSecureField secureField: Widget) -> String {

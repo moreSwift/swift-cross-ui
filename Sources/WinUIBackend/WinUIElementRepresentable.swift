@@ -143,6 +143,7 @@ extension View where Self: WinUIElementRepresentable {
         backend: Backend
     ) -> ViewLayoutResult {
         let representingWidget = widget as! RepresentingWidget<Self>
+        representingWidget.representable = self
         if let child = representingWidget.child,
            let savedSize = representingWidget.savedSize
         {

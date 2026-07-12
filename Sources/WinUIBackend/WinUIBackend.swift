@@ -145,6 +145,8 @@ public final class WinUIBackend:
         var sliderChangeActions: [ObjectIdentifier: (Double) -> Void] = [:]
         var textFieldChangeActions: [ObjectIdentifier: (String) -> Void] = [:]
         var textFieldSubmitActions: [ObjectIdentifier: () -> Void] = [:]
+        var textFieldContents: [ObjectIdentifier: String] = [:]
+        var textEditorContents: [ObjectIdentifier: String] = [:]
     }
     private var rootEnvironmentChangeHandler: (@Sendable @MainActor () -> Void)?
 
@@ -653,8 +655,17 @@ public final class WinUIBackend:
             // https://github.com/microsoft/microsoft-ui-xaml/blob/d37afef65a0fc3219ba6b349301d685099fb129d/src/controls/dev/CommonStyles/CheckBox_themeresources.xaml#L270
             return SIMD2(20, 20)
         } else if let picker = widget as? CustomComboBox, picker.padding == noPadding {
+            // Pickers can be measured before their options are populated. Use
+            // WinUI's minimum picker height and a small default width until a
+            // real label exists.
+            guard !picker.options.isEmpty else {
+                return SIMD2(50, 32)
+            }
             let label = TextBlock()
-            label.text = picker.options[Int(max(picker.selectedIndex, 0))]
+            // A ComboBox can briefly report -1 or a stale index while its item
+            // collection is being rebuilt.
+            let selectedIndex = min(Int(max(picker.selectedIndex, 0)), picker.options.count - 1)
+            label.text = picker.options[selectedIndex]
             label.fontSize = picker.fontSize
             label.fontWeight = picker.fontWeight
             try! label.measure(allocation)
@@ -870,7 +881,8 @@ public final class WinUIBackend:
     }
 
     public func createButton() -> Widget {
-        let button = Button()
+        let button = CustomButton()
+        button.content = button.label
         button.click.addHandler { [weak internalState] _, _ in
             guard let internalState else { return }
             internalState.buttonClickActions[ObjectIdentifier(button)]?()
@@ -884,11 +896,11 @@ public final class WinUIBackend:
         environment: EnvironmentValues,
         action: @escaping () -> Void
     ) {
-        let button = button as! WinUI.Button
-        let block = TextBlock()
-        block.text = label
-        button.content = block
-        environment.apply(to: block)
+        let button = button as! CustomButton
+        if button.label.text != label {
+            button.label.text = label
+        }
+        environment.apply(to: button.label)
         environment.apply(to: button)
         internalState.buttonClickActions[ObjectIdentifier(button)] = action
     }
@@ -916,11 +928,11 @@ public final class WinUIBackend:
         menu: Menu,
         environment: EnvironmentValues
     ) {
-        let button = button as! WinUI.Button
-        let block = TextBlock()
-        block.text = label
-        button.content = block
-        environment.apply(to: block)
+        let button = button as! CustomButton
+        if button.label.text != label {
+            button.label.text = label
+        }
+        environment.apply(to: button.label)
         environment.apply(to: button)
         button.flyout = menu
     }
@@ -1111,6 +1123,13 @@ public final class WinUIBackend:
                 let picker = CustomComboBox()
                 picker.selectionChanged.addHandler { [weak picker] _, _ in
                     guard let picker else { return }
+                    // WinUI can briefly report -1 while opening or rebuilding
+                    // the dropdown. Menu pickers do not expose a clear-selection
+                    // action, so ignore that transient state instead of writing
+                    // nil back into SwiftCrossUI and closing the dropdown.
+                    guard picker.selectedIndex >= 0 else {
+                        return
+                    }
                     picker.onChangeSelection?(Int(picker.selectedIndex))
                 }
 
@@ -1156,47 +1175,40 @@ public final class WinUIBackend:
             environment.apply(to: picker)
             picker.actualForegroundColor =
                 environment.suggestedForegroundColor.resolve(in: environment).uwpColor
-
-            // Only update options past this point, otherwise the early return
-            // will cause issues.
-            guard options.count > 0 else {
-                picker.options = []
-                return
+            let dropdownBackground = SolidColorBrush()
+            dropdownBackground.color = switch environment.colorScheme {
+                case .light:
+                    UWP.Color(a: 255, r: 255, g: 255, b: 255)
+                case .dark:
+                    UWP.Color(a: 255, r: 32, g: 32, b: 32)
             }
+            _ = picker.resources.insert("ComboBoxDropDownBackground", dropdownBackground)
 
-            if options.count == picker.items.count {
-                // for i in 0 ..< options.count {
-                // TODO: Understands how to get ComboBox items in WinUI
-                // if picker.items.getAt(UInt32(i)) as? String != options[i] {
-                // picker.items.setAt(UInt32(1), options[i])
-                // }
-                // }
-            } else if options.count > picker.items.count {
-                if !picker.items.isEmpty {
-                    for i in 0..<picker.items.count {
-                        // if picker.items.getAt(UInt32(i)) as? String != options[i] {
-                        picker.items.setAt(UInt32(i), options[i])
-                        // }
+            if picker.options != options {
+                // Keep the existing WinUI item objects where possible so
+                // selection and focus state do not churn during incremental
+                // updates. Avoid touching items when options are unchanged
+                // because rebuilding an open ComboBox closes its dropdown.
+                let sharedCount = min(picker.items.count, options.count)
+                for i in 0..<sharedCount {
+                    picker.items.setAt(UInt32(i), options[i])
+                }
+
+                if options.count > picker.items.count {
+                    for option in options[picker.items.count...] {
+                        picker.items.append(option)
+                    }
+                } else if picker.items.count > options.count {
+                    // Remove from the end so earlier indices stay valid.
+                    for i in (options.count..<picker.items.count).reversed() {
+                        picker.items.removeAt(UInt32(i))
                     }
                 }
-                for i in picker.items.count..<options.count {
-                    picker.items.append(options[i])
-                }
-            } else {
-                for i in 0..<options.count {
-                    // if picker.items.getAt(UInt32(i)) as? String != options[i] {
-                    picker.items.setAt(UInt32(i), options[i])
-                    // }
-                }
-                for i in options.count..<picker.items.count {
-                    picker.items.removeAt(UInt32(i))
-                }
+
+                picker.options = options
             }
 
-            // TODO: Proper picker updating logic
             // TODO: Picker font handling
-
-            picker.options = options
         } else if let picker = picker as? CustomRadioButtons {
             for i in 0..<min(picker.items.count, options.count) {
                 (picker.items[i] as! TextBlock).text = options[i]
@@ -1221,7 +1233,11 @@ public final class WinUIBackend:
 
     public func setSelectedOption(ofPicker picker: Widget, to selectedOption: Int?) {
         if let picker = picker as? ComboBox {
-            picker.selectedIndex = Int32(selectedOption ?? 0)
+            let selectedIndex = Int32(selectedOption ?? -1)
+            guard picker.selectedIndex != selectedIndex else {
+                return
+            }
+            picker.selectedIndex = selectedIndex
         } else if let picker = picker as? RadioButtons {
             picker.selectedIndex = Int32(selectedOption ?? -1)
         }
@@ -1234,12 +1250,17 @@ public final class WinUIBackend:
                 let internalState,
                 let textEditor
             else { return }
-            guard !textEditor.shouldBlockNextChangedSignal else {
-                textEditor.shouldBlockNextChangedSignal = false
+            let identifier = ObjectIdentifier(textEditor)
+            let text = textEditor.text
+            // WinUI may emit TextChanged for text that was already synchronized
+            // from SwiftCrossUI. Ignore it so TextEditor does not write the same
+            // value back into its Binding during commit.
+            guard internalState.textEditorContents[identifier] != text else {
                 return
             }
+            internalState.textEditorContents[identifier] = text
             // Reuse this storage because it's the same widget type as a text field
-            internalState.textFieldChangeActions[ObjectIdentifier(textEditor)]?(textEditor.text)
+            internalState.textFieldChangeActions[identifier]?(text)
         }
         textEditor.acceptsReturn = true
         textEditor.textWrapping = .wrap
@@ -1274,8 +1295,14 @@ public final class WinUIBackend:
 
     public func setContent(ofTextEditor textEditor: Widget, to content: String) {
         let textEditor = textEditor as! TextBox
-        textEditor.shouldBlockNextChangedSignal = true
+        let identifier = ObjectIdentifier(textEditor)
+        internalState.textEditorContents[identifier] = content
+        guard textEditor.text != content else {
+            return
+        }
         textEditor.text = content
+        textEditor.selectionStart = Int32(content.utf16.count)
+        textEditor.selectionLength = 0
     }
 
     public func getContent(ofTextEditor textEditor: Widget) -> String {
@@ -2354,6 +2381,10 @@ final class CustomComboBox: ComboBox {
     var options: [String] = []
     var onChangeSelection: ((Int?) -> Void)?
     var actualForegroundColor: UWP.Color = UWP.Color(a: 255, r: 0, g: 0, b: 0)
+}
+
+final class CustomButton: WinUI.Button {
+    let label = TextBlock()
 }
 
 final class CustomRadioButtons: RadioButtons {
