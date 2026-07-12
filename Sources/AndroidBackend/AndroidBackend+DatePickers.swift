@@ -1,4 +1,4 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import AndroidKit
 import SwiftJava
 import Foundation

@@ -97,7 +97,7 @@ struct SheetDemo: View {
             Text("I'm only here for 5s")
                 .padding(20)
                 .presentationDetents([.medium])
-                .presentationCornerRadius(10)
+                .presentationCornerRadius(20)
                 .presentationBackground(.red)
         }
     }

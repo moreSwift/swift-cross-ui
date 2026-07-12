@@ -55,11 +55,12 @@ public final class GtkBackend:
     public let requiresImageUpdateOnScaleFactorChange = false
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
-    public let defaultSheetCornerRadius = 10
     public let supportedDatePickerStyles: [DatePickerStyle] = [.automatic, .graphical]
     public let supportedPickerStyles: [BackendPickerStyle] = [.menu]
     public let canOverrideWindowColorScheme = false
     public let restoresWindowFrames = false
+
+    let defaultSheetCornerRadius = 10
 
     var gtkApp: Application
 
@@ -1927,9 +1928,6 @@ public final class GtkBackend:
     }
 
     public func createSheet(content: Widget) -> Sheet {
-        // TODO: dismissing a sheet with nested sheets doesn't trigger the onDismiss handlers of the nested sheets
-        // TODO: dismissing a sheet with nested sheets causes the app to freeze/deadlock or something along those lines...
-
         let sheet = Sheet()
         sheet.setChild(content)
 
@@ -2012,6 +2010,7 @@ public final class GtkBackend:
 
     public func dismissSheet(_ sheet: Sheet, window: Window, parentSheet: Sheet?) {
         dismissSheet(sheet)
+        parentSheet?.nestedSheet = nil
     }
 
     private func dismissSheet(_ sheet: Sheet) {

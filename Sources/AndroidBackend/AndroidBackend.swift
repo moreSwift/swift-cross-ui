@@ -462,6 +462,7 @@ public final class AndroidBackend: BaseAppBackend {
         button.setText(charSequence(from: label))
         let listener = ViewOnClickListener(action: action, environment: Self.env)
         button.setOnClickListener(listener.as(AndroidView.View.OnClickListener.self))
+        button.setAllCaps(false)
 
         getTextStyle(from: environment).apply(to: button)
     }

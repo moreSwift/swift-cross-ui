@@ -54,6 +54,7 @@ extension AndroidBackend {
         updateCompoundButton(toggle, environment: environment, onChange: onChange)
 
         let charSequence = charSequence(from: label)
+        toggle.setAllCaps(false)
         toggle.setTextOn(charSequence)
         toggle.setTextOff(charSequence)
 
