@@ -41,7 +41,6 @@ public final class WinUIBackend:
     BackendFeatures.ExternalURLs,
     BackendFeatures.IncomingURLs,
     BackendFeatures.FileDialogs,
-    BackendFeatures.Alerts,
     BackendFeatures.CornerRadius,
     BackendFeatures.Gestures,
     BackendFeatures.AttachedMenus,
@@ -79,7 +78,6 @@ public final class WinUIBackend:
     public typealias Window = CustomWindow
     public typealias Widget = WinUI.FrameworkElement
     public typealias Menu = WinUI.MenuFlyout
-    public typealias Alert = WinUI.ContentDialog
     public typealias Path = GeometryGroupHolder
 
     public let defaultTableRowContentHeight = 20
@@ -115,11 +113,8 @@ public final class WinUIBackend:
 
     var internalState: InternalState
     nonisolated(unsafe) private var dispatcherQueue: WinAppSDK.DispatcherQueue?
-    /// WinUI only allows one dialog at a time (subsequent dialogs throw
-    /// exceptions), so we limit ourselves.
-    private var dialogSemaphore = DispatchSemaphore(value: 1)
 
-    private var windows: [Window] = []
+    var windows: [Window] = []
 
     private var measurementTextBlock: TextBlock!
 
@@ -1507,75 +1502,6 @@ public final class WinUIBackend:
         }
     }
 
-    public func createAlert() -> Alert {
-        ContentDialog()
-    }
-
-    public func updateAlert(
-        _ alert: Alert,
-        title: String,
-        actionLabels: [String],
-        environment: EnvironmentValues
-    ) {
-        alert.title = title
-        if actionLabels.count >= 1 {
-            alert.primaryButtonText = actionLabels[0]
-        }
-        if actionLabels.count >= 2 {
-            alert.secondaryButtonText = actionLabels[1]
-        }
-        if actionLabels.count >= 3 {
-            alert.closeButtonText = actionLabels[2]
-        }
-
-        switch environment.colorScheme {
-            case .light:
-                alert.requestedTheme = .light
-            case .dark:
-                alert.requestedTheme = .dark
-        }
-    }
-
-    public func showAlert(
-        _ alert: Alert,
-        window: Window?,
-        responseHandler handleResponse: @escaping (Int) -> Void
-    ) {
-        // WinUI only allows one dialog at a time so we limit ourselves using
-        // a semaphore.
-        guard let window = window ?? windows.first else {
-            logger.warning("WinUI can't show alert without window")
-            return
-        }
-
-        alert.xamlRoot = window.content.xamlRoot
-        dialogSemaphore.wait()
-        let promise = try! alert.showAsync()!
-        promise.completed = { operation, status in
-            self.dialogSemaphore.signal()
-            guard
-                status == .completed,
-                let operation,
-                let result = try? operation.getResults()
-            else {
-                return
-            }
-            let index =
-                switch result {
-                    case .primary: 0
-                    case .secondary: 1
-                    case .none: 2
-                    default:
-                        fatalError("WinUIBackend: Invalid dialog response")
-                }
-            handleResponse(index)
-        }
-    }
-
-    public func dismissAlert(_ alert: Alert, window: Window?) {
-        try! alert.hide()
-    }
-
     public func showOpenDialog(
         fileDialogOptions: FileDialogOptions,
         openDialogOptions: OpenDialogOptions,
@@ -2291,6 +2217,7 @@ public class CustomWindow: WinUI.Window {
     var grid: WinUI.Grid
     var cachedAppWindow: WinAppSDK.AppWindow!
     var isActive = false
+    var currentAlert: WinUIBackend.Alert?
 
     private(set) var menuBarIsVisible = false
 
