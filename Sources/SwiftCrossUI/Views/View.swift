@@ -251,7 +251,7 @@ extension View {
     /// This is the same resolution applied to ``Menu`` content and scene ``Commands``.
     /// - Returns: The resolved menu.
     @MainActor
-    public func _resolvedMenuContent() -> ResolvedMenu {
+    @_spi(Backends) public func resolvedMenuContent() -> ResolvedMenu {
         Menu.resolve(items: _asMenuItems)
     }
 }
