@@ -3,7 +3,10 @@ import Foundation
 extension Icon: ElementaryView {
     @CastBackend<BackendFeatures.Icons>(returnsWidget: true)
     public func asWidget<Backend: BaseAppBackend>(backend: Backend) -> Backend.Widget {
-        return backend.createIconView()
+        switch kind {
+            case .system(let systemIcon):
+                return backend.createIconView()
+        }
     }
 
     @CastBackend<BackendFeatures.Icons>
