@@ -4,13 +4,11 @@ import Foundation
 /// mutable model object.
 ///
 /// Use `Bindable` when you want controls to edit data stored in an object that
-/// participates in observation, such as a type annotated with `@Observable` or
-/// `@Perceptible` from the
-/// [Perception](https://github.com/pointfreeco/swift-perception) package.
+/// participates in observation, such as a type annotated with `@Observable`.
 /// Applying `@Bindable` lets you use `$` to derive bindings for the object's
 /// mutable members.
 ///
-///     @Perceptible
+///     @Observable
 ///     final class Profile {
 ///         var name = "Taylor"
 ///         var receivesNewsletter = false
@@ -28,7 +26,7 @@ import Foundation
 ///     }
 ///
 /// `Bindable` can also be applied to stored properties, globals, and local
-/// variables. This is useful when you already have an observable or perceptible
+/// variables. This is useful when you already have an observable
 /// object and need bindings for only part of a view hierarchy. For example,
 /// you can introduce a local `@Bindable` value inside `body`:
 ///
@@ -77,7 +75,7 @@ import Foundation
         self
     }
     
-    /// Creates a bindable wrapper around an observable or perceptible object.
+    /// Creates a bindable wrapper around an observable object.
     ///
     /// In most cases, apply the `@Bindable` attribute to a property or local
     /// variable instead of calling this initializer directly.
@@ -99,7 +97,7 @@ extension Bindable where Value: AnyObject {
         )
     }
     
-    /// Creates a bindable wrapper around an observable or perceptible object.
+    /// Creates a bindable wrapper around an observable object.
     ///
     /// This initializer behaves the same as ``init(wrappedValue:)``, but reads
     /// better when constructing a bindable value inline inside another
