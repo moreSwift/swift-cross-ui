@@ -56,7 +56,7 @@ extension State {
         deprecated,
         message: """
             'State' does not work correctly with non-observable classes; conform \
-            your class to 'ObservableObject', use `@Observable` or use a struct instead
+            your class to 'ObservableObject', use `@Observable`, or use a struct instead
             """
     )
     public init(wrappedValue initialValue: Value) where Value: AnyObject {
@@ -77,10 +77,11 @@ extension State {
     }
     
     #if canImport(Darwin)
-        // NB: Needed to prevent deprecation warnings for `Perceptible` types, which
+        // NB: Needed to prevent deprecation warnings for `Observable` types, which
         // *are* supported
-        // Causes a compilation error on Windows and Linux where Perceptible just
-        // uses Observable under the hood.
+        // Causes a compilation error on Windows and Linux where
+        // ObservationPolyfillCore.Observable just uses standard Observable
+        // under the hood.
         public init(wrappedValue initialValue: Value) where Value: ObservationPolyfillCore.Observable & AnyObject {
             implementation = StateImpl(initialStorage: Storage(initialValue))
         }

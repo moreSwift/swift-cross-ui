@@ -236,10 +236,6 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: ModelObserv
 
         dynamicPropertyUpdater.update(view, with: viewEnvironment, previousValue: previousView)
 
-        // We assume that the view's sizing behaviour won't change between consecutive
-        // layout computations and the following commit, because groups of updates
-        // following that pattern are assumed to be occurring within a single overarching
-        // view update. Under that assumption, we can cache view layout results.
         let result = self.observe(with: backend) {
             view.computeLayout(
                 widget,
@@ -249,6 +245,11 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: ModelObserv
                 backend: backend
             )
         }
+        
+        // We assume that the view's sizing behaviour won't change between consecutive
+        // layout computations and the following commit, because groups of updates
+        // following that pattern are assumed to be occurring within a single overarching
+        // view update. Under that assumption, we can cache view layout results.
         resultCache[proposedSize] = result
 
         currentLayout = result

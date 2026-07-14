@@ -33,6 +33,12 @@ class ObservableModel {
     var view2Text: String = "View 2 Text"
     @ObservationIgnored private var automaticModeTask: Task<Void, any Error>?
     
+    // Namespaced spellings of the ObservationIgnored and ObservationTracked
+    // macros are also supported when your deployment target is below that of
+    // the Observation module
+    @ObservationPolyfill.ObservationIgnored private var ignored1 = false
+    @SwiftCrossUI.ObservationIgnored private var ignored2 = false
+    
     func startAutomaticMode() {
         guard !automaticModeIsOn else { return }
         automaticModeIsOn = true
@@ -44,14 +50,14 @@ class ObservableModel {
                 let animal = animalList.randomElement()!
                 let textIndex = Int.random(in: 0..<4)
                 switch textIndex {
-                case 0:
-                    windowTitle = animal
-                case 1:
-                    windowText = animal
-                case 2:
-                    view1Text = animal
-                default:
-                    view2Text = animal
+                    case 0:
+                        windowTitle = animal
+                    case 1:
+                        windowText = animal
+                    case 2:
+                        view1Text = animal
+                    default:
+                        view2Text = animal
                 }
             }
         }
