@@ -75,9 +75,9 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         snapshot?.restore(to: view)
 
         // First create the view's child nodes and widgets
-        let childSnapshots =
-            snapshot?.isValid(for: NodeView.self) == true
-                ? snapshot?.children : snapshot.map { [$0] }
+        let childSnapshots = snapshot.map { snapshot in
+            snapshot.isValid(for: NodeView.self) ? snapshot.children : [snapshot]
+        }
 
         currentLayout = nil
         resultCache = [:]
@@ -85,8 +85,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         parentEnvironment = environment
         cancellables = []
 
-        let mirror = Mirror(reflecting: view)
-        dynamicPropertyUpdater = DynamicPropertyUpdater(for: view, mirror: mirror)
+        dynamicPropertyUpdater = DynamicPropertyUpdater(for: nodeView)
 
         let viewEnvironment = updateEnvironment(environment)
 
@@ -110,28 +109,27 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         backend.tag(widget: widget, as: tag)
 
         // Update the view and its children when state changes (children are always updated first).
-        for property in mirror.children {
-            if property.label == "state" && property.value is ObservableObject {
-                logger.warning(
-                    """
-                    the View.state protocol requirement has been removed in favour of \
-                    SwiftUI-style @State annotations; decorate \(NodeView.self).state \
-                    with the @State property wrapper to restore previous behaviour
-                    """
-                )
+        forEachField(of: view) { name, _, fieldValue in
+            #if DEBUG
+                if name == "state", fieldValue is ObservableObject {
+                    logger.warning(
+                        """
+                        the View.state protocol requirement has been removed in favour of \
+                        SwiftUI-style @State annotations; decorate \(NodeView.self).state \
+                        with the @State property wrapper to restore previous behaviour
+                        """
+                    )
+                }
+            #endif
+
+            guard let value = fieldValue as? any ObservableProperty else {
+                return  // i.e. continue
             }
 
-            guard let value = property.value as? any ObservableProperty else {
-                continue
+            let cancellable = value.didChange.observeAsUIUpdater(backend: backend) { [weak self] in
+                self?.bottomUpUpdate()
             }
-
-            cancellables.append(
-                value.didChange
-                    .observeAsUIUpdater(backend: backend) { [weak self] in
-                        guard let self else { return }
-                        self.bottomUpUpdate()
-                    }
-            )
+            cancellables.append(cancellable)
         }
     }
 

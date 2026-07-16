@@ -245,4 +245,13 @@ extension View {
     }
 
     public var _asMenuItems: [MenuItem] { body._asMenuItems }
+
+    /// Resolves this view's menu content to the representation used by backends.
+    ///
+    /// This is the same resolution applied to ``Menu`` content and scene ``Commands``.
+    /// - Returns: The resolved menu.
+    @MainActor
+    @_spi(Backends) public func resolvedMenuContent() -> ResolvedMenu {
+        Menu.resolve(items: _asMenuItems)
+    }
 }
