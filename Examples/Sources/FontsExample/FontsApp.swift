@@ -6,6 +6,7 @@ struct FontsApp: App {
     @State var isEmphasized = false
     @State var isMonospaced = false
     @State var isItalics = false
+    @State var textCase: Text.Case? = nil
 
     let fonts: [Font] = [
         .largeTitle,
@@ -27,6 +28,7 @@ struct FontsApp: App {
                 Toggle("Emphasize text", isOn: $isEmphasized)
                 Toggle("Monospaced text", isOn: $isMonospaced)
                 Toggle("Italics", isOn: $isItalics)
+                Picker(of: [Text.Case.uppercase, .lowercase], selection: $textCase)
 
                 ForEach(fonts, id: \.self) { font in
                     Text("The quick brown fox jumps over the lazy dog.")
@@ -36,6 +38,7 @@ struct FontsApp: App {
                                 .monospaced(isMonospaced)
                                 .italic(isItalics)
                         )
+                        .textCase(textCase)
                 }
             }
             .toggleStyle(.checkbox)
