@@ -30,7 +30,7 @@ extension Gtk3Backend: BackendFeatures.Sheets {
 
         // Allow the escape key to be used to dismiss interactively dismissible
         // sheets.
-        sheet.setEscapeKeyPressedHandler { [weak self, weak sheet] in
+        sheet.escapeKeyPressed = { [weak self, weak sheet] in
             guard let self, let sheet, !sheet.interactiveDismissDisabled else {
                 return
             }

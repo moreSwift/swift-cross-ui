@@ -107,6 +107,33 @@ open class Widget: GObject {
             guard let self else { return }
             self.styleUpdated?()
         }
+
+        // The Gtk3 docs claim that this handler should take GdkEventKey as a
+        // value, but that leads to crashes on Rocky Linux. These crashes are
+        // fixed by instead taking the event as a pointer.
+        //
+        // The docs: https://docs.gtk.org/gtk3/signal.Widget.key-press-event.html
+        let handler5:
+            @convention(c) (
+                UnsafeMutableRawPointer,
+                UnsafePointer<GdkEventKey>,
+                UnsafeMutableRawPointer
+            ) -> Bool = { _, event, data in
+                SignalBox1<GdkEventKey>.run(data, event.pointee)
+                return false
+            }
+
+        addSignal(
+            name: "key-press-event",
+            handler: gCallback(handler5)
+        ) { [weak self] (event: GdkEventKey) in
+            guard let self else { return }
+            self.keyPressed?(event)
+
+            if event.keyval == GDK_KEY_Escape {
+                self.escapeKeyPressed?()
+            }
+        }
     }
 
     public func queueDraw() {
@@ -219,6 +246,10 @@ open class Widget: GObject {
     public var screenChanged: (() -> Void)?
 
     public var styleUpdated: (() -> Void)?
+
+    public var keyPressed: ((GdkEventKey) -> Void)?
+
+    public var escapeKeyPressed: (() -> Void)?
 
     @GObjectProperty(named: "name") public var name: String?
 

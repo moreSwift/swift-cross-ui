@@ -137,7 +137,6 @@ struct GtkCodeGen {
             "CheckButton",
             "Calendar",
             "SpinButton",
-            "EventControllerKey",
         ]
         let gtk3AllowListedClasses = ["MenuShell", "EventBox"]
         let gtk4AllowListedClasses = [
@@ -146,6 +145,7 @@ struct GtkCodeGen {
             "Popover",
             "ListBox",
             "EventControllerMotion",
+            "EventControllerKey",
         ]
 
         for class_ in gir.namespace.classes {
