@@ -6,7 +6,7 @@ struct FontsApp: App {
     @State var isEmphasized = false
     @State var isMonospaced = false
     @State var isItalics = false
-    @State var textCase: Text.Case? = nil
+    @State var textCase: OptionalTextCase? = .unset
 
     let fonts: [Font] = [
         .largeTitle,
@@ -28,7 +28,10 @@ struct FontsApp: App {
                 Toggle("Emphasize text", isOn: $isEmphasized)
                 Toggle("Monospaced text", isOn: $isMonospaced)
                 Toggle("Italics", isOn: $isItalics)
-                Picker(of: [Text.Case.uppercase, .lowercase], selection: $textCase)
+                HStack {
+                    Text("Text case:")
+                    Picker(of: OptionalTextCase.allCases, selection: $textCase)
+                }
 
                 ForEach(fonts, id: \.self) { font in
                     Text("The quick brown fox jumps over the lazy dog.")
@@ -38,10 +41,33 @@ struct FontsApp: App {
                                 .monospaced(isMonospaced)
                                 .italic(isItalics)
                         )
-                        .textCase(textCase)
+                        .textCase(textCase?.textCase)
                 }
             }
             .toggleStyle(.checkbox)
+        }
+    }
+}
+
+// TODO(kaleb): Remove this hacky enum once we can apply arbitrary labels to picker options.
+enum OptionalTextCase: CaseIterable, CustomStringConvertible {
+    case uppercase
+    case lowercase
+    case unset
+
+    var textCase: Text.Case? {
+        switch self {
+            case .uppercase: .uppercase
+            case .lowercase: .lowercase
+            case .unset: nil
+        }
+    }
+
+    var description: String {
+        switch self {
+            case .uppercase: "Uppercase"
+            case .lowercase: "Lowercase"
+            case .unset: "Unset"
         }
     }
 }
