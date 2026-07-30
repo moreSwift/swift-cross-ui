@@ -2300,24 +2300,14 @@ public class CustomWindow: WinUI.Window {
            let info = UnsafeMutableRawPointer(bitPattern: Int(lParam))?
                .assumingMemoryBound(to: MINMAXINFO.self)
         {
-            let scaleFactor = window.scaleFactor
-
-            info.pointee.ptMinTrackSize.x = LONG(
-                (Double(window.minimumContentSize.x) * scaleFactor).rounded(.awayFromZero)
-            )
-            info.pointee.ptMinTrackSize.y = LONG(
-                (Double(window.minimumContentSize.y + window.contentHeightAdjustment) * scaleFactor)
-                    .rounded(.awayFromZero)
-            )
+            let minimumWindowSize = window.windowTrackingSize(forContentSize: window.minimumContentSize)
+            info.pointee.ptMinTrackSize.x = minimumWindowSize.x
+            info.pointee.ptMinTrackSize.y = minimumWindowSize.y
 
             if let maximumContentSize = window.maximumContentSize {
-                info.pointee.ptMaxTrackSize.x = LONG(
-                    (Double(maximumContentSize.x) * scaleFactor).rounded(.awayFromZero)
-                )
-                info.pointee.ptMaxTrackSize.y = LONG(
-                    (Double(maximumContentSize.y + window.contentHeightAdjustment) * scaleFactor)
-                        .rounded(.awayFromZero)
-                )
+                let maximumWindowSize = window.windowTrackingSize(forContentSize: maximumContentSize)
+                info.pointee.ptMaxTrackSize.x = maximumWindowSize.x
+                info.pointee.ptMaxTrackSize.y = maximumWindowSize.y
             }
         }
 
@@ -2329,6 +2319,47 @@ public class CustomWindow: WinUI.Window {
         } else {
             return DefWindowProcW(hwnd, message, wParam, lParam)
         }
+    }
+
+    private func windowTrackingSize(forContentSize contentSize: SIMD2<Int>) -> POINT {
+        guard let hwnd = cachedAppWindow.getHWND() else {
+            let scaleFactor = scaleFactor
+            return POINT(
+                x: LONG((Double(contentSize.x) * scaleFactor).rounded(.awayFromZero)),
+                y: LONG(
+                    (Double(contentSize.y + contentHeightAdjustment) * scaleFactor)
+                        .rounded(.awayFromZero)
+                )
+            )
+        }
+
+        let dpi = GetDpiForWindow(hwnd)
+        let effectiveDPI = dpi == 0 ? UINT(USER_DEFAULT_SCREEN_DPI) : dpi
+        let scaleFactor = Double(effectiveDPI) / Double(USER_DEFAULT_SCREEN_DPI)
+        let clientWidth = LONG((Double(contentSize.x) * scaleFactor).rounded(.awayFromZero))
+        let clientHeight = LONG(
+            (Double(contentSize.y + contentHeightAdjustment) * scaleFactor).rounded(.awayFromZero)
+        )
+
+        var rect = RECT(left: 0, top: 0, right: clientWidth, bottom: clientHeight)
+        let style = DWORD(bitPattern: Int32(GetWindowLongPtrW(hwnd, GWL_STYLE)))
+        let extendedStyle = DWORD(bitPattern: Int32(GetWindowLongPtrW(hwnd, GWL_EXSTYLE)))
+
+        guard AdjustWindowRectExForDpi(
+            &rect,
+            style,
+            false,
+            extendedStyle,
+            effectiveDPI
+        ) else {
+            logger.warning("failed to adjust WinUI size limit for window frame")
+            return POINT(x: clientWidth, y: clientHeight)
+        }
+
+        return POINT(
+            x: rect.right - rect.left,
+            y: rect.bottom - rect.top
+        )
     }
 
     /// Sets whether the menu bar of the current window is visible. The menu bar
