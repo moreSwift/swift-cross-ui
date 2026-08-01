@@ -191,8 +191,20 @@ struct SwiftCrossUITests {
                 environment: environment
             )
 
+            // The intrinsic sizes of AppKit's controls change between macOS releases
+            // (post-Sequoia, NSButton hosts its content in a SwiftUI view and reports a
+            // wider intrinsic size), so hardcoding the expected size makes this test fail
+            // on any OS version other than the one the numbers were recorded on.
+            // Instead, derive the expectation from the same metrics the layout system
+            // consumes. That still exercises the layout algorithm — how padding, stack
+            // spacing and child sizes compose — without pinning AppKit's own metrics.
+            let expectedSize = Self.expectedCounterViewSize(
+                ofViewGraph: viewGraph,
+                backend: backend
+            )
+
             #expect(
-                result.size == ViewSize(92, 96),
+                result.size == expectedSize,
                 "View update result mismatch"
             )
 
@@ -200,6 +212,61 @@ struct SwiftCrossUITests {
                 result.preferences.onOpenURL == nil,
                 "onOpenURL not nil"
             )
+        }
+
+        /// Computes the size `CounterView` should lay out to under AppKitBackend, from the
+        /// same control metrics and layout constants that the layout system itself uses.
+        ///
+        /// `CounterView` is a padded `VStack` of three leaf views (two buttons and a text
+        /// view), so its size is the union of the children's natural sizes, plus the
+        /// stack's spacing between them, plus padding on every edge.
+        ///
+        /// - Parameters:
+        ///   - viewGraph: The laid-out view graph for `CounterView`, used to measure the
+        ///     concrete widgets the layout system measured.
+        ///   - backend: The backend supplying control metrics and layout constants.
+        /// - Returns: The expected size of the whole view.
+        @MainActor
+        static func expectedCounterViewSize(
+            ofViewGraph viewGraph: ViewGraph<CounterView>,
+            backend: AppKitBackend
+        ) -> ViewSize {
+            let root: AppKitBackend.Widget = viewGraph.rootNode.widget.into()
+            let children = Self.leafWidgets(of: root)
+            let naturalSizes = children.map(backend.naturalSize(of:))
+
+            let padding = backend.defaultPaddingAmount
+            let spacing = VStack<EmptyView>.defaultSpacing
+
+            let width = (naturalSizes.map(\.x).max() ?? 0) + 2 * padding
+            let height =
+                naturalSizes.map(\.y).reduce(0, +)
+                    + spacing * max(naturalSizes.count - 1, 0)
+                    + 2 * padding
+
+            return ViewSize(Double(width), Double(height))
+        }
+
+        /// Collects the leaf-most views of a view tree, in depth-first order.
+        ///
+        /// The backend wraps leaf views in layout containers, so the widgets whose
+        /// natural sizes drive layout are the views that have no subviews of their own.
+        /// `NSButton` hosts its content in a subview on recent macOS releases, so views
+        /// that report an intrinsic content size are treated as leaves too.
+        ///
+        /// - Parameter view: The root of the tree to search.
+        /// - Returns: The tree's leaf views.
+        @MainActor
+        static func leafWidgets(of view: NSView) -> [NSView] {
+            let hasIntrinsicSize =
+                view.intrinsicContentSize.width != NSView.noIntrinsicMetric
+                    || view.intrinsicContentSize.height != NSView.noIntrinsicMetric
+
+            if view.subviews.isEmpty || hasIntrinsicSize {
+                return [view]
+            }
+
+            return view.subviews.flatMap(Self.leafWidgets(of:))
         }
 
         /// Snapshots an AppKit view to a TIFF image.
