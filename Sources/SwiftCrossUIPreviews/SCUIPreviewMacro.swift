@@ -43,7 +43,8 @@ import SwiftCrossUI
 /// To preview across a package's modules, open it from an Xcode project whose
 /// app target depends directly on the product containing the previewed file,
 /// and make that app's scheme the active one. A transitive dependency isn't
-/// enough for the app to be chosen as the host.
+/// enough for the app to be chosen as the host. See `Examples/PreviewsExample`
+/// for a working project set up this way.
 ///
 /// - Note: This overload can't be used inside SwiftCrossUIPreviews itself. A
 ///   same-module declaration outranks the imported SwiftUI one, so within this
