@@ -131,6 +131,11 @@ let package = Package(
     products: [
         .library(name: "SwiftCrossUI", type: libraryType, targets: ["SwiftCrossUI"]),
         .library(name: "AppKitBackend", type: libraryType, targets: ["AppKitBackend"]),
+        .library(
+            name: "SwiftCrossUIPreviews",
+            type: libraryType,
+            targets: ["SwiftCrossUIPreviews"]
+        ),
         .library(name: "GtkBackend", type: libraryType, targets: ["GtkBackend"]),
         .library(name: "Gtk3Backend", type: libraryType, targets: ["Gtk3Backend"]),
         .library(name: "WinUIBackend", type: libraryType, targets: ["WinUIBackend"]),
@@ -235,6 +240,21 @@ let package = Package(
             dependencies: defaultBackendDependencies
         ),
         .target(name: "AppKitBackend", dependencies: ["SwiftCrossUI"]),
+        .target(
+            name: "SwiftCrossUIPreviews",
+            dependencies: [
+                "SwiftCrossUI",
+                "SwiftCrossUIMacrosPlugin",
+                .target(name: "AppKitBackend", condition: .when(platforms: [.macOS])),
+            ]
+        ),
+        .testTarget(
+            name: "SwiftCrossUIPreviewsTests",
+            dependencies: [
+                .target(name: "SwiftCrossUIPreviews", condition: .when(platforms: [.macOS])),
+                "SwiftCrossUI",
+            ]
+        ),
         .target(
             name: "GtkBackend",
             dependencies: ["SwiftCrossUI", "Gtk", "CGtk"]
