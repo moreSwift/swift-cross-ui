@@ -78,6 +78,21 @@ public final class DummyBackend:
         public var label = ""
         public var font: Font.Resolved?
         public var action: (() -> Void)?
+
+        /// Buttons get their intrinsic size from the backend (see the TODO in
+        /// `Button.computeLayout`), so a backend that leaves this at zero renders
+        /// zero-sized buttons. Estimate from the label the same way `size(of:)` does.
+        override public var naturalSize: SIMD2<Int> {
+            guard let resolved = font else { return .zero }
+            let characterHeight = Int(resolved.pointSize)
+            let characterWidth = characterHeight * 2 / 3
+            let horizontalPadding = 10
+            let verticalPadding = 5
+            return SIMD2(
+                characterWidth * label.count + horizontalPadding * 2,
+                Int(resolved.lineHeight) + verticalPadding * 2
+            )
+        }
     }
 
     public class ToggleButton: Widget {
@@ -614,6 +629,7 @@ public final class DummyBackend:
         let button = button as! Button
         button.label = label
         button.action = action
+        button.font = environment.resolvedFont
     }
 
     public func createToggle() -> Widget {
