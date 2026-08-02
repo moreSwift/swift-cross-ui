@@ -45,6 +45,16 @@ let androidBackendSupported: Bool
     androidBackendSupported = false
 #endif
 
+// swift-winui only resolves on Windows, so WinUIBackend/WinUIInterop must be excluded
+// from the package graph entirely on other hosts (resolution fails otherwise, since
+// SwiftPM resolves dependencies for every target regardless of platform conditions).
+let winuiBackendSupported: Bool
+#if os(Windows)
+    winuiBackendSupported = true
+#else
+    winuiBackendSupported = false
+#endif
+
 var defaultBackendDependencies: [Target.Dependency]
 if let backend = env["SCUI_DEFAULT_BACKEND"] {
     defaultBackendDependencies = [.target(name: backend)]
@@ -61,10 +71,15 @@ if let backend = env["SCUI_DEFAULT_BACKEND"] {
         ]
     #else
         defaultBackendDependencies = [
-            .target(name: "WinUIBackend", condition: .when(platforms: [.windows])),
             .target(name: "GtkBackend", condition: .when(platforms: [.linux])),
         ]
     #endif
+
+    if winuiBackendSupported {
+        defaultBackendDependencies += [
+            .target(name: "WinUIBackend", condition: .when(platforms: [.windows])),
+        ]
+    }
 
     if androidBackendSupported {
         defaultBackendDependencies += [
@@ -133,7 +148,6 @@ let package = Package(
         .library(name: "AppKitBackend", type: libraryType, targets: ["AppKitBackend"]),
         .library(name: "GtkBackend", type: libraryType, targets: ["GtkBackend"]),
         .library(name: "Gtk3Backend", type: libraryType, targets: ["Gtk3Backend"]),
-        .library(name: "WinUIBackend", type: libraryType, targets: ["WinUIBackend"]),
         .library(name: "DefaultBackend", type: libraryType, targets: ["DefaultBackend"]),
         .library(name: "UIKitBackend", type: libraryType, targets: ["UIKitBackend"]),
         .library(name: "Gtk", type: libraryType, targets: ["Gtk"]),
@@ -163,10 +177,6 @@ let package = Package(
         .package(
             url: "https://github.com/stackotter/swift-image-formats",
             .upToNextMinor(from: "0.5.0")
-        ),
-        .package(
-            url: "https://github.com/moreSwift/swift-winui",
-            .upToNextMinor(from: "0.2.1")
         ),
         .package(
             url: "https://github.com/stackotter/swift-benchmark",
@@ -300,23 +310,6 @@ let package = Package(
             dependencies: ["CGtk3"]
         ),
         .target(name: "UIKitBackend", dependencies: ["SwiftCrossUI"]),
-        .target(
-            name: "WinUIBackend",
-            dependencies: [
-                "SwiftCrossUI",
-                "WinUIInterop",
-                .product(name: "WinUI", package: "swift-winui"),
-                .product(name: "UWP", package: "swift-winui"),
-                .product(name: "CWinRT", package: "swift-winui"),
-                .product(name: "WinAppSDK", package: "swift-winui"),
-                .product(name: "WindowsFoundation", package: "swift-winui"),
-                .product(name: "Mutex", package: "swift-mutex"),
-            ]
-        ),
-        .target(
-            name: "WinUIInterop",
-            dependencies: []
-        ),
         .target(name: "DummyBackend", dependencies: ["SwiftCrossUI"]),
 
         .executableTarget(
@@ -378,6 +371,41 @@ let package = Package(
         )
     )
 #endif
+
+// swift-winui only resolves on Windows, so keep WinUIBackend/WinUIInterop and the
+// swift-winui dependency out of the graph on every other host.
+if winuiBackendSupported {
+    package.dependencies += [
+        .package(
+            url: "https://github.com/moreSwift/swift-winui",
+            .upToNextMinor(from: "0.2.1")
+        ),
+    ]
+
+    package.products.append(
+        .library(name: "WinUIBackend", type: libraryType, targets: ["WinUIBackend"])
+    )
+
+    package.targets += [
+        .target(
+            name: "WinUIBackend",
+            dependencies: [
+                "SwiftCrossUI",
+                "WinUIInterop",
+                .product(name: "WinUI", package: "swift-winui"),
+                .product(name: "UWP", package: "swift-winui"),
+                .product(name: "CWinRT", package: "swift-winui"),
+                .product(name: "WinAppSDK", package: "swift-winui"),
+                .product(name: "WindowsFoundation", package: "swift-winui"),
+                .product(name: "Mutex", package: "swift-mutex"),
+            ]
+        ),
+        .target(
+            name: "WinUIInterop",
+            dependencies: []
+        ),
+    ]
+}
 
 // Add AndroidBackend if the Swift version is new enough and we're not using xcodebuild
 if androidBackendSupported {
