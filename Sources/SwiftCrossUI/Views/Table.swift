@@ -44,7 +44,7 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
 
     @CastBackend<BackendFeatures.Tables>
     func computeLayout<Backend: BaseAppBackend>(
-        _: Backend.Widget,
+        _ widget: Backend.Widget,
         children: Children,
         proposedSize: ProposedViewSize,
         environment: EnvironmentValues,
@@ -130,8 +130,8 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
         // rather than reporting zero, which would leave the body clipped away.
         let idealHeight =
             rowHeights.reduce(0, +)
-                + backend.defaultTableHeaderHeight
-                + backend.defaultTableVerticalPadding
+                + backend.tableHeaderHeight(of: widget)
+                + backend.tableVerticalPadding(of: widget)
 
         return ViewLayoutResult(
             size: size.replacingUnspecifiedDimensions(

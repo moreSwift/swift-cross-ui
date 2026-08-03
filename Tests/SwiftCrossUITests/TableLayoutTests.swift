@@ -49,9 +49,10 @@ struct TableLayoutTests {
     /// its column header, and the space the backend reserves around its rows.
     @MainActor
     var expectedTableHeight: Int {
-        people.count * expectedRowHeight
-            + backend.defaultTableHeaderHeight
-            + backend.defaultTableVerticalPadding
+        let table = backend.createTable()
+        return people.count * expectedRowHeight
+            + backend.tableHeaderHeight(of: table)
+            + backend.tableVerticalPadding(of: table)
     }
 
     @MainActor

@@ -16,8 +16,6 @@ public final class AppKitBackend: FullAppBackend {
 
     public let defaultTableRowContentHeight = 20
     public let defaultTableCellVerticalPadding = 4
-    public let defaultTableHeaderHeight = 28
-    public let defaultTableVerticalPadding = 15
     public let defaultPaddingAmount = 10
     public let requiresToggleSwitchSpacer = false
     public let requiresImageUpdateOnScaleFactorChange = false
@@ -1144,6 +1142,29 @@ public final class AppKitBackend: FullAppBackend {
         table.allowsColumnSelection = false
         scrollView.documentView = table
         return scrollView
+    }
+
+    public func tableHeaderHeight(of table: Widget) -> Int {
+        let table = (table as! NSScrollView).documentView as! NSCustomTableView
+        return Int(table.headerView?.frame.height ?? 0)
+    }
+
+    public func tableVerticalPadding(of table: Widget) -> Int {
+        let table = (table as! NSScrollView).documentView as! NSCustomTableView
+        switch table.effectiveStyle {
+            case .inset:
+                // 5 above the first row and 10 below the last.
+                return 15
+            case .sourceList:
+                return 10
+            case .fullWidth, .plain:
+                return 0
+            default:
+                // `effectiveStyle` never reports `.automatic`, so this only
+                // covers styles added in future releases. Overestimating leaves
+                // a gap; underestimating clips the last row.
+                return 15
+        }
     }
 
     public func setRowCount(ofTable table: Widget, to rowCount: Int) {
