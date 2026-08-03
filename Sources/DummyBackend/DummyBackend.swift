@@ -254,6 +254,7 @@ public final class DummyBackend:
     public var defaultTableRowContentHeight = 10
     public var defaultTableCellVerticalPadding = 10
     public var defaultTableHeaderHeight = 10
+    public var defaultTableVerticalPadding = 6
     public var defaultPaddingAmount = 10
     public var scrollBarWidth = 8
     public var requiresToggleSwitchSpacer = false

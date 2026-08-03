@@ -45,11 +45,19 @@ struct TableLayoutTests {
             + backend.defaultTableCellVerticalPadding * 2
     }
 
+    /// The height the table occupies given the backend's metrics: its rows,
+    /// its column header, and the space the backend reserves around its rows.
+    @MainActor
+    var expectedTableHeight: Int {
+        people.count * expectedRowHeight
+            + backend.defaultTableHeaderHeight
+            + backend.defaultTableVerticalPadding
+    }
+
     @MainActor
     @Test("Table sizes to its content when proposed no height (#692)")
     func tableSizesToContentWithoutHeightProposal() {
-        let expectedHeight =
-            people.count * expectedRowHeight + backend.defaultTableHeaderHeight
+        let expectedHeight = expectedTableHeight
 
         let node = ViewGraphNode(for: table(), backend: backend, environment: environment)
         let result = node.computeLayout(
@@ -75,9 +83,6 @@ struct TableLayoutTests {
     @MainActor
     @Test("Table contributes its content height to a stack (#692)")
     func tableContributesHeightToStack() {
-        let expectedTableHeight =
-            people.count * expectedRowHeight + backend.defaultTableHeaderHeight
-
         let text = Text("Section")
         let textNode = ViewGraphNode(for: text, backend: backend, environment: environment)
         let textHeight = textNode.computeLayout(

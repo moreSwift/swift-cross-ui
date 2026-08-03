@@ -23,6 +23,16 @@ extension BackendFeatures {
         /// column header should report `0`.
         var defaultTableHeaderHeight: Int { get }
 
+        /// The vertical space a table reserves around its rows, beyond the rows
+        /// themselves and the column header.
+        ///
+        /// Some backends inset their rows within the table's body, so a table
+        /// tall enough to hold only the sum of its row heights clips its last
+        /// row. Backends that inset their rows should report the total of the
+        /// space above the first row and below the last one. Backends whose
+        /// rows meet the edges of the body should report `0`.
+        var defaultTableVerticalPadding: Int { get }
+
         /// Creates an empty table.
         ///
         /// - Returns: A table.

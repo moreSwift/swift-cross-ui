@@ -128,7 +128,10 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
 
         // Along an unspecified axis the table sizes itself to its content
         // rather than reporting zero, which would leave the body clipped away.
-        let idealHeight = rowHeights.reduce(0, +) + backend.defaultTableHeaderHeight
+        let idealHeight =
+            rowHeights.reduce(0, +)
+                + backend.defaultTableHeaderHeight
+                + backend.defaultTableVerticalPadding
 
         return ViewLayoutResult(
             size: size.replacingUnspecifiedDimensions(
