@@ -32,9 +32,16 @@ import SwiftCrossUI
 /// | A package's own scheme | Views the previewed module itself builds |
 ///
 /// Previewing a package's views from the package alone works as long as the
-/// view and the preview are in one module. A body that reaches into another of
-/// the package's modules reports "Missing Preview" instead: the fallback host
-/// resolves only what the previewed module already links.
+/// view and the preview are in one module of a library target. A body that
+/// reaches into another of the package's modules reports "Missing Preview"
+/// instead: the fallback host resolves only what the previewed module already
+/// links.
+///
+/// - Warning: An executable package target can't host the canvas at all. Xcode
+///   requires the `ENABLE_DEBUG_DYLIB` build setting to preview an executable,
+///   a package manifest has no way to set it, and Xcode refuses with that
+///   setting's name in the error. Keep previews in library targets, or preview
+///   from an app project as described below.
 ///
 /// Both rows require a literal `#Preview`, which is what Xcode scans for. That
 /// makes them inapplicable inside SwiftCrossUIPreviews itself, where this

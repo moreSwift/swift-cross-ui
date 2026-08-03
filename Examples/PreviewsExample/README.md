@@ -8,11 +8,11 @@ SwiftCrossUI view rendering in Xcode's canvas.
 Xcode only hosts a package view's preview from a target with an application
 product type in its active scheme (see the "Where previews appear" table in
 `SCUIPreviewMacro.swift`'s documentation, in `Sources/SwiftCrossUIPreviews`).
-`Examples/CounterExample` previews its own view fine because the view and the
-preview share a module, but it's a package executable target, not an app, so
-it can't demonstrate previewing views from elsewhere in the package. This
-project exists to prove and preserve that path: an app target depending on
-SwiftCrossUI by path.
+The package's example executables can't preview at all — Xcode requires the
+`ENABLE_DEBUG_DYLIB` build setting to preview an executable target, and a
+package manifest has no way to set it. This project exists to prove and
+preserve the path that does render: an app target depending on SwiftCrossUI
+by path.
 
 ## Contents
 
