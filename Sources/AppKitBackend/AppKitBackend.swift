@@ -1151,20 +1151,13 @@ public final class AppKitBackend: FullAppBackend {
 
     public func tableVerticalPadding(of table: Widget) -> Int {
         let table = (table as! NSScrollView).documentView as! NSCustomTableView
-        switch table.effectiveStyle {
-            case .inset:
-                // 5 above the first row and 10 below the last.
-                return 15
-            case .sourceList:
-                return 10
-            case .fullWidth, .plain:
-                return 0
-            default:
-                // `effectiveStyle` never reports `.automatic`, so this only
-                // covers styles added in future releases. Overestimating leaves
-                // a gap; underestimating clips the last row.
-                return 15
-        }
+        // `intrinsicContentSize` covers the rows plus whatever the current style
+        // insets them by, so the difference from the rows alone is the inset.
+        // It's independent of the table's assigned frame, so this doesn't
+        // depend on the height we're in the middle of computing.
+        let rowsHeight = table.customDelegate.rowHeights.reduce(0, +)
+        let padding = Int(table.intrinsicContentSize.height) - rowsHeight
+        return max(padding, 0)
     }
 
     public func setRowCount(ofTable table: Widget, to rowCount: Int) {
