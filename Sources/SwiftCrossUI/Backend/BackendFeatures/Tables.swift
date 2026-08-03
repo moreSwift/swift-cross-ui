@@ -16,6 +16,13 @@ extension BackendFeatures {
         /// backend that SwiftCrossUI won't necessarily follow in all cases.
         var defaultTableCellVerticalPadding: Int { get }
 
+        /// The height of a table's column header.
+        ///
+        /// Used when computing a table's ideal height, which is the combined
+        /// height of its rows plus its header. Backends that don't render a
+        /// column header should report `0`.
+        var defaultTableHeaderHeight: Int { get }
+
         /// Creates an empty table.
         ///
         /// - Returns: A table.
