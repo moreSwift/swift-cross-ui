@@ -126,8 +126,14 @@ public struct Table<RowValue, RowContent: TableRowContent<RowValue>>: TypeSafeVi
         }
         children.rowHeights = rowHeights
 
+        // Along an unspecified axis the table sizes itself to its content
+        // rather than reporting zero, which would leave the body clipped away.
+        let idealHeight = rowHeights.reduce(0, +) + backend.defaultTableHeaderHeight
+
         return ViewLayoutResult(
-            size: size.replacingUnspecifiedDimensions(by: .zero),
+            size: size.replacingUnspecifiedDimensions(
+                by: ViewSize(0, Double(idealHeight))
+            ),
             childResults: cellResults
         )
     }
