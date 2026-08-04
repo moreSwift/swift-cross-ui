@@ -178,7 +178,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/moreSwift/swift-observation-polyfill",
-            branch: "main"
+            .upToNextMinor(from: "0.1.0")
         ),
         // .package(
         //     url: "https://github.com/stackotter/TermKit",
