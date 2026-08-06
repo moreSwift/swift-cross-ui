@@ -791,7 +791,15 @@ public final class GtkBackend:
         textView.horizontalAlignment = .start
         textView.wrap = true
         textView.lineWrapMode = .wordCharacter
-        textView.ellipsize = .end
+        // Do not ellipsize by default: ellipsizing a wrapped label makes
+        // Pango lay the text out wider than the allocation, and GTK then
+        // draws the oversized layout centered (default xalign 0.5), clipping
+        // the leading edge of long paragraphs. Ellipsize only when a line
+        // limit is set (see updateTextView).
+        textView.ellipsize = .none
+        // Draw the text block from the label's left edge so an oversized
+        // layout can never clip text off the leading edge.
+        textView.xalign = 0.0
         textView.yalign = 0.0
         return textView
     }
@@ -814,6 +822,9 @@ public final class GtkBackend:
             }
 
         textView.selectable = environment.isTextSelectionEnabled
+        // Ellipsize only for line-limited text (single-line headlines etc.);
+        // body text must wrap, never ellipsize-clip.
+        textView.ellipsize = environment.lineLimitSettings != nil ? .end : .none
         textView.css.clear()
         textView.css.set(properties: Self.cssProperties(for: environment))
     }
@@ -2045,8 +2056,23 @@ class CustomListBox: ListBox {
 /// `Label`s only display a single line of text when ellipsizing is enabled
 /// because they don't pass their size request to their underlying Pango layout.
 class CustomLabel: Label {
+    private var lastRequestedWidth = -1
+    private var lastRequestedHeight = -1
+
     override func setSizeRequest(width: Int, height: Int) {
+        // gtk_widget_set_size_request queues a resize unconditionally, so
+        // issuing the same request every layout pass keeps the widget
+        // resizing forever. Skip no-op re-requests.
+        guard width != lastRequestedWidth || height != lastRequestedHeight else { return }
+        lastRequestedWidth = width
+        lastRequestedHeight = height
         super.setSizeRequest(width: width, height: height)
+
+        // The layout-height override exists solely for ellipsized
+        // (line-limited) labels. Applied to a plain wrapping label it leaves
+        // Pango holding a stale line layout wider than the allocation, which
+        // GTK then draws centered — clipping text off the leading edge.
+        guard ellipsize != .none else { return }
 
         // Override the label's layout height. We do this so that the label grows
         // vertically to fill available space even though we have ellipsizing
