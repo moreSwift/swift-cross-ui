@@ -676,6 +676,13 @@ public final class GtkBackend:
 
     public func createScrollContainer(for child: Widget) -> Widget {
         let scrollView = ScrolledWindow()
+        // Never propagate the content's natural width. Wrapped text reports
+        // its unwrapped one-line width as its natural width, which inflates
+        // every ancestor's natural width until a container that honors
+        // naturals allocates the scroll view wider than the window — and the
+        // overflow clips content off the window's trailing edge. The scroll
+        // view's own size comes from the layout, not from its content.
+        gtk_scrolled_window_set_propagate_natural_width(scrollView.opaquePointer, 0)
         scrollView.setChild(child)
         return scrollView
     }
