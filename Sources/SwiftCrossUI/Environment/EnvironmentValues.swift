@@ -437,6 +437,11 @@ extension EnvironmentValues {
     /// The number of lines text can occupy and whether to reserve that space.
     @Entry public var lineLimitSettings: LineLimit?
 
+    /// Whether a scroll view pins itself to the bottom as content grows
+    /// (transcript-style), releasing when the user scrolls up and
+    /// re-engaging when they scroll back near the bottom. Off by default.
+    @Entry public var scrollAnchorsToBottom: Bool = false
+
     /// The maximum number of lines that text can occupy in a view.
     public var lineLimit: Int? {
         lineLimitSettings?.limit

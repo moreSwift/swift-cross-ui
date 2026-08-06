@@ -689,6 +689,7 @@ public final class GtkBackend:
         hasVerticalScrollBar: Bool
     ) {
         let scrollView = scrollView as! ScrolledWindow
+        scrollView.anchorsToBottom = environment.scrollAnchorsToBottom
         scrollView.setScrollBarPresence(
             hasVerticalScrollBar: hasVerticalScrollBar,
             hasHorizontalScrollBar: hasHorizontalScrollBar
