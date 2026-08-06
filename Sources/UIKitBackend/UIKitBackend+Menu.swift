@@ -1,6 +1,37 @@
 @_spi(Backends) import SwiftCrossUI
 import UIKit
 
+final class CustomKeyCommand: UIKeyCommand {
+    var actionClosure: ((CustomKeyCommand) -> Void)?
+
+    @objc func performAction() {
+        actionClosure?(self)
+    }
+    override var action: Selector? {
+        #selector(performAction)
+    }
+
+    var keyboardShortcut: KeyboardShortcut?
+    override var input: String? {
+        keyboardShortcut.map { String($0.key.character) }
+    }
+    override var modifierFlags: UIKeyModifierFlags {
+        var modifierFlags = UIKeyModifierFlags()
+        if let keyboardShortcut {
+            if keyboardShortcut.modifiers.contains(.primary) {
+                modifierFlags.insert(.command)
+            }
+            if keyboardShortcut.modifiers.contains(.secondary) {
+                modifierFlags.insert(.shift)
+            }
+            if keyboardShortcut.modifiers.contains(.tertiary) {
+                modifierFlags.insert(.alternate)
+            }
+        }
+        return modifierFlags
+    }
+}
+
 extension UIKitBackend {
     private enum RenderedMenuItem {
         case item(UIMenuElement)
@@ -29,6 +60,57 @@ extension UIKitBackend {
                         onChange(!action.state.isOn)
                     }
                 )
+            case .separator:
+                .separator
+            case .submenu(let submenu):
+                .item(
+                    buildMenu(
+                        content: submenu.content,
+                        label: submenu.label,
+                        environment: environment
+                    )
+                )
+            case .modifiedEnvironment(let item, let modification):
+                renderMenuItem(
+                    item,
+                    environment: modification(environment)
+                )
+        }
+    }
+
+    private enum RenderedMenuItem {
+        case item(UIMenuElement)
+        case separator
+    }
+
+    @available(tvOS 14, *)
+    private static func renderMenuItem(
+        _ item: ResolvedMenu.Item,
+        environment: EnvironmentValues
+    ) -> RenderedMenuItem {
+        switch item {
+            case .button(let label, let action):
+                let keyCommand = CustomKeyCommand()
+                keyCommand.title = label
+                if let action, environment.isEnabled {
+                    keyCommand.actionClosure = { _ in action() }
+                } else {
+                    keyCommand.attributes.insert(.disabled)
+                }
+                keyCommand.keyboardShortcut = environment.keyboardShortcut
+                return .item(keyCommand)
+            case .toggle(let label, let value, let onChange):
+                let keyCommand = CustomKeyCommand()
+                keyCommand.title = label
+                keyCommand.state = value ? .on : .off
+                keyCommand.actionClosure = { action in
+                    onChange(!action.state.isOn)
+                }
+                if !environment.isEnabled {
+                    keyCommand.attributes.insert(.disabled)
+                }
+                keyCommand.keyboardShortcut = environment.keyboardShortcut
+                return .item(keyCommand)
             case .separator:
                 .separator
             case .submenu(let submenu):

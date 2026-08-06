@@ -442,6 +442,9 @@ extension EnvironmentValues {
         lineLimitSettings?.limit
     }
 
+    /// The keyboard shortcut assigned with controls in this view.
+    @Entry public internal(set) var keyboardShortcut: KeyboardShortcut?
+
     /// Whether the current device has a circular screen. Primarily Android smart watches.
     @Entry public var isCircularScreen: Bool = false
 

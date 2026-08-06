@@ -296,7 +296,9 @@ struct WindowingApp: App {
         .commands {
             CommandMenu("Demo menu") {
                 Button("Menu item") {}
+                    .keyboardShortcut("b", modifiers: [.primary, .secondary])
                 Toggle("Toggle", isOn: $toggle)
+                    .keyboardShortcut("t", modifiers: [.primary, .tertiary])
 
                 Divider()
 

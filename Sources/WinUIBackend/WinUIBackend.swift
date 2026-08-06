@@ -394,6 +394,11 @@ public final class WinUIBackend:
                     action?()
                 }
                 widget.isEnabled = environment.isEnabled
+                if let keyboardShortcut = environment.keyboardShortcut {
+                    widget.keyboardAccelerators = [
+                        keyboardShortcut.asWinUIKeyboardAccelerator()
+                    ]
+                }
                 return widget
             case .toggle(let label, let value, let onChange):
                 let widget = ToggleMenuFlyoutItem()
@@ -404,6 +409,11 @@ public final class WinUIBackend:
                     onChange(widget.isChecked)
                 }
                 widget.isEnabled = environment.isEnabled
+                if let keyboardShortcut = environment.keyboardShortcut {
+                    widget.keyboardAccelerators = [
+                        keyboardShortcut.asWinUIKeyboardAccelerator()
+                    ]
+                }
                 return widget
             case .separator:
                 return MenuFlyoutSeparator()

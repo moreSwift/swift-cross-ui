@@ -264,6 +264,13 @@ public final class AppKitBackend: FullAppBackend {
                     renderedItem.action = #selector(wrappedAction.run)
                     renderedItem.target = wrappedAction
                 }
+
+                if let keyboardShortcut = environment.keyboardShortcut {
+                    let (keyEquivalent, modifierMask) = keyboardShortcut.asAppKitKeyEquivalent()
+                    renderedItem.keyEquivalent = keyEquivalent
+                    renderedItem.keyEquivalentModifierMask = modifierMask
+                }
+
                 return renderedItem
             case .toggle(let label, let value, let onChange):
                 // Custom subclass is used to keep strong reference to action
@@ -282,6 +289,12 @@ public final class AppKitBackend: FullAppBackend {
                     renderedItem.actionWrapper = wrappedAction
                     renderedItem.action = #selector(wrappedAction.run)
                     renderedItem.target = wrappedAction
+                }
+
+                if let keyboardShortcut = environment.keyboardShortcut {
+                    let (keyEquivalent, modifierMask) = keyboardShortcut.asAppKitKeyEquivalent()
+                    renderedItem.keyEquivalent = keyEquivalent
+                    renderedItem.keyEquivalentModifierMask = modifierMask
                 }
 
                 return renderedItem
@@ -695,6 +708,12 @@ public final class AppKitBackend: FullAppBackend {
         button.onAction = { _ in
             action()
         }
+
+        if let keyboardShortcut = environment.keyboardShortcut {
+            let (keyEquivalent, modifierMask) = keyboardShortcut.asAppKitKeyEquivalent()
+            button.keyEquivalent = keyEquivalent
+            button.keyEquivalentModifierMask = modifierMask
+        }
     }
 
     public func createSwitch() -> Widget {
@@ -741,6 +760,12 @@ public final class AppKitBackend: FullAppBackend {
             let toggle = toggle as! NSButton
             onChange(toggle.state == .on)
         }
+
+        if let keyboardShortcut = environment.keyboardShortcut {
+            let (keyEquivalent, modifierMask) = keyboardShortcut.asAppKitKeyEquivalent()
+            toggle.keyEquivalent = keyEquivalent
+            toggle.keyEquivalentModifierMask = modifierMask
+        }
     }
 
     public func setState(ofToggle toggle: Widget, to state: Bool) {
@@ -762,6 +787,12 @@ public final class AppKitBackend: FullAppBackend {
         checkbox.onAction = { toggle in
             let checkbox = toggle as! NSButton
             onChange(checkbox.state == .on)
+        }
+
+        if let keyboardShortcut = environment.keyboardShortcut {
+            let (keyEquivalent, modifierMask) = keyboardShortcut.asAppKitKeyEquivalent()
+            checkbox.keyEquivalent = keyEquivalent
+            checkbox.keyEquivalentModifierMask = modifierMask
         }
     }
 
