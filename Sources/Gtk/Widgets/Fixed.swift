@@ -39,6 +39,9 @@ import CGtk
 /// widget. But you should be aware of the tradeoffs.
 open class Fixed: Widget {
     public var children: [Widget] = []
+    /// Last layout position per child, so backends can skip no-op
+    /// `gtk_fixed_move` calls (each one queues a resize).
+    public var lastPositions: [ObjectIdentifier: SIMD2<Int>] = [:]
 
     /// Creates a new `GtkFixed`.
     public init() {
@@ -65,6 +68,7 @@ open class Fixed: Widget {
         if let index = children.firstIndex(where: { $0 === child }) {
             gtk_fixed_remove(castedPointer(), child.widgetPointer)
             children.remove(at: index)
+            lastPositions[ObjectIdentifier(child)] = nil
             child.parentWidget = nil
         }
     }
@@ -75,5 +79,6 @@ open class Fixed: Widget {
             child.parentWidget = nil
         }
         children = []
+        lastPositions = [:]
     }
 }

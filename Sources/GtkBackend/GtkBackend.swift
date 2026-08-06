@@ -583,7 +583,16 @@ public final class GtkBackend:
 
     public func setPosition(ofChildAt index: Int, in container: Widget, to position: SIMD2<Int>) {
         let container = container as! Fixed
-        container.move(container.children[index], x: Double(position.x), y: Double(position.y))
+        let child = container.children[index]
+        // gtk_fixed_move calls gtk_widget_queue_resize, and during
+        // size_allocate that re-triggers allocation — an infinite loop when
+        // a layout oscillates by a pixel. Skip no-op and sub-pixel moves.
+        let key = ObjectIdentifier(child)
+        if let last = container.lastPositions[key], abs(last.x - position.x) <= 1, abs(last.y - position.y) <= 1 {
+            return
+        }
+        container.lastPositions[key] = position
+        container.move(child, x: Double(position.x), y: Double(position.y))
     }
 
     public func remove(childAt index: Int, from container: Widget) {
@@ -630,6 +639,12 @@ public final class GtkBackend:
     }
 
     public func setSize(of widget: Widget, to size: SIMD2<Int>) {
+        // gtk_widget_set_size_request calls gtk_widget_queue_resize
+        // unconditionally, so re-applying the same size every layout pass
+        // re-triggers allocation forever (GTK warns "queue_resize() during
+        // size_allocate()" and the main thread pins). Skip no-op sets.
+        let current = widget.getSizeRequest()
+        guard current.width != size.x || current.height != size.y else { return }
         widget.setSizeRequest(width: size.x, height: size.y)
     }
 
