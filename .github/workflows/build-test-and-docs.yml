@@ -215,7 +215,7 @@ jobs:
         target: AndroidBackend
         upload: true
         swiftpm-exe: ~/swiftly/.bin/swift
-        swifptm-args: --swift-sdk aarch64-unknown-linux-android28
+        swiftpm-args: --swift-sdk aarch64-unknown-linux-android28
         working-directory: Examples
 
   uikit:
