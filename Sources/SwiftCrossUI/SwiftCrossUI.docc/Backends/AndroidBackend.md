@@ -76,3 +76,21 @@ Before you can use `AndroidBackend` you must install the required dependencies;
         ```
     }
 }
+
+### Running on a device/simulator
+
+Running your application requires [Swift Bundler](https://github.com/moreSwift/swift-bundler).
+
+```sh
+# List available Android devices
+swift-bundler devices list --os android
+
+# Run on your device
+swift-bundler run --device "Your Device"
+
+# List available Android emulators
+swift-bundler simulators list --os android
+
+# Run on your emulator
+swift-bundler run --simulator "Your Simulator"
+```
