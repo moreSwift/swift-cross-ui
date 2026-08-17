@@ -35,6 +35,7 @@ SwiftCrossUI takes inspiration from SwiftUI, allowing you to use the basic conce
 - <doc:Styling>
 - <doc:Navigation>
 - <doc:Shapes>
+- <doc:Gradients>
 - <doc:Tables>
 
 ### State
