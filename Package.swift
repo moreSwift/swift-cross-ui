@@ -45,12 +45,13 @@ let androidBackendSupported: Bool
     androidBackendSupported = false
 #endif
 
-// swift-winui only resolves on Windows, so WinUIBackend/WinUIInterop must be excluded
-// from the package graph entirely on other hosts (resolution fails otherwise, since
-// SwiftPM resolves dependencies for every target regardless of platform conditions).
+// xcodebuild can't handle non-Apple platform conditional dependencies for some weird
+// reason, so we have to remove WinUIBackend/WinUIInterop and the swift-winui
+// dependency when we detect that we're being built by xcodebuild, mirroring
+// androidBackendSupported above.
 let winuiBackendSupported: Bool
-#if os(Windows)
-    winuiBackendSupported = true
+#if compiler(>=6.2)
+    winuiBackendSupported = !invokedByXcode
 #else
     winuiBackendSupported = false
 #endif
@@ -372,8 +373,7 @@ let package = Package(
     )
 #endif
 
-// swift-winui only resolves on Windows, so keep WinUIBackend/WinUIInterop and the
-// swift-winui dependency out of the graph on every other host.
+// Add WinUIBackend if the Swift version is new enough and we're not using xcodebuild
 if winuiBackendSupported {
     package.dependencies += [
         .package(
