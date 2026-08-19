@@ -79,18 +79,21 @@ public final class DummyBackend:
         public var font: Font.Resolved?
         public var action: (() -> Void)?
 
-        /// Buttons get their intrinsic size from the backend (see the TODO in
-        /// `Button.computeLayout`), so a backend that leaves this at zero renders
-        /// zero-sized buttons. Estimate from the label the same way `size(of:)` does.
+        /// Menu sizes its button widget through `naturalSize(of:)`, so leaving
+        /// this at zero renders zero-sized menu buttons.
         override public var naturalSize: SIMD2<Int> {
-            guard let resolved = font else { return .zero }
-            let characterHeight = Int(resolved.pointSize)
-            let characterWidth = characterHeight * 2 / 3
+            guard let font else { return .zero }
+            let labelSize = DummyBackend.textSize(
+                of: label,
+                displayedWith: font,
+                proposedWidth: nil,
+                proposedHeight: nil
+            )
             let horizontalPadding = 10
             let verticalPadding = 5
             return SIMD2(
-                characterWidth * label.count + horizontalPadding * 2,
-                Int(resolved.lineHeight) + verticalPadding * 2
+                labelSize.x + horizontalPadding * 2,
+                labelSize.y + verticalPadding * 2
             )
         }
     }
@@ -537,9 +540,23 @@ public final class DummyBackend:
         proposedHeight: Int?,
         environment: EnvironmentValues
     ) -> SIMD2<Int> {
-        let resolvedFont = environment.resolvedFont
-        let lineHeight = Int(resolvedFont.lineHeight)
-        let characterHeight = Int(resolvedFont.pointSize)
+        Self.textSize(
+            of: text,
+            displayedWith: environment.resolvedFont,
+            proposedWidth: proposedWidth,
+            proposedHeight: proposedHeight
+        )
+    }
+
+    /// Single source of truth for DummyBackend's character-metric text sizing.
+    private nonisolated static func textSize(
+        of text: String,
+        displayedWith font: Font.Resolved,
+        proposedWidth: Int?,
+        proposedHeight: Int?
+    ) -> SIMD2<Int> {
+        let lineHeight = Int(font.lineHeight)
+        let characterHeight = Int(font.pointSize)
         let characterWidth = characterHeight * 2 / 3
 
         guard let proposedWidth else {
