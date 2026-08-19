@@ -266,11 +266,11 @@ final class DatePickerWidget: WrapperWidget<UIDatePicker> {
 }
 
 extension UIKitBackend {
-    public func createButton() -> Widget {
+    public func createSimpleButton() -> Widget {
         ButtonWidget()
     }
 
-    func setButtonTitle(
+    func setSimpleButtonTitle(
         _ buttonWidget: ButtonWidget,
         _ label: String,
         environment: EnvironmentValues
@@ -297,7 +297,7 @@ extension UIKitBackend {
         #endif
     }
 
-    public func updateButton(
+    public func updateSimpleButton(
         _ button: Widget,
         label: String,
         environment: EnvironmentValues,
@@ -305,7 +305,7 @@ extension UIKitBackend {
     ) {
         let buttonWidget = button as! ButtonWidget
 
-        setButtonTitle(buttonWidget, label, environment: environment)
+        setSimpleButtonTitle(buttonWidget, label, environment: environment)
 
         buttonWidget.onTap = action
         buttonWidget.child.isEnabled = environment.isEnabled

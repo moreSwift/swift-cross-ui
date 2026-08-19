@@ -17,6 +17,12 @@ inputs:
     description: 'The device type to compile docs for when using xcodebuild (e.g. iPhone, iPad or TV)'
   working-directory:
     description: 'Root directory of package to extract symbol graphs from'
+  swiftpm-exe:
+    description: 'Path to the SwiftPM executable to use'
+    default: 'swift'
+  swiftpm-args:
+    description: 'Additional SwiftpM arguments'
+    default: ''
 
 runs:
   using: "composite"
@@ -26,7 +32,7 @@ runs:
       run: |
         set -eux
         mkdir -p symbol-graphs
-        swift build --target "$TARGET" \
+        $SWIFT build --target "$TARGET" $SWIFT_ARGS \
           -Xswiftc -emit-symbol-graph \
           -Xswiftc -emit-symbol-graph-dir -Xswiftc symbol-graphs
 
@@ -38,6 +44,8 @@ runs:
       working-directory: ${{ github.workspace }}/${{ inputs.working-directory }}
       env:
         TARGET: ${{ inputs.target }}
+        SWIFT: ${{ inputs.swiftpm-exe }}
+        SWIFT_ARGS: ${{ inputs.swiftpm-args }}
 
     - name: Extract symbol graphs (with xcodebuild)
       if: ${{ inputs.xcodebuild == 'true' }} # Compare to constant to treat empty input as false

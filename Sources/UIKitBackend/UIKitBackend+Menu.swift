@@ -116,7 +116,7 @@ extension UIKitBackend: BackendFeatures.AttachedMenus {
     ) {
         let buttonWidget = button as! ButtonWidget
         buttonWidget.child.isEnabled = environment.isEnabled
-        setButtonTitle(buttonWidget, label, environment: environment)
+        setSimpleButtonTitle(buttonWidget, label, environment: environment)
         buttonWidget.child.menu = menu.uiMenu
         buttonWidget.child.showsMenuAsPrimaryAction = true
         if #available(iOS 16, macCatalyst 16, *) {

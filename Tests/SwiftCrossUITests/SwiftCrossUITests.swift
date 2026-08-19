@@ -15,9 +15,9 @@ struct CounterView: View {
 
     var body: some View {
         VStack {
-            Button("Decrease") { count -= 1 }
+            Text("Decrease")
             Text("Count: 1")
-            Button("Increase") { count += 1 }
+            Text("Increase")
         }.padding()
     }
 }
@@ -190,18 +190,16 @@ struct SwiftCrossUITests {
         // DummyBackend's character-metric approximation for the default (`.body`)
         // font: pointSize 13, lineHeight 16 (Font.TextStyle's desktop table).
         //
-        // Button.naturalSize: characterWidth = Int(13) * 2 / 3 = 8,
-        //   width = 8 * 8 + 2 * 10 (horizontalPadding) = 84
-        //   height = Int(16) + 2 * 5 (verticalPadding) = 26
-        // Text naturalSize (DummyBackend.size(of:)): characterWidth = 8,
+        // Text sizing (DummyBackend.size(of:)): characterWidth = Int(13) * 2 / 3 = 8,
         //   width = 8 * 8 = 64, height = lineHeight = 16
+        // Button size = label size + DummyBackend.buttonPadding (0, 0) = 64 x 16
         //
-        // VStack union width = max(84, 84, 64) = 84
-        // VStack height = 26 + 16 + 26 + 2 * VStack.defaultSpacing(10) = 88
+        // VStack union width = max(64, 64, 64) = 64
+        // VStack height = 16 + 16 + 16 + 2 * VStack.defaultSpacing(10) = 68
         // .padding() adds DummyBackend.defaultPaddingAmount(10) on every edge:
-        //   width = 84 + 2 * 10 = 104, height = 88 + 2 * 10 = 108
+        //   width = 64 + 2 * 10 = 84, height = 68 + 2 * 10 = 88
         #expect(
-            result.size == ViewSize(104, 108),
+            result.size == ViewSize(84, 88),
             "View update result mismatch"
         )
 

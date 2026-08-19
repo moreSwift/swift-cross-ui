@@ -209,6 +209,15 @@ jobs:
         ../swift-bundler bundle WebViewExample --platform Android
         ../swift-bundler bundle WindowingExample --platform Android
 
+    - name: Build AndroidBackend and extract symbol graphs
+      uses: ./.github/actions/extract-symbol-graphs
+      with:
+        target: AndroidBackend
+        upload: true
+        swiftpm-exe: /Users/runner/.swiftly/bin/swift
+        swiftpm-args: --swift-sdk aarch64-unknown-linux-android28
+        working-directory: Examples
+
   uikit:
     runs-on: macos-15
     needs: check_file_changes
@@ -502,7 +511,7 @@ jobs:
 
   assemble-docs:
     runs-on: macos-15
-    needs: [macos, uikit, windows, linux]
+    needs: [macos, uikit, windows, linux, android]
 
     steps:
     - name: Setup Xcode version
@@ -553,6 +562,12 @@ jobs:
         target: WinUIBackend
         use-symbol-graph-artifact: true
 
+    - name: Compile AndroidBackend docs
+      uses: ./.github/actions/compile-docs
+      with:
+        target: AndroidBackend
+        use-symbol-graph-artifact: true
+
     - name: Merge DocC archives
       run: |
         mkdir DocsBuild
@@ -563,6 +578,7 @@ jobs:
           GtkBackend.doccarchive \
           Gtk3Backend.doccarchive \
           WinUIBackend.doccarchive \
+          AndroidBackend.doccarchive \
           --output-path DocsBuild
 
     - name: Assemble GitHub Pages artifact

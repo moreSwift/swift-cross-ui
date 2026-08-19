@@ -88,7 +88,7 @@ Figure 2: *Sources/YourApp/YourApp.swift*
 
 The SwiftCrossUI repository contains the above example and many more. The documentation hosts [a detailed list of all examples](https://docs.swiftcrossui.dev/documentation/swiftcrossui/examples).
 
-Running the examples requires [Swift Bundler](https://github.com/moreSwift/swift-bundler), which provides consistent behavior across platforms and enables running on iOS/tvOS devices and simulators.
+Running the examples requires [Swift Bundler](https://github.com/moreSwift/swift-bundler), which provides consistent behavior across platforms and enables running on iOS/tvOS/Android devices and simulators/emulators.
 
 To install Swift Bundler, follow [its official installation instructions](https://github.com/moreSwift/swift-bundler?tab=readme-ov-file#installation-).
 
@@ -98,9 +98,13 @@ cd swift-cross-ui/Examples
 
 # Run on host machine
 swift-bundler run CounterExample
+
 # Run on a connected device with "iPhone" in its name (macOS only)
+#   Supports Android devices as well
 swift-bundler run CounterExample --device iPhone
+
 # Run on a simulator with "iPhone 16" in its name (macOS only)
+#   Supports Android emulators as well
 swift-bundler run CounterExample --simulator "iPhone 16"
 ```
 
@@ -118,9 +122,10 @@ SwiftCrossUI has a variety of backends tailored to different operating systems. 
 > [!TIP]
 > Click through each backend name for detailed system requirements and installation instructions.
 
-- [DefaultBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/defaultbackend): Adapts to your target operating system. On macOS it uses [AppKitBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/appkitbackend), on Windows it uses [WinUIBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/winuibackend), on Linux it uses [GtkBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/gtkbackend), and on iOS and tvOS it uses [UIKitBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/uikitbackend).
+- [DefaultBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/defaultbackend): Adapts to your target operating system. On macOS it uses [AppKitBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/appkitbackend), on Windows it uses [WinUIBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/winuibackend), on Linux it uses [GtkBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/gtkbackend), on Android it uses [AndroidBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/androidbackend), and on iOS and tvOS it uses [UIKitBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/uikitbackend).
 - [AppKitBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/appkitbackend): The native macOS backend. Supports all SwiftCrossUI features.
 - [UIKitBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/uikitbackend): The native iOS & tvOS backend. Supports most SwiftCrossUI features.
+- [AndroidBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/androidbackend): The native Android backend. Supports most SwiftCrossUI features.
 - [WinUIBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/winuibackend): The native Windows backend. Supports most SwiftCrossUI features.
 - [GtkBackend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/gtkbackend): Works on Linux, macOS, and Windows. Requires gtk 4 to be installed. Supports most SwiftCrossUI features.
 - [Gtk3Backend](https://docs.swiftcrossui.dev/documentation/swiftcrossui/gtk3backend): Exists to target older Linux distributions. Requires gtk 3 to be installed. Supports most SwiftCrossUI features. Quite buggy on macOS due to underlying Gtk 3 bugs.

@@ -101,6 +101,8 @@ public final class WinUIBackend:
         12
     }
 
+    var borderedButtonPadding: SIMD2<Int>?
+
     class InternalState {
         var buttonClickActions: [ObjectIdentifier: () -> Void] = [:]
         var toggleClickActions: [ObjectIdentifier: (Bool) -> Void] = [:]
@@ -457,10 +459,14 @@ public final class WinUIBackend:
         let blue = Int(backgroundColor.b)
         let isLight = 5 * green + 2 * red + blue > 8 * 128
 
+        let locale = Foundation.Locale.windowsCurrent
+
         return
             defaultEnvironment
                 .with(\.colorScheme, isLight ? .light : .dark)
                 .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
+                .with(\.locale, locale)
+                .with(\.calendar, locale.calendar)
     }
 
     public func setRootEnvironmentChangeHandler(
@@ -843,8 +849,8 @@ public final class WinUIBackend:
         environment.apply(to: block)
     }
 
-    public func createButton() -> Widget {
-        let button = Button()
+    public func createSimpleButton() -> Widget {
+        let button = WinUI.Button()
         button.click.addHandler { [weak internalState] _, _ in
             guard let internalState else { return }
             internalState.buttonClickActions[ObjectIdentifier(button)]?()
@@ -852,7 +858,7 @@ public final class WinUIBackend:
         return button
     }
 
-    public func updateButton(
+    public func updateSimpleButton(
         _ button: Widget,
         label: String,
         environment: EnvironmentValues,

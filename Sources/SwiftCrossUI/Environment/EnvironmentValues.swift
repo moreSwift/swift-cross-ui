@@ -269,6 +269,11 @@ extension EnvironmentValues {
     /// How lines should be aligned relative to each other when line wrapped.
     @Entry public var multilineTextAlignment: HorizontalAlignment = .leading
 
+    /// Whether to override the case of displayed ``Text`` views.
+    ///
+    /// `nil` displays the text without any case changes.
+    @Entry public var textCase: Text.Case?
+
     /// The current color scheme of the current view scope.
     @Entry public var colorScheme: ColorScheme = .light
 
@@ -423,6 +428,9 @@ extension EnvironmentValues {
     /// The current time zone that views should use when handling dates.
     @Entry public var timeZone: TimeZone = .current
 
+    /// The current locale.
+    @Entry public var locale: Locale = .current
+
     /// The display style used by ``Picker``.
     @Entry public var pickerStyle: any PickerStyle = .automatic
 
@@ -445,10 +453,46 @@ extension EnvironmentValues {
     /// Whether the current device has a circular screen. Primarily Android smart watches.
     @Entry public var isCircularScreen: Bool = false
 
+    /// The display style used by ``Button``.
+    @Entry public var buttonStyle: ButtonStyle?
+
+    /// The default button style as declared by the backend.
+    @MainActor
+    public var defaultButtonStyle: ButtonStyle {
+        backend.defaultButtonStyle()
+    }
+
+    /// The resolved ``ButtonStyle``. Either ``buttonStyle``, or ``defaultButtonStyle`` if nil.
+    @MainActor
+    public var resolvedButtonStyle: ButtonStyle {
+        buttonStyle ?? defaultButtonStyle
+    }
+
+    /// The amount of padding that the current backend applies to the labels of buttons with the current ``ButtonStyle``.
+    @MainActor
+    public var buttonPadding: SIMD2<Int> {
+        backend.buttonPadding(in: self)
+    }
+
     /// The device class of the current device.
     @MainActor
     public var deviceClass: DeviceClass { backend.deviceClass }
 }
+
+extension EnvironmentValues {
+    func applyingTextTransforms(to string: String) -> String {
+        var string = string
+
+        switch textCase {
+            case .lowercase: string = string.lowercased(with: locale)
+            case .uppercase: string = string.uppercased(with: locale)
+            case nil: break
+        }
+
+        return string
+    }
+}
+
 
 /// A key that can be used to extend the environment with new properties.
 public protocol EnvironmentKey<Value> {

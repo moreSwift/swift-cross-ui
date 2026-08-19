@@ -30,6 +30,8 @@ public final class AppKitBackend: FullAppBackend {
     public let canOverrideWindowColorScheme = true
     public let restoresWindowFrames = true
 
+    var borderedButtonPadding: SIMD2<Int>?
+
     public var scrollBarWidth: Int {
         // We assume that all scrollers have their controlSize set to `.regular` by default.
         // The internet seems to indicate that this is true regardless of any system wide
@@ -672,29 +674,6 @@ public final class AppKitBackend: FullAppBackend {
             field.abortEditing()
         }
         field.isSelectable = environment.isTextSelectionEnabled
-    }
-
-    public func createButton() -> Widget {
-        return NSButton(title: "", target: nil, action: nil)
-    }
-
-    public func updateButton(
-        _ button: Widget,
-        label: String,
-        environment: EnvironmentValues,
-        action: @escaping () -> Void
-    ) {
-        let button = button as! NSButton
-        button.attributedTitle = Self.attributedString(
-            for: label,
-            in: environment.with(\.multilineTextAlignment, .center)
-        )
-        button.bezelStyle = .regularSquare
-        button.appearance = environment.colorScheme.nsAppearance
-        button.isEnabled = environment.isEnabled
-        button.onAction = { _ in
-            action()
-        }
     }
 
     public func createSwitch() -> Widget {

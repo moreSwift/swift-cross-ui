@@ -6,7 +6,7 @@ extension BackendFeatures {
     ///   your ``MenuButtons/menuImplementationStyle-4blzf`` (that is, what would work best
     ///   for your backend's underlying UI framework).
     @MainActor
-    public protocol MenuButtons<Menu>: Core, Buttons {
+    public protocol MenuButtons<Menu>: Core, StringLabelButtons {
         /// The underlying menu type. Can be a wrapper or subclass.
         associatedtype Menu
 

@@ -206,16 +206,38 @@ extension BackendFeatures.BaseStubs {
         todo()
     }
 
-    public func createButton() -> Widget {
+    public func createSimpleButton() -> Widget {
         todo()
     }
 
-    public func updateButton(
+    public func updateSimpleButton(
         _ button: Widget,
         label: String,
         environment: EnvironmentValues,
         action: @escaping () -> Void
     ) {
+        todo()
+    }
+
+    public func createButton(
+        wrapping: Widget
+    ) -> Widget {
+        todo()
+    }
+
+    public func updateButton(
+        _ button: Widget,
+        environment: EnvironmentValues,
+        action: @escaping () -> Void
+    ) {
+        todo()
+    }
+
+    public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
+        todo()
+    }
+
+    public func defaultButtonStyle() -> ButtonStyle {
         todo()
     }
 

@@ -36,7 +36,9 @@ extension String {
 
 // swiftlint:disable force_try
 extension AndroidBackend {
-    func getCurrentCalendar(timeZone: Foundation.TimeZone?) -> Foundation.Calendar {
+    func getCurrentCalendarAndLocale(
+        timeZone: Foundation.TimeZone?
+    ) -> (Foundation.Calendar, Foundation.Locale) {
         let androidCalendar = try! JavaClass<AndroidCalendar>().getInstance()!
 
         var identifier: Foundation.Calendar.Identifier
@@ -104,8 +106,8 @@ extension AndroidBackend {
 
         let locale = Locale(components: localeComponents)
 
-        var result = locale.calendar
-        result.minimumDaysInFirstWeek = Int(androidCalendar.getMinimalDaysInFirstWeek())
-        return result
+        var calendar = locale.calendar
+        calendar.minimumDaysInFirstWeek = Int(androidCalendar.getMinimalDaysInFirstWeek())
+        return (calendar, locale)
     }
 }

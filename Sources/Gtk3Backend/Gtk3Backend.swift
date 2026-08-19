@@ -63,6 +63,8 @@ public final class Gtk3Backend:
 
     private var rootEnvironmentChangeHandler: (() -> Void)?
 
+    var borderedButtonPadding: SIMD2<Int>?
+
     private struct LogLocation: Hashable, Equatable {
         let file: String
         let line: Int
@@ -954,27 +956,6 @@ public final class Gtk3Backend:
 
     // MARK: Controls
 
-    public func createButton() -> Widget {
-        return Button()
-    }
-
-    public func updateButton(
-        _ button: Widget,
-        label: String,
-        environment: EnvironmentValues,
-        action: @escaping () -> Void
-    ) {
-        // TODO: Update button label color using environment
-        let button = button as! Gtk3.Button
-        button.sensitive = environment.isEnabled
-        button.label = label
-        button.clicked = { _ in action() }
-        button.css.clear()
-        button.css.set(
-            properties: Self.cssProperties(for: environment, isControl: true)
-        )
-    }
-
     public func createToggle() -> Widget {
         return ToggleButton()
     }
@@ -1668,7 +1649,7 @@ public final class Gtk3Backend:
     }
     // MARK: Helpers
 
-    private static func cssProperties(
+    static func cssProperties(
         for environment: EnvironmentValues,
         isControl: Bool = false
     ) -> [CSSProperty] {
@@ -1717,20 +1698,28 @@ public final class Gtk3Backend:
         }
 
         if isControl {
-            switch environment.colorScheme {
-                case .light:
-                    properties.append(.border(color: Color.eightBit(209, 209, 209), width: 1))
-                    properties.append(.backgroundColor(Color(1, 1, 1, 1)))
-                    properties.append(.caretColor(Color.eightBit(139, 142, 143)))
-                case .dark:
-                    properties.append(.border(color: Color.eightBit(32, 32, 32), width: 1))
-                    properties.append(.backgroundColor(Color(1, 1, 1, 0.1)))
-                    properties.append(.caretColor(Color(1, 1, 1)))
-            }
-            properties.append(.init(key: "box-shadow", value: "none"))
+            properties.append(contentsOf: controlCSS(for: environment))
         }
 
         return properties
+    }
+
+    static func controlCSS(for environment: EnvironmentValues) -> [CSSProperty]{
+        let themeDependentCSS: [CSSProperty] = switch environment.colorScheme {
+            case .light:
+                [
+                    .border(color: Color.eightBit(209, 209, 209), width: 1),
+                    .backgroundColor(Color(1, 1, 1, 1)),
+                    .caretColor(Color.eightBit(139, 142, 143))
+                ]
+            case .dark:
+                [
+                    .border(color: Color.eightBit(32, 32, 32), width: 1),
+                    .backgroundColor(Color(1, 1, 1, 0.1)),
+                    .caretColor(Color(1, 1, 1))
+                ]
+        }
+        return themeDependentCSS + [.init(key: "box-shadow", value: "none")]
     }
 
     // MARK: - Unimplemented Features
