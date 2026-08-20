@@ -240,19 +240,19 @@ extension EnvironmentValues {
     ///
     /// Inherited by ``ForEach`` and ``Group`` so that they can be used without
     /// affecting layout.
-    @Entry public var layoutOrientation: Orientation = .vertical
+    @Entry public var layoutOrientation: Orientation = StackLayoutContext.default.orientation
 
     /// The current stack alignment.
     ///
     /// Inherited by ``ForEach`` and ``Group`` so that they can be used without
     /// affecting layout.
-    @Entry public var layoutAlignment: StackAlignment = .center
+    @Entry public var layoutAlignment: StackAlignment = StackLayoutContext.default.alignment
 
     /// The current stack spacing.
     ///
     /// Inherited by ``ForEach`` and ``Group`` so that they can be used without
     /// affecting layout.
-    @Entry public var layoutSpacing: Int = 10
+    @Entry public var layoutSpacing: Int = StackLayoutContext.default.spacing
 
     /// The current font.
     @Entry public var font: Font = .body
@@ -492,7 +492,6 @@ extension EnvironmentValues {
         return string
     }
 }
-
 
 /// A key that can be used to extend the environment with new properties.
 public protocol EnvironmentKey<Value> {

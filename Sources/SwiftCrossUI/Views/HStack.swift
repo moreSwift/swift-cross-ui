@@ -7,6 +7,15 @@ public struct HStack<Content: View>: View {
     /// The alignment of the stack's children in the vertical direction.
     private var alignment: VerticalAlignment
 
+    /// The context this stack imposes on its children.
+    private var layoutContext: StackLayoutContext {
+        StackLayoutContext(
+            orientation: .horizontal,
+            alignment: alignment.asStackAlignment,
+            spacing: spacing
+        )
+    }
+
     /// Creates a horizontal stack with the given spacing and alignment.
     ///
     /// - Parameters:
@@ -20,7 +29,7 @@ public struct HStack<Content: View>: View {
         @ViewBuilder _ content: () -> Content
     ) {
         body = content()
-        self.spacing = spacing ?? VStack<EmptyView>.defaultSpacing
+        self.spacing = spacing ?? StackLayoutContext.default.spacing
         self.alignment = alignment
     }
 
@@ -54,10 +63,7 @@ public struct HStack<Content: View>: View {
             children: layoutableChildren(backend: backend, children: children),
             cache: &cache,
             proposedSize: proposedSize,
-            environment: environment
-                .with(\.layoutOrientation, .horizontal)
-                .with(\.layoutAlignment, alignment.asStackAlignment)
-                .with(\.layoutSpacing, spacing),
+            environment: environment.with(layoutContext),
             backend: backend
         )
         (children as? TupleViewChildren)?.stackLayoutCache = cache
@@ -77,10 +83,7 @@ public struct HStack<Content: View>: View {
             children: layoutableChildren(backend: backend, children: children),
             cache: &cache,
             layout: layout,
-            environment: environment
-                .with(\.layoutOrientation, .horizontal)
-                .with(\.layoutAlignment, alignment.asStackAlignment)
-                .with(\.layoutSpacing, spacing),
+            environment: environment.with(layoutContext),
             backend: backend
         )
         (children as? TupleViewChildren)?.stackLayoutCache = cache

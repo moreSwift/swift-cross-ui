@@ -1,13 +1,20 @@
 /// A view that arranges its subviews vertically.
 public struct VStack<Content: View>: View {
-    static var defaultSpacing: Int { 10 }
-
     public var body: Content
 
     /// The amount of spacing to apply between children.
     private var spacing: Int
     /// The alignment of the stack's children in the horizontal direction.
     private var alignment: HorizontalAlignment
+
+    /// The context this stack imposes on its children.
+    private var layoutContext: StackLayoutContext {
+        StackLayoutContext(
+            orientation: .vertical,
+            alignment: alignment.asStackAlignment,
+            spacing: spacing
+        )
+    }
 
     /// Creates a vertical stack with the given spacing and alignment.
     ///
@@ -37,7 +44,7 @@ public struct VStack<Content: View>: View {
         content: Content
     ) {
         body = content
-        self.spacing = spacing ?? Self.defaultSpacing
+        self.spacing = spacing ?? StackLayoutContext.default.spacing
         self.alignment = alignment
     }
 
@@ -77,10 +84,7 @@ public struct VStack<Content: View>: View {
             children: layoutableChildren(backend: backend, children: children),
             cache: &cache,
             proposedSize: proposedSize,
-            environment: environment
-                .with(\.layoutOrientation, .vertical)
-                .with(\.layoutAlignment, alignment.asStackAlignment)
-                .with(\.layoutSpacing, spacing),
+            environment: environment.with(layoutContext),
             backend: backend
         )
         (children as? TupleViewChildren)?.stackLayoutCache = cache
@@ -100,10 +104,7 @@ public struct VStack<Content: View>: View {
             children: layoutableChildren(backend: backend, children: children),
             cache: &cache,
             layout: layout,
-            environment: environment
-                .with(\.layoutOrientation, .vertical)
-                .with(\.layoutAlignment, alignment.asStackAlignment)
-                .with(\.layoutSpacing, spacing),
+            environment: environment.with(layoutContext),
             backend: backend
         )
         (children as? TupleViewChildren)?.stackLayoutCache = cache
