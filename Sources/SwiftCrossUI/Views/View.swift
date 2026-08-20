@@ -172,8 +172,7 @@ extension View {
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {
-        let vStack = VStack(content: body)
-        return vStack.asWidget(children, backend: backend)
+        body.asWidget(children, backend: backend)
     }
 
     public func computeLayout<Backend: BaseAppBackend>(
@@ -194,6 +193,10 @@ extension View {
 
     /// The default `View.computeLayout` implementation. Haters may see this as a
     /// composition lover re-implementing inheritance; I see it as innovation.
+    ///
+    /// A body composed of several views is stacked with
+    /// ``StackLayoutContext/default``, so it lays out the same wherever the view
+    /// is used rather than inheriting the surrounding stack's context.
     public func defaultComputeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
@@ -201,12 +204,11 @@ extension View {
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
-        let vStack = VStack(content: body)
-        return vStack.computeLayout(
+        body.computeLayout(
             widget,
             children: children,
             proposedSize: proposedSize,
-            environment: environment,
+            environment: environment.with(.default),
             backend: backend
         )
     }
@@ -227,6 +229,11 @@ extension View {
         )
     }
 
+    /// The default `View.commit` implementation.
+    ///
+    /// A body composed of several views is stacked with
+    /// ``StackLayoutContext/default``, matching
+    /// ``defaultComputeLayout(_:children:proposedSize:environment:backend:)``.
     public func defaultCommit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
@@ -234,12 +241,11 @@ extension View {
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        let vStack = VStack(content: body)
-        return vStack.commit(
+        body.commit(
             widget,
             children: children,
             layout: layout,
-            environment: environment,
+            environment: environment.with(.default),
             backend: backend
         )
     }
