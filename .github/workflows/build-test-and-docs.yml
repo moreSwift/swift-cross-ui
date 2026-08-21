@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        platform: [android, linux, macos, uikit, windows]
+        platform: [android, linux, macos, uikit, windows, apitool]
         include:
           - platform: android
             paths: 'Sources/AndroidBackend/ Sources/AndroidBackendShim/'
@@ -26,6 +26,8 @@ jobs:
             paths: 'Sources/UIKitBackend/'
           - platform: windows
             paths: 'Sources/WinUIBackend/ Sources/WinUIInterop/ vcpkg.json'
+          - platform: apitool
+            paths: 'APITool/ Scripts/analyze_api.sh Scripts/generate_porting_kit.sh'
     steps:
       - uses: actions/checkout@v6
         with:
@@ -52,6 +54,7 @@ jobs:
       macos: ${{ steps.check_files.outputs.macos }}
       uikit: ${{ steps.check_files.outputs.uikit }}
       windows: ${{ steps.check_files.outputs.windows }}
+      apitool: ${{ steps.check_files.outputs.apitool }}
 
   macos:
     runs-on: macos-15
@@ -111,6 +114,27 @@ jobs:
         swift build --target MusicPlayerExample && \
         swift build --target FontsExample && \
         swift build --target TapGesturesExample
+
+  apitool:
+    runs-on: macos-15
+    needs: check_file_changes
+    if: ${{ needs.check_file_changes.outputs.apitool == 'true' }}
+    steps:
+    - name: Setup Xcode 16.4 (Swift 6.1.2)
+      uses: maxim-lobanov/setup-xcode@v1.6.0
+      with:
+        xcode-version: '16.4'
+
+    - name: Swift version
+      run: swift --version
+
+    - uses: actions/checkout@v3
+
+    - name: Run APITool analysis
+      run: ./Scripts/analyze_api.sh
+
+    - name: Run APITool stub generation
+      run: ./Scripts/generate_porting_kit.sh
 
   android:
     runs-on: macos-15
