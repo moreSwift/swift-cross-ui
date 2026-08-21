@@ -65,8 +65,8 @@ enum Differ {
         )
     }
 
-    /// A view modifier signature used to match view modifiers
-    /// implemented by SwiftCrossUI and SwiftUI.
+    /// A view modifier signature used to match view modifiers implemented by
+    /// SwiftCrossUI and SwiftUI.
     struct ViewModifierSignature: Hashable, CustomStringConvertible, Comparable {
         init(_ function: Function) {
             identifier = function.identifier

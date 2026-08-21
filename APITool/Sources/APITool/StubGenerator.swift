@@ -2,7 +2,7 @@ import Foundation
 import SwiftSyntax
 
 enum StubGenerator {
-    static func generateStub(
+    static func generateStubs(
         context: Context,
         outputDirectory: URL
     ) throws {

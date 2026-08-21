@@ -18,7 +18,7 @@ enum Analyzer {
     /// The analyzer collects 'interesting' declarations from the Swift interfaces
     /// that it's given. It ignores declarations that begin with an underscore
     /// (as those aren't considered properly 'public') and those that are unavailable
-    /// on iOS or macOS (as they are likely platform-specific APIs that we don't
+    /// on both iOS and macOS (as they are likely platform-specific APIs that we don't
     /// care about in SwiftCrossUI).
     static func analyze(interfaces: [SwiftInterface]) -> Result {
         let structs: [(String, Struct)] = interfaces.flatMap { interface in

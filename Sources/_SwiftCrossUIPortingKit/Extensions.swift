@@ -18,12 +18,6 @@ extension CoreFoundation.CGSize: Swift.Equatable {
     }
 }
 
-public struct Anchor<T> {
-    public struct Source {}
-}
-
-public struct PencilSqueezeGestureValue: Equatable {}
-
 extension ControlSize {
     public static var allCases: [ControlSize] {
         var cases: [ControlSize] = [.mini, .small, .regular]

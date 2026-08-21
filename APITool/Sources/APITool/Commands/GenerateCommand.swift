@@ -28,7 +28,7 @@ struct GenerateCommand: ParsableCommand {
 
             // Analyze SCUI and generate stubs
             let context = try Context.load(common)
-            try StubGenerator.generateStub(
+            try StubGenerator.generateStubs(
                 context: context,
                 outputDirectory: outputDirectory
             )
