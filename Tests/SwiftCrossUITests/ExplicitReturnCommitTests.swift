@@ -32,7 +32,7 @@ struct ExplicitReturnCommitTests {
     }
 
     @MainActor
-    func button<V: View>(of view: V) -> DummyBackend.Button? {
+    func findButton<V: View>(of view: V) -> DummyBackend.Button? {
         let node = ViewGraphNode(for: view, backend: backend, environment: environment)
         _ = node.computeLayout(
             proposedSize: ProposedViewSize(200, 200),
@@ -53,7 +53,7 @@ struct ExplicitReturnCommitTests {
     @MainActor
     @Test("A builder-shaped body renders a working button")
     func builderBodyRendersButton() throws {
-        let button = try #require(button(of: BuilderBodyButton()))
+        let button = try #require(findButton(of: BuilderBodyButton()))
 
         #expect(button.action != nil)
         #expect(button.size == SIMD2<Int>(24, 16))
@@ -62,7 +62,7 @@ struct ExplicitReturnCommitTests {
     @MainActor
     @Test("An explicit-return body renders a working button")
     func explicitReturnBodyRendersButton() throws {
-        let button = try #require(button(of: ExplicitReturnBodyButton()))
+        let button = try #require(findButton(of: ExplicitReturnBodyButton()))
 
         #expect(button.action != nil)
         #expect(button.size == SIMD2<Int>(24, 16))
