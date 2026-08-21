@@ -2,13 +2,18 @@
 
 This tool helps with the analysis and management of SwiftCrossUI's public API surface. That includes diffing SwiftCrossUI's API surface against SwiftUI's API surface, and generating the stubs that live at `../Sources/_SwiftCrossUIPortingKit/Generated` which fill in missing SwiftUI APIs with the aim of making porting from SwiftUI to SwiftCrossUI easier.
 
+
+> [!IMPORTANT]
+> APITool only supports running on a macOS host, because it requires access to the SwiftUI and SwiftUICore swiftinterface files which ship with Xcode.
+
 ### Diffing SwiftCrossUI and SwiftUI
 
 SwiftCrossUI has a convenient script at `../Scripts/analyze_api.sh` for diffing SwiftCrossUI and SwiftUI, but in case you want to do it manually, here's the command:
 
 ```sh
-# Diff SwiftCrossUI and SwiftUI. If you Xcode isn't at /Applications/Xcode.app,
-#   you can specify an alternative location using --xcode-app
+# Diff SwiftCrossUI and SwiftUI. If you want to use a developer directory
+# different to the one reported by 'xcode-select --print-path', then you
+# specify one using the '--developer-dir' CLI option
 swift run -c release APITool analyze --scui-checkout ..
 ```
 
