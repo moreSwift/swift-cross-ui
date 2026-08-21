@@ -78,9 +78,18 @@ enum Differ {
                 //   is wrapped in an optional, or included as a generic param etc.
                 var typeWithoutModule = parameter.type.normalizedDescription
                 typeWithoutModule = typeWithoutModule.replacingOccurrences(of: "SwiftUI.", with: "")
-                typeWithoutModule = typeWithoutModule.replacingOccurrences(of: "SwiftUICore.", with: "")
-                typeWithoutModule = typeWithoutModule.replacingOccurrences(of: "SwiftCrossUI.", with: "")
-                typeWithoutModule = typeWithoutModule.replacingOccurrences(of: "CoreFoundation.CGFloat", with: "Swift.Double")
+                typeWithoutModule = typeWithoutModule.replacingOccurrences(
+                    of: "SwiftUICore.",
+                    with: ""
+                )
+                typeWithoutModule = typeWithoutModule.replacingOccurrences(
+                    of: "SwiftCrossUI.",
+                    with: ""
+                )
+                typeWithoutModule = typeWithoutModule.replacingOccurrences(
+                    of: "CoreFoundation.CGFloat",
+                    with: "Swift.Double"
+                )
                 return Parameter(
                     label: parameter.callSiteLabel,
                     typeWithoutModule: typeWithoutModule

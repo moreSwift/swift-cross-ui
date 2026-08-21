@@ -136,7 +136,11 @@ let package = Package(
         .library(name: "WinUIBackend", type: libraryType, targets: ["WinUIBackend"]),
         .library(name: "DefaultBackend", type: libraryType, targets: ["DefaultBackend"]),
         .library(name: "UIKitBackend", type: libraryType, targets: ["UIKitBackend"]),
-        .library(name: "_SwiftCrossUIPortingKit", type: libraryType, targets: ["_SwiftCrossUIPortingKit"]),
+        .library(
+            name: "_SwiftCrossUIPortingKit",
+            type: libraryType,
+            targets: ["_SwiftCrossUIPortingKit"]
+        ),
         .library(name: "Gtk", type: libraryType, targets: ["Gtk"]),
         .library(name: "Gtk3", type: libraryType, targets: ["Gtk3"]),
         .executable(name: "GtkExample", targets: ["GtkExample"]),

@@ -90,9 +90,12 @@ struct Context {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
         process.arguments = [
-            "swift", "build",
-            "--target", "SwiftCrossUI",
-            "-Xswiftc", "-emit-module-interface"
+            "swift",
+            "build",
+            "--target",
+            "SwiftCrossUI",
+            "-Xswiftc",
+            "-emit-module-interface"
         ]
         process.currentDirectoryPath = swiftCrossUICheckout.path
         do {
@@ -125,7 +128,8 @@ struct Context {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
         process.arguments = [
-            "xcode-select", "--print-path"
+            "xcode-select",
+            "--print-path"
         ]
         process.standardOutput = pipe
         try process.run()

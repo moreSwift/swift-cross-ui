@@ -80,7 +80,7 @@ enum Analyzer {
                 guard
                     let method = member.asFunction,
                     !method._syntax.modifiers.contains(where: { $0.name.text == "static" }),
-                    case let .someOrAny(opaqueReturn) = method.returnType,
+                    case .someOrAny(let opaqueReturn) = method.returnType,
                     opaqueReturn._baseSyntax.someOrAnySpecifier.text == "some",
                     isViewProtocol(Type(opaqueReturn._baseSyntax.constraint))
                 else {

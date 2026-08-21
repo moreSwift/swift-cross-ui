@@ -493,7 +493,6 @@ extension EnvironmentValues {
     }
 }
 
-
 /// A key that can be used to extend the environment with new properties.
 public protocol EnvironmentKey<Value> {
     /// The type of value the key can hold.

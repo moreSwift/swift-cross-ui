@@ -1,5 +1,12 @@
 #!/bin/bash
 
+dir=$(pwd)
+
+if [ ! -z "$1" ] && [ ! -e "$1" ]; then
+  echo "Input file/dir doesn't exist"
+  exit 1
+fi
+
 cd "$(dirname "$0")"/../
 
 # Minimum SwiftFormat version required by the rules enabled in .swiftformat.
@@ -41,14 +48,20 @@ fi
 
 if [ -z "$1" ]; then
   swiftformat .
-else
-  swiftformat $1
+elif find "$dir/$1" -name "*.swift" | grep '^' &>/dev/null; then
+  swiftformat "$dir/$1"
 fi
 
 if which java &>/dev/null; then
-  ./Scripts/ensure_ktfmt.sh
-
-  java -jar Tools/ktfmt.jar --kotlinlang-style --quiet Sources/AndroidBackend/Kotlin/
+  if [ -z "$1" ]; then
+    ./Scripts/ensure_ktfmt.sh
+    echo "Running ktfmt..."
+    java -jar Tools/ktfmt.jar --kotlinlang-style --quiet Sources/AndroidBackend/Kotlin/
+  elif find "$dir/$1" -name "*.kt" | grep '^' &>/dev/null; then
+    ./Scripts/ensure_ktfmt.sh
+    echo "Running ktfmt..."
+    java -jar Tools/ktfmt.jar --kotlinlang-style --quiet "$dir/$1"
+  fi
 else
   echo 'Skipping ktfmt, as Java was not found. To format Kotlin files, install Java 17.' >&2
 fi

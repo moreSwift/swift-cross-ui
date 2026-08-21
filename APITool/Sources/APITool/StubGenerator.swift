@@ -74,7 +74,7 @@ enum StubGenerator {
             guard context.diff.enums.missing.contains(enumDecl.identifier) else {
                 continue
             }
-            
+
             // Remove non-case members (we don't handle stubbing them yet)
             var stub = enumDecl._syntax
             stub.memberBlock.members = stub.memberBlock.members.filter { member in

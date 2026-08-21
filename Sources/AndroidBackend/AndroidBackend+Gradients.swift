@@ -59,7 +59,7 @@ extension AndroidBackend: BackendFeatures.Gradients {
         in environment: EnvironmentValues
     ) {
         let tileClass = try! JavaClass<AndroidGraphics.Shader.TileMode>()
-        
+
         let stops = gradient.gradient.stops.map { Float($0.location) }
         let colors = gradient.gradient.stops.map { stop in
             stop.color.resolve(in: environment).asColorInt()
