@@ -110,7 +110,6 @@ enum StubGenerator {
     }
 
     private static let header = """
-        import CoreFoundation
         import Foundation
         import SwiftCrossUI
 
@@ -122,6 +121,14 @@ enum StubGenerator {
             .replacingOccurrences(of: "SwiftUI.", with: "")
             .replacingOccurrences(of: "SwiftUICore.", with: "")
             .replacingOccurrences(of: "_Concurrency.", with: "")
+            // These declarations are in Foundation on non-Apple platforms. They're
+            // also available in Foundation on Apple platforms, so we can simply
+            // rewrite all references to these types (jankily) to get things
+            // compiling on both Apple and non-Apple platforms
+            .replacingOccurrences(of: "CoreFoundation.CGRect", with: "Foundation.CGRect")
+            .replacingOccurrences(of: "CoreFoundation.CGPoint", with: "Foundation.CGPoint")
+            .replacingOccurrences(of: "CoreFoundation.CGSize", with: "Foundation.CGSize")
+            .replacingOccurrences(of: "CoreFoundation.CGFloat", with: "Foundation.CGFloat")
             .replacingOccurrences(of: "Combine.ObservableObject", with: "ObservableObject")
         try stub.write(to: file, atomically: false, encoding: .utf8)
     }

@@ -1,4 +1,3 @@
-import CoreFoundation
 import Foundation
 import SwiftCrossUI
 
@@ -293,7 +292,7 @@ public enum TouchBarItemPresence : Swift.Sendable {
 @available(iOS 16.0, macOS 13.0, tvOS 16.0, *)
 @available(watchOS, unavailable)
 public enum HoverPhase : Swift.Equatable {
-    case active(CoreFoundation.CGPoint)
+    case active(Foundation.CGPoint)
     case ended
 }
 
@@ -360,7 +359,7 @@ public enum PreviewPlatform : Swift.Sendable {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
 public enum PopoverAttachmentAnchor {
-    case rect(Anchor<CoreFoundation.CGRect>.Source)
+    case rect(Anchor<Foundation.CGRect>.Source)
     case point(UnitPoint)
 }
 
