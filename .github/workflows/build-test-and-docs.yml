@@ -78,6 +78,10 @@ jobs:
       run: swift build --target SwiftCrossUI
       working-directory: ./Examples
 
+    - name: Build _SwiftCrossUIPortingKit
+      run: swift build --target _SwiftCrossUIPortingKit
+      working-directory: ./Examples
+
     - name: Build AppKitBackend and extract symbol graphs
       uses: ./.github/actions/extract-symbol-graphs
       with:
@@ -217,6 +221,20 @@ jobs:
         export ANDROID_NDK_HOME=$PWD/android-ndk-r27d
         ./scripts/setup-android-sdk.sh
 
+    - name: Build SwiftCrossUI
+      shell: bash
+      run: |
+        cd Examples
+        /Users/runner/.swiftly/bin/swift build --target SwiftCrossUI \
+          --swift-sdk aarch64-unknown-linux-android28
+
+    - name: Build _SwiftCrossUIPortingKit
+      shell: bash
+      run: |
+        cd Examples
+        /Users/runner/.swiftly/bin/swift build --target _SwiftCrossUIPortingKit \
+          --swift-sdk aarch64-unknown-linux-android28
+
     - name: Build examples
       shell: bash
       run: |
@@ -283,6 +301,7 @@ jobs:
             }
 
             buildtarget SwiftCrossUI
+            buildtarget _SwiftCrossUIPortingKit
             buildtarget UIKitBackend
 
             cd Examples
@@ -353,6 +372,7 @@ jobs:
         }
 
         buildtarget SwiftCrossUI
+        buildtarget _SwiftCrossUIPortingKit
         buildtarget UIKitBackend
 
         cd Examples
@@ -439,6 +459,11 @@ jobs:
         PKG_CONFIG_PATH: ${{ github.workspace }}/vcpkg_installed/${{ steps.triplet.outputs.lowercase }}/lib/pkgconfig
       run: swift build --target SwiftCrossUI -v
 
+    - name: Build _SwiftCrossUIPortingKit
+      env:
+        PKG_CONFIG_PATH: ${{ github.workspace }}/vcpkg_installed/${{ steps.triplet.outputs.lowercase }}/lib/pkgconfig
+      run: swift build --target _SwiftCrossUIPortingKit
+
     - name: Build WinUIBackend and extract symbol graphs
       uses: ./.github/actions/extract-symbol-graphs
       with:
@@ -480,6 +505,10 @@ jobs:
 
     - name: Build SwiftCrossUI
       run: swift build --target SwiftCrossUI
+      working-directory: ./Examples
+
+    - name: Build _SwiftCrossUIPortingKit
+      run: swift build --target _SwiftCrossUIPortingKit
       working-directory: ./Examples
 
     - name: Build GtkBackend and extract symbol graphs
