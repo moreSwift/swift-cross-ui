@@ -21,6 +21,7 @@ import Foundation
     }
 #endif
 
+@available(iOS 15.0, macOS 10.15, tvOS 15.0, visionOS 1.0, watchOS 9.0, *)
 extension ControlSize {
     public static var allCases: [ControlSize] {
         var cases: [ControlSize] = [.mini, .small, .regular]
