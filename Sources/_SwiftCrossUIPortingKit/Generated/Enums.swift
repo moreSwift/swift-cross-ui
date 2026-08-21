@@ -8,14 +8,8 @@ public enum LayoutDirection : Swift.Hashable, Swift.CaseIterable, Swift.Sendable
     case rightToLeft
 }
 
-@available(
-    iOS 18.0,
-    macOS 15.0,
-    tvOS 18.0,
-    watchOS 11.0,
-    visionOS 2.0,
-    *
-)public enum ScrollPhase : Swift.Equatable {
+@available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)
+public enum ScrollPhase : Swift.Equatable {
     case idle
     case tracking
     case interacting
@@ -23,40 +17,26 @@ public enum LayoutDirection : Swift.Hashable, Swift.CaseIterable, Swift.Sendable
     case animating
 }
 
-@available(
-    iOS 18.0,
-    macOS 15.0,
-    tvOS 18.0,
-    watchOS 11.0,
-    visionOS 2.0,
-    *
-)public enum HorizontalDirection : Swift.Int8, Swift.CaseIterable, Swift.Codable {
+@available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)
+public enum HorizontalDirection : Swift.Int8, Swift.CaseIterable, Swift.Codable {
     case leading
     case trailing
 }
 
-@available(
-    iOS 18.0,
-    macOS 15.0,
-    tvOS 18.0,
-    watchOS 11.0,
-    visionOS 2.0,
-    *
-)public enum VerticalDirection : Swift.Int8, Swift.CaseIterable, Swift.Codable {
+@available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)
+public enum VerticalDirection : Swift.Int8, Swift.CaseIterable, Swift.Codable {
     case up
     case down
 }
 
-@available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)public enum HorizontalEdge : Swift.Int8,
-    Swift.CaseIterable, Swift.Codable
-{
+@available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+public enum HorizontalEdge : Swift.Int8, Swift.CaseIterable, Swift.Codable {
     case leading
     case trailing
 }
 
-@available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)public enum VerticalEdge : Swift.Int8,
-    Swift.CaseIterable, Swift.Codable
-{
+@available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+public enum VerticalEdge : Swift.Int8, Swift.CaseIterable, Swift.Codable {
     case top
     case bottom
 }
@@ -89,13 +69,8 @@ public enum ColorRenderingMode : Swift.Sendable {
     case extendedLinear
 }
 
-@available(
-    iOS 15.0,
-    macOS 12.0,
-    tvOS 15.0,
-    watchOS 8.0,
-    *
-)public enum AccessibilityHeadingLevel : Swift.UInt {
+@available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+public enum AccessibilityHeadingLevel : Swift.UInt {
     case unspecified
     case h1
     case h2
@@ -201,12 +176,14 @@ public enum Prominence : Swift.Sendable {
 @available(macOS 26.0, visionOS 2.0, *)
 @available(iOS, unavailable)
 @available(watchOS, unavailable)
-@available(tvOS, unavailable)public enum Chirality : Swift.Hashable, Swift.Sendable {
+@available(tvOS, unavailable)
+public enum Chirality : Swift.Hashable, Swift.Sendable {
     case left
     case right
 }
 
-@available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)public enum TransitionPhase {
+@available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
+public enum TransitionPhase {
     case willAppear
     case identity
     case didDisappear
@@ -219,9 +196,8 @@ public enum CoordinateSpace {
     case named(Swift.AnyHashable)
 }
 
-@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)public enum TextAlignment : Swift
-    .Hashable, Swift.CaseIterable
-{
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
+public enum TextAlignment : Swift.Hashable, Swift.CaseIterable {
     case leading
     case center
     case trailing
@@ -273,13 +249,8 @@ public enum RoundedCornerStyle : Swift.Sendable {
     case continuous
 }
 
-@available(
-    iOS 14.0,
-    macOS 11.0,
-    tvOS 14.0,
-    watchOS 7.0,
-    *
-)public enum AccessibilityLabeledPairRole {
+@available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
+public enum AccessibilityLabeledPairRole {
     case label
     case content
 }
@@ -320,7 +291,8 @@ public enum TouchBarItemPresence : Swift.Sendable {
 }
 
 @available(iOS 16.0, macOS 13.0, tvOS 16.0, *)
-@available(watchOS, unavailable)public enum HoverPhase : Swift.Equatable {
+@available(watchOS, unavailable)
+public enum HoverPhase : Swift.Equatable {
     case active(CoreFoundation.CGPoint)
     case ended
 }
@@ -338,7 +310,8 @@ public enum ScenePhase : Swift.Comparable {
     case active
 }
 
-@available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)public enum ScrollTransitionPhase {
+@available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
+public enum ScrollTransitionPhase {
     case topLeading
     case identity
     case bottomTrailing
@@ -348,7 +321,8 @@ public enum ScenePhase : Swift.Comparable {
 @available(iOS, unavailable)
 @available(tvOS, unavailable)
 @available(watchOS, unavailable)
-@available(visionOS, unavailable)public enum FrameResizePosition : Swift.Int8, Swift.CaseIterable {
+@available(visionOS, unavailable)
+public enum FrameResizePosition : Swift.Int8, Swift.CaseIterable {
     case top
     case leading
     case bottom
@@ -363,7 +337,8 @@ public enum ScenePhase : Swift.Comparable {
 @available(iOS, unavailable)
 @available(tvOS, unavailable)
 @available(watchOS, unavailable)
-@available(visionOS, unavailable)public enum FrameResizeDirection : Swift.Int8, Swift.CaseIterable {
+@available(visionOS, unavailable)
+public enum FrameResizeDirection : Swift.Int8, Swift.CaseIterable {
     case inward
     case outward
 }
@@ -402,7 +377,8 @@ public enum MoveCommandDirection : Swift.Sendable {
 
 @available(iOS 17.5, macOS 14.5, visionOS 26.2, *)
 @available(watchOS, unavailable)
-@available(tvOS, unavailable)public enum PencilSqueezeGesturePhase : Swift.Equatable {
+@available(tvOS, unavailable)
+public enum PencilSqueezeGesturePhase : Swift.Equatable {
     case active(PencilSqueezeGestureValue)
     case ended(PencilSqueezeGestureValue)
     case failed

@@ -82,6 +82,7 @@ enum StubGenerator {
             }
 
             stub.attributes = filterDeclAttributes(stub.attributes)
+            stub.modifiers.leadingTrivia = []
 
             decls.append(stub._syntaxNode)
         }
@@ -92,7 +93,7 @@ enum StubGenerator {
     private static func filterDeclAttributes(
         _ attributes: AttributeListSyntax
     ) -> AttributeListSyntax {
-        attributes.filter { attribute in
+        var attributes = attributes.filter { attribute in
             switch attribute {
                 case .attribute(let attribute):
                     let attr = attribute.attributeName.trimmedDescription
@@ -101,6 +102,11 @@ enum StubGenerator {
                     return false
             }
         }
+        if !attributes.isEmpty {
+            let index = attributes.index(before: attributes.endIndex)
+            attributes[index].trailingTrivia = [.newlines(1)]
+        }
+        return attributes
     }
 
     private static let header = """
