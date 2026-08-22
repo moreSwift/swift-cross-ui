@@ -1,5 +1,5 @@
 {
-  "originHash" : "e1d47171a0f09d7abb802e04c331d0a0a5062a8b24a023170a5295c7a5107321",
+  "originHash" : "fdd258e4708a1f880a760515c448e205b7ac32748fdb7e3fecdbf405a74025fa",
   "pins" : [
     {
       "identity" : "androidkit",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-android-sdk/swift-android-native.git",
       "state" : {
-        "revision" : "6ff6e6274fccafac7fdabb4cf7c958d747f44831",
-        "version" : "2.0.1"
+        "revision" : "5f71c1584b3cbe3842d335ebb4d7b545205d9945",
+        "version" : "2.1.0"
       }
     },
     {
@@ -168,8 +168,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-system",
       "state" : {
-        "revision" : "7502b711c92a17741fa625d722b0ccbd595d8ed1",
-        "version" : "1.7.2"
+        "revision" : "869129b7bf4ecc57b97d0193ad29690ca2134750",
+        "version" : "1.8.1"
       }
     },
     {
