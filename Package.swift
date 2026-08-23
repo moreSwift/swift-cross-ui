@@ -47,14 +47,10 @@ let androidBackendSupported: Bool
 
 // xcodebuild can't handle non-Apple platform conditional dependencies for some weird
 // reason, so we have to remove WinUIBackend/WinUIInterop and the swift-winui
-// dependency when we detect that we're being built by xcodebuild, mirroring
-// androidBackendSupported above.
-let winuiBackendSupported: Bool
-#if compiler(>=6.2)
-    winuiBackendSupported = !invokedByXcode
-#else
-    winuiBackendSupported = false
-#endif
+// dependency when we detect that we're being built by xcodebuild. Unlike
+// AndroidBackend there is no compiler-version floor: WinUIBackend builds with
+// every Swift version this package supports (Windows CI uses Swift 6.1).
+let winuiBackendSupported = !invokedByXcode
 
 var defaultBackendDependencies: [Target.Dependency]
 if let backend = env["SCUI_DEFAULT_BACKEND"] {
@@ -373,7 +369,7 @@ let package = Package(
     )
 #endif
 
-// Add WinUIBackend if the Swift version is new enough and we're not using xcodebuild
+// Add WinUIBackend unless we're being built by xcodebuild
 if winuiBackendSupported {
     package.dependencies += [
         .package(
