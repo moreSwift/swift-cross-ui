@@ -247,10 +247,10 @@ extension EnvironmentValues {
     /// Inherited by ``ForEach`` and ``Group`` so that they can be used without
     /// affecting layout.
     @Entry public var layoutAlignment: StackAlignment = .center
-    
+
     /// Whether to use the ZStack StackLayout variants.
     @Entry public var usesZStackLayout: Bool = false
-    
+
     /// The alignment of content inside a ``ZStack``.
     /// Only gets used when ``usesZStackLayout`` is `true`.
     @Entry public var zStackContentAlignment: Alignment = .center

@@ -52,7 +52,7 @@ public struct ZStack<Content: View>: View {
                 ]
             )
         }
-        
+
         var cache = (children as? TupleViewChildren)?.stackLayoutCache ?? StackLayoutCache.initial
         let result = LayoutSystem.computeZStackLayout(
             container: widget,

@@ -126,7 +126,7 @@ public enum LayoutSystem {
                 backend: backend
             )
         }
-        
+
         let spacing = environment.layoutSpacing
         let orientation = environment.layoutOrientation
         let perpendicularOrientation = orientation.perpendicular
@@ -350,10 +350,10 @@ public enum LayoutSystem {
                 environment: environment,
                 backend: backend
             )
-            
+
             return
         }
-        
+
         let size = layout.size
         backend.setSize(of: container, to: size.vector)
 
@@ -483,7 +483,7 @@ public enum LayoutSystem {
 
         return renderedChildren
     }
-    
+
     @MainActor
     static func computeZStackLayout<Backend: BaseAppBackend>(
         container: Backend.Widget,
@@ -507,9 +507,9 @@ public enum LayoutSystem {
                 maxHeight = max(maxHeight, result.size.height)
                 results.append(result)
             }
-            
+
             let size = ViewSize(maxWidth, maxHeight)
-            
+
             // In this case, flexibility and layout priority don't matter. We set
             // the grouping to the trivial grouping so that commitStackLayout
             // effectively ignores flexibility.
@@ -530,7 +530,7 @@ public enum LayoutSystem {
                 minimumLengths: [Double](repeating: 0, count: children.count),
                 redistributeSpaceOnCommit: false
             )
-            
+
             return ViewLayoutResult(
                 size: size,
                 childResults: results,
@@ -539,13 +539,13 @@ public enum LayoutSystem {
                 preferencesOverlay: nil
             )
         }
-        
+
         cache = recomputeZStackCache(
             children: children,
             proposedSize: proposedSize,
             environment: environment
         )
-        
+
         let renderedChildren = computeZStackLayouts(
             of: children,
             proposedSize: proposedSize,
@@ -553,11 +553,11 @@ public enum LayoutSystem {
             environment: environment,
             ignoreHiddenChildrenEntirely: false
         )
-        
+
         var size = ViewSize.zero
         size.width = renderedChildren.map(\.size.width).reduce(0, { max($0, $1) })
         size.height = renderedChildren.map(\.size.height).reduce(0, { max($0, $1) })
-        
+
         return ViewLayoutResult(
             size: size,
             childResults: renderedChildren,
@@ -565,7 +565,7 @@ public enum LayoutSystem {
                 .contains(where: \.participateInStackLayoutsWhenEmpty)
         )
     }
-    
+
     @MainActor
     static func recomputeZStackCache(
         children: [LayoutableChild],
@@ -574,10 +574,10 @@ public enum LayoutSystem {
     ) -> StackLayoutCache {
         let minimumProposedSize = ProposedViewSize(0, 0)
         let maximumProposedSize = ProposedViewSize(.infinity, .infinity)
-        
+
         var isHidden = [Bool](repeating: false, count: children.count)
         var priorities = [Double](repeating: 0, count: children.count)
-        
+
         let flexibilities = children.enumerated().map { i, child in
             let minimumResult = child.computeLayout(
                 proposedSize: minimumProposedSize,
@@ -587,16 +587,16 @@ public enum LayoutSystem {
                 proposedSize: maximumProposedSize,
                 environment: environment.with(\.allowLayoutCaching, true)
             )
-            
+
             isHidden[i] = !minimumResult.participatesInStackLayouts
             priorities[i] = minimumResult.preferences.layoutPriority
-            
+
             let widthFlexibility = maximumResult.size.width - minimumResult.size.width
             let heightFlexibility = maximumResult.size.height - minimumResult.size.height
-            
+
             return widthFlexibility + heightFlexibility
         }
-        
+
         let sortedChildren = zip(children.indices, zip(priorities.map(-), flexibilities))
             .sorted { first, second in
                 // Sort by descending priority and then by ascending flexibility
@@ -605,14 +605,14 @@ public enum LayoutSystem {
             .map { index, _ in
                 index
             }
-        
+
         var priorityGroups: [LayoutPriorityGroup] = []
         var previousPriority: Double? = nil
         var startIndex: Int?
-        
+
         for (sortedIndex, originalIndex) in sortedChildren.enumerated() {
             let priority = priorities[originalIndex]
-            
+
             if priority != previousPriority {
                 if let startIndex, let previousPriority {
                     let group = LayoutPriorityGroup(
@@ -621,12 +621,12 @@ public enum LayoutSystem {
                     )
                     priorityGroups.append(group)
                 }
-                
+
                 startIndex = sortedIndex
                 previousPriority = priority
             }
         }
-        
+
         if let startIndex, let previousPriority {
             let group = LayoutPriorityGroup(
                 children: sortedChildren[startIndex..<sortedChildren.endIndex],
@@ -634,7 +634,7 @@ public enum LayoutSystem {
             )
             priorityGroups.append(group)
         }
-        
+
         return StackLayoutCache(
             priorityGroups: priorityGroups,
             isHidden: isHidden,
@@ -644,7 +644,7 @@ public enum LayoutSystem {
             redistributeSpaceOnCommit: false
         )
     }
-    
+
     /// The main ZStack layout space allocation algorithm. Used during computeLayout.
     @MainActor
     static func computeZStackLayouts(
@@ -658,21 +658,21 @@ public enum LayoutSystem {
             repeating: .leafView(size: .zero),
             count: children.count
         )
-        
+
         for group in cache.priorityGroups {
             var childrenRemaining = group.children.count { index in
                 !cache.isHidden[index]
             }
-            
+
             for index in group.children {
                 let child = children[index]
-                
+
                 // No need to render visible children.
                 if cache.isHidden[index] {
                     if ignoreHiddenChildrenEntirely {
                         continue
                     }
-                    
+
                     // Update child in case it has just changed from visible to hidden,
                     // and to make sure that the view is still hidden (if it's not then
                     // it's a bug with either the view or the layout system).
@@ -693,20 +693,20 @@ public enum LayoutSystem {
                     renderedChildren[index].size = .zero
                     continue
                 }
-                
+
                 let childResult = child.computeLayout(
                     proposedSize: proposedSize,
                     environment: environment
                 )
-                
+
                 renderedChildren[index] = childResult
                 childrenRemaining -= 1
             }
         }
-        
+
         return renderedChildren
     }
-    
+
     @MainActor
     static func commitZStackLayout<Backend: BaseAppBackend>(
         container: Backend.Widget,
@@ -719,13 +719,13 @@ public enum LayoutSystem {
         let size = layout.size
         let alignment = environment.zStackContentAlignment
         backend.setSize(of: container, to: size.vector)
-        
+
         guard !cache.redistributeSpaceOnCommit else {
             fatalError("unreachable")
         }
-        
+
         let renderedChildren = children.map { $0.commit() }
-        
+
         var position = Position.zero
         for (index, child) in renderedChildren.enumerated() {
             // Avoid the whole iteration if the child is hidden. If there
@@ -734,7 +734,7 @@ public enum LayoutSystem {
             if !child.participatesInStackLayouts {
                 continue
             }
-            
+
             // Compute alignment
             switch alignment {
                 case .topLeading:
@@ -744,17 +744,17 @@ public enum LayoutSystem {
                     let outerX = size.width
                     let innerX = child.size.width
                     position.x = (outerX - innerX) / 2
-                    
+
                     position.y = 0
                 case .topTrailing:
                     let outerX = size.width
                     let innerX = child.size.width
                     position.x = outerX - innerX
-                    
+
                     position.y = 0
                 case .leading:
                     position.x = 0
-                    
+
                     let outerY = size.height
                     let innerY = child.size.height
                     position.y = (outerY - innerY) / 2
@@ -762,7 +762,7 @@ public enum LayoutSystem {
                     let outerX = size.width
                     let innerX = child.size.width
                     position.x = (outerX - innerX) / 2
-                    
+
                     let outerY = size.height
                     let innerY = child.size.height
                     position.y = (outerY - innerY) / 2
@@ -770,13 +770,13 @@ public enum LayoutSystem {
                     let outerX = size.width
                     let innerX = child.size.width
                     position.x = outerX - innerX
-                    
+
                     let outerY = size.height
                     let innerY = child.size.height
                     position.y = (outerY - innerY) / 2
                 case .bottomLeading:
                     position.x = 0
-                    
+
                     let outerY = size.height
                     let innerY = child.size.height
                     position.y = outerY - innerY
@@ -784,7 +784,7 @@ public enum LayoutSystem {
                     let outerX = size.width
                     let innerX = child.size.width
                     position.x = (outerX - innerX) / 2
-                    
+
                     let outerY = size.height
                     let innerY = child.size.height
                     position.y = outerY - innerY
@@ -792,7 +792,7 @@ public enum LayoutSystem {
                     let outerX = size.width
                     let innerX = child.size.width
                     position.x = outerX - innerX
-                    
+
                     let outerY = size.height
                     let innerY = child.size.height
                     position.y = outerY - innerY
@@ -800,12 +800,12 @@ public enum LayoutSystem {
                     let outerX = size.width
                     let innerX = child.size.width
                     position.x = (outerX - innerX) / 2
-                    
+
                     let outerY = size.height
                     let innerY = child.size.height
                     position.y = (outerY - innerY) / 2
             }
-            
+
             backend.setPosition(ofChildAt: index, in: container, to: position.vector)
         }
     }
