@@ -520,11 +520,6 @@ public enum LayoutSystem {
             cache = StackLayoutCache(
                 priorityGroups: [group],
                 isHidden: results.map(\.participatesInStackLayouts).map(!),
-                // TODO(stackotter): How does SwiftUI handle space reservation during
-                //   relayouts? I feel like it probably doesn't use minimum lengths if
-                //   it didn't already have to during the initial layout pass because
-                //   the alternative would be expensive, but that approach would also
-                //   be a bit inconsistent
                 totalSpacing: 0,
                 totalReservedSpace: 0,
                 minimumLengths: [Double](repeating: 0, count: children.count),
