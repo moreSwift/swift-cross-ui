@@ -116,6 +116,17 @@ public enum LayoutSystem {
         backend: Backend,
         inheritStackLayoutParticipation: Bool = false
     ) -> ViewLayoutResult {
+        guard !environment.usesZStackLayout else {
+            return computeZStackLayout(
+                container: container,
+                children: children,
+                cache: &cache,
+                proposedSize: proposedSize,
+                environment: environment,
+                backend: backend
+            )
+        }
+        
         let spacing = environment.layoutSpacing
         let orientation = environment.layoutOrientation
         let perpendicularOrientation = orientation.perpendicular
@@ -330,6 +341,19 @@ public enum LayoutSystem {
         environment: EnvironmentValues,
         backend: Backend
     ) {
+        guard !environment.usesZStackLayout else {
+            commitZStackLayout(
+                container: container,
+                children: children,
+                cache: &cache,
+                layout: layout,
+                environment: environment,
+                backend: backend
+            )
+            
+            return
+        }
+        
         let size = layout.size
         backend.setSize(of: container, to: size.vector)
 
@@ -458,5 +482,331 @@ public enum LayoutSystem {
         }
 
         return renderedChildren
+    }
+    
+    @MainActor
+    static func computeZStackLayout<Backend: BaseAppBackend>(
+        container: Backend.Widget,
+        children: [LayoutableChild],
+        cache: inout StackLayoutCache,
+        proposedSize: ProposedViewSize,
+        environment: EnvironmentValues,
+        backend: Backend,
+        inheritStackLayoutParticipation: Bool = false
+    ) -> ViewLayoutResult {
+        if children.count == 1 {
+            var maxWidth: Double = 0
+            var maxHeight: Double = 0
+            var results: [ViewLayoutResult] = []
+            for child in children {
+                let result = child.computeLayout(
+                    proposedSize: proposedSize,
+                    environment: environment
+                )
+                maxWidth = max(maxWidth, result.size.width)
+                maxHeight = max(maxHeight, result.size.height)
+                results.append(result)
+            }
+            
+            let size = ViewSize(maxWidth, maxHeight)
+            
+            // In this case, flexibility and layout priority don't matter. We set
+            // the grouping to the trivial grouping so that commitStackLayout
+            // effectively ignores flexibility.
+            let group = LayoutPriorityGroup(
+                children: Array(children.indices)[...],
+                priority: 0
+            )
+            cache = StackLayoutCache(
+                priorityGroups: [group],
+                isHidden: results.map(\.participatesInStackLayouts).map(!),
+                // TODO(stackotter): How does SwiftUI handle space reservation during
+                //   relayouts? I feel like it probably doesn't use minimum lengths if
+                //   it didn't already have to during the initial layout pass because
+                //   the alternative would be expensive, but that approach would also
+                //   be a bit inconsistent
+                totalSpacing: 0,
+                totalReservedSpace: 0,
+                minimumLengths: [Double](repeating: 0, count: children.count),
+                redistributeSpaceOnCommit: false
+            )
+            
+            return ViewLayoutResult(
+                size: size,
+                childResults: results,
+                participateInStackLayoutsWhenEmpty: results
+                    .contains(where: \.participateInStackLayoutsWhenEmpty),
+                preferencesOverlay: nil
+            )
+        }
+        
+        cache = recomputeZStackCache(
+            children: children,
+            proposedSize: proposedSize,
+            environment: environment
+        )
+        
+        let renderedChildren = computeZStackLayouts(
+            of: children,
+            proposedSize: proposedSize,
+            cache: cache,
+            environment: environment,
+            ignoreHiddenChildrenEntirely: false
+        )
+        
+        var size = ViewSize.zero
+        size.width = renderedChildren.map(\.size.width).reduce(0, { max($0, $1) })
+        size.height = renderedChildren.map(\.size.height).reduce(0, { max($0, $1) })
+        
+        return ViewLayoutResult(
+            size: size,
+            childResults: renderedChildren,
+            participateInStackLayoutsWhenEmpty: renderedChildren
+                .contains(where: \.participateInStackLayoutsWhenEmpty)
+        )
+    }
+    
+    @MainActor
+    static func recomputeZStackCache(
+        children: [LayoutableChild],
+        proposedSize: ProposedViewSize,
+        environment: EnvironmentValues
+    ) -> StackLayoutCache {
+        let minimumProposedSize = ProposedViewSize(0, 0)
+        let maximumProposedSize = ProposedViewSize(.infinity, .infinity)
+        
+        var isHidden = [Bool](repeating: false, count: children.count)
+        var priorities = [Double](repeating: 0, count: children.count)
+        
+        let flexibilities = children.enumerated().map { i, child in
+            let minimumResult = child.computeLayout(
+                proposedSize: minimumProposedSize,
+                environment: environment.with(\.allowLayoutCaching, true)
+            )
+            let maximumResult = child.computeLayout(
+                proposedSize: maximumProposedSize,
+                environment: environment.with(\.allowLayoutCaching, true)
+            )
+            
+            isHidden[i] = !minimumResult.participatesInStackLayouts
+            priorities[i] = minimumResult.preferences.layoutPriority
+            
+            let widthFlexibility = maximumResult.size.width - minimumResult.size.width
+            let heightFlexibility = maximumResult.size.height - minimumResult.size.height
+            
+            return widthFlexibility + heightFlexibility
+        }
+        
+        let sortedChildren = zip(children.indices, zip(priorities.map(-), flexibilities))
+            .sorted { first, second in
+                // Sort by descending priority and then by ascending flexibility
+                first.1 <= second.1
+            }
+            .map { index, _ in
+                index
+            }
+        
+        var priorityGroups: [LayoutPriorityGroup] = []
+        var previousPriority: Double? = nil
+        var startIndex: Int?
+        
+        for (sortedIndex, originalIndex) in sortedChildren.enumerated() {
+            let priority = priorities[originalIndex]
+            
+            if priority != previousPriority {
+                if let startIndex, let previousPriority {
+                    let group = LayoutPriorityGroup(
+                        children: sortedChildren[startIndex..<sortedIndex],
+                        priority: previousPriority
+                    )
+                    priorityGroups.append(group)
+                }
+                
+                startIndex = sortedIndex
+                previousPriority = priority
+            }
+        }
+        
+        if let startIndex, let previousPriority {
+            let group = LayoutPriorityGroup(
+                children: sortedChildren[startIndex..<sortedChildren.endIndex],
+                priority: previousPriority
+            )
+            priorityGroups.append(group)
+        }
+        
+        return StackLayoutCache(
+            priorityGroups: priorityGroups,
+            isHidden: isHidden,
+            totalSpacing: 0,
+            totalReservedSpace: 0,
+            minimumLengths: [],
+            redistributeSpaceOnCommit: false
+        )
+    }
+    
+    /// The main ZStack layout space allocation algorithm. Used during computeLayout.
+    @MainActor
+    static func computeZStackLayouts(
+        of children: [LayoutableChild],
+        proposedSize: ProposedViewSize,
+        cache: StackLayoutCache,
+        environment: EnvironmentValues,
+        ignoreHiddenChildrenEntirely: Bool
+    ) -> [ViewLayoutResult] {
+        var renderedChildren = [ViewLayoutResult](
+            repeating: .leafView(size: .zero),
+            count: children.count
+        )
+        
+        for group in cache.priorityGroups {
+            var childrenRemaining = group.children.count { index in
+                !cache.isHidden[index]
+            }
+            
+            for index in group.children {
+                let child = children[index]
+                
+                // No need to render visible children.
+                if cache.isHidden[index] {
+                    if ignoreHiddenChildrenEntirely {
+                        continue
+                    }
+                    
+                    // Update child in case it has just changed from visible to hidden,
+                    // and to make sure that the view is still hidden (if it's not then
+                    // it's a bug with either the view or the layout system).
+                    let result = child.computeLayout(
+                        proposedSize: .zero,
+                        environment: environment
+                    )
+                    if result.participatesInStackLayouts {
+                        logger.warning(
+                            "hidden view became visible on second update; layout may break",
+                            metadata: [
+                                "view": "\(child.tag ?? "<unknown type>")"
+                            ]
+                        )
+                    }
+                    renderedChildren[index] = result
+                    renderedChildren[index].participateInStackLayoutsWhenEmpty = false
+                    renderedChildren[index].size = .zero
+                    continue
+                }
+                
+                let childResult = child.computeLayout(
+                    proposedSize: proposedSize,
+                    environment: environment
+                )
+                
+                renderedChildren[index] = childResult
+                childrenRemaining -= 1
+            }
+        }
+        
+        return renderedChildren
+    }
+    
+    @MainActor
+    static func commitZStackLayout<Backend: BaseAppBackend>(
+        container: Backend.Widget,
+        children: [LayoutableChild],
+        cache: inout StackLayoutCache,
+        layout: ViewLayoutResult,
+        environment: EnvironmentValues,
+        backend: Backend
+    ) {
+        let size = layout.size
+        let alignment = environment.zStackContentAlignment
+        backend.setSize(of: container, to: size.vector)
+        
+        guard !cache.redistributeSpaceOnCommit else {
+            fatalError("unreachable")
+        }
+        
+        let renderedChildren = children.map { $0.commit() }
+        
+        var position = Position.zero
+        for (index, child) in renderedChildren.enumerated() {
+            // Avoid the whole iteration if the child is hidden. If there
+            // are weird positioning issues for views that do strange things
+            // then this could be the cause.
+            if !child.participatesInStackLayouts {
+                continue
+            }
+            
+            // Compute alignment
+            switch alignment {
+                case .topLeading:
+                    position.x = 0
+                    position.y = 0
+                case .top:
+                    let outerX = size.width
+                    let innerX = child.size.width
+                    position.x = (outerX - innerX) / 2
+                    
+                    position.y = 0
+                case .topTrailing:
+                    let outerX = size.width
+                    let innerX = child.size.width
+                    position.x = outerX - innerX
+                    
+                    position.y = 0
+                case .leading:
+                    position.x = 0
+                    
+                    let outerY = size.height
+                    let innerY = child.size.height
+                    position.y = (outerY - innerY) / 2
+                case .center:
+                    let outerX = size.width
+                    let innerX = child.size.width
+                    position.x = (outerX - innerX) / 2
+                    
+                    let outerY = size.height
+                    let innerY = child.size.height
+                    position.y = (outerY - innerY) / 2
+                case .trailing:
+                    let outerX = size.width
+                    let innerX = child.size.width
+                    position.x = outerX - innerX
+                    
+                    let outerY = size.height
+                    let innerY = child.size.height
+                    position.y = (outerY - innerY) / 2
+                case .bottomLeading:
+                    position.x = 0
+                    
+                    let outerY = size.height
+                    let innerY = child.size.height
+                    position.y = outerY - innerY
+                case .bottom:
+                    let outerX = size.width
+                    let innerX = child.size.width
+                    position.x = (outerX - innerX) / 2
+                    
+                    let outerY = size.height
+                    let innerY = child.size.height
+                    position.y = outerY - innerY
+                case .bottomTrailing:
+                    let outerX = size.width
+                    let innerX = child.size.width
+                    position.x = outerX - innerX
+                    
+                    let outerY = size.height
+                    let innerY = child.size.height
+                    position.y = outerY - innerY
+                default:
+                    let outerX = size.width
+                    let innerX = child.size.width
+                    position.x = (outerX - innerX) / 2
+                    
+                    let outerY = size.height
+                    let innerY = child.size.height
+                    position.y = (outerY - innerY) / 2
+            }
+            
+            backend.setPosition(ofChildAt: index, in: container, to: position.vector)
+        }
     }
 }

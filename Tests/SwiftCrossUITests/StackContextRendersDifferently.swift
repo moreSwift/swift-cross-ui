@@ -36,7 +36,7 @@ struct StackContextRendersDifferently {
         )
     }
 
-    @Test(.disabled{ true }) func testZStack() {
+    @Test func testZStack() {
         stackTest(
             view: ZStack { TestView() },
             check: { firstPosition, secondPosition in
