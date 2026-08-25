@@ -201,8 +201,7 @@ extension View {
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
-        let vStack = VStack(content: body)
-        return vStack.computeLayout(
+        return body.computeLayout(
             widget,
             children: children,
             proposedSize: proposedSize,
@@ -234,8 +233,7 @@ extension View {
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        let vStack = VStack(content: body)
-        return vStack.commit(
+        return body.commit(
             widget,
             children: children,
             layout: layout,

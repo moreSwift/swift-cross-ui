@@ -15,30 +15,30 @@ struct StackContextRendersDifferently {
             Text("Test")
         }
     }
-    
+
     @Test func testVStack() {
         let backend = DummyBackend()
         let window = backend.createWindow(withDefaultSize: nil, id: "window")
         let environment = EnvironmentValues(backend: backend).with(\.window, window)
-        
+
         let view = VStack {
             TestView()
         }
-        
+
         let node = ViewGraphNode(for: view, backend: backend, environment: environment)
-        
+
         _ = node.computeLayout(
             proposedSize: .unspecified,
             environment: environment
         )
-        
+
         _ = node.commit()
-        
+
         let widget = node.widget
-        
+
         var lastParent: DummyBackend.Widget? = nil
         var children = widget.getChildren()
-        
+
         while children.count != 2 {
             guard let first = children.first else {
                 Issue.record("Unexpectedly didn't find children.")
@@ -47,7 +47,7 @@ struct StackContextRendersDifferently {
             lastParent = first
             children = first.getChildren()
         }
-        
+
         guard
             let _ = children.first as? DummyBackend.TextView,
             let _ = children.last as? DummyBackend.TextView
@@ -55,14 +55,14 @@ struct StackContextRendersDifferently {
             Issue.record("Unexpectedly didn't find text views.")
             return
         }
-        
+
         guard let container = lastParent as? DummyBackend.Container else {
             Issue.record("Parent of text views unexpectedly wasn't a container.")
             return
         }
-        
+
         #expect(container.children.count == 2)
-        
+
         guard
             container.children.count == 2,
             let (_, firstPosition) = container.children.first,
@@ -71,33 +71,33 @@ struct StackContextRendersDifferently {
             Issue.record("Unexpectedly failed to extract child positions.")
             return
         }
-        
+
         #expect(firstPosition.x == secondPosition.x)
     }
-    
+
     @Test func testHStack() {
         let backend = DummyBackend()
         let window = backend.createWindow(withDefaultSize: nil, id: "window")
         let environment = EnvironmentValues(backend: backend).with(\.window, window)
-        
+
         let view = HStack {
             TestView()
         }
-        
+
         let node = ViewGraphNode(for: view, backend: backend, environment: environment)
-        
+
         _ = node.computeLayout(
             proposedSize: .unspecified,
             environment: environment
         )
-        
+
         _ = node.commit()
-        
+
         let widget = node.widget
-        
+
         var lastParent: DummyBackend.Widget? = nil
         var children = widget.getChildren()
-        
+
         while children.count != 2 {
             guard let first = children.first else {
                 Issue.record("Unexpectedly didn't find children.")
@@ -106,57 +106,57 @@ struct StackContextRendersDifferently {
             lastParent = first
             children = first.getChildren()
         }
-        
+
         guard
             let _ = children.first as? DummyBackend.TextView,
             let _ = children.last as? DummyBackend.TextView
-                else {
+        else {
             Issue.record("Unexpectedly didn't find text views.")
             return
         }
-        
+
         guard let container = lastParent as? DummyBackend.Container else {
             Issue.record("Parent of text views unexpectedly wasn't a container.")
             return
         }
-        
+
         #expect(container.children.count == 2)
-        
+
         guard
             container.children.count == 2,
             let (_, firstPosition) = container.children.first,
             let (_, secondPosition) = container.children.last
-                else {
+        else {
             Issue.record("Unexpectedly failed to extract child positions.")
             return
         }
-        
+
         #expect(firstPosition.y == secondPosition.y)
     }
-    
+
     @Test func testZStack() {
         let backend = DummyBackend()
         let window = backend.createWindow(withDefaultSize: nil, id: "window")
         let environment = EnvironmentValues(backend: backend).with(\.window, window)
-        
+
         let view = ZStack {
             TestView()
         }
-        
+
         let node = ViewGraphNode(for: view, backend: backend, environment: environment)
-        
+
         _ = node.computeLayout(
             proposedSize: .unspecified,
             environment: environment
         )
-        
+
         _ = node.commit()
-        
+
         let widget = node.widget
-        
+
         var lastParent: DummyBackend.Widget? = nil
         var children = widget.getChildren()
-        
+
         while children.count != 2 {
             guard let first = children.first else {
                 Issue.record("Unexpectedly didn't find children.")
@@ -165,31 +165,31 @@ struct StackContextRendersDifferently {
             lastParent = first
             children = first.getChildren()
         }
-        
+
         guard
             let _ = children.first as? DummyBackend.TextView,
             let _ = children.last as? DummyBackend.TextView
-                else {
+        else {
             Issue.record("Unexpectedly didn't find text views.")
             return
         }
-        
+
         guard let container = lastParent as? DummyBackend.Container else {
             Issue.record("Parent of text views unexpectedly wasn't a container.")
             return
         }
-        
+
         #expect(container.children.count == 2)
-        
+
         guard
             container.children.count == 2,
             let (_, firstPosition) = container.children.first,
             let (_, secondPosition) = container.children.last
-                else {
+        else {
             Issue.record("Unexpectedly failed to extract child positions.")
             return
         }
-        
+
         #expect(firstPosition == secondPosition)
     }
 }
