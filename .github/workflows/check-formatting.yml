@@ -1,4 +1,4 @@
-name: Check formatting
+name: Check formatting | Run './Scripts/format.sh' on fail.
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   check:
-    name: "Check Formatting | Run './Scripts/format.sh' on fail."
+    name: "check-formatted"
     runs-on: macos-15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #6.0.2
