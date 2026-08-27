@@ -1,0 +1,21 @@
+name: Check formatting
+
+on:
+  pull_request:
+    branches: [main]
+    
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: "Check Formatting | Run './Scripts/format.sh' on fail."
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #6.0.2
+        with:
+          persist-credentials: false
+      - name: Install SwiftFormat
+        run: brew install swiftformat
+      - name: Check formatting
+        run: ./Scripts/check-formatted.sh
