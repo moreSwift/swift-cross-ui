@@ -13,7 +13,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatDialogFragment
 
 class AlertFragment() : AppCompatDialogFragment() {
-    private var titleView : TextView? = null
+    private var titleView: TextView? = null
     private var titleText: String? = null
 
     private var buttonContainer: LinearLayout? = null
