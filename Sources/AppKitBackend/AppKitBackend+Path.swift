@@ -1,6 +1,6 @@
 import AppKit
 @_spi(Backends) import SwiftCrossUI
-    
+
 extension AppKitBackend {
     public typealias Path = NSBezierPath
 
