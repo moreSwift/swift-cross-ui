@@ -22,7 +22,7 @@ extension App {
 }
 
 class WinUIApplication: SwiftApplication, @unchecked Sendable {
-    static let callback = Mutex<(@MainActor (WinUIApplication) -> Void)?>(nil)
+    static let callback = Mutex<(@MainActor (WinUIApplication, AppInstance) -> Void)?>(nil)
     static let urlSchemes = Mutex<[String]>([])
 
     override func onLaunched(_ args: WinUI.LaunchActivatedEventArgs) {
@@ -42,13 +42,47 @@ class WinUIApplication: SwiftApplication, @unchecked Sendable {
             )
         }
 
+        // Adapted from https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/applifecycle/applifecycle-single-instance
+        let args = try! AppInstance.getCurrent().getActivatedEventArgs()!
+        let keyInstance = AppInstance.findOrRegisterForKey(processName)!
+        guard keyInstance.isCurrent else {
+            Self.redirectActivation(args, to: keyInstance)
+        }
+
         Self.callback.withLock { callback in
             // We can't explicitly hop to the main actor because we haven't set up
             // our WinUI MainActor fix yet.
             MainActor.assumeIsolated {
-                callback?(self)
+                callback?(self, keyInstance)
             }
         }
+    }
+
+    // Adapted from https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/applifecycle/applifecycle-single-instance
+    static func redirectActivation(
+        _ args: AppActivationArguments,
+        to keyInstance: AppInstance
+    ) -> Never {
+        let semaphore = DispatchSemaphore(value: 0)
+        let promise = try! keyInstance.redirectActivationToAsync(args)!
+        promise.completed = { _, _ in
+            semaphore.signal()
+        }
+
+        semaphore.wait()
+
+        // Bring key instance to the foreground
+        do {
+            try InstancingHelpers.activateProcess(withId: Int(keyInstance.processId))
+        } catch {
+            print(
+                """
+                Failed to bring key instance (pid=\(keyInstance.processId)) to \
+                foreground: \(error.localizedDescription)
+                """
+            )
+        }
+        Foundation.exit(0)
     }
 }
 
@@ -191,7 +225,7 @@ public final class WinUIBackend:
         SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)
 
         WinUIApplication.callback.withLock { launchCallback in
-            launchCallback = { application in
+            launchCallback = { application, instance in
                 // Toggle Switch has annoying default 'internal margins' (not Control
                 // margins that we can set directly) that we can luckily get rid of by
                 // overriding the relevant resource values.
@@ -215,6 +249,14 @@ public final class WinUIBackend:
                 //   let value = try! pv.GetDoubleImpl()
 
                 self.measurementTextBlock = (self.createTextView() as! TextBlock)
+
+                instance.activated.addHandler { (_, args: AppActivationArguments?) in
+                    guard let args else {
+                        logger.warning("Received activation with no activation arguments?")
+                        return
+                    }
+                    self.processActivationArguments(args)
+                }
 
                 callback()
             }
@@ -365,15 +407,23 @@ public final class WinUIBackend:
     }
 
     public func show(window: Window) {
-        try! window.activate()
+        activate(window: window)
     }
 
     public func activate(window: Window) {
-        try! window.activate()
+        do {
+            try window.activate()
+        } catch {
+            logger.warning("Failed to activate window: \(error)")
+        }
     }
 
     public func close(window: Window) {
-        try! window.close()
+        do {
+            try window.close()
+        } catch {
+            logger.warning("Failed to close window: \(error)")
+        }
     }
 
     public func setCloseHandler(
@@ -527,29 +577,33 @@ public final class WinUIBackend:
         }
     }
 
-    var hasSetIncomingURLHandler = false
+    var incomingURLHandler: ((URL) -> Void)?
 
     public func setIncomingURLHandler(to action: @escaping (URL) -> Void) {
-        if !hasSetIncomingURLHandler {
-            // Check for if this launch was a URL activation. If it was then dispatch
-            // the handler immediately.
-            hasSetIncomingURLHandler = true
+        let isFirstCall = incomingURLHandler == nil
+        self.incomingURLHandler = action
+
+        if isFirstCall {
+            // Check if this app instance was launched by a URL activation. If it
+            // was a URL activation, then handle it now.
             let args = try! AppInstance.getCurrent().getActivatedEventArgs()!
-            if args.kind == .protocol {
-                if let data = args.data as? IProtocolActivatedEventArgs {
-                    let urlString = data.uri.absoluteUri
-                    if let url = URL(string: urlString) {
-                        action(url)
-                    } else {
-                        logger.warning("Failed to parse activation URL: \(urlString)")
-                    }
+            processActivationArguments(args)
+        }
+    }
+
+    private func processActivationArguments(_ args: AppActivationArguments) {
+        if args.kind == .protocol {
+            if let data = args.data as? IProtocolActivatedEventArgs {
+                let urlString = data.uri.absoluteUri
+                if let url = URL(string: urlString) {
+                    self.incomingURLHandler?(url)
                 } else {
-                    logger.warning("Failed to get activation URL")
+                    logger.warning("Failed to parse activation URL: \(urlString)")
                 }
+            } else {
+                logger.warning("Failed to get activation URL")
             }
         }
-
-        // TODO: Set activation handler once we handle single-instance coalescing
     }
 
     public func createContainer() -> Widget {
