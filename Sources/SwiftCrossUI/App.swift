@@ -83,6 +83,7 @@ private enum SwiftBundlerMetadataError: LocalizedError {
     case missingAppIdentifier
     case missingAppVersion
     case badMetadataPointer
+    case invalidURLSchemes
 
     var errorDescription: String? {
         switch self {
@@ -105,6 +106,11 @@ private enum SwiftBundlerMetadataError: LocalizedError {
                 been skipped. update to a version of Swift Bundler newer than \
                 commit 7b9c6a45fa5d0266985d45a3d12bc8d9fd729b84 to restore \
                 metadata parsing
+                """
+            case .invalidURLSchemes:
+                """
+                invalid 'urlSchems' (expected array of objects with 'scheme' \
+                fields of type string)
                 """
         }
     }
@@ -254,11 +260,26 @@ extension App {
         guard let version = json["appVersion"] as? String else {
             throw SwiftBundlerMetadataError.missingAppVersion
         }
+        let urlSchemes: [AppMetadata.URLScheme]?
+        if let schemes = json["urlSchemes"] as? [Any] {
+            urlSchemes = try schemes.map { scheme in
+                guard
+                    let scheme = scheme as? [String: Any],
+                    let name = scheme["scheme"] as? String
+                else {
+                    throw SwiftBundlerMetadataError.invalidURLSchemes
+                }
+                return AppMetadata.URLScheme(scheme: name)
+            }
+        } else {
+            urlSchemes = nil
+        }
         let additionalMetadata = json["additionalMetadata"] as? [String: Any] ?? [:]
 
         return AppMetadata(
             identifier: identifier,
             version: version,
+            urlSchemes: urlSchemes,
             additionalMetadata: additionalMetadata
         )
     }

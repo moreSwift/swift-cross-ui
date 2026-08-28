@@ -17,14 +17,31 @@ extension App {
     public typealias Backend = WinUIBackend
 
     public var backend: WinUIBackend {
-        WinUIBackend()
+        WinUIBackend(urlSchemes: Self.metadata?.urlSchemes?.map(\.scheme))
     }
 }
 
 class WinUIApplication: SwiftApplication, @unchecked Sendable {
     static let callback = Mutex<(@MainActor (WinUIApplication) -> Void)?>(nil)
+    static let urlSchemes = Mutex<[String]>([])
 
     override func onLaunched(_ args: WinUI.LaunchActivatedEventArgs) {
+        // Register the schemes on each launch. Windows ignores duplicate URL
+        // scheme registrations so this is safe.
+        let schemes = Self.urlSchemes.withLock { $0 }
+        var processName = ProcessInfo.processInfo.processName
+        if processName.hasSuffix(".exe") {
+            processName = String(processName.dropLast(".exe".count))
+        }
+        for scheme in schemes {
+            ActivationRegistrationManager.registerForProtocolActivation(
+                scheme,
+                "",
+                processName,
+                ""
+            )
+        }
+
         Self.callback.withLock { callback in
             // We can't explicitly hop to the main actor because we haven't set up
             // our WinUI MainActor fix yet.
@@ -120,8 +137,15 @@ public final class WinUIBackend:
 
     private var measurementTextBlock: TextBlock!
 
-    public init() {
+    public convenience init() {
+        self.init(urlSchemes: nil)
+    }
+
+    public init(urlSchemes: [String]?) {
         internalState = InternalState()
+        WinUIApplication.urlSchemes.withLock { schemes in
+            schemes = urlSchemes ?? []
+        }
     }
 
     struct Error: LocalizedError {
@@ -503,9 +527,29 @@ public final class WinUIBackend:
         }
     }
 
+    var hasSetIncomingURLHandler = false
+
     public func setIncomingURLHandler(to action: @escaping (URL) -> Void) {
-        // TODO: Implement WinUIBackend setIncomingURLHandler
-        logger.warning("\(#function) not implemented")
+        if !hasSetIncomingURLHandler {
+            // Check for if this launch was a URL activation. If it was then dispatch
+            // the handler immediately.
+            hasSetIncomingURLHandler = true
+            let args = try! AppInstance.getCurrent().getActivatedEventArgs()!
+            if args.kind == .protocol {
+                if let data = args.data as? IProtocolActivatedEventArgs {
+                    let urlString = data.uri.absoluteUri
+                    if let url = URL(string: urlString) {
+                        action(url)
+                    } else {
+                        logger.warning("Failed to parse activation URL: \(urlString)")
+                    }
+                } else {
+                    logger.warning("Failed to get activation URL")
+                }
+            }
+        }
+
+        // TODO: Set activation handler once we handle single-instance coalescing
     }
 
     public func createContainer() -> Widget {
