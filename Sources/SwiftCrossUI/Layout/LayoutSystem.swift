@@ -132,7 +132,7 @@ public enum LayoutSystem {
         let perpendicularOrientation = orientation.perpendicular
 
         let stackLength = proposedSize[component: orientation]
-        if stackLength == 0 || stackLength == .infinity || stackLength == nil || children.count == 1
+        if stackLength == 0 || stackLength == .infinity || stackLength == nil || children.count <= 1
         {
             var resultLength: Double = 0
             var resultWidth: Double = 0
@@ -494,21 +494,22 @@ public enum LayoutSystem {
         backend: Backend,
         inheritStackLayoutParticipation: Bool = false
     ) -> ViewLayoutResult {
-        if children.count == 1 {
-            var maxWidth: Double = 0
-            var maxHeight: Double = 0
+        let specialSizes: [Double?] = [nil, .infinity]
+        if children.count <= 1 || (specialSizes.contains(proposedSize.width) && specialSizes.contains(proposedSize.height)) {
+            var stackWidth: Double = 0
+            var stackHeight: Double = 0
             var results: [ViewLayoutResult] = []
             for child in children {
                 let result = child.computeLayout(
                     proposedSize: proposedSize,
                     environment: environment
                 )
-                maxWidth = max(maxWidth, result.size.width)
-                maxHeight = max(maxHeight, result.size.height)
+                stackWidth = max(stackWidth, result.size.width)
+                stackHeight = max(stackHeight, result.size.height)
                 results.append(result)
             }
 
-            let size = ViewSize(maxWidth, maxHeight)
+            let size = ViewSize(stackWidth, stackHeight)
 
             // In this case, flexibility and layout priority don't matter. We set
             // the grouping to the trivial grouping so that commitStackLayout
@@ -519,11 +520,11 @@ public enum LayoutSystem {
             )
             cache = StackLayoutCache(
                 priorityGroups: [group],
-                isHidden: results.map(\.participatesInStackLayouts).map(!),
+                isHidden: [false],
                 totalSpacing: 0,
                 totalReservedSpace: 0,
                 minimumLengths: [Double](repeating: 0, count: children.count),
-                redistributeSpaceOnCommit: false
+                redistributeSpaceOnCommit: proposedSize.width == nil || proposedSize.height == nil
             )
 
             return ViewLayoutResult(
@@ -545,8 +546,7 @@ public enum LayoutSystem {
             of: children,
             proposedSize: proposedSize,
             cache: cache,
-            environment: environment,
-            ignoreHiddenChildrenEntirely: false
+            environment: environment
         )
 
         var size = ViewSize.zero
@@ -570,29 +570,18 @@ public enum LayoutSystem {
         let minimumProposedSize = ProposedViewSize(0, 0)
         let maximumProposedSize = ProposedViewSize(.infinity, .infinity)
 
-        var isHidden = [Bool](repeating: false, count: children.count)
         var priorities = [Double](repeating: 0, count: children.count)
 
-        let flexibilities = children.enumerated().map { i, child in
+        for (i, child) in children.enumerated() {
             let minimumResult = child.computeLayout(
                 proposedSize: minimumProposedSize,
                 environment: environment.with(\.allowLayoutCaching, true)
             )
-            let maximumResult = child.computeLayout(
-                proposedSize: maximumProposedSize,
-                environment: environment.with(\.allowLayoutCaching, true)
-            )
 
-            isHidden[i] = !minimumResult.participatesInStackLayouts
             priorities[i] = minimumResult.preferences.layoutPriority
-
-            let widthFlexibility = maximumResult.size.width - minimumResult.size.width
-            let heightFlexibility = maximumResult.size.height - minimumResult.size.height
-
-            return widthFlexibility + heightFlexibility
         }
 
-        let sortedChildren = zip(children.indices, zip(priorities.map(-), flexibilities))
+        let sortedChildren = zip(children.indices, priorities.map(-))
             .sorted { first, second in
                 // Sort by descending priority and then by ascending flexibility
                 first.1 <= second.1
@@ -632,7 +621,7 @@ public enum LayoutSystem {
 
         return StackLayoutCache(
             priorityGroups: priorityGroups,
-            isHidden: isHidden,
+            isHidden: [false],
             totalSpacing: 0,
             totalReservedSpace: 0,
             minimumLengths: [],
@@ -640,63 +629,48 @@ public enum LayoutSystem {
         )
     }
 
-    /// The main ZStack layout space allocation algorithm. Used during computeLayout.
+    /// The main ZStack layout algorithm. Used during computeZStackLayout
     @MainActor
     static func computeZStackLayouts(
         of children: [LayoutableChild],
         proposedSize: ProposedViewSize,
         cache: StackLayoutCache,
-        environment: EnvironmentValues,
-        ignoreHiddenChildrenEntirely: Bool
+        environment: EnvironmentValues
     ) -> [ViewLayoutResult] {
         var renderedChildren = [ViewLayoutResult](
             repeating: .leafView(size: .zero),
             count: children.count
         )
+        
+        var currentProposedSize = proposedSize
 
         for group in cache.priorityGroups {
-            var childrenRemaining = group.children.count { index in
-                !cache.isHidden[index]
-            }
-
+            var maxSize: ProposedViewSize = .zero
+            
             for index in group.children {
                 let child = children[index]
 
-                // No need to render visible children.
-                if cache.isHidden[index] {
-                    if ignoreHiddenChildrenEntirely {
-                        continue
-                    }
-
-                    // Update child in case it has just changed from visible to hidden,
-                    // and to make sure that the view is still hidden (if it's not then
-                    // it's a bug with either the view or the layout system).
-                    let result = child.computeLayout(
-                        proposedSize: .zero,
-                        environment: environment
-                    )
-                    if result.participatesInStackLayouts {
-                        logger.warning(
-                            "hidden view became visible on second update; layout may break",
-                            metadata: [
-                                "view": "\(child.tag ?? "<unknown type>")"
-                            ]
-                        )
-                    }
-                    renderedChildren[index] = result
-                    renderedChildren[index].participateInStackLayoutsWhenEmpty = false
-                    renderedChildren[index].size = .zero
-                    continue
-                }
-
                 let childResult = child.computeLayout(
-                    proposedSize: proposedSize,
+                    proposedSize: currentProposedSize,
                     environment: environment
                 )
+                
+                if let currentMaxWidth = maxSize.width {
+                    maxSize.width = max(childResult.size.width, currentMaxWidth)
+                } else {
+                    maxSize.width = childResult.size.width
+                }
+                
+                if let currentMaxHeight = maxSize.height {
+                    maxSize.height = max(childResult.size.height, currentMaxHeight)
+                } else {
+                    maxSize.height = childResult.size.height
+                }
 
                 renderedChildren[index] = childResult
-                childrenRemaining -= 1
             }
+            
+            currentProposedSize = maxSize
         }
 
         return renderedChildren
@@ -715,13 +689,17 @@ public enum LayoutSystem {
         let alignment = environment.zStackContentAlignment
         backend.setSize(of: container, to: size.vector)
 
-        guard !cache.redistributeSpaceOnCommit else {
-            fatalError("unreachable")
+        if cache.redistributeSpaceOnCommit {
+            _ = computeZStackLayouts(
+                of: children,
+                proposedSize: ProposedViewSize(size.width, size.height),
+                cache: cache,
+                environment: environment
+            )
         }
-
+        
         let renderedChildren = children.map { $0.commit() }
 
-        var position = Position.zero
         for (index, child) in renderedChildren.enumerated() {
             // Avoid the whole iteration if the child is hidden. If there
             // are weird positioning issues for views that do strange things
@@ -729,79 +707,10 @@ public enum LayoutSystem {
             if !child.participatesInStackLayouts {
                 continue
             }
-
             // Compute alignment
-            switch alignment {
-                case .topLeading:
-                    position.x = 0
-                    position.y = 0
-                case .top:
-                    let outerX = size.width
-                    let innerX = child.size.width
-                    position.x = (outerX - innerX) / 2
-
-                    position.y = 0
-                case .topTrailing:
-                    let outerX = size.width
-                    let innerX = child.size.width
-                    position.x = outerX - innerX
-
-                    position.y = 0
-                case .leading:
-                    position.x = 0
-
-                    let outerY = size.height
-                    let innerY = child.size.height
-                    position.y = (outerY - innerY) / 2
-                case .center:
-                    let outerX = size.width
-                    let innerX = child.size.width
-                    position.x = (outerX - innerX) / 2
-
-                    let outerY = size.height
-                    let innerY = child.size.height
-                    position.y = (outerY - innerY) / 2
-                case .trailing:
-                    let outerX = size.width
-                    let innerX = child.size.width
-                    position.x = outerX - innerX
-
-                    let outerY = size.height
-                    let innerY = child.size.height
-                    position.y = (outerY - innerY) / 2
-                case .bottomLeading:
-                    position.x = 0
-
-                    let outerY = size.height
-                    let innerY = child.size.height
-                    position.y = outerY - innerY
-                case .bottom:
-                    let outerX = size.width
-                    let innerX = child.size.width
-                    position.x = (outerX - innerX) / 2
-
-                    let outerY = size.height
-                    let innerY = child.size.height
-                    position.y = outerY - innerY
-                case .bottomTrailing:
-                    let outerX = size.width
-                    let innerX = child.size.width
-                    position.x = outerX - innerX
-
-                    let outerY = size.height
-                    let innerY = child.size.height
-                    position.y = outerY - innerY
-                default:
-                    let outerX = size.width
-                    let innerX = child.size.width
-                    position.x = (outerX - innerX) / 2
-
-                    let outerY = size.height
-                    let innerY = child.size.height
-                    position.y = (outerY - innerY) / 2
-            }
-
-            backend.setPosition(ofChildAt: index, in: container, to: position.vector)
+            let position = alignment.position(ofChild: child.size.vector, in: size.vector)
+            
+            backend.setPosition(ofChildAt: index, in: container, to: position)
         }
     }
 }

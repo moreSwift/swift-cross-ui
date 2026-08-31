@@ -61,7 +61,8 @@ public struct ZStack<Content: View>: View {
             proposedSize: proposedSize,
             environment: environment
                 .with(\.usesZStackLayout, true)
-                .with(\.zStackContentAlignment, alignment),
+                .with(\.zStackContentAlignment, alignment)
+                .with(\.layoutOrientation, .vertical),
             backend: backend
         )
         (children as? TupleViewChildren)?.stackLayoutCache = cache
@@ -83,7 +84,8 @@ public struct ZStack<Content: View>: View {
             layout: layout,
             environment: environment
                 .with(\.usesZStackLayout, true)
-                .with(\.zStackContentAlignment, alignment),
+                .with(\.zStackContentAlignment, alignment)
+                .with(\.layoutOrientation, .vertical),
             backend: backend
         )
         (children as? TupleViewChildren)?.stackLayoutCache = cache

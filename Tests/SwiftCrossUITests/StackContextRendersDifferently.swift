@@ -7,9 +7,9 @@ import DummyBackend
 struct StackContextRendersDifferently {
     struct TestView: View {
         // The view body contains the same text two times, cause that is a simple
-        // way to check the expected behaviour. The bounds are expected to be 1:1
-        // so for HStack the y position needs to be the same, x for VStack
-        // and both for ZStack.
+        // way to check the expected behaviour.
+        // The children are expected to be identical, so for HStack the y position
+        // needs to be the same, x for VStack and both for ZStack.
         var body: some View {
             Text("Test")
             Text("Test")
@@ -89,16 +89,13 @@ struct StackContextRendersDifferently {
             return
         }
 
-        #expect(container.children.count == 2)
-
-        guard
-            container.children.count == 2,
-            let (_, firstPosition) = container.children.first,
-            let (_, secondPosition) = container.children.last
-        else {
-            Issue.record("Unexpectedly failed to extract child positions.")
+        guard container.children.count == 2 else {
+            Issue.record("Expected there to be two children in the container.")
             return
         }
+        
+        let (_, firstPosition) = container.children[0]
+        let (_, secondPosition) = container.children[1]
 
         #expect(check(firstPosition, secondPosition))
     }
