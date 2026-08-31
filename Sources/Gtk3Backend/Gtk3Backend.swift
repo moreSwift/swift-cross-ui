@@ -51,6 +51,7 @@ public final class Gtk3Backend:
     public let restoresWindowFrames = false
 
     var gtkApp: Application
+    private var selectableListStates: [ObjectIdentifier: SelectableListState] = [:]
 
     /// A window to be returned on the next call to ``Gtk3Backend/createWindow``.
     /// This is necessary because Gtk creates a root window no matter what, and
@@ -755,10 +756,12 @@ public final class Gtk3Backend:
         withRowHeights rowHeights: [Int]
     ) {
         let listView = listView as! ListBox
+        let state = state(for: listView)
         listView.removeAll()
         for item in items {
             listView.add(item)
         }
+        preserveNilSelection(of: listView, state: state)
     }
 
     public func setSelectionHandler(
@@ -766,24 +769,72 @@ public final class Gtk3Backend:
         to action: @escaping (_ selectedIndex: Int) -> Void
     ) {
         let listView = listView as! ListBox
+        let state = state(for: listView)
         listView.rowSelected = { _, selectedRow in
+            guard !state.isProgrammaticSelectionUpdate else {
+                return
+            }
+            guard !state.isClearingNilSelection else {
+                self.preserveNilSelection(of: listView, state: state)
+                return
+            }
             guard let selectedRow else {
                 return
             }
-            action(Int(gtk_list_box_row_get_index(selectedRow)))
+            let selection = Int(gtk_list_box_row_get_index(selectedRow))
+            guard selection != state.selection else {
+                return
+            }
+            state.selection = selection
+            action(selection)
         }
     }
 
     public func setSelectedItem(ofSelectableListView listView: Widget, toItemAt index: Int?) {
         let listView = listView as! ListBox
-        let handler = listView.rowSelected
-        listView.rowSelected = nil
+        let state = state(for: listView)
+        state.selection = index
+        state.isProgrammaticSelectionUpdate = true
+        defer { state.isProgrammaticSelectionUpdate = false }
         if let index {
             listView.selectRow(at: index)
         } else {
-            listView.unselectAll()
+            preserveNilSelection(of: listView, state: state)
         }
-        listView.rowSelected = handler
+    }
+
+    private func preserveNilSelection(of listView: ListBox, state: SelectableListState) {
+        guard state.selection == nil else {
+            state.isClearingNilSelection = false
+            return
+        }
+
+        state.isClearingNilSelection = true
+        state.isProgrammaticSelectionUpdate = true
+        listView.unselectAll()
+        state.isProgrammaticSelectionUpdate = false
+
+        runInMainThread { [listView, state] in
+            guard state.selection == nil else {
+                state.isClearingNilSelection = false
+                return
+            }
+
+            state.isProgrammaticSelectionUpdate = true
+            listView.unselectAll()
+            state.isProgrammaticSelectionUpdate = false
+            state.isClearingNilSelection = false
+        }
+    }
+
+    private func state(for listView: ListBox) -> SelectableListState {
+        let key = ObjectIdentifier(listView)
+        if let state = selectableListStates[key] {
+            return state
+        }
+        let state = SelectableListState()
+        selectableListStates[key] = state
+        return state
     }
 
     public func createTooltipContainer(wrapping child: Widget) -> Widget {
@@ -1760,6 +1811,12 @@ struct Gtk3Error: LocalizedError {
     var errorDescription: String? {
         "gerror: code=\(code), domain=\(domain), message=\(message)"
     }
+}
+
+private final class SelectableListState {
+    var selection: Int? = nil
+    var isProgrammaticSelectionUpdate = false
+    var isClearingNilSelection = false
 }
 
 /// A custom label subclass that supports ellipsizing multi-line text. Regular

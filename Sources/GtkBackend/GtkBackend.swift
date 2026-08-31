@@ -63,6 +63,7 @@ public final class GtkBackend:
     let defaultSheetCornerRadius = 10
 
     var gtkApp: Application
+    private var selectableListStates: [ObjectIdentifier: SelectableListState] = [:]
 
     /// A window to be returned on the next call to ``GtkBackend/createWindow``.
     /// This is necessary because Gtk creates a root window no matter what, and
@@ -698,7 +699,7 @@ public final class GtkBackend:
     }
 
     public func createSelectableListView() -> Widget {
-        let listView = CustomListBox()
+        let listView = ListBox()
         listView.selectionMode = .single
         gtk_widget_add_css_class(listView.widgetPointer, "navigation-sidebar")
         return listView
@@ -708,7 +709,7 @@ public final class GtkBackend:
         _ selectableListView: Widget,
         environment: EnvironmentValues
     ) {
-        let selectableListView = selectableListView as! CustomListBox
+        let selectableListView = selectableListView as! ListBox
         selectableListView.sensitive = environment.isEnabled
     }
 
@@ -733,10 +734,14 @@ public final class GtkBackend:
         //   that modifications made to `items` between `setItems` calls
         //   are either all pops, or all appends (not a mix).
 
-        let listView = listView as! CustomListBox
+        let listView = listView as! ListBox
+        let state = state(for: listView)
 
-        let previousRowCount = listView.cachedRowCount
-        listView.cachedRowCount = items.count
+        let previousRowCount = state.rowCount
+        state.rowCount = items.count
+
+        state.isProgrammaticSelectionUpdate = true
+        defer { state.isProgrammaticSelectionUpdate = false }
 
         if items.count > previousRowCount {
             for item in items[previousRowCount...] {
@@ -747,34 +752,81 @@ public final class GtkBackend:
                 listView.removeRow(at: items.count)
             }
         }
+
+        preserveNilSelection(of: listView, state: state)
     }
 
     public func setSelectionHandler(
         forSelectableListView listView: Widget,
         to action: @escaping (_ selectedIndex: Int) -> Void
     ) {
-        let listView = listView as! CustomListBox
+        let listView = listView as! ListBox
+        let state = state(for: listView)
         listView.rowSelected = { _, selectedRow in
+            guard !state.isProgrammaticSelectionUpdate else {
+                return
+            }
+            guard !state.isClearingNilSelection else {
+                self.preserveNilSelection(of: listView, state: state)
+                return
+            }
             guard let selectedRow else {
                 return
             }
             let selection = Int(gtk_list_box_row_get_index(selectedRow))
-            guard selection != listView.cachedSelection else {
+            guard selection != state.selection else {
                 return
             }
-            listView.cachedSelection = selection
+            state.selection = selection
             action(selection)
         }
     }
 
     public func setSelectedItem(ofSelectableListView listView: Widget, toItemAt index: Int?) {
-        let listView = listView as! CustomListBox
-        listView.cachedSelection = index
+        let listView = listView as! ListBox
+        let state = state(for: listView)
+        state.selection = index
+        state.isProgrammaticSelectionUpdate = true
+        defer { state.isProgrammaticSelectionUpdate = false }
         if let index {
             listView.selectRow(at: index)
         } else {
-            listView.unselectAll()
+            preserveNilSelection(of: listView, state: state)
         }
+    }
+
+    private func preserveNilSelection(of listView: ListBox, state: SelectableListState) {
+        guard state.selection == nil else {
+            state.isClearingNilSelection = false
+            return
+        }
+
+        state.isClearingNilSelection = true
+        state.isProgrammaticSelectionUpdate = true
+        listView.unselectAll()
+        state.isProgrammaticSelectionUpdate = false
+
+        runInMainThread { [listView, state] in
+            guard state.selection == nil else {
+                state.isClearingNilSelection = false
+                return
+            }
+
+            state.isProgrammaticSelectionUpdate = true
+            listView.unselectAll()
+            state.isProgrammaticSelectionUpdate = false
+            state.isClearingNilSelection = false
+        }
+    }
+
+    private func state(for listView: ListBox) -> SelectableListState {
+        let key = ObjectIdentifier(listView)
+        if let state = selectableListStates[key] {
+            return state
+        }
+        let state = SelectableListState()
+        selectableListStates[key] = state
+        return state
     }
 
     public func createTooltipContainer(wrapping child: Widget) -> Widget {
@@ -2023,9 +2075,11 @@ extension UnsafeMutablePointer {
     }
 }
 
-class CustomListBox: ListBox {
-    var cachedSelection: Int? = nil
-    var cachedRowCount = 0
+private final class SelectableListState {
+    var selection: Int? = nil
+    var rowCount = 0
+    var isProgrammaticSelectionUpdate = false
+    var isClearingNilSelection = false
 }
 
 /// A custom label subclass that supports ellipsizing multi-line text. Regular
