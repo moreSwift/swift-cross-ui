@@ -12,10 +12,9 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
+      - name: Set up Homebrew
+        run: echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
       - name: Install SwiftFormat
-        run: |
-        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-        brew install swiftformat
+        run: brew install swiftformat
       - name: Check formatting
         run: LINT=1 ./Scripts/format.sh
