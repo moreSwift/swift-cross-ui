@@ -117,7 +117,8 @@ jobs:
         swift build --target AdvancedCustomizationExample && \
         swift build --target MusicPlayerExample && \
         swift build --target FontsExample && \
-        swift build --target TapGesturesExample
+        swift build --target TapGesturesExample && \
+        swift build --target ObservableExample
 
   apitool:
     runs-on: macos-15
@@ -250,6 +251,7 @@ jobs:
         ../swift-bundler bundle TapGesturesExample --platform Android
         ../swift-bundler bundle WebViewExample --platform Android
         ../swift-bundler bundle WindowingExample --platform Android
+        ../swift-bundler bundle ObservableExample --platform Android
 
     - name: Build AndroidBackend and extract symbol graphs
       uses: ./.github/actions/extract-symbol-graphs
@@ -318,6 +320,7 @@ jobs:
             buildtarget ControlsExample
             buildtarget FontsExample
             buildtarget TapGesturesExample
+            buildtarget ObservableExample
 
             if [ $device_type != TV ]; then
               # Slider is not implemented for tvOS
@@ -392,6 +395,7 @@ jobs:
         buildtarget MusicPlayerExample
         buildtarget FontsExample
         buildtarget TapGesturesExample
+        buildtarget ObservableExample
         # TODO test whether this works on Catalyst
         # buildtarget SplitExample
 
@@ -560,7 +564,8 @@ jobs:
         swift build --target AdvancedCustomizationExample && \
         swift build --target MusicPlayerExample && \
         swift build --target FontsExample && \
-        swift build --target TapGesturesExample
+        swift build --target TapGesturesExample && \
+        swift build --target ObservableExample
 
   assemble-docs:
     runs-on: macos-15

@@ -121,5 +121,9 @@ let package = Package(
             name: "TapGesturesExample",
             dependencies: exampleDependencies
         ),
+        .executableTarget(
+            name: "ObservableExample",
+            dependencies: exampleDependencies
+        ),
     ]
 )

@@ -69,13 +69,3 @@ public struct ObservableObjectMacro: MemberAttributeMacro, ExtensionMacro {
         return [extensionDecl]
     }
 }
-
-struct ObservationIgnoredMacro: AccessorMacro {
-    static func expansion(
-        of node: SwiftSyntax.AttributeSyntax,
-        providingAccessorsOf declaration: some SwiftSyntax.DeclSyntaxProtocol,
-        in context: some SwiftSyntaxMacros.MacroExpansionContext
-    ) throws -> [SwiftSyntax.AccessorDeclSyntax] {
-        []
-    }
-}
