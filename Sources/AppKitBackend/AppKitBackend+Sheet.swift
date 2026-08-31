@@ -1,7 +1,7 @@
 import AppKit
 @_spi(Backends) import SwiftCrossUI
 
-extension AppKitBackend {
+extension AppKitBackend: BackendFeatures.Sheets {
     public typealias Sheet = NSCustomSheet
 
     public func createSheet(content: NSView) -> NSCustomSheet {

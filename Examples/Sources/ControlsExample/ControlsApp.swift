@@ -87,7 +87,6 @@ struct ControlsApp: App {
                                 Button("Button item") {
                                     print("Button item clicked")
                                 }
-                                Divider()
                                 Toggle("Toggle item", isOn: $menuToggleState)
                                 Menu("Submenu") {
                                     Text("Text item 1")

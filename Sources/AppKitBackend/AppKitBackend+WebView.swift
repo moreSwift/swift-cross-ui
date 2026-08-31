@@ -2,7 +2,7 @@ import AppKit
 @_spi(Backends) import SwiftCrossUI
 import WebKit
 
-extension AppKitBackend {
+extension AppKitBackend: BackendFeatures.WebViews {
     public func createWebView() -> Widget {
         let webView = CustomWKWebView()
         webView.navigationDelegate = webView.strongNavigationDelegate
