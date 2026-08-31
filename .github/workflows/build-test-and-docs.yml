@@ -40,7 +40,7 @@ jobs:
             echo '${{ matrix.platform }}=true' >>"$GITHUB_OUTPUT"
           elif
             git diff --exit-code --name-only HEAD "origin/$GITHUB_BASE_REF" -- \
-              Examples/ .github/actions/ .github/workflows/build-test-and-docs.yml Package.swift \
+              Examples/ .github/actions/ .github/workflows/build-test-and-docs.yml .vdc.json Package.swift \
               Package.resolved Sources/SwiftCrossUI*/ Sources/DefaultBackend/ Bundler.toml \
               ${{ matrix.paths }}
           then
@@ -88,6 +88,7 @@ jobs:
         target: AppKitBackend
         upload: true
         working-directory: ./Examples
+        artifact-name: main--AppKitBackend-symbol-graphs.tar.gz
 
     - name: Test
       run: SCUI_TEST_GTK3BACKEND=1 ./Scripts/test.sh
@@ -142,8 +143,12 @@ jobs:
 
   android:
     runs-on: macos-15
-    needs: check_file_changes
+    needs: [resolve-doc-versions, check_file_changes]
     if: ${{ needs.check_file_changes.outputs.android == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.resolve-doc-versions.outputs.version_matrix) }}
     env:
       # Release and checksum retrieved from https://www.swift.org/api/v1/install/dev/6.3/android-sdk.json
       SWIFT_RELEASE: swift-6.3-DEVELOPMENT-SNAPSHOT-2026-05-01-a
@@ -160,7 +165,15 @@ jobs:
 
     - uses: actions/checkout@v3
 
+    - name: Checkout documentation source
+      if: ${{ matrix.ref != 'HEAD' }}
+      uses: actions/checkout@v6
+      with:
+        ref: ${{ matrix.commit }}
+        path: .docs/source
+
     - name: Restore Swift Bundler
+      if: ${{ matrix.ref == 'HEAD' }}
       id: restore-swift-bundler
       uses: actions/cache/restore@v5
       with:
@@ -168,7 +181,7 @@ jobs:
         key: swift-bundler-${{ env.SWIFT_BUNDLER_REVISION }}
 
     - name: Build Swift Bundler
-      if: steps.restore-swift-bundler.outputs.cache-hit != 'true'
+      if: ${{ matrix.ref == 'HEAD' && steps.restore-swift-bundler.outputs.cache-hit != 'true' }}
       shell: bash
       run: |
         set -eux
@@ -182,7 +195,7 @@ jobs:
 
     - name: Cache Swift Bundler
       id: cache-swift-bundler
-      if: steps.restore-swift-bundler.outputs.cache-hit != 'true'
+      if: ${{ matrix.ref == 'HEAD' && steps.restore-swift-bundler.outputs.cache-hit != 'true' }}
       uses: actions/cache/save@v5
       with:
         path: ./swift-bundler
@@ -236,6 +249,7 @@ jobs:
           --swift-sdk aarch64-unknown-linux-android28
 
     - name: Build examples
+      if: ${{ matrix.ref == 'HEAD' }}
       shell: bash
       run: |
         cd Examples
@@ -258,7 +272,8 @@ jobs:
         upload: true
         swiftpm-exe: /Users/runner/.swiftly/bin/swift
         swiftpm-args: --swift-sdk aarch64-unknown-linux-android28
-        working-directory: Examples
+        working-directory: ${{ matrix.ref == 'HEAD' && 'Examples' || '.docs/source/Examples' }}
+        artifact-name: ${{ matrix.name }}--AndroidBackend-symbol-graphs.tar.gz
 
   uikit:
     runs-on: macos-15
@@ -344,6 +359,7 @@ jobs:
         upload: true
         xcodebuild: true
         xcodebuild-device-type: ${{ matrix.device-type }}
+        artifact-name: main--UIKitBackend-symbol-graphs.tar.gz
 
   uikit-catalyst:
     runs-on: macos-15
@@ -469,6 +485,7 @@ jobs:
       with:
         target: WinUIBackend
         upload: true
+        artifact-name: main--WinUIBackend-symbol-graphs.tar.gz
 
   linux:
     strategy:
@@ -518,6 +535,7 @@ jobs:
         target: GtkBackend
         upload: true
         working-directory: ./Examples
+        artifact-name: main--GtkBackend-symbol-graphs.tar.gz
     - name: Build GtkBackend
       if: ${{ matrix.os != 'ubuntu-24.04' }}
       run: swift build --target GtkBackend
@@ -530,6 +548,7 @@ jobs:
         target: Gtk3Backend
         upload: true
         working-directory: ./Examples
+        artifact-name: main--Gtk3Backend-symbol-graphs.tar.gz
     - name: Build Gtk3Backend
       if: ${{ matrix.os != 'ubuntu-24.04' }}
       run: swift build --target Gtk3Backend
@@ -562,9 +581,218 @@ jobs:
         swift build --target FontsExample && \
         swift build --target TapGesturesExample
 
+  resolve-doc-versions:
+    runs-on: ubuntu-24.04
+    outputs:
+      version_matrix: ${{ steps.resolve.outputs.version_matrix }}
+      release_matrix: ${{ steps.resolve.outputs.release_matrix }}
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+
+    - name: Checkout VersionedDocC
+      uses: actions/checkout@v6
+      with:
+        repository: DocCLab/VersionedDocC
+        ref: 0.1.2
+        path: .docs/versioned-docc
+
+    - name: Resolve documentation versions
+      id: resolve
+      shell: bash
+      run: |
+        set -euo pipefail
+        swift run --package-path .docs/versioned-docc VersionedDocC \
+          resolve-versions \
+          --package-path . \
+          --config .vdc.json \
+          --output .docs/resolved-versions.json
+        version_matrix="$(jq -c \
+          '[.[] | {name, ref, commit}]' \
+          .docs/resolved-versions.json)"
+        release_matrix="$(jq -c \
+          '[.[] | select(.ref != "HEAD") | {name, ref, commit}]' \
+          .docs/resolved-versions.json)"
+        echo "version_matrix=$version_matrix" >> "$GITHUB_OUTPUT"
+        echo "release_matrix=$release_matrix" >> "$GITHUB_OUTPUT"
+
+  release-macos-doc-symbol-graphs:
+    runs-on: macos-15
+    needs: [resolve-doc-versions, check_file_changes]
+    if: ${{ needs.check_file_changes.outputs.macos == 'true' && needs.check_file_changes.outputs.uikit == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.resolve-doc-versions.outputs.release_matrix) }}
+    steps:
+    - name: Setup Xcode 16.4 (Swift 6.1.2)
+      uses: maxim-lobanov/setup-xcode@v1.6.0
+      with:
+        xcode-version: '16.4'
+
+    - name: Install xcbeautify
+      run: brew install xcbeautify
+
+    - uses: actions/checkout@v6
+
+    - name: Checkout documentation source
+      uses: actions/checkout@v6
+      with:
+        ref: ${{ matrix.commit }}
+        path: .docs/source
+
+    - name: Extract AppKitBackend symbol graphs
+      uses: ./.github/actions/extract-symbol-graphs
+      with:
+        target: AppKitBackend
+        upload: true
+        working-directory: .docs/source/Examples
+        artifact-name: ${{ matrix.name }}--AppKitBackend-symbol-graphs.tar.gz
+
+    - name: Extract UIKitBackend symbol graphs
+      uses: ./.github/actions/extract-symbol-graphs
+      with:
+        target: UIKitBackend
+        upload: true
+        xcodebuild: true
+        xcodebuild-device-type: iPhone
+        working-directory: .docs/source
+        artifact-name: ${{ matrix.name }}--UIKitBackend-symbol-graphs.tar.gz
+
+  release-linux-doc-symbol-graphs:
+    runs-on: ubuntu-24.04
+    needs: [resolve-doc-versions, check_file_changes]
+    if: ${{ needs.check_file_changes.outputs.linux == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.resolve-doc-versions.outputs.release_matrix) }}
+    steps:
+    - name: Install Swift
+      uses: SwiftyLab/setup-swift@latest
+      with:
+        swift-version: "6.1.0"
+
+    - uses: actions/checkout@v6
+
+    - name: Checkout documentation source
+      uses: actions/checkout@v6
+      with:
+        ref: ${{ matrix.commit }}
+        path: .docs/source
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y libgtk-4-dev libgtk-3-dev clang
+
+    - name: Build GtkCodeGen
+      run: swift build --target GtkCodeGen
+      working-directory: .docs/source
+
+    - name: Extract GtkBackend symbol graphs
+      uses: ./.github/actions/extract-symbol-graphs
+      with:
+        target: GtkBackend
+        upload: true
+        working-directory: .docs/source/Examples
+        artifact-name: ${{ matrix.name }}--GtkBackend-symbol-graphs.tar.gz
+
+    - name: Extract Gtk3Backend symbol graphs
+      uses: ./.github/actions/extract-symbol-graphs
+      with:
+        target: Gtk3Backend
+        upload: true
+        working-directory: .docs/source/Examples
+        artifact-name: ${{ matrix.name }}--Gtk3Backend-symbol-graphs.tar.gz
+
+  release-windows-doc-symbol-graphs:
+    runs-on: windows-latest
+    needs: [resolve-doc-versions, check_file_changes]
+    if: ${{ needs.check_file_changes.outputs.windows == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.resolve-doc-versions.outputs.release_matrix) }}
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+    - name: Setup VS Dev Environment
+      uses: seanmiddleditch/gha-setup-vsdevenv@v5
+
+    - name: Setup Swift
+      uses: compnerd/gha-setup-swift@v0.3.0
+      with:
+        branch: swift-6.1-release
+        tag: 6.1-RELEASE
+
+    - name: Compute vcpkg Triplet
+      id: triplet
+      uses: ASzc/change-string-case-action@v5
+      with:
+        string: ${{ runner.arch }}-${{ runner.os }}
+
+    - uses: actions/checkout@v6
+
+    - name: Checkout documentation source
+      uses: actions/checkout@v6
+      with:
+        ref: ${{ matrix.commit }}
+        path: .docs/source
+
+    - name: Restore Dependency Cache
+      id: cache
+      uses: actions/cache/restore@v3
+      with:
+        path: .docs/source/vcpkg_installed
+        key: vcpkg-docs-${{ matrix.name }}-${{ steps.triplet.outputs.lowercase }}-${{ hashFiles('.docs/source/vcpkg.json') }}
+
+    - name: Apply GNOME-pango checksum fix
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        mkdir C:\vcpkg\downloads
+        curl -o C:\vcpkg\downloads\GNOME-pango-1.56.1.tar.gz "https://gitlab.gnome.org//GNOME/pango/-/archive/1.56.1/pango-1.56.1.tar.gz"
+        curl -o C:\vcpkg\downloads\GNOME-gdk-pixbuf-2.42.12.tar.gz "https://gitlab.gnome.org//GNOME/gdk-pixbuf/-/archive/2.42.12/gdk-pixbuf-2.42.12.tar.gz"
+        curl -o C:\vcpkg\downloads\GNOME-atk-2.38.0.tar.gz "https://gitlab.gnome.org/Archive/atk/-/archive/2.38.0/atk-2.38.0.tar.gz"
+        curl -o C:\vcpkg\downloads\GNOME-gtk-4.16.3.tar.gz "https://gitlab.gnome.org//GNOME/gtk/-/archive/4.16.3/gtk-4.16.3.tar.gz"
+
+    - name: Build and Install Dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
+      env:
+        VCPKG_DEFAULT_TRIPLET: ${{ steps.triplet.outputs.lowercase }}
+      run: vcpkg install
+      working-directory: .docs/source
+
+    - name: Save Dependency Cache
+      if: steps.cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v3
+      with:
+        path: .docs/source/vcpkg_installed
+        key: ${{ steps.cache.outputs.cache-primary-key }}
+
+    - name: Extract WinUIBackend symbol graphs
+      uses: ./.github/actions/extract-symbol-graphs
+      env:
+        PKG_CONFIG_PATH: ${{ github.workspace }}/.docs/source/vcpkg_installed/${{ steps.triplet.outputs.lowercase }}/lib/pkgconfig
+      with:
+        target: WinUIBackend
+        upload: true
+        working-directory: .docs/source
+        artifact-name: ${{ matrix.name }}--WinUIBackend-symbol-graphs.tar.gz
+
   assemble-docs:
     runs-on: macos-15
-    needs: [macos, uikit, windows, linux, android]
+    needs:
+      - macos
+      - uikit
+      - windows
+      - linux
+      - android
+      - release-macos-doc-symbol-graphs
+      - release-linux-doc-symbol-graphs
+      - release-windows-doc-symbol-graphs
 
     steps:
     - name: Setup Xcode version
@@ -574,79 +802,77 @@ jobs:
         # in the 'docc merge' command
         xcode-version: '16.3'
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
 
     - name: Swift Version
       run: swift --version
 
-    - name: Compile SwiftCrossUI docs
-      uses: ./.github/actions/compile-docs
+    - name: Download backend symbol graphs
+      uses: actions/download-artifact@v4
       with:
-        target: SwiftCrossUI
-        use-swiftpm: true
+        pattern: '*--*Backend-symbol-graphs.tar.gz'
+        path: .docs/downloaded-symbol-graphs
+        merge-multiple: true
 
-    - name: Compile AppKitBackend docs
-      uses: ./.github/actions/compile-docs
-      with:
-        target: AppKitBackend
-        use-symbol-graph-artifact: true
-
-    - name: Compile UIKitBackend docs
-      uses: ./.github/actions/compile-docs
-      with:
-        target: UIKitBackend
-        use-symbol-graph-artifact: true
-
-    - name: Compile GtkBackend docs
-      uses: ./.github/actions/compile-docs
-      with:
-        target: GtkBackend
-        use-symbol-graph-artifact: true
-
-    - name: Compile Gtk3Backend docs
-      uses: ./.github/actions/compile-docs
-      with:
-        target: Gtk3Backend
-        use-symbol-graph-artifact: true
-
-    - name: Compile WinUIBackend docs
-      uses: ./.github/actions/compile-docs
-      with:
-        target: WinUIBackend
-        use-symbol-graph-artifact: true
-
-    - name: Compile AndroidBackend docs
-      uses: ./.github/actions/compile-docs
-      with:
-        target: AndroidBackend
-        use-symbol-graph-artifact: true
-
-    - name: Merge DocC archives
+    - name: Extract backend symbol graphs
       run: |
-        mkdir DocsBuild
-        xcrun docc merge \
-          SwiftCrossUI.doccarchive \
-          AppKitBackend.doccarchive \
-          UIKitBackend.doccarchive \
-          GtkBackend.doccarchive \
-          Gtk3Backend.doccarchive \
-          WinUIBackend.doccarchive \
-          AndroidBackend.doccarchive \
-          --output-path DocsBuild
+        set -euo pipefail
+        jq -r \
+          '. as $config
+          | $config.versions[].name as $version
+          | $config.additionalModules[].moduleName as $module
+          | [$version, $module]
+          | @tsv' \
+          .vdc.json |
+        while IFS=$'\t' read -r version module; do
+          archive=".docs/downloaded-symbol-graphs/${version}--${module}-symbol-graphs.tar.gz"
+          test -f "$archive"
+          mkdir -p ".docs/external-symbol-graphs/$version"
+          tar -xzf "$archive" -C ".docs/external-symbol-graphs/$version"
+        done
 
-    - name: Assemble GitHub Pages artifact
+    - name: Configure documentation hosting
+      shell: bash
       run: |
-        set -eux
+        set -euo pipefail
+        hosting_base_path="/"
+        if [[ "$GITHUB_REPOSITORY" != "moreSwift/swift-cross-ui" ]]; then
+          hosting_base_path="/${GITHUB_REPOSITORY#*/}"
+        fi
+        vdc_config="$(jq --arg hostingBasePath "$hosting_base_path" \
+          '.hostingBasePath = $hostingBasePath' .vdc.json)"
+        printf '%s\n' "$vdc_config" > .vdc.json
 
-        cp Pages/google5d79e0866e2627dd.html DocsBuild/google5d79e0866e2627dd.html
-        cp Pages/CNAME DocsBuild/CNAME
-        cp Pages/index.html DocsBuild/index.html
+    - name: Restore VersionedDocC cache
+      uses: actions/cache@v5
+      with:
+        path: .docs/cache/versioned-docc
+        key: versioned-docc-multi-module-${{ runner.os }}-${{ hashFiles('.vdc.json', 'Package.resolved') }}-${{ github.sha }}
+        restore-keys: |
+          versioned-docc-multi-module-${{ runner.os }}-${{ hashFiles('.vdc.json', 'Package.resolved') }}-
+
+    - name: Build versioned multi-module documentation
+      uses: DocCLab/VersionedDocC@0.1.2
+      with:
+        config: .vdc.json
+        output: .docs/build/pages
+
+    - name: Copy static Pages files
+      run: |
+        set -euo pipefail
+        # Keep VDC's version-aware index.html instead of the legacy /documentation redirect.
+        cp \
+          Pages/CNAME \
+          Pages/google5d79e0866e2627dd.html \
+          .docs/build/pages/
 
     - name: Upload GitHub Pages artifact
       id: deployment
       uses: actions/upload-pages-artifact@v3
       with:
-        path: DocsBuild/
+        path: .docs/build/pages
 
   deploy-docs:
     environment:
