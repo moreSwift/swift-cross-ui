@@ -46,21 +46,30 @@ if ! version_ge "$installed_version" "$MIN_SWIFTFORMAT_VERSION"; then
   exit 1
 fi
 
+SWIFTFORMAT_LINT_FLAGS=""
+KTFMT_LINT_FLAGS=""
+
+if [ -n "$LINT" ]; then
+    SWIFTFORMAT_LINT_FLAGS="--lint"
+    KTFMT_LINT_FLAGS="--quiet --dry-run --set-exit-if-changed"
+    set -eo pipefail
+fi
+
 if [ -z "$1" ]; then
-  swiftformat .
+  swiftformat . $SWIFTFORMAT_LINT_FLAGS
 elif find "$dir/$1" -name "*.swift" | grep '^' &>/dev/null; then
-  swiftformat "$dir/$1"
+  swiftformat "$dir/$1" $SWIFTFORMAT_LINT_FLAGS
 fi
 
 if which java &>/dev/null; then
   if [ -z "$1" ]; then
     ./Scripts/ensure_ktfmt.sh
     echo "Running ktfmt..."
-    java -jar Tools/ktfmt.jar --kotlinlang-style --quiet Sources/AndroidBackend/Kotlin/
+    java -jar Tools/ktfmt.jar --kotlinlang-style --quiet $KTFMT_LINT_FLAGS Sources/AndroidBackend/Kotlin/
   elif find "$dir/$1" -name "*.kt" | grep '^' &>/dev/null; then
     ./Scripts/ensure_ktfmt.sh
     echo "Running ktfmt..."
-    java -jar Tools/ktfmt.jar --kotlinlang-style --quiet "$dir/$1"
+    java -jar Tools/ktfmt.jar --kotlinlang-style --quiet $KTFMT_LINT_FLAGS "$dir/$1"
   fi
 else
   echo 'Skipping ktfmt, as Java was not found. To format Kotlin files, install Java 17.' >&2
