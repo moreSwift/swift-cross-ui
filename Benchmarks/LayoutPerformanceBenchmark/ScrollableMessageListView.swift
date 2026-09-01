@@ -64,10 +64,11 @@ struct ScrollableMessageListView: TestCaseView {
         )
     }
 
-    struct Message {
+    struct Message: Identifiable {
         var author: Author
         var content: String
         var time: String
+        var id: Int
     }
 
     static func generateMessages(_ count: Int) -> [Message] {
@@ -78,7 +79,8 @@ struct ScrollableMessageListView: TestCaseView {
             let message = Message(
                 author: authors[i % authors.count],
                 content: sentences[i % sentences.count],
-                time: times[i % times.count]
+                time: times[i % times.count],
+                id: i
             )
             messages.append(message)
         }

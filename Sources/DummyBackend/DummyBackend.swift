@@ -7,8 +7,10 @@ public final class DummyBackend:
     BackendFeatures.CornerRadius,
     BackendFeatures.Tables,
     BackendFeatures.Colors,
-    BackendFeatures.Windowing
+    BackendFeatures.Windowing,
+    BackendFeatures.DatePickers
 {
+
     public class Window {
         static let defaultSize = SIMD2<Int>(400, 200)
 
@@ -257,6 +259,28 @@ public final class DummyBackend:
         }
     }
 
+    public class DatePicker: Widget {
+        var style: DatePickerStyle = .automatic
+        var value = Date()
+        var range = Date.distantPast ... Date.distantFuture
+        var components: DatePickerComponents = .init(rawValue: 0)
+        var onChange: ((Date) -> Void)?
+        var enabled = true
+    }
+
+    public class Picker: Widget {
+        let style: BackendPickerStyle
+        var selectedIndex: Int?
+        var options: [String] = []
+        var onChange: ((Int?) -> Void)?
+        var enabled = true
+
+        init(style: BackendPickerStyle) {
+            self.style = style
+            super.init()
+        }
+    }
+
     public var defaultTableRowContentHeight = 10
     public var defaultTableCellVerticalPadding = 10
     public var defaultPaddingAmount = 10
@@ -265,9 +289,15 @@ public final class DummyBackend:
     public var requiresImageUpdateOnScaleFactorChange = false
     public var deviceClass = DeviceClass.desktop
     public var supportsMultipleWindows = true
-    public var supportedPickerStyles: [BackendPickerStyle] = []
+    public var supportedPickerStyles: [BackendPickerStyle] = [
+        .menu,
+        .radioGroup,
+        .segmented,
+        .wheel
+    ]
     public let canOverrideWindowColorScheme = true
     public let restoresWindowFrames = false
+    public let supportedDatePickerStyles: [DatePickerStyle] = [.automatic, .compact, .graphical]
 
     public var incomingURLHandler: ((URL) -> Void)?
     public var appPhase = AppPhase.active
@@ -776,29 +806,52 @@ public final class DummyBackend:
         getContent(ofTextField: secureField)
     }
 
-    // MARK: - Unimplemented Features
-    // FIXME: Implement them so we can test them
+    public func createDatePicker() -> Widget {
+        DatePicker()
+    }
 
-    public func createPicker(style: SwiftCrossUI.BackendPickerStyle) -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
+    public func updateDatePicker(
+        _ datePicker: Widget,
+        environment: EnvironmentValues,
+        date: Date,
+        range: ClosedRange<Date>,
+        components: DatePickerComponents,
+        onChange: @escaping (Date) -> Void
+    ) {
+        let datePicker = datePicker as! DatePicker
+        datePicker.style = environment.datePickerStyle
+        datePicker.value = date
+        datePicker.range = range
+        datePicker.components = components
+        datePicker.onChange = onChange
+        datePicker.enabled = environment.isEnabled
+    }
+
+    public func createPicker(style: BackendPickerStyle) -> Widget {
+        Picker(style: style)
     }
 
     public func updatePicker(
         _ picker: Widget,
         options: [String],
-        environment: SwiftCrossUI.EnvironmentValues,
+        environment: EnvironmentValues,
         onChange: @escaping (Int?) -> Void
     ) {
-        fatalError("\(Self.self): \(#function) not implemented")
+        let picker = picker as! Picker
+        picker.options = options
+        picker.onChange = onChange
+        picker.enabled = environment.isEnabled
     }
 
     public func setSelectedOption(
         ofPicker picker: Widget,
         to selectedOption: Int?
     ) {
-        fatalError("\(Self.self): \(#function) not implemented")
+        (picker as! Picker).selectedIndex = selectedOption
     }
 
+    // MARK: - Unimplemented Features
+    // FIXME: Implement them so we can test them
     public func createProgressBar() -> Widget {
         fatalError("\(Self.self): \(#function) not implemented")
     }
