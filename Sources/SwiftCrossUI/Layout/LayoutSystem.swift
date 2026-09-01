@@ -495,7 +495,12 @@ public enum LayoutSystem {
         inheritStackLayoutParticipation: Bool = false
     ) -> ViewLayoutResult {
         let specialSizes: [Double?] = [nil, .infinity]
-        if children.count <= 1 || (specialSizes.contains(proposedSize.width) && specialSizes.contains(proposedSize.height)) {
+        if children.count <= 1
+            || (
+                specialSizes.contains(proposedSize.width)
+                    && specialSizes.contains(proposedSize.height)
+            )
+        {
             var stackWidth: Double = 0
             var stackHeight: Double = 0
             var results: [ViewLayoutResult] = []
@@ -568,22 +573,19 @@ public enum LayoutSystem {
         environment: EnvironmentValues
     ) -> StackLayoutCache {
         let minimumProposedSize = ProposedViewSize(0, 0)
-        let maximumProposedSize = ProposedViewSize(.infinity, .infinity)
 
-        var priorities = [Double](repeating: 0, count: children.count)
-
-        for (i, child) in children.enumerated() {
+        let priorities = children.map { child in
             let minimumResult = child.computeLayout(
                 proposedSize: minimumProposedSize,
                 environment: environment.with(\.allowLayoutCaching, true)
             )
 
-            priorities[i] = minimumResult.preferences.layoutPriority
+            return minimumResult.preferences.layoutPriority
         }
 
         let sortedChildren = zip(children.indices, priorities.map(-))
             .sorted { first, second in
-                // Sort by descending priority and then by ascending flexibility
+                // Sort by descending priority
                 first.1 <= second.1
             }
             .map { index, _ in
@@ -641,12 +643,12 @@ public enum LayoutSystem {
             repeating: .leafView(size: .zero),
             count: children.count
         )
-        
+
         var currentProposedSize = proposedSize
 
         for group in cache.priorityGroups {
             var maxSize: ProposedViewSize = .zero
-            
+
             for index in group.children {
                 let child = children[index]
 
@@ -654,13 +656,13 @@ public enum LayoutSystem {
                     proposedSize: currentProposedSize,
                     environment: environment
                 )
-                
+
                 if let currentMaxWidth = maxSize.width {
                     maxSize.width = max(childResult.size.width, currentMaxWidth)
                 } else {
                     maxSize.width = childResult.size.width
                 }
-                
+
                 if let currentMaxHeight = maxSize.height {
                     maxSize.height = max(childResult.size.height, currentMaxHeight)
                 } else {
@@ -669,7 +671,7 @@ public enum LayoutSystem {
 
                 renderedChildren[index] = childResult
             }
-            
+
             currentProposedSize = maxSize
         }
 
@@ -697,7 +699,7 @@ public enum LayoutSystem {
                 environment: environment
             )
         }
-        
+
         let renderedChildren = children.map { $0.commit() }
 
         for (index, child) in renderedChildren.enumerated() {
@@ -709,7 +711,7 @@ public enum LayoutSystem {
             }
             // Compute alignment
             let position = alignment.position(ofChild: child.size.vector, in: size.vector)
-            
+
             backend.setPosition(ofChildAt: index, in: container, to: position)
         }
     }

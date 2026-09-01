@@ -27,11 +27,18 @@ public struct Spacer: ElementaryView, View {
         backend: Backend
     ) -> ViewLayoutResult {
         var size = ViewSize.zero
-        let proposedLength = proposedSize[component: environment.layoutOrientation]
-        size[component: environment.layoutOrientation] = max(
-            Double(minLength ?? 0),
-            proposedLength ?? Self.idealLength
-        )
+
+        if environment.usesZStackLayout {
+            size = proposedSize.replacingUnspecifiedDimensions(
+                by: ViewSize(Self.idealLength, Self.idealLength)
+            )
+        } else {
+            let proposedLength = proposedSize[component: environment.layoutOrientation]
+            size[component: environment.layoutOrientation] = max(
+                Double(minLength ?? 0),
+                proposedLength ?? Self.idealLength
+            )
+        }
 
         return ViewLayoutResult(
             size: size,

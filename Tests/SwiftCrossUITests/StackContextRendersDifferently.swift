@@ -93,7 +93,7 @@ struct StackContextRendersDifferently {
             Issue.record("Expected there to be two children in the container.")
             return
         }
-        
+
         let (_, firstPosition) = container.children[0]
         let (_, secondPosition) = container.children[1]
 
