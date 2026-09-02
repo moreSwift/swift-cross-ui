@@ -51,7 +51,6 @@ public final class GtkBackend:
     public let defaultTableCellVerticalPadding = 4
     public let defaultPaddingAmount = 10
     public let scrollBarWidth = 0
-    public let requiresToggleSwitchSpacer = false
     public let requiresImageUpdateOnScaleFactorChange = false
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop

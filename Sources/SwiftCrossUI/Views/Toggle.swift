@@ -3,7 +3,6 @@
 /// Depending on the value of ``EnvironmentValues/toggleStyle``, this control
 /// can appear as a switch, a button, or a checkbox.
 public struct Toggle: View {
-    @Environment(\.backend) var backend
     @Environment(\.toggleStyle) var toggleStyle
 
     /// The label to be shown on or beside the toggle.
@@ -32,9 +31,7 @@ public struct Toggle: View {
                 HStack {
                     Text(label)
 
-                    if backend.requiresToggleSwitchSpacer {
-                        Spacer()
-                    }
+                    HorizontalControlSpacer()
 
                     ToggleSwitch(isOn: active)
                 }
@@ -43,6 +40,8 @@ public struct Toggle: View {
             case .checkbox:
                 HStack {
                     Text(label)
+
+                    HorizontalControlSpacer()
 
                     Checkbox(isOn: active)
                 }

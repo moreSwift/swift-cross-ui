@@ -303,7 +303,6 @@ public final class DummyBackend:
     public var defaultTableCellVerticalPadding = 10
     public var defaultPaddingAmount = 10
     public var scrollBarWidth = 8
-    public var requiresToggleSwitchSpacer = false
     public var requiresImageUpdateOnScaleFactorChange = false
     public var deviceClass = DeviceClass.desktop
     public var supportsMultipleWindows = true

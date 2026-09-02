@@ -41,7 +41,6 @@ public final class Gtk3Backend:
     public let defaultTableRowContentHeight = 20
     public let defaultTableCellVerticalPadding = 4
     public let defaultPaddingAmount = 10
-    public let requiresToggleSwitchSpacer = false
     public let scrollBarWidth = 0
     public let requiresImageUpdateOnScaleFactorChange = true
     public let supportsMultipleWindows = true

@@ -438,4 +438,8 @@ public struct ViewBuilder {
     public static func buildIf<V: View>(_ content: V?) -> OptionalView<V> {
         return OptionalView(content)
     }
+
+    public static func buildLimitedAvailability(_ component: some View) -> AnyView {
+        AnyView(component)
+    }
 }

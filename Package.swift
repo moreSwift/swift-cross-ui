@@ -171,7 +171,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/moreSwift/swift-winui",
-            .upToNextMinor(from: "0.2.1")
+            .upToNextMinor(from: "0.2.2")
         ),
         .package(
             url: "https://github.com/stackotter/swift-benchmark",

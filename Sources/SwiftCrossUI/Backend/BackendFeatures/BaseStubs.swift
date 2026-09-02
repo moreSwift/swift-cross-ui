@@ -547,10 +547,6 @@ extension BackendFeatures.BaseStubs {
         todo()
     }
 
-    public var requiresToggleSwitchSpacer: Bool {
-        todo()
-    }
-
     public func createSecureField() -> Widget {
         todo()
     }

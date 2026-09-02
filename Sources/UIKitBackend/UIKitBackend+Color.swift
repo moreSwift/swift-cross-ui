@@ -28,13 +28,18 @@ extension UIKitBackend {
 
 extension Color.Resolved {
     init(_ uiColor: UIColor) {
-        let ciColor = CIColor(color: uiColor)
+        var red: CGFloat = 0.0
+        var green: CGFloat = 0.0
+        var blue: CGFloat = 0.0
+        var alpha: CGFloat = 1.0
+
+        uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
 
         self.init(
-            red: Float(ciColor.red),
-            green: Float(ciColor.green),
-            blue: Float(ciColor.blue),
-            opacity: Float(ciColor.alpha)
+            red: Float(red),
+            green: Float(green),
+            blue: Float(blue),
+            opacity: Float(alpha)
         )
     }
 

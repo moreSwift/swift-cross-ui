@@ -27,7 +27,6 @@ public final class UIKitBackend:
 
     public let scrollBarWidth = 0
     public let defaultPaddingAmount = 15
-    public let requiresToggleSwitchSpacer = true
 
     // TODO: When tables are supported, update these
     public let defaultTableRowContentHeight = -1

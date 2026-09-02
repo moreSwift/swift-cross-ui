@@ -45,6 +45,7 @@ struct ControlsApp: App {
     @State var isProgressViewResizable = true
     @State var pickerStyle: BuiltInPickerStyle? = .automatic
     @State var buttonStyle: ButtonStyle? = nil
+    @State var color: Color = .red
 
     @Environment(\.supportedDatePickerStyles) var supportedDatePickerStyles
     @Environment(\.isPickerStyleSupported) var isPickerStyleSupported
@@ -81,17 +82,19 @@ struct ControlsApp: App {
                             Text("Count: \(count)")
                         }
 
-                        VStack {
-                            Text("Menu button")
-                            Menu("Menu") {
-                                Button("Button item") {
-                                    print("Button item clicked")
-                                }
-                                Divider()
-                                Toggle("Toggle item", isOn: $menuToggleState)
-                                Menu("Submenu") {
-                                    Text("Text item 1")
-                                    Text("Text item 2")
+                        if #available(iOS 14, macCatalyst 14, tvOS 17, *) {
+                            VStack {
+                                Text("Menu button")
+                                Menu("Menu") {
+                                    Button("Button item") {
+                                        print("Button item clicked")
+                                    }
+                                    Divider()
+                                    Toggle("Toggle item", isOn: $menuToggleState)
+                                    Menu("Submenu") {
+                                        Text("Text item 1")
+                                        Text("Text item 2")
+                                    }
                                 }
                             }
                         }
@@ -200,6 +203,20 @@ struct ControlsApp: App {
                                     }
                                 }
                             #endif
+                        #endif
+
+                        #if !os(tvOS) && !canImport(AndroidBackend)
+                            if #available(iOS 14, macCatalyst 14, *) {
+                                VStack {
+                                    ColorPicker("Choose a color:", selection: $color)
+
+                                    HStack {
+                                        Text("You chose:")
+
+                                        color.frame(maxWidth: 50, maxHeight: 20)
+                                    }
+                                }
+                            }
                         #endif
                     }.padding().disabled(!enabled)
 

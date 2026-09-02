@@ -265,6 +265,39 @@ final class DatePickerWidget: WrapperWidget<UIDatePicker> {
     }
 }
 
+@available(iOS 14, macCatalyst 14, *)
+@available(tvOS, unavailable)
+final class ColorPickerWidget: WrapperWidget<UIColorWell> {
+    private var opacity: CGFloat = 1.0
+
+    var color: UIColor {
+        get {
+            let color = child.selectedColor ?? .clear
+            if !child.supportsAlpha {
+                return color.withAlphaComponent(opacity)
+            }
+            return color
+        }
+        set {
+            opacity = newValue.cgColor.alpha
+            child.selectedColor = newValue
+        }
+    }
+
+    var onChange: ((UIColor) -> Void)? {
+        didSet {
+            if oldValue == nil {
+                child.addTarget(self, action: #selector(colorChanged), for: .valueChanged)
+            }
+        }
+    }
+
+    @objc
+    func colorChanged() {
+        onChange?(color)
+    }
+}
+
 extension UIKitBackend {
     public func createSimpleButton() -> Widget {
         ButtonWidget()
@@ -650,6 +683,32 @@ extension UIKitBackend: BackendFeatures.TapGestures {
                         datePickerWidget.child.preferredDatePickerStyle = .wheels
                 }
             }
+        }
+    }
+
+    @available(iOS 14, macCatalyst 14, *)
+    extension UIKitBackend: BackendFeatures.ColorPickers {
+        public func createColorPicker() -> any WidgetProtocol {
+            ColorPickerWidget()
+        }
+
+        public func updateColorPicker(
+            _ colorPicker: any WidgetProtocol,
+            supportsOpacity: Bool,
+            environment: EnvironmentValues,
+            onChange: @escaping (Color.Resolved) -> Void
+        ) {
+            let colorPicker = colorPicker as! ColorPickerWidget
+            colorPicker.child.supportsAlpha = supportsOpacity
+            colorPicker.child.isEnabled = environment.isEnabled
+            colorPicker.onChange = { onChange(Color.Resolved($0)) }
+        }
+
+        public func setValue(
+            ofColorPicker colorPicker: any WidgetProtocol,
+            to color: Color.Resolved
+        ) {
+            (colorPicker as! ColorPickerWidget).color = color.uiColor
         }
     }
 #endif
