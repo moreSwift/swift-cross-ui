@@ -166,6 +166,10 @@ public final class WinUIBackend:
 
     var internalState: InternalState
     nonisolated(unsafe) private var dispatcherQueue: WinAppSDK.DispatcherQueue?
+    /// WinUI only allows one dialog at a time (subsequent dialogs throw
+    /// exceptions), so we limit ourselves.
+    private var isDialogPresented = false
+    private var queuedDialogActions: [() -> Void] = []
 
     var windows: [Window] = []
 
@@ -1604,6 +1608,120 @@ public final class WinUIBackend:
         if checkboxWidget.isChecked != state {
             checkboxWidget.isChecked = state
         }
+    }
+
+    public func createAlert() -> Alert {
+        ContentDialog()
+    }
+
+    public func updateAlert(
+        _ alert: Alert,
+        title: String,
+        actionLabels: [String],
+        environment: EnvironmentValues
+    ) {
+        alert.title = title
+        if actionLabels.count >= 1 {
+            alert.primaryButtonText = actionLabels[0]
+        }
+        if actionLabels.count >= 2 {
+            alert.secondaryButtonText = actionLabels[1]
+        }
+        if actionLabels.count >= 3 {
+            alert.closeButtonText = actionLabels[2]
+        }
+
+        switch environment.colorScheme {
+            case .light:
+                alert.requestedTheme = .light
+            case .dark:
+                alert.requestedTheme = .dark
+        }
+    }
+
+    public func showAlert(
+        _ alert: Alert,
+        window: Window?,
+        responseHandler handleResponse: @escaping (Int) -> Void
+    ) {
+        guard let window = window ?? windows.first else {
+            logger.warning("WinUI can't show alert without window")
+            return
+        }
+
+        enqueueDialogPresentation {
+            guard let xamlRoot = window.content.xamlRoot else {
+                logger.warning("WinUI can't show alert before window XamlRoot is available")
+                self.finishDialogPresentation()
+                handleResponse(0)
+                return
+            }
+
+            alert.xamlRoot = xamlRoot
+
+            do {
+                guard let promise = try alert.showAsync() else {
+                    logger.warning("WinUI alert showAsync returned nil")
+                    self.finishDialogPresentation()
+                    handleResponse(0)
+                    return
+                }
+
+                promise.completed = { operation, status in
+                    self.runInMainThread {
+                        defer {
+                            self.finishDialogPresentation()
+                        }
+
+                        guard
+                            status == .completed,
+                            let operation,
+                            let result = try? operation.getResults()
+                        else {
+                            handleResponse(0)
+                            return
+                        }
+
+                        let index =
+                            switch result {
+                                case .primary: 0
+                                case .secondary: 1
+                                case .none: 2
+                                default:
+                                    fatalError("WinUIBackend: Invalid dialog response")
+                            }
+                        handleResponse(index)
+                    }
+                }
+            } catch {
+                logger.warning("WinUI failed to show alert: \(error)")
+                self.finishDialogPresentation()
+                handleResponse(0)
+                return
+            }
+        }
+    }
+
+    private func enqueueDialogPresentation(_ action: @escaping () -> Void) {
+        if isDialogPresented {
+            queuedDialogActions.append(action)
+        } else {
+            isDialogPresented = true
+            action()
+        }
+    }
+
+    private func finishDialogPresentation() {
+        if queuedDialogActions.isEmpty {
+            isDialogPresented = false
+        } else {
+            let nextAction = queuedDialogActions.removeFirst()
+            nextAction()
+        }
+    }
+
+    public func dismissAlert(_ alert: Alert, window: Window?) {
+        try! alert.hide()
     }
 
     public func showOpenDialog(
