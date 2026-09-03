@@ -34,9 +34,9 @@ struct ToggleButton: ElementaryView, View {
                 active.wrappedValue = newActiveState
             }
         }
-        return ViewLayoutResult.leafView(
-            size: ViewSize(backend.naturalSize(of: widget))
-        )
+        return ViewLayoutResult
+            .leafView(size: ViewSize(backend.naturalSize(of: widget)))
+            .with(\.isNeverFocusable, false)
     }
 
     func commit<Backend: BaseAppBackend>(

@@ -28,7 +28,9 @@ public struct WebView: ElementaryView {
         backend: Backend
     ) -> ViewLayoutResult {
         let size = proposedSize.replacingUnspecifiedDimensions(by: Self.idealSize)
-        return ViewLayoutResult.leafView(size: size)
+        return ViewLayoutResult
+            .leafView(size: size)
+            .with(\.isNeverFocusable, false)
     }
 
     @CastBackend<BackendFeatures.WebViews>

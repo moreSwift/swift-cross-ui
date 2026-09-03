@@ -120,7 +120,9 @@ extension Button: TypeSafeView {
             Int(childResult.size.height) + buttonPadding.y
         )
 
-        return ViewLayoutResult.leafView(size: ViewSize(size))
+        return ViewLayoutResult
+            .leafView(size: ViewSize(size))
+            .with(\.isNeverFocusable, false)
     }
 
     func commit<Backend: BaseAppBackend>(

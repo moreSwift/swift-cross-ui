@@ -79,6 +79,25 @@ public struct _BuiltinPickerImplementation: TypeSafeView {
         environment: EnvironmentValues,
         backend: Backend
     ) {
+        if let backend2 = backend as? any BackendFeatures.Focus {
+            BackendHelpers.setWidgetFocusObservers(
+                of: AnyWidget(children.picker!.widget),
+                with: backend2,
+                environment: environment
+            )
+            BackendHelpers.setFocus(
+                of: AnyWidget(widget),
+                to: environment.focusOverride,
+                with: backend2
+            )
+        } else if
+            !environment.widgetFocusObservers.isEmpty ||
+            environment.focusEffectDisabled ||
+            environment.focusOverride != nil
+        {
+            logger.warnOnce("\(Backend.self) doesn't support focus control/tracking.")
+        }
+
         backend.setSize(of: widget, to: layout.size.vector)
         backend.setSize(
             of: children.picker!.widget as! Backend.Widget,

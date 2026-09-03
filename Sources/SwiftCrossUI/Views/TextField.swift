@@ -95,7 +95,9 @@ public struct TextField: ElementaryView, View {
         )
 
         // TODO: Allow backends to set their own ideal text field width
-        return ViewLayoutResult.leafView(size: size)
+        return ViewLayoutResult
+            .leafView(size: size)
+            .with(\.isNeverFocusable, false)
     }
 
     func commit<Backend: BaseAppBackend>(
