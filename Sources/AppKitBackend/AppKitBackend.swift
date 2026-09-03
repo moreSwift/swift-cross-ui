@@ -1123,6 +1123,30 @@ public final class AppKitBackend: FullAppBackend {
         return scrollView
     }
 
+    public func tableHeaderHeight(of table: Widget) -> Int {
+        // `documentView` is nullable; fall back to the protocol default's
+        // no-header assumption rather than trapping.
+        guard let table = (table as? NSScrollView)?.documentView as? NSCustomTableView else {
+            return 0
+        }
+        return Int(table.headerView?.frame.height ?? 0)
+    }
+
+    public func tableVerticalPadding(of table: Widget) -> Int {
+        // `documentView` is nullable; fall back to the protocol default's
+        // no-inset assumption rather than trapping.
+        guard let table = (table as? NSScrollView)?.documentView as? NSCustomTableView else {
+            return 0
+        }
+        // `intrinsicContentSize` covers the rows plus whatever the current style
+        // insets them by, so the difference from the rows alone is the inset.
+        // It's independent of the table's assigned frame, so this doesn't
+        // depend on the height we're in the middle of computing.
+        let rowsHeight = table.customDelegate.rowHeights.reduce(0, +)
+        let padding = Int(table.intrinsicContentSize.height) - rowsHeight
+        return max(padding, 0)
+    }
+
     public func setRowCount(ofTable table: Widget, to rowCount: Int) {
         let table = (table as! NSScrollView).documentView as! NSCustomTableView
         table.customDelegate.rowCount = rowCount
