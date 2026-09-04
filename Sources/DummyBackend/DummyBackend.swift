@@ -80,6 +80,7 @@ public final class DummyBackend:
         public var label = ""
         public var font: Font.Resolved?
         public var action: (() -> Void)?
+        public var menu: Menu?
 
         /// Menu sizes its button widget through `naturalSize(of:)`, so leaving
         /// this at zero renders zero-sized menu buttons.

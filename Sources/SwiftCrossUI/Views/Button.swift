@@ -133,11 +133,13 @@ extension Button: TypeSafeView {
         _ = children.child0.commit()
         backend.setSize(of: widget, to: layout.size.vector)
     }
-}
 
-@MainActor
-extension Button where Label == TupleView1<Text> {
     public var _asMenuItems: [MenuItem] {
-        [.button(self)]
+        if let self = self as? Button<TupleView1<Text>> {
+            return [.button(self)]
+        } else {
+            // TODO(stackotter): Figure out a better fallback for non-text buttons in menus
+            return body._asMenuItems
+        }
     }
 }
