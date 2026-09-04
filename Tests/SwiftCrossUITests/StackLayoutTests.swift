@@ -5,17 +5,6 @@ import DummyBackend
 
 @Suite("Testing for stack layouts")
 struct StackLayoutTests {
-    let backend: DummyBackend
-    let window: DummyBackend.Window
-    let environment: EnvironmentValues
-
-    @MainActor
-    init() {
-        backend = DummyBackend()
-        window = backend.createWindow(withDefaultSize: nil, id: "window")
-        environment = EnvironmentValues(backend: backend).with(\.window, window)
-    }
-
     @MainActor
     @Test("Empty ScrollView should still be greedy in stack (#328)")
     func emptyScrollViewInStack() {
@@ -25,7 +14,10 @@ struct StackLayoutTests {
         }
 
         let height = 200.0
-        let result = computeLayout(of: view, proposedSize: ProposedViewSize(100, height))
+        let result = ViewGraphHelpers.computeLayout(
+            of: view,
+            proposedSize: ProposedViewSize(100, height)
+        )
 
         #expect(result.size.height == height)
     }
@@ -39,7 +31,10 @@ struct StackLayoutTests {
             Text("Dummy")
         }.fixedSize()
 
-        let node = committedNode(for: view, proposedSize: ProposedViewSize(200, 200))
+        let node = ViewGraphHelpers.committedNode(
+            for: view,
+            proposedSize: ProposedViewSize(200, 200)
+        )
 
         let fixedSizeWidget = node.widget.getChildren()[0]
         let children = fixedSizeWidget.getChildren()
@@ -64,43 +59,20 @@ struct StackLayoutTests {
             Text(strings[1])
         }
 
-        let lineHeight = environment.resolvedFont.lineHeight
+        let lineHeight = ViewGraphHelpers.environment.resolvedFont.lineHeight
 
-        let textResults = strings.map(Text.init(_:)).map { computeLayout(of: $0) }
+        let textResults = strings.map(Text.init(_:)).map {
+            ViewGraphHelpers.computeLayout(of: $0)
+        }
         let minimumWidthWithoutWrapping = textResults.map(\.size.vector.x).reduce(0, +)
         let proposedSize = ProposedViewSize(
             Double(minimumWidthWithoutWrapping),
             lineHeight * 2
         )
-        let result = computeLayout(of: view, proposedSize: proposedSize)
+        let result = ViewGraphHelpers.computeLayout(of: view, proposedSize: proposedSize)
 
         // No wrapping, and perfect fit
-        #expect(result.size.height == environment.resolvedFont.lineHeight)
+        #expect(result.size.height == ViewGraphHelpers.environment.resolvedFont.lineHeight)
         #expect(result.size.vector.x == minimumWidthWithoutWrapping)
-    }
-
-    // MARK: Helpers
-
-    @MainActor
-    func computeLayout<V: View>(
-        of view: V,
-        proposedSize: ProposedViewSize = .unspecified
-    ) -> ViewLayoutResult {
-        let node = ViewGraphNode(for: view, backend: backend, environment: environment)
-        return node.computeLayout(
-            proposedSize: proposedSize,
-            environment: environment
-        )
-    }
-
-    @MainActor
-    func committedNode<V: View>(
-        for view: V,
-        proposedSize: ProposedViewSize = .unspecified
-    ) -> ViewGraphNode<V, DummyBackend> {
-        let node = ViewGraphNode(for: view, backend: backend, environment: environment)
-        _ = node.computeLayout(proposedSize: proposedSize, environment: environment)
-        _ = node.commit()
-        return node
     }
 }
