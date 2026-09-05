@@ -208,13 +208,6 @@ let package = Package(
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Mutex", package: "swift-mutex"),
 
-                // This import is purely required to fix a linker issue and a plugin build
-                // error that occur on macOS when building for non-Android platforms now that
-                // we've added the AndroidBackend. Providing the '--disable-experimental-prebuilts'
-                // flag when building SwiftCrossUI apps doesn't seem to be sufficient to fix
-                // the issues, even though I would've thought that was the effect that adding
-                // this dependency has.
-                .product(name: "SwiftSyntax", package: "swift-syntax"),
             ],
             exclude: [
                 "Builders/ViewBuilder.swift.gyb",
