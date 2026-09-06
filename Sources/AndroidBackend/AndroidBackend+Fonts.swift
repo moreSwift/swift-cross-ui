@@ -14,6 +14,7 @@ extension AndroidBackend {
         var fontSize: Float
         var lineHeightPixels: Int32
         var typeface: AndroidKit.Typeface
+        var multilineTextAlignment: Int32
 
         func apply(to textView: AndroidKit.TextView) {
             let typedValue = try! JavaClass<AndroidKit.TypedValue>()
@@ -22,6 +23,7 @@ extension AndroidBackend {
             textView.setTextColor(color)
             textView.setTextSize(typedValue.COMPLEX_UNIT_SP, fontSize)
             textView.setLineHeight(lineHeightPixels)
+            textView.setGravity(multilineTextAlignment)
         }
     }
 
@@ -34,6 +36,15 @@ extension AndroidBackend {
             switch resolvedFont.design {
                 case .default: typefaceClass.DEFAULT
                 case .monospaced: typefaceClass.MONOSPACE
+            }
+
+        let gravityClass = try! JavaClass<AndroidKit.Gravity>()
+
+        let textAlignment =
+            switch environment.multilineTextAlignment {
+                case .leading: gravityClass.LEFT
+                case .center: gravityClass.CENTER_HORIZONTAL
+                case .trailing: gravityClass.RIGHT
             }
 
         let weightInt: Int32 =
@@ -67,7 +78,8 @@ extension AndroidBackend {
             color: colorInt,
             fontSize: Float(resolvedFont.pointSize),
             lineHeightPixels: lineHeightPixels,
-            typeface: typeface
+            typeface: typeface,
+            multilineTextAlignment: textAlignment
         )
     }
 
@@ -103,4 +115,9 @@ extension AndroidBackend {
             lineHeight: lineHeight
         )
     }
+}
+
+extension TextView {
+    @JavaMethod
+    open func setGravity(_ arg0: Int32)
 }
