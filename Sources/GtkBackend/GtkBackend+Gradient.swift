@@ -79,7 +79,7 @@ extension GtkBackend {
 
         let centerX = gradient.center.x * Double(size.x)
         let centerY = gradient.center.y * Double(size.y)
-        
+
         let startRadius = min(gradient.startRadius, gradient.endRadius)
         let endRadius = max(gradient.startRadius, gradient.endRadius)
 
