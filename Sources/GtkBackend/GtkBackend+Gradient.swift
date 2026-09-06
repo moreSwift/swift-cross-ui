@@ -1,10 +1,11 @@
 import CGtk
 import Gtk
 @_spi(Backends) import SwiftCrossUI
+import Foundation
 
 extension GtkBackend {
     public func createLinearGradientWidget() -> Widget {
-        Box()
+        DrawingArea()
     }
 
     public func updateLinearGradientWidget(
@@ -13,7 +14,7 @@ extension GtkBackend {
         withSize size: SIMD2<Int>,
         in environment: EnvironmentValues
     ) {
-        let widget = widget as! Box
+        let drawingArea = widget as! DrawingArea
 
         let startPoint = UnitPoint(
             x: Double(size.x) * gradient.startPoint.x,
@@ -25,25 +26,43 @@ extension GtkBackend {
             y: Double(size.y) * gradient.endPoint.y
         )
 
-        let angle = Angle(origin: startPoint, destination: endPoint)
+        let stops = gradient.gradient.stops
 
-        let stops = cssStops(stops: gradient.gradient.stops, environment: environment)
-            .joined(separator: ", ")
+        let colors = stops.map {
+            $0.color.resolve(in: environment)
+        }
 
-        let radians = (angle + Angle(degrees: 90)).radians
+        drawingArea.setDrawFunc { [weak self] cairo, _, _ in
+            guard let self else { return }
 
-        widget.css.set(
-            property: .init(
-                key: "background",
-                value: """
-                    linear-gradient(\(radians)rad, \(stops))
-                    """
+            let pattern = cairo_pattern_create_linear(
+                startPoint.x,
+                startPoint.y,
+                endPoint.x,
+                endPoint.y
             )
-        )
+
+            for (index, stop) in stops.enumerated() {
+                let color = colors[index]
+                cairo_pattern_add_color_stop_rgba(
+                    pattern,
+                    stop.location,
+                    Double(color.red),
+                    Double(color.green),
+                    Double(color.blue),
+                    Double(color.opacity)
+                )
+            }
+
+            cairo_set_source(cairo, pattern)
+            cairo_rectangle(cairo, 0, 0, Double(size.x), Double(size.y))
+            cairo_fill(cairo)
+            cairo_pattern_destroy(pattern)
+        }
     }
 
     public func createRadialGradientWidget() -> Widget {
-        Box()
+        DrawingArea()
     }
 
     public func updateRadialGradientWidget(
@@ -52,27 +71,51 @@ extension GtkBackend {
         withSize size: SIMD2<Int>,
         in environment: EnvironmentValues
     ) {
-        let widget = widget as! Box
+        let drawingArea = widget as! DrawingArea
+
         let stops = gradient.startRadius < gradient.endRadius
             ? gradient.gradient.stops
             : invertedStops(stops: gradient.gradient.stops)
-        let cssStops = cssStops(stops: stops, environment: environment)
-            .joined(separator: ", ")
 
-        let centerXPercent = gradient.center.x * 100
-        let centerYPercent = gradient.center.y * 100
+        let centerX = gradient.center.x * Double(size.x)
+        let centerY = gradient.center.y * Double(size.y)
 
-        widget.css.set(
-            property: .init(
-                key: "background",
-                value: """
-                    radial-gradient(\
-                    circle at \(centerXPercent)% \(centerYPercent)%, \
-                    \(cssStops)\
-                    )
-                    """
+        let startRadius = min(gradient.startRadius, gradient.endRadius)
+        let endRadius = max(gradient.startRadius, gradient.endRadius)
+
+        let colors = stops.map {
+            $0.color.resolve(in: environment)
+        }
+
+        drawingArea.setDrawFunc { [weak self] cairo, _, _ in
+            guard let self else { return }
+
+            let pattern = cairo_pattern_create_radial(
+                centerX,
+                centerY,
+                startRadius,
+                centerX,
+                centerY,
+                endRadius
             )
-        )
+
+            for (index, stop) in stops.enumerated() {
+                let color = colors[index]
+                cairo_pattern_add_color_stop_rgba(
+                    pattern,
+                    stop.location,
+                    Double(color.red),
+                    Double(color.green),
+                    Double(color.blue),
+                    Double(color.opacity)
+                )
+            }
+
+            cairo_set_source(cairo, pattern)
+            cairo_rectangle(cairo, 0, 0, Double(size.x), Double(size.y))
+            cairo_fill(cairo)
+            cairo_pattern_destroy(pattern)
+        }
     }
 
     private func invertedStops(stops: [Gradient.Stop]) -> [Gradient.Stop] {
@@ -81,22 +124,6 @@ extension GtkBackend {
                 color: stop.color,
                 location: 1.0 - stop.location
             )
-        }
-    }
-
-    private func cssStops(stops: [Gradient.Stop], environment: EnvironmentValues) -> [String] {
-        return stops.map { stop in
-            let resolved = stop.color.resolve(in: environment)
-            let red = resolved.red * 255
-            let green = resolved.green * 255
-            let blue = resolved.blue * 255
-            let location = stop.location * 100
-
-            return
-                """
-                rgba(\(red), \(green), \(blue), \
-                \(resolved.opacity)) \(location)%
-                """
         }
     }
 }
