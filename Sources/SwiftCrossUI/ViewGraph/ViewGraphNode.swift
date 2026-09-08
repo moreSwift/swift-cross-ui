@@ -257,7 +257,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
             logger.warning("layout committed before being computed, ignoring")
             return .leafView(size: .zero)
         }
-        
+
         if currentLayout.isNeverFocusable == false {
             BackendHelpers.applyFocusRelatedProperties(
                 from: parentEnvironment,
@@ -265,7 +265,6 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
                 with: backend
             )
         }
-
 
         if parentEnvironment.allowLayoutCaching {
             logger.warning(

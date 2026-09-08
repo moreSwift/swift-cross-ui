@@ -26,7 +26,7 @@ enum BackendHelpers {
         guard let focus else { return }
         backend.setFocus(of: widget.into(), to: focus)
     }
-    
+
     /// Applies all environment dictated focus property changes to a widget
     /// and warns if the backend doesn't support focus handling.
     static func applyFocusRelatedProperties<Backend: BaseAppBackend>(
