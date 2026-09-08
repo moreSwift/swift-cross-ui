@@ -8,8 +8,9 @@ public struct ViewLayoutResult {
     public var participateInStackLayoutsWhenEmpty: Bool
     /// The preference values produced by the view and its children.
     public var preferences: PreferenceValues
-    /// If a view can ever get focused out of the box, this needs to be set to true,
-    /// to be compatible with `@FocusState`.
+    /// If `true` then `ViewGraphNode` skips a bunch of focus-related housekeeping.
+    /// If a view can ever become focusable (even if it's not focusable right now)
+    /// then this must be set to `false`.
     public var isNeverFocusable = true
 
     public init(

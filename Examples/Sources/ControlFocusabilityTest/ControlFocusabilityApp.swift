@@ -319,5 +319,8 @@ struct ChildView: View {
         Text("Test if FocusState.Binding works in subview")
         TextField(text: $text)
             .focused($focusState, equals: 1000)
+        Button("Unfocus") {
+            focusState = nil
+        }
     }
 }

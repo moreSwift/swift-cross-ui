@@ -59,8 +59,8 @@ extension View {
             .with(
                 \.focusOverride,
                 environment.focusOverride != .focused
-                    ? focusBinding.wrappedValue ? .focused : .unfocused
-                    :.focused
+                    ? (focusBinding.wrappedValue ? .focused : .unfocused)
+                    : .focused
             )
         }
     }

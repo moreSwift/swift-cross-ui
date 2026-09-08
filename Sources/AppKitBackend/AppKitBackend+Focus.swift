@@ -26,7 +26,6 @@ extension AppKitBackend {
     public func setFocus(of widget: NSView, to focus: Focus) {
         if
             focus == .focused,
-            !widget.isHidden,
             widget.acceptsFirstResponder,
             // AppKit passes first responder from NSTextField/NSSecureTextField to an
             // inner NSTextView/NSText.
@@ -38,15 +37,12 @@ extension AppKitBackend {
             !textFieldsTextViewIsFocused(field: widget)
         {
             widget.window?.makeFirstResponder(widget)
-        }
-
-        if
+        } else if
             focus == .unfocused,
             let window = widget.window,
             window.firstResponder == widget || textFieldsTextViewIsFocused(field: widget)
         {
             _ = window.makeFirstResponder(nil)
-            return
         }
     }
 

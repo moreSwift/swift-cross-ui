@@ -3,7 +3,7 @@ import AppKit
 
 @MainActor
 class FocusStateManager: NSObject {
-    private var focusData = [ObjectIdentifier: [WidgetFocusObserver]]()
+    private var focusObservers = [ObjectIdentifier: [WidgetFocusObserver]]()
     private struct WindowFocusState {
         var lastFocused: NSResponder?
         var shouldSkipNextFocusUpdate = false
@@ -11,7 +11,7 @@ class FocusStateManager: NSObject {
     private var windowFocusStates = [ObjectIdentifier: WindowFocusState]()
 
     func register(_ data: [WidgetFocusObserver], for widget: NSView) {
-        focusData[ObjectIdentifier(widget)] = data
+        focusObservers[ObjectIdentifier(widget)] = data
     }
 
     override func observeValue(
@@ -58,15 +58,15 @@ class FocusStateManager: NSObject {
     }
 
     private func handleFocusChange(of identifier: ObjectIdentifier, toState isFocused: Bool) {
-        guard let data = focusData[identifier] else { return }
+        guard let observers = focusObservers[identifier] else { return }
 
         if isFocused {
-            data.forEach { binding in
-                binding.didGainFocus()
+            for observer in observers {
+                observer.didGainFocus()
             }
         } else {
-            data.forEach { binding in
-                binding.didLoseFocus()
+            for observer in observers {
+                observer.didLoseFocus()
             }
         }
     }

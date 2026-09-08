@@ -42,7 +42,7 @@ public typealias FullAppBackend =
         & BackendFeatures.DatePickers
         & BackendFeatures.Windowing
         & BackendFeatures.Gradients
-        & BackendFeatures.Focus
+        & BackendFeatures.FocusHandling
         & BackendFeatures.FocusDisabling
 
 /// A typealias for ``FullAppBackend``.

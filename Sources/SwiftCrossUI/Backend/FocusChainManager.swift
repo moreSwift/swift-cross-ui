@@ -41,8 +41,6 @@ public protocol FocusabilityContainer {
 public protocol FocusChainParticipant: Equatable {
     /// Whether a widget participates in the focus chain, i.e. if it can gain focus via keyboard navigation.
     var canBeTabStop: Bool { get }
-    /// Whether a widget is hidden. Hidden widgets are skipped while selecting the next target.
-    var isHidden: Bool { get }
 }
 
 extension FocusChainManager {
@@ -63,8 +61,7 @@ extension FocusChainManager {
 
             if
                 !isDescendantOfDisabledParent(next),
-                next.canBeTabStop,
-                !next.isHidden
+                next.canBeTabStop
             { return next }
 
             if forward {

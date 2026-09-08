@@ -57,12 +57,12 @@ public struct FocusState<Value: Hashable>: ObservableProperty {
 
     /// A property wrapper type that can read and write a value that indicates the current focus location.
     @propertyWrapper
-    public class Binding {
+    public struct Binding {
         public var wrappedValue: Value {
             get {
                 getValue()
             }
-            set {
+            nonmutating set {
                 setValue(newValue)
             }
         }

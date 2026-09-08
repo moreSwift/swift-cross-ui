@@ -1,9 +1,9 @@
-/// The information passed by ``View/focused(_:)`` to a backend.
+/// A focus state observer passed by ``View/focused(_:)`` to backends.
 @MainActor
 public struct WidgetFocusObserver: Sendable {
-    /// A function to set the ``FocusState`` to ``match``.
+    /// A function called when the target widget gains focus.
     public let didGainFocus: () -> Void
-    /// A function to set the ``FocusState`` to unfocused.
+    /// A function called when the target widget loses focus.
     public let didLoseFocus: () -> Void
 
     public init(
