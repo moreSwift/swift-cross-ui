@@ -20,6 +20,12 @@ extension WinUIBackend {
         button.action = action
         button.buttonStyle = environment.resolvedButtonStyle.kind
         button.enabled = environment.isEnabled
+        switch environment.colorScheme {
+            case .light:
+                button.requestedTheme = .light
+            case .dark:
+                button.requestedTheme = .dark
+        }
     }
 
     public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
