@@ -963,10 +963,12 @@ public final class WinUIBackend:
         action: @escaping () -> Void
     ) {
         let button = button as! WinUI.Button
-        let block = TextBlock()
+
+        let block = createTextView() as! WinUI.TextBlock
         block.text = label
         button.content = block
         environment.apply(to: block)
+
         environment.apply(to: button)
         internalState.buttonClickActions[ObjectIdentifier(button)] = action
     }
@@ -995,10 +997,12 @@ public final class WinUIBackend:
         environment: EnvironmentValues
     ) {
         let button = button as! WinUI.Button
-        let block = TextBlock()
+
+        let block = createTextView() as! WinUI.TextBlock
         block.text = label
         button.content = block
         environment.apply(to: block)
+
         environment.apply(to: button)
         button.flyout = menu
     }
