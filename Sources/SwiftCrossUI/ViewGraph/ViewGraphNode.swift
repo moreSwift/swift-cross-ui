@@ -258,6 +258,14 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
             return .leafView(size: .zero)
         }
 
+        if !currentLayout.isNeverFocusable {
+            BackendHelpers.applyFocusRelatedProperties(
+                from: parentEnvironment,
+                to: AnyWidget(widget),
+                with: backend
+            )
+        }
+
         if parentEnvironment.allowLayoutCaching {
             logger.warning(
                 "committing layout computed with caching enabled; results may be invalid",

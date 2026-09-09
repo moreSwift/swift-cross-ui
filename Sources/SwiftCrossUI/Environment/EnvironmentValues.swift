@@ -484,6 +484,15 @@ extension EnvironmentValues {
     /// The device class of the current device.
     @MainActor
     public var deviceClass: DeviceClass { backend.deviceClass }
+
+    /// All observers set by ``View/focused(_:)`` in the environment.
+    @Entry @_spi(Backends) public var widgetFocusObservers: [WidgetFocusObserver] = []
+
+    /// A value used to make widgets programmatically gain or lose focus.
+    @Entry @_spi(Backends) public var focusOverride: Focus?
+
+    /// Whether to highlight a focused widget.
+    @Entry public var focusEffectDisabled: Bool = false
 }
 
 extension EnvironmentValues {

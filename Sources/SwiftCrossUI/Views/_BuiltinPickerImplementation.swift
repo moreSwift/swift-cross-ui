@@ -79,6 +79,12 @@ public struct _BuiltinPickerImplementation: TypeSafeView {
         environment: EnvironmentValues,
         backend: Backend
     ) {
+        BackendHelpers.applyFocusRelatedProperties(
+            from: environment,
+            to: AnyWidget(children.picker!.widget),
+            with: backend
+        )
+
         backend.setSize(of: widget, to: layout.size.vector)
         backend.setSize(
             of: children.picker!.widget as! Backend.Widget,

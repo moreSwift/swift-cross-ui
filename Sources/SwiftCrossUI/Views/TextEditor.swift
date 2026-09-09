@@ -47,7 +47,9 @@ public struct TextEditor: ElementaryView {
             size = proposedSize.replacingUnspecifiedDimensions(by: ViewSize(10, 10))
         }
 
-        return ViewLayoutResult.leafView(size: size)
+        return ViewLayoutResult
+            .leafView(size: size)
+            .with(\.isNeverFocusable, false)
     }
 
     func commit<Backend: BaseAppBackend>(

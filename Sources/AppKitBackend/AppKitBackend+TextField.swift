@@ -173,7 +173,7 @@ extension AppKitBackend {
 
 // MARK: Custom views
 
-private class NSObservableTextField: NSTextField {
+class NSObservableTextField: NSTextField {
     override func textDidChange(_ notification: Notification) {
         onEdit?(self)
     }
@@ -192,7 +192,7 @@ private class NSObservableTextField: NSTextField {
     }
 }
 
-private class NSObservableSecureTextField: NSSecureTextField {
+class NSObservableSecureTextField: NSSecureTextField {
     override func textDidChange(_ notification: Notification) {
         onEdit?(self)
     }

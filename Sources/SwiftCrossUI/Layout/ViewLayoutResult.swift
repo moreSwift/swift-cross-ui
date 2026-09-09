@@ -8,6 +8,10 @@ public struct ViewLayoutResult {
     public var participateInStackLayoutsWhenEmpty: Bool
     /// The preference values produced by the view and its children.
     public var preferences: PreferenceValues
+    /// If `true` then `ViewGraphNode` skips a bunch of focus-related housekeeping.
+    /// If a view can ever become focusable (even if it's not focusable right now)
+    /// then this must be set to `false`.
+    public var isNeverFocusable = true
 
     public init(
         size: ViewSize,
@@ -49,5 +53,13 @@ public struct ViewLayoutResult {
     /// Whether the view should participate in stack layouts (i.e. get its own spacing).
     public var participatesInStackLayouts: Bool {
         size != .zero || participateInStackLayoutsWhenEmpty
+    }
+
+    /// Returns a copy of the result with the specified property set to the
+    /// provided new value.
+    public func with<T>(_ keyPath: WritableKeyPath<Self, T>, _ newValue: T) -> Self {
+        var result = self
+        result[keyPath: keyPath] = newValue
+        return result
     }
 }

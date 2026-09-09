@@ -126,7 +126,9 @@ extension Menu: TypeSafeView {
 
         var size = backend.naturalSize(of: widget)
         size.x = buttonWidth ?? size.x
-        return ViewLayoutResult.leafView(size: ViewSize(size))
+        return ViewLayoutResult
+            .leafView(size: ViewSize(size))
+            .with(\.isNeverFocusable, false)
     }
 
     @CastBackend<BackendFeatures.MenuButtons>(backendGenericName: "NewBackend")
