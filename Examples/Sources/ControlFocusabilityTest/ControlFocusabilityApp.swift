@@ -317,6 +317,7 @@ extension View {
 struct ChildView: View {
     @FocusState<Int?>.Binding
     var focusState: Int?
+
     @State var text = ""
 
     var body: some View {
