@@ -46,6 +46,7 @@ struct ControlFocusabilityApp: App {
     @State var pickerStyle: BuiltInPickerStyle? = .automatic
 
     @State var isButtonFocusable = true
+    @State var buttonHasFocusEffect = true
     @State var isMenuFocusable = true
     @State var isToggleButtonFocusable = true
     @State var isToggleSwitchFocusable = true
@@ -65,7 +66,7 @@ struct ControlFocusabilityApp: App {
     @Environment(\.isPickerStyleSupported) var isPickerStyleSupported
 
     var body: some Scene {
-        WindowGroup("ControlsApp focused: \(focusState ?? -1)") {
+        WindowGroup("ControlsApp (focusState = \(focusState?.description ?? "nil"))") {
             #hotReloadable {
                 ScrollView {
                     VStack(spacing: 30) {
@@ -73,6 +74,7 @@ struct ControlFocusabilityApp: App {
                             focusState = Int.random(in: 1...13)
                         }
                         .padding(.bottom, 20)
+                        .focused($focusState, equals: 0)
 
                         HStack {
                             VStack {
@@ -82,11 +84,13 @@ struct ControlFocusabilityApp: App {
                                 }
                                 .focusableIfSupported(isButtonFocusable)
                                 .focused($focusState, equals: 1)
-                                .focusEffectDisabled()
+                                .focusEffectDisabled(!buttonHasFocusEffect)
 
                                 Text("Count: \(count)")
                             }
                             Toggle("focusable", isOn: $isButtonFocusable)
+                                .focusableIfSupported(false)
+                            Toggle("focus effect", isOn: $buttonHasFocusEffect)
                                 .focusableIfSupported(false)
                         }
                         .padding(.bottom, 20)

@@ -258,7 +258,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
             return .leafView(size: .zero)
         }
 
-        if currentLayout.isNeverFocusable == false {
+        if !currentLayout.isNeverFocusable {
             BackendHelpers.applyFocusRelatedProperties(
                 from: parentEnvironment,
                 to: AnyWidget(widget),
