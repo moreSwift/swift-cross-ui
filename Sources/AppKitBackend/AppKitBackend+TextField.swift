@@ -8,7 +8,9 @@ extension AppKitBackend {
         // Using the `(string:)` initializer ensures that the TextField scrolls
         // smoothly on horizontal overflow instead of jumping a full width at a
         // time.
-        NSObservableTextField(string: "")
+        let textField = NSObservableTextField(string: "")
+        textField.cell?.sendsActionOnEndEditing = false
+        return textField
     }
 
     public func updateTextField(
@@ -65,7 +67,9 @@ extension AppKitBackend {
         // Using the `(string:)` initializer ensures that the SecureField scrolls
         // smoothly on horizontal overflow instead of jumping a full width at a
         // time.
-        NSObservableSecureTextField(string: "")
+        let textField = NSObservableSecureTextField(string: "")
+        textField.cell?.sendsActionOnEndEditing = false
+        return textField
     }
 
     public func updateSecureField(

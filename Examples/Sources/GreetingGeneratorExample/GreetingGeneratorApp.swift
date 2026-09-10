@@ -17,6 +17,9 @@ struct GreetingGeneratorApp: App {
             #hotReloadable {
                 VStack {
                     TextField("Name", text: $name)
+                        .onSubmit {
+                            greetings.append("Hello, \(name)!")
+                        }
                     HStack {
                         Button("Generate") {
                             greetings.append("Hello, \(name)!")
