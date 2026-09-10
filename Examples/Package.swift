@@ -43,7 +43,13 @@ let package = Package(
         ),
         .executableTarget(
             name: "CounterExample",
-            dependencies: exampleDependencies
+            dependencies: exampleDependencies + [
+                .product(
+                    name: "SwiftCrossUIPreviews",
+                    package: "swift-cross-ui",
+                    condition: .when(platforms: [.macOS])
+                )
+            ]
         ),
         .executableTarget(
             name: "RandomNumberGeneratorExample",

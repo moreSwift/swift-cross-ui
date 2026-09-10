@@ -20,6 +20,7 @@
   - 9.5\. [Previewing documentation](#96-previewing-documentation)
   - 9.6\. [Documentation formatting](#95-documentation-formatting)
 - 10\. [Referencing/attribution](#10-referencingattribution)
+- 11\. [Previewing components](#11-previewing-components)
 
 ## 1. Environment setup
 
@@ -238,3 +239,15 @@ func computeLayout<Backend: BaseAppBackend>(
 ## 10. Referencing/attribution
 
 1. When taking/adapting non-trivial code from another project or a blog post etc, make sure to provide the source in a comment and briefly state how the reference code was used (e.g. `// Adapted from: <url>`). Code that is licensed with a more restrictive license than MIT cannot be used, even if referenced.
+
+## 11. Previewing components
+
+`Examples/PreviewsExample` is an Xcode app project for previewing SwiftCrossUI views in Xcode's canvas. An app project is required because Xcode only renders a package view's preview from an app-target scheme — see the "Where previews appear" documentation on ``Preview(_:body:)``.
+
+The project file is generated and gitignored. Regenerate it from the repository root with:
+
+```sh
+xcodegen generate --spec Examples/PreviewsExample/project.yml --project Examples/PreviewsExample
+```
+
+[XcodeGen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`) is optional tooling for this example only — it exists to avoid maintaining a hand-written Xcode project file.
