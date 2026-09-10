@@ -59,7 +59,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: ModelObserv
 
     /// The dynamic property updater for this view.
     private var dynamicPropertyUpdater: DynamicPropertyUpdater<NodeView>
-    
+
     /// Used by the ``ModelObserver`` protocol to prevent duplicate view updates.
     var currentViewModelObservationID: UUID?
 
@@ -136,7 +136,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: ModelObserv
             cancellables.append(cancellable)
         }
     }
-    
+
     func viewModelDidChange<B: BackendFeatures.Core>(backend: B) {
         bottomUpUpdate()
     }
@@ -245,7 +245,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: ModelObserv
                 backend: backend
             )
         }
-        
+
         // We assume that the view's sizing behaviour won't change between consecutive
         // layout computations and the following commit, because groups of updates
         // following that pattern are assumed to be occurring within a single overarching

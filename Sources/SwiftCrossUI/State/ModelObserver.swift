@@ -20,7 +20,7 @@ import ObservationPolyfillCore
 protocol ModelObserver: AnyObject, Sendable {
     /// Used by the ``ModelObserver`` protocol to prevent duplicate view updates.
     var currentViewModelObservationID: UUID? { get set }
-    
+
     /// This method is called at most once after a call to `observe()` if an object conforming to
     /// `Observable` used in the `computation` closure of the last call to ``observe(with:_:)``
     /// has changed.

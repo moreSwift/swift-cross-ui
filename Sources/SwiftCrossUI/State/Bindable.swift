@@ -74,7 +74,7 @@ import Foundation
     public var projectedValue: Bindable<Value> {
         self
     }
-    
+
     /// Creates a bindable wrapper around an observable object.
     ///
     /// In most cases, apply the `@Bindable` attribute to a property or local
@@ -86,7 +86,9 @@ import Foundation
 
 extension Bindable where Value: AnyObject {
     /// Returns a binding for the writable property at the supplied key path.
-    public subscript<Subject>(dynamicMember keyPath: ReferenceWritableKeyPath<Value, Subject>) -> Binding<Subject> {
+    public subscript<Subject>(dynamicMember keyPath: ReferenceWritableKeyPath<Value, Subject>)
+        -> Binding<Subject>
+    {
         Binding(
             get: {
                 wrappedValue[keyPath: keyPath]
@@ -96,7 +98,7 @@ extension Bindable where Value: AnyObject {
             }
         )
     }
-    
+
     /// Creates a bindable wrapper around an observable object.
     ///
     /// This initializer behaves the same as ``init(wrappedValue:)``, but reads

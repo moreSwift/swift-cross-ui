@@ -19,7 +19,7 @@ class _App<AppRoot: App>: ModelObserver {
     var environment: EnvironmentValues
     /// The dynamic property updater for ``app``.
     var dynamicPropertyUpdater: DynamicPropertyUpdater<AppRoot>
-    
+
     /// Used by the ``ModelObserver`` protocol to prevent duplicate view updates.
     var currentViewModelObservationID: UUID?
 
@@ -54,7 +54,7 @@ class _App<AppRoot: App>: ModelObserver {
             )
         }
     }
-    
+
     func viewModelDidChange<Backend: BaseAppBackend>(backend: Backend) {
         refreshSceneGraph()
     }

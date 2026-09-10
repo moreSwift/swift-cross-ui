@@ -41,7 +41,7 @@ struct ObservableApp: App {
 
 struct View1: View {
     let model: ObservableModel
-    
+
     var body: some View {
         VStack {
             Text(model.view1Text)
@@ -54,7 +54,7 @@ struct View1: View {
 
 struct View2: View {
     let model: ObservableModel
-    
+
     var body: some View {
         VStack {
             Text(model.view2Text)
@@ -67,7 +67,7 @@ struct View2: View {
 
 struct ModifyingView: View {
     @Bindable var model: ObservableModel
-    
+
     var body: some View {
         if !model.automaticModeIsOn {
             VStack {
