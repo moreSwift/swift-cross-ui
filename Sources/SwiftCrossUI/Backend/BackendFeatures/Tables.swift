@@ -16,6 +16,30 @@ extension BackendFeatures {
         /// backend that SwiftCrossUI won't necessarily follow in all cases.
         var defaultTableCellVerticalPadding: Int { get }
 
+        /// The height of a table's column header.
+        ///
+        /// Used when computing a table's ideal height, which is the combined
+        /// height of its rows plus its header. The default implementation
+        /// assumes no column header; backends that render one should implement
+        /// this and measure it.
+        ///
+        /// - Parameter table: The table to measure the column header of.
+        /// - Returns: The height of the table's column header.
+        func tableHeaderHeight(of table: Widget) -> Int
+
+        /// The vertical space a table reserves around its rows, beyond the rows
+        /// themselves and the column header.
+        ///
+        /// Some backends inset their rows within the table's body, so a table
+        /// tall enough to hold only the sum of its row heights clips its last
+        /// row. Backends that inset their rows should implement this and report
+        /// the total of the space above the first row and below the last one.
+        /// The default implementation assumes rows meet the edges of the body.
+        ///
+        /// - Parameter table: The table to measure the reserved space of.
+        /// - Returns: The total vertical space reserved around the table's rows.
+        func tableVerticalPadding(of table: Widget) -> Int
+
         /// Creates an empty table.
         ///
         /// - Returns: A table.
@@ -58,5 +82,21 @@ extension BackendFeatures {
             to cells: [Widget],
             withRowHeights rowHeights: [Int]
         )
+    }
+}
+
+/// The assumed column-header height when a backend doesn't measure one.
+fileprivate let defaultTableHeaderHeight = 0
+
+/// The assumed space around a table's rows when a backend doesn't measure it.
+fileprivate let defaultTableVerticalPadding = 0
+
+extension BackendFeatures.Tables {
+    public func tableHeaderHeight(of table: Widget) -> Int {
+        defaultTableHeaderHeight
+    }
+
+    public func tableVerticalPadding(of table: Widget) -> Int {
+        defaultTableVerticalPadding
     }
 }
