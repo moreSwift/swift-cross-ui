@@ -78,4 +78,12 @@ extension View {
             return environment
         }
     }
+    
+    /// Adds an observable object to the environment of the enclosed View.
+    /// You are responsible for ensuring that the object is being observed
+    /// by a parent view, as this modifier does not perform any observation.
+    @available(*, deprecated, renamed: "environment", message: "Use `environment(_:)` instead.")
+    public func environmentObject<T: ObservableObject>(_ object: T) -> some View {
+        environment(object)
+    }
 }

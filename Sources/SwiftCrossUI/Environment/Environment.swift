@@ -101,3 +101,7 @@ public struct Environment<Value>: DynamicProperty {
         }
     }
 }
+
+/// A deprecated typealias for a property wrapper for an observable object that a parent or ancestor view supplies.
+@available(*, deprecated, renamed: "Environment", message: "Use @Environment instead.")
+public typealias EnvironmentObject<T: ObservableObject> = Environment<T>
