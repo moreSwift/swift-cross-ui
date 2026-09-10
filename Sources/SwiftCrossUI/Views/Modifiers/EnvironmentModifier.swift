@@ -78,7 +78,7 @@ extension View {
             return environment
         }
     }
-    
+
     /// Adds an observable object to the environment of the enclosed View.
     /// You are responsible for ensuring that the object is being observed
     /// by a parent view, as this modifier does not perform any observation.
