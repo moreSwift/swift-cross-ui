@@ -1,6 +1,10 @@
 import Foundation
 import SwiftCrossUI
 
+#if canImport(Observation)
+    import Observation
+#endif
+
 private var animalList = [
     "Dog",
     "Cat",
@@ -36,8 +40,8 @@ class ObservableModel {
     // Namespaced spellings of the ObservationIgnored and ObservationTracked
     // macros are also supported when your deployment target is below that of
     // the Observation module
-    @ObservationPolyfill.ObservationIgnored private var ignored1 = false
-    @SwiftCrossUI.ObservationIgnored private var ignored2 = false
+    //@ObservationPolyfill.ObservationIgnored private var ignored1 = false
+    //@SwiftCrossUI.ObservationIgnored private var ignored2 = false
     
     func startAutomaticMode() {
         guard !automaticModeIsOn else { return }
