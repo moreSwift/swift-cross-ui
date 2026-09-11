@@ -1,5 +1,5 @@
 {
-  "originHash" : "19ad17257f09f1e11eb410bbdda7863bde2515218b4f2921e96176c2c7c51679",
+  "originHash" : "f747308c90f630723c1e265a2fd85c817618c896ceac3a393869181b5b3f461f",
   "pins" : [
     {
       "identity" : "androidkit",
@@ -146,6 +146,15 @@
       }
     },
     {
+      "identity" : "swift-observation-polyfill",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/moreSwift/swift-observation-polyfill",
+      "state" : {
+        "revision" : "d8843fa6dbf970aab42faaf101c9ce1cfd16fb94",
+        "version" : "0.1.1"
+      }
+    },
+    {
       "identity" : "swift-subprocess",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-subprocess.git",
@@ -197,6 +206,15 @@
       "state" : {
         "revision" : "ad30daacb7e4666e1a56bfdd48498f5ac4ff081d",
         "version" : "0.3.0"
+      }
+    },
+    {
+      "identity" : "xctest-dynamic-overlay",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
+      "state" : {
+        "revision" : "d9308ad679143c26a30dec52daefe82f54af2b82",
+        "version" : "1.13.1"
       }
     },
     {
