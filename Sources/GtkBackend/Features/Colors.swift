@@ -2,7 +2,18 @@ import CGtk
 import Gtk
 @_spi(Backends) import SwiftCrossUI
 
-extension GtkBackend {
+extension GtkBackend: BackendFeatures.Colors {
+    public func createColorableRectangle() -> Widget {
+        return Box()
+    }
+
+    public func setColor(
+        ofColorableRectangle widget: Widget,
+        to color: SwiftCrossUI.Color.Resolved
+    ) {
+        widget.css.set(property: .backgroundColor(color.gtkColor))
+    }
+
     public func resolveAdaptiveColor(
         _ adaptiveColor: SwiftCrossUI.Color.SystemAdaptive,
         in environment: EnvironmentValues
@@ -32,11 +43,5 @@ extension GtkBackend {
                     case .yellow: .init(red: 0.973, green: 0.894, blue: 0.361) // Yellow 2
                 }
         }
-    }
-}
-
-extension SwiftCrossUI.Color.Resolved {
-    public var gtkColor: Gtk.Color {
-        Gtk.Color(red, green, blue, opacity)
     }
 }
