@@ -23,6 +23,8 @@ inputs:
   swiftpm-args:
     description: 'Additional SwiftpM arguments'
     default: ''
+  artifact-name:
+    description: 'Unique symbol graph archive name, including the documentation version when needed'
 
 runs:
   using: "composite"
@@ -55,7 +57,7 @@ runs:
         if [[ $DEVICE_TYPE == "Mac" ]] || [[ $DEVICE_TYPE == "" ]]; then
           destination="platform=OS X"
         else
-          destination="id=$(xcrun simctl list devices $devicetype available | grep -v -- -- | tail -n 1 | grep -oE '[0-9A-F\-]{36}')"
+          destination="id=$(xcrun simctl list devices "$DEVICE_TYPE" available | grep -v -- -- | tail -n 1 | grep -oE '[0-9A-F\-]{36}')"
         fi
 
         # I've found that the most reliable way to produce symbol graphs with
@@ -84,11 +86,11 @@ runs:
         cwd: ${{ github.workspace }}/${{ inputs.working-directory }}
         command: c
         files: ./${{ inputs.target }}-symbol-graphs
-        outPath: ${{ github.workspace }}/${{ inputs.target }}-symbol-graphs.tar.gz
+        outPath: ${{ github.workspace }}/${{ inputs.artifact-name || format('{0}-symbol-graphs.tar.gz', inputs.target) }}
 
     - name: Upload symbol graphs
       uses: actions/upload-artifact@v4
       if: ${{ inputs.upload == 'true' }} # Compare to constant to treat empty input as false
       with:
-        name: ${{ inputs.target }}-symbol-graphs.tar.gz
-        path: ${{ inputs.target }}-symbol-graphs.tar.gz
+        name: ${{ inputs.artifact-name || format('{0}-symbol-graphs.tar.gz', inputs.target) }}
+        path: ${{ github.workspace }}/${{ inputs.artifact-name || format('{0}-symbol-graphs.tar.gz', inputs.target) }}
