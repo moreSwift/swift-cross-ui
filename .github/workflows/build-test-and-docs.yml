@@ -19,9 +19,9 @@ jobs:
           - platform: android
             paths: 'Sources/AndroidBackend/ Sources/AndroidBackendShim/'
           - platform: linux
-            paths: 'Sources/*Gtk*/ Tests/ Scripts/test.sh'
+            paths: 'Sources/*Gtk*/ Sources/DummyBackend Tests/ Scripts/test.sh'
           - platform: macos
-            paths: 'Sources/AppKitBackend/ Sources/*Gtk*/ Tests/ Scripts/test.sh'
+            paths: 'Sources/AppKitBackend/ Sources/*Gtk*/ Sources/DummyBackend Tests/ Scripts/test.sh'
           - platform: uikit
             paths: 'Sources/UIKitBackend/'
           - platform: windows
