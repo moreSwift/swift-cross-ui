@@ -5,7 +5,7 @@ import Gtk
 
 extension GtkBackend: BackendFeatures.DatePickers {
     public var supportedDatePickerStyles: [DatePickerStyle] { [.automatic, .graphical] }
-    
+
     public func createDatePicker() -> Widget {
         let widget = Gtk.Calendar()
         widget.date = Date()

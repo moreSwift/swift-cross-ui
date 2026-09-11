@@ -4,7 +4,7 @@ import Gtk
 
 extension GtkBackend: BackendFeatures.CoreWindowing {
     public typealias Window = Gtk.ApplicationWindow
-    
+
     public var supportsMultipleWindows: Bool { true }
     public var canOverrideWindowColorScheme: Bool { false }
     public var restoresWindowFrames: Bool { false }
