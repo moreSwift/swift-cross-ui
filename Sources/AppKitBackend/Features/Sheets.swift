@@ -1,7 +1,7 @@
 import AppKit
 @_spi(Backends) import SwiftCrossUI
 
-extension AppKitBackend {
+extension AppKitBackend: BackendFeatures.Sheets {
     public typealias Sheet = NSCustomSheet
 
     public func createSheet(content: NSView) -> NSCustomSheet {
@@ -67,13 +67,6 @@ extension AppKitBackend {
         // - cornerRadius isn't supported by macOS so we ignore it
     }
 
-    public func size(ofSheet sheet: NSCustomSheet) -> SIMD2<Int> {
-        guard let size = sheet.contentView?.frame.size else {
-            return SIMD2(x: 0, y: 0)
-        }
-        return SIMD2(x: Int(size.width), y: Int(size.height))
-    }
-
     public func presentSheet(_ sheet: NSCustomSheet, window: Window, parentSheet: Sheet?) {
         let parent = parentSheet ?? window
         // beginSheet and beginCriticalSheet should be equivalent here, because we
@@ -101,19 +94,11 @@ extension AppKitBackend {
         parent.endSheet(sheet)
         parent.nestedSheet = nil
     }
-}
 
-public final class NSCustomSheet: NSCustomWindow, NSWindowDelegate {
-    public var onDismiss: (() -> Void)?
-
-    public var interactiveDismissDisabled: Bool = false
-
-    public var backgroundView: NSView?
-
-    @objc override public func cancelOperation(_ sender: Any?) {
-        if !interactiveDismissDisabled {
-            sheetParent?.endSheet(self)
-            onDismiss?()
+    public func size(ofSheet sheet: NSCustomSheet) -> SIMD2<Int> {
+        guard let size = sheet.contentView?.frame.size else {
+            return SIMD2(x: 0, y: 0)
         }
+        return SIMD2(x: Int(size.width), y: Int(size.height))
     }
 }

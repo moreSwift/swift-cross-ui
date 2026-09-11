@@ -1,13 +1,7 @@
 import AppKit
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
-/// Creates a marker container, keeping focus from entering any of the subviews
-/// when `FocusabilityContainer/focusability` is `Focusability.disabled`.
-final class FocusabilityContainer: NSView, SwiftCrossUI.FocusabilityContainer {
-    var focusability: SwiftCrossUI.Focusability = .unmodified
-}
-
-extension AppKitBackend {
+extension AppKitBackend: BackendFeatures.FocusHandling {
     public func registerFocusObservers(
         _ data: [WidgetFocusObserver],
         on widget: NSView
@@ -17,10 +11,8 @@ extension AppKitBackend {
         focusManager.register(data, for: widget)
     }
 
-    public func createFocusContainer() -> NSView {
-        let container = FocusabilityContainer()
-        container.translatesAutoresizingMaskIntoConstraints = false
-        return container
+    public func setFocusEffectDisabled(on widget: NSView, disabled: Bool) {
+        widget.focusRingType = disabled ? .none : .default
     }
 
     public func setFocus(of widget: NSView, to focus: Focus) {
@@ -54,18 +46,6 @@ extension AppKitBackend {
             return field.currentEditor() === field.window?.firstResponder
         }
         return false
-    }
-
-    public func updateFocusContainer(
-        _ widget: NSView,
-        focusability: Focusability
-    ) {
-        let container = widget as! FocusabilityContainer
-        container.focusability = focusability
-    }
-
-    public func setFocusEffectDisabled(on widget: NSView, disabled: Bool) {
-        widget.focusRingType = disabled ? .none : .default
     }
 }
 

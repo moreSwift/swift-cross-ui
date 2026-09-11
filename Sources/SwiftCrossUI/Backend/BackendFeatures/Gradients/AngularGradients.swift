@@ -2,6 +2,7 @@ extension BackendFeatures {
     /// Backend methods for angular (conic) gradients.
     ///
     /// Used by ``AngularGradient``.
+    @MainActor
     public protocol AngularGradients: Core {
         /// Creates the widget for an ``AngularGradient``.
         func createAngularGradientWidget() -> Widget

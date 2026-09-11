@@ -1,7 +1,7 @@
 import AppKit
 @_spi(Backends) import SwiftCrossUI
 
-extension AppKitBackend {
+extension AppKitBackend: BackendFeatures.Paths {
     public typealias Path = NSBezierPath
 
     final class NSBezierPathView: NSView {
@@ -25,7 +25,46 @@ extension AppKitBackend {
         NSBezierPath()
     }
 
-    func applyStrokeStyle(_ strokeStyle: StrokeStyle, to path: NSBezierPath) {
+    public func updatePath(
+        _ path: Path,
+        _ source: SwiftCrossUI.Path,
+        bounds: SwiftCrossUI.Path.Rect,
+        pointsChanged: Bool,
+        environment: EnvironmentValues
+    ) {
+        applyStrokeStyle(source.strokeStyle, to: path)
+
+        if pointsChanged {
+            path.removeAllPoints()
+            applyActions(
+                source.actions,
+                to: path,
+                bounds: bounds,
+                applyCoordinateSystemCorrection: true
+            )
+        }
+    }
+
+    public func renderPath(
+        _ path: Path,
+        container: Widget,
+        strokeColor: Color.Resolved,
+        fillColor: Color.Resolved,
+        overrideStrokeStyle: StrokeStyle?
+    ) {
+        if let overrideStrokeStyle {
+            applyStrokeStyle(overrideStrokeStyle, to: path)
+        }
+
+        let widget = container as! NSBezierPathView
+        widget.path = path
+        widget.strokeColor = strokeColor.nsColor
+        widget.fillColor = fillColor.nsColor
+
+        widget.needsDisplay = true
+    }    
+
+    private func applyStrokeStyle(_ strokeStyle: StrokeStyle, to path: NSBezierPath) {
         path.lineWidth = CGFloat(strokeStyle.width)
 
         path.lineCapStyle =
@@ -49,27 +88,7 @@ extension AppKitBackend {
         }
     }
 
-    public func updatePath(
-        _ path: Path,
-        _ source: SwiftCrossUI.Path,
-        bounds: SwiftCrossUI.Path.Rect,
-        pointsChanged: Bool,
-        environment: EnvironmentValues
-    ) {
-        applyStrokeStyle(source.strokeStyle, to: path)
-
-        if pointsChanged {
-            path.removeAllPoints()
-            applyActions(
-                source.actions,
-                to: path,
-                bounds: bounds,
-                applyCoordinateSystemCorrection: true
-            )
-        }
-    }
-
-    func applyActions(
+    private func applyActions(
         _ actions: [SwiftCrossUI.Path.Action],
         to path: NSBezierPath,
         bounds: SwiftCrossUI.Path.Rect,
@@ -189,24 +208,5 @@ extension AppKitBackend {
             )
             path.transform(using: coordinateSystemCorrection)
         }
-    }
-
-    public func renderPath(
-        _ path: Path,
-        container: Widget,
-        strokeColor: Color.Resolved,
-        fillColor: Color.Resolved,
-        overrideStrokeStyle: StrokeStyle?
-    ) {
-        if let overrideStrokeStyle {
-            applyStrokeStyle(overrideStrokeStyle, to: path)
-        }
-
-        let widget = container as! NSBezierPathView
-        widget.path = path
-        widget.strokeColor = strokeColor.nsColor
-        widget.fillColor = fillColor.nsColor
-
-        widget.needsDisplay = true
     }
 }

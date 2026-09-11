@@ -1,8 +1,7 @@
 import AppKit
 @_spi(Backends) import SwiftCrossUI
-import WebKit
 
-extension AppKitBackend {
+extension AppKitBackend: BackendFeatures.WebViews {
     public func createWebView() -> Widget {
         let webView = CustomWKWebView()
         webView.navigationDelegate = webView.strongNavigationDelegate
@@ -22,22 +21,5 @@ extension AppKitBackend {
         let webView = webView as! CustomWKWebView
         let request = URLRequest(url: url)
         webView.load(request)
-    }
-}
-
-final class CustomWKWebView: WKWebView {
-    var strongNavigationDelegate = CustomWKNavigationDelegate()
-}
-
-final class CustomWKNavigationDelegate: NSObject, WKNavigationDelegate {
-    var onNavigate: ((URL) -> Void)?
-
-    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        guard let url = webView.url else {
-            logger.warning("web view has no URL")
-            return
-        }
-
-        onNavigate?(url)
     }
 }

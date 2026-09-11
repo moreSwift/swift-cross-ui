@@ -1,3 +1,4 @@
+@MainActor
 enum BackendHelpers {
     /// Updates the focus properties of a widget.
     static func updateWidgetFocusProperties<Backend: BackendFeatures.FocusHandling>(

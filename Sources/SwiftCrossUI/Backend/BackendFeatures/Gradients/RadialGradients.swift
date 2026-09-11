@@ -2,6 +2,7 @@ extension BackendFeatures {
     /// Backend methods for radial gradients.
     ///
     /// Used by ``RadialGradient``.
+    @MainActor
     public protocol RadialGradients: Core {
         /// Creates the widget for a ``RadialGradient``.
         func createRadialGradientWidget() -> Widget

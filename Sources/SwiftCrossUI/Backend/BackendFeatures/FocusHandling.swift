@@ -5,6 +5,7 @@ extension BackendFeatures {
     /// ``View/focused(_:)``
     /// ``View/focused(_:equals:)``
     /// ``View/focusEffectDisabled(_:)``
+    @MainActor
     public protocol FocusHandling: Core {
         /// Register a ``FocusState`` on the widget.
         ///
@@ -29,6 +30,7 @@ extension BackendFeatures {
     /// Backend methods for disabling focusability of a subtree.
     ///
     /// Used by ``View/focusable(_:)``.
+    @MainActor
     public protocol FocusDisabling: Core {
         /// Create a container controlling the focusability of its children.
         ///
