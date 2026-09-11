@@ -3,7 +3,7 @@ import AppKit
 
 extension AppKitBackend: BackendFeatures.Images {
     public var requiresImageUpdateOnScaleFactorChange: Bool { false }
-    
+
     public func createImageView() -> Widget {
         let imageView = NSImageView()
         imageView.imageScaling = .scaleAxesIndependently

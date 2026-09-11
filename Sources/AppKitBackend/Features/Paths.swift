@@ -62,7 +62,7 @@ extension AppKitBackend: BackendFeatures.Paths {
         widget.fillColor = fillColor.nsColor
 
         widget.needsDisplay = true
-    }    
+    }
 
     private func applyStrokeStyle(_ strokeStyle: StrokeStyle, to path: NSBezierPath) {
         path.lineWidth = CGFloat(strokeStyle.width)
