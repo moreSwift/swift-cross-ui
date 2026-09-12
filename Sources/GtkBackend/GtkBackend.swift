@@ -31,6 +31,8 @@ public final class GtkBackend {
 
     var borderedButtonPadding: SIMD2<Int>?
 
+    let focusManager = FocusStateManager()
+
     // A separate initializer to satisfy `BackendFeatures.Core`'s requirements.
     public convenience init() {
         self.init(appIdentifier: nil)

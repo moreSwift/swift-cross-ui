@@ -59,6 +59,7 @@ struct ControlFocusabilityApp: App {
     @State var isFlavorPickerFocusable = true
     @State var isDatePickerStyleFocusable = true
     @State var isDatePickerFocusable = true
+    @State var allFocusEffectDisabled: Bool = false
 
     @FocusState var focusState: Int?
 
@@ -75,6 +76,9 @@ struct ControlFocusabilityApp: App {
                         }
                         .padding(.bottom, 20)
                         .focused($focusState, equals: 0)
+
+                        Toggle("Disable all focuseffects", isOn: $allFocusEffectDisabled)
+                            .focusableIfSupported(false)
 
                         HStack {
                             VStack {
@@ -295,6 +299,7 @@ struct ControlFocusabilityApp: App {
                         .focusableIfSupported(false)
                 }
             }
+            .focusEffectDisabled(allFocusEffectDisabled)
         }.defaultSize(width: 400, height: 600)
     }
 }
