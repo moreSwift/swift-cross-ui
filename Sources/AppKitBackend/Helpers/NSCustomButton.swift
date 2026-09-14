@@ -3,7 +3,7 @@ import SwiftCrossUI
 
 public final class NSCustomButton: NSView {
     var action: (() -> Void)?
-    let button = NSButtonBackground()
+    var button: NSButtonBackground?
     var buttonStyle: ButtonStyle.Kind = .bordered {
         didSet { updateButtonAppearance() }
     }
@@ -152,6 +152,10 @@ public final class NSCustomButton: NSView {
     }
 
     func setupButton() {
+        guard self.button == nil else { return }
+        let button = NSButtonBackground()
+        self.button = button
+
         button.title = ""
         button.isBordered = true
         button.bezelStyle = .flexiblePush
@@ -166,6 +170,11 @@ public final class NSCustomButton: NSView {
             button.topAnchor.constraint(equalTo: topAnchor),
             button.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
+    }
+
+    func removeButton() {
+        self.button?.removeFromSuperview()
+        self.button = nil
     }
 
     func addAndSetupLabel(_ child: NSView) {
