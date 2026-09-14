@@ -140,6 +140,13 @@ class BaseViewWidget: UIView, WidgetProtocolHelpers {
         }
     }
 
+    override var description: String {
+        let base = String(super.description.dropLast())
+        return "\(base); tag = \(stringTag ?? "<nil>")>"
+    }
+
+    var stringTag: String?
+
     var childWidgets: [any WidgetProtocol] = []
     weak var parentWidget: (any WidgetProtocol)?
 
@@ -367,8 +374,117 @@ class ContainerWidget: BaseControllerWidget {
     init(child: some WidgetProtocol) {
         self.child = child
         super.init()
+    }
+
+    override func viewDidLoad() {
         add(childWidget: child)
+        view.translatesAutoresizingMaskIntoConstraints = false
         child.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            view.leadingAnchor.constraint(
+                equalTo: child.view.leadingAnchor
+            ),
+            view.trailingAnchor.constraint(
+                equalTo: child.view.trailingAnchor
+            ),
+            view.topAnchor.constraint(
+                equalTo: child.view.topAnchor
+            ),
+            view.bottomAnchor.constraint(
+                equalTo: child.view.bottomAnchor
+            ),
+        ])
+    }
+}
+
+/// Copy of BaseControllerWidget but subclassing UINavigationController
+/// instead of UIViewController.
+class NavigationControllerWidget: UINavigationController, WidgetProtocolHelpers {
+    fileprivate var leftConstraint: NSLayoutConstraint?
+    fileprivate var topConstraint: NSLayoutConstraint?
+    fileprivate var widthConstraint: NSLayoutConstraint?
+    fileprivate var heightConstraint: NSLayoutConstraint?
+
+    override func touchesBegan(
+        _ touches: Set<UITouch>,
+        with event: UIEvent?
+    ) {
+        print("Touched base controller widget: \(Self.self)")
+    }
+
+    var x = 0 {
+        didSet {
+            if x != oldValue {
+                updateLeftConstraint()
+            }
+        }
+    }
+
+    var y = 0 {
+        didSet {
+            if y != oldValue {
+                updateTopConstraint()
+            }
+        }
+    }
+
+    var width = 0 {
+        didSet {
+            if width != oldValue {
+                updateWidthConstraint()
+            }
+        }
+    }
+
+    var height = 0 {
+        didSet {
+            if height != oldValue {
+                updateHeightConstraint()
+            }
+        }
+    }
+
+    weak var parentWidget: (any WidgetProtocol)?
+
+    var root: UIViewController
+    var child: any WidgetProtocol
+    var controller: UIViewController? { self }
+
+    var childWidgets: [any WidgetProtocol]
+
+    init(root: any WidgetProtocol) {
+        child = root
+        childWidgets = [child]
+        if let root = root as? UIViewController {
+            self.root = root
+        } else {
+            self.root = ContainerWidget(child: root)
+        }
+        super.init(rootViewController: self.root)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) is not used for this view")
+    }
+
+    func removeFromParentWidget() {
+        if let parentWidget {
+            parentWidget.childWidgets.remove(
+                at: parentWidget.childWidgets.firstIndex { $0 === self }!
+            )
+            self.parentWidget = nil
+        }
+        if parent != nil {
+            willMove(toParent: nil)
+            removeFromParent()
+        }
+        view.removeFromSuperview()
+    }
+
+    override func viewDidLoad() {
+        // view.translatesAutoresizingMaskIntoConstraints = false
+        super.viewDidLoad()
     }
 }
 

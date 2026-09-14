@@ -48,5 +48,14 @@ extension BackendFeatures {
         /// - Parameter splitView: The split view.
         /// - Returns: The split view's visible columns.
         func visibleColumns(ofSplitView splitView: Widget) -> Set<NavigationSplitViewColumn>
+
+        /// Updates a split view's configuration to display the specified column.
+        /// - Parameters:
+        ///   - column: The column to show.
+        ///   - splitView: The split view.
+        func showColumn(
+            _ column: NavigationSplitViewColumn,
+            ofSplitView splitView: Widget
+        )
     }
 }

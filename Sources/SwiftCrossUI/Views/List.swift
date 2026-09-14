@@ -255,7 +255,10 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
 
         backend.setSize(of: widget, to: layout.size.vector)
         backend.setSelectionHandler(forSelectableListView: widget) { selectedIndex in
+            print("Item selected: \(selectedIndex)")
             selection.wrappedValue = associatedSelectionValue(selectedIndex)
+            print("Running navigation action: \(environment.navigationAction.debugDescription)")
+            environment.navigationAction?()
         }
 
         let selectedIndex: Int?
