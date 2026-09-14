@@ -52,8 +52,10 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
     ) -> ViewLayoutResult {
         let leadingWidth = Double(backend.sidebarWidth(ofSplitView: widget))
 
-        // TODO: If computeLayout ever becomes a pure requirement of View, then we
-        //   can delay this until commit.
+        let leadingEnvironment = environment
+            .with(\.navigationAction) {
+                backend.showColumn(.detail, ofSplitView: widget)
+            }
         children.minimumLeadingWidth =
             children.leadingChild.computeLayout(
                 with: body.view0,
@@ -61,7 +63,8 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
                     0,
                     proposedSize.height
                 ),
-                environment: environment
+                environment: leadingEnvironment
+                    .with(\.allowLayoutCaching, true)
             ).size.width
 
         children.minimumTrailingWidth =
@@ -72,22 +75,42 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
                     proposedSize.height
                 ),
                 environment: environment
+                    .with(\.allowLayoutCaching, true)
             ).size.width
+
+        let leadingWidthProposal: Double?
+        let visibleColumns = backend.visibleColumns(ofSplitView: widget)
+        print(visibleColumns)
+        if visibleColumns.count == 1 {
+            leadingWidthProposal = proposedSize.width
+        } else {
+            leadingWidthProposal = proposedSize.width == nil ? nil : leadingWidth
+        }
 
         // TODO: Figure out proper fixedSize behaviour (when width is unspecified)
         // Update pane children
         let leadingResult = children.leadingChild.computeLayout(
             with: body.view0,
             proposedSize: ProposedViewSize(
-                proposedSize.width == nil ? nil : leadingWidth,
+                leadingWidthProposal,
                 proposedSize.height
             ),
-            environment: environment
+            environment: leadingEnvironment
         )
+
+        let trailingWidthProposal: Double?
+        if visibleColumns.count == 1 {
+            trailingWidthProposal = proposedSize.width
+        } else {
+            trailingWidthProposal = proposedSize.width.map { width in
+                width - max(leadingWidth, leadingResult.size.width)
+            }
+        }
+
         let trailingResult = children.trailingChild.computeLayout(
             with: body.view1,
             proposedSize: ProposedViewSize(
-                proposedSize.width.map { $0 - max(leadingWidth, leadingResult.size.width) },
+                trailingWidthProposal,
                 proposedSize.height
             ),
             environment: environment
@@ -126,9 +149,12 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
             environment.onResize(.zero)
         }
 
-        let leadingWidth = backend.sidebarWidth(ofSplitView: widget)
+        // Even when only one column is visible, we commit both so that the
+        // hidden column is always ready for user-initiated transitions.
         let leadingResult = children.leadingChild.commit()
         let trailingResult = children.trailingChild.commit()
+
+        let leadingWidth = backend.sidebarWidth(ofSplitView: widget)
 
         backend.setSize(of: widget, to: layout.size.vector)
         backend.setSidebarWidthBounds(
@@ -143,23 +169,15 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
         )
 
         let visibleColumns = backend.visibleColumns(ofSplitView: widget)
-        if visibleColumns.count == 0 {
-            let column = Array(visibleColumns)[0]
-            switch column.column {
-                case .sidebar, .content:
-                    // TODO(stackotter): Update SplitViews backend feature to
-                    //   support all three columns. The nested double-column
-                    //   split view approach is too desktop-centric
-                    backend.setSize(
-                        of: children.leadingPaneContainer.into(),
-                        to: layout.size.vector
-                    )
-                case .detail:
-                    backend.setSize(
-                        of: children.trailingPaneContainer.into(),
-                        to: layout.size.vector
-                    )
-            }
+        if visibleColumns.count == 1 {
+            backend.setSize(
+                of: children.leadingPaneContainer.into(),
+                to: layout.size.vector
+            )
+            backend.setSize(
+                of: children.trailingPaneContainer.into(),
+                to: layout.size.vector
+            )
         }
 
         // Center pane children

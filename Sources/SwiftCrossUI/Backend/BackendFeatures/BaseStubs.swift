@@ -173,6 +173,13 @@ extension BackendFeatures.BaseStubs {
         todo()
     }
 
+    public func showColumn(
+        _ column: NavigationSplitViewColumn,
+        ofSplitView splitView: Widget
+    ) {
+        todo()
+    }
+
     public func size(
         of text: String,
         whenDisplayedIn widget: Widget,
