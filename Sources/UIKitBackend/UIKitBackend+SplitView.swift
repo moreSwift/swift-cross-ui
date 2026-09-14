@@ -58,7 +58,6 @@ class CustomSplitViewController: UISplitViewController {
 
         init(sidebarWidget: some WidgetProtocol, mainWidget: some WidgetProtocol) {
             // UISplitViewController requires its children to be controllers, not views
-            print("Adding sidebar widget:", ObjectIdentifier(sidebarWidget))
             sidebarContainer = ColumnWidget(root: sidebarWidget)
             mainContainer = ColumnWidget(root: mainWidget)
 
@@ -132,17 +131,58 @@ class CustomSplitViewController: UISplitViewController {
             let splitView = splitView as! SplitWidget
             switch column.column {
                 case .sidebar:
-                    print("Showing sidebar")
                     splitView.child.show(splitView.sidebarContainer, sender: nil)
                 case .content:
                     // TODO(stackotter): Implement triple column split view support for iOS <14
-                    fatalError("NavigationSplitViewColumn.content not supported on iOS <14 yet")
+                    fatalError("NavigationSplitViewColumn.content not supported on iOS yet")
                 case .detail:
-                    print("Showing detail")
                     splitView.child.showDetailViewController(
                         splitView.mainContainer,
                         sender: nil
                     )
+            }
+        }
+
+        public func internalPadding(
+            ofSplitView splitView: Widget,
+            column: NavigationSplitViewColumn
+        ) -> SIMD2<Int> {
+            let splitView = splitView as! SplitWidget
+
+            let visibleColumns = self.visibleColumns(ofSplitView: splitView)
+            if visibleColumns.count == 1 {
+                // // Account for the safe area reserved for navigation controls
+                // let insets: UIEdgeInsets
+                // if visibleColumns.contains(.sidebar) {
+                //     insets = splitView.sidebarContainer.root.view.safeAreaInsets
+                // } else if visibleColumns.contains(.detail) {
+                //     insets = splitView.mainContainer.root.view.safeAreaInsets
+                // } else {
+                //     logger.warning(
+                //         """
+                //         Failed to compute safe area insets of split view, couldn't \
+                //         find a presented column to measure
+                //         """
+                //     )
+                //     return .zero
+                // }
+
+                // return SIMD2(
+                //     0,
+                //     LayoutSystem.roundSize(Double(insets.top))
+                // )
+
+                // The code above doesn't work on the first update (where the
+                // safe areas appear to be zero). Someone with more time and more
+                // UIKit expertise can probably find a nicer way to measure the
+                // size of the UINavigationController safe area.
+
+                // Value obtained empirically via Xcode view hierarchy debugger
+                // TODO(stackotter): Measure this value at runtime to ensure that it
+                //   survives iOS redesigns and different form-factors.
+                return SIMD2(0, 64)
+            } else {
+                return .zero
             }
         }
     }

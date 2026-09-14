@@ -57,5 +57,14 @@ extension BackendFeatures {
             _ column: NavigationSplitViewColumn,
             ofSplitView splitView: Widget
         )
+
+        /// Computes the amount of internal padding taken up by built-in
+        /// controls of a split view within the given column. For example, on iOS
+        /// in collapsed mode, the split view reserves space at the top of each
+        /// column for navigation controls.
+        func internalPadding(
+            ofSplitView splitView: Widget,
+            column: NavigationSplitViewColumn
+        ) -> SIMD2<Int>
     }
 }

@@ -52,6 +52,9 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
     ) -> ViewLayoutResult {
         let leadingWidth = Double(backend.sidebarWidth(ofSplitView: widget))
 
+        let leadingPanePadding = backend.internalPadding(ofSplitView: widget, column: .sidebar)
+        let trailingPanePadding = backend.internalPadding(ofSplitView: widget, column: .detail)
+
         let leadingEnvironment = environment
             .with(\.navigationAction) {
                 backend.showColumn(.detail, ofSplitView: widget)
@@ -62,10 +65,10 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
                 proposedSize: ProposedViewSize(
                     0,
                     proposedSize.height
-                ),
+                ) - leadingPanePadding,
                 environment: leadingEnvironment
                     .with(\.allowLayoutCaching, true)
-            ).size.width
+            ).size.width + Double(leadingPanePadding.x)
 
         children.minimumTrailingWidth =
             children.trailingChild.computeLayout(
@@ -73,14 +76,13 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
                 proposedSize: ProposedViewSize(
                     0,
                     proposedSize.height
-                ),
+                ) - trailingPanePadding,
                 environment: environment
                     .with(\.allowLayoutCaching, true)
-            ).size.width
+            ).size.width + Double(trailingPanePadding.x)
 
         let leadingWidthProposal: Double?
         let visibleColumns = backend.visibleColumns(ofSplitView: widget)
-        print(visibleColumns)
         if visibleColumns.count == 1 {
             leadingWidthProposal = proposedSize.width
         } else {
@@ -94,7 +96,7 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
             proposedSize: ProposedViewSize(
                 leadingWidthProposal,
                 proposedSize.height
-            ),
+            ) - leadingPanePadding,
             environment: leadingEnvironment
         )
 
@@ -112,7 +114,7 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
             proposedSize: ProposedViewSize(
                 trailingWidthProposal,
                 proposedSize.height
-            ),
+            ) - trailingPanePadding,
             environment: environment
         )
 
@@ -121,12 +123,18 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
         let trailingContentSize = trailingResult.size
         var size = ViewSize.zero
         if visibleColumns.contains(.sidebar) {
-            size.width += leadingContentSize.width
-            size.height = max(size.height, leadingContentSize.height)
+            size.width += leadingContentSize.width + Double(leadingPanePadding.x)
+            size.height = max(
+                size.height,
+                leadingContentSize.height + Double(leadingPanePadding.y)
+            )
         }
         if visibleColumns.contains(.detail) {
-            size.width += trailingContentSize.width
-            size.height = max(size.height, trailingContentSize.height)
+            size.width += trailingContentSize.width + Double(leadingPanePadding.x)
+            size.height = max(
+                size.height,
+                trailingContentSize.height + Double(trailingPanePadding.y)
+            )
         }
 
         if let proposedWidth = proposedSize.width {
@@ -161,7 +169,8 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
 
         let leadingWidth = backend.sidebarWidth(ofSplitView: widget)
 
-        backend.setSize(of: widget, to: layout.size.vector)
+        let size = layout.size.vector
+        backend.setSize(of: widget, to: size)
         backend.setSidebarWidthBounds(
             ofSplitView: widget,
             minimum: LayoutSystem.roundSize(children.minimumLeadingWidth),
@@ -172,7 +181,7 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
                 )
             )
         )
-
+        
         let visibleColumns = backend.visibleColumns(ofSplitView: widget)
         if visibleColumns.count == 1 {
             // UIKit needs these, otherwise its panes get a 0x0 container around
@@ -185,43 +194,50 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
                 of: children.trailingPaneContainer.into(),
                 to: layout.size.vector
             )
-
-            // Center pane children
-            backend.setPosition(
-                ofChildAt: 0,
-                in: children.leadingPaneContainer.into(),
-                to: Alignment.center.position(
-                    ofChild: leadingResult.size.vector,
-                    in: layout.size.vector
-                )
-            )
-            backend.setPosition(
-                ofChildAt: 0,
-                in: children.trailingPaneContainer.into(),
-                to: Alignment.center.position(
-                    ofChild: trailingResult.size.vector,
-                    in: layout.size.vector
-                )
-            )
-        } else if visibleColumns.count > 1 {
-            // Center pane children
-            backend.setPosition(
-                ofChildAt: 0,
-                in: children.leadingPaneContainer.into(),
-                to: SIMD2(
-                    leadingWidth - leadingResult.size.vector.x,
-                    layout.size.vector.y - leadingResult.size.vector.y
-                ) / 2
-            )
-            backend.setPosition(
-                ofChildAt: 0,
-                in: children.trailingPaneContainer.into(),
-                to: SIMD2(
-                    layout.size.vector.x - leadingWidth - trailingResult.size.vector.x,
-                    layout.size.vector.y - trailingResult.size.vector.y
-                ) / 2
-            )
         }
+
+        let leadingInternalPadding = backend.internalPadding(
+            ofSplitView: widget,
+            column: .sidebar
+        )
+        let trailingInternalPadding = backend.internalPadding(
+            ofSplitView: widget,
+            column: .detail
+        )
+        let leadingPaneSize: SIMD2<Int>
+        let trailingPaneSize: SIMD2<Int>
+        if visibleColumns.count == 1 {
+            // Center pane children
+            leadingPaneSize = size &- leadingInternalPadding
+            trailingPaneSize = size &- trailingInternalPadding
+        } else {
+            // Center pane children
+            leadingPaneSize = SIMD2(
+                leadingWidth,
+                size.y
+            ) &- leadingInternalPadding
+            trailingPaneSize = SIMD2(
+                size.x - leadingWidth,
+                size.y
+            ) &- trailingInternalPadding
+        }
+
+        backend.setPosition(
+            ofChildAt: 0,
+            in: children.leadingPaneContainer.into(),
+            to: Alignment.center.position(
+                ofChild: leadingResult.size.vector,
+                in: leadingPaneSize
+            )
+        )
+        backend.setPosition(
+            ofChildAt: 0,
+            in: children.trailingPaneContainer.into(),
+            to: Alignment.center.position(
+                ofChild: trailingResult.size.vector,
+                in: trailingPaneSize
+            )
+        )
     }
 }
 

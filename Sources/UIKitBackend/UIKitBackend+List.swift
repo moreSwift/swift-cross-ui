@@ -3,7 +3,7 @@ import UIKit
 
 extension UIKitBackend {
     public func createSelectableListView() -> Widget {
-        let listView = UICustomTableView()
+        let listView = UICustomTableView(frame: CGRect(), style: .plain)
         listView.delegate = listView.customDelegate
         listView.dataSource = listView.customDelegate
 
