@@ -25,10 +25,9 @@ extension AppKitBackend: BackendFeatures.ApplicationMenus {
                     keyEquivalent: ""
                 )
                 if let action, environment.isEnabled {
-                    let wrappedAction = Action(action)
-                    renderedItem.actionWrapper = wrappedAction
-                    renderedItem.action = #selector(wrappedAction.run)
-                    renderedItem.target = wrappedAction
+                    renderedItem.actionCallback = action
+                    renderedItem.action = #selector(renderedItem.runAction)
+                    renderedItem.target = renderedItem
                 }
                 return renderedItem
             case .toggle(let label, let value, let onChange):
@@ -42,12 +41,11 @@ extension AppKitBackend: BackendFeatures.ApplicationMenus {
                 renderedItem.isOn = value
 
                 if environment.isEnabled {
-                    let wrappedAction = Action {
+                    renderedItem.actionCallback = { [unowned renderedItem] in
                         onChange(!renderedItem.isOn)
                     }
-                    renderedItem.actionWrapper = wrappedAction
-                    renderedItem.action = #selector(wrappedAction.run)
-                    renderedItem.target = wrappedAction
+                    renderedItem.action = #selector(renderedItem.runAction)
+                    renderedItem.target = renderedItem
                 }
 
                 return renderedItem

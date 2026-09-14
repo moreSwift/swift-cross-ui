@@ -4,17 +4,21 @@ class NSObservableSecureTextField: NSSecureTextField {
     override func textDidChange(_ notification: Notification) {
         onEdit?(self)
     }
+    
+    @objc func runOnSubmitAction() {
+        _onSubmitAction()
+    }
 
     var onEdit: ((NSSecureTextField) -> Void)?
-    var _onSubmitAction = Action({})
+    var _onSubmitAction = {}
     var onSubmit: () -> Void {
         get {
-            _onSubmitAction.action
+            _onSubmitAction
         }
         set {
-            _onSubmitAction.action = newValue
-            action = #selector(_onSubmitAction.run)
-            target = _onSubmitAction
+            _onSubmitAction = newValue
+            action = #selector(runOnSubmitAction)
+            target = self
         }
     }
 }

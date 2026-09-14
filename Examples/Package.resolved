@@ -1,5 +1,5 @@
 {
-  "originHash" : "2b686f8623d6601331fd69b1c76d5d6ff8f569396ed610829b6aa77eb3c74da5",
+  "originHash" : "52b8e6359d11d51a834b0a67c5e7f029ba2c664ef14e6e92af75d0566540ff4d",
   "pins" : [
     {
       "identity" : "aexml",
@@ -316,6 +316,15 @@
       }
     },
     {
+      "identity" : "swift-observation-polyfill",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/moreSwift/swift-observation-polyfill",
+      "state" : {
+        "revision" : "d8843fa6dbf970aab42faaf101c9ce1cfd16fb94",
+        "version" : "0.1.1"
+      }
+    },
+    {
       "identity" : "swift-parsing",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stackotter/swift-parsing",
@@ -421,6 +430,15 @@
       "state" : {
         "revision" : "b1caa062d4aaab3e3d2bed5fe0ac5f8ce9bf84f4",
         "version" : "8.27.7"
+      }
+    },
+    {
+      "identity" : "xctest-dynamic-overlay",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
+      "state" : {
+        "revision" : "d9308ad679143c26a30dec52daefe82f54af2b82",
+        "version" : "1.13.1"
       }
     },
     {

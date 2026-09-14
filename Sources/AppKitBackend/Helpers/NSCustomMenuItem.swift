@@ -1,9 +1,11 @@
 import AppKit
 
-final class NSCustomMenuItem: NSMenuItem {
-    /// This property's only purpose is to keep a strong reference to the wrapped
-    /// action so that it sticks around for long enough to be useful.
-    var actionWrapper: Action?
+final class NSCustomMenuItem: NSMenuItem {    
+    var actionCallback: (() -> Void)?
+    
+    @objc func runAction() {
+        actionCallback?()
+    }
 
     var isOn: Bool {
         get { state == .on }
