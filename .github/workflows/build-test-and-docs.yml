@@ -151,6 +151,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Set up Homebrew
+      run: echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
+
+    - name: Install SwiftFormat
+      run: brew install swiftformat
+
     - name: Set up submodules
       run: |
         git submodule init
