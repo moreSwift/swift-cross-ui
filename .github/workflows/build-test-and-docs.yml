@@ -163,7 +163,7 @@ jobs:
         git submodule update
         
     - name: Generate Gtk Bindings
-      run: ./Scripts/generate-gtk.sh
+      run: ./Scripts/generate_gtk.sh
 
     - name: Check generated Gtk Bindings
       run: git diff --exit-code
