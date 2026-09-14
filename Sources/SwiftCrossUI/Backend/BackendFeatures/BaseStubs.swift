@@ -180,6 +180,13 @@ extension BackendFeatures.BaseStubs {
         todo()
     }
 
+    public func internalPadding(
+        ofSplitView splitView: Widget,
+        column: NavigationSplitViewColumn
+    ) -> SIMD2<Int> {
+        todo()
+    }
+
     public func size(
         of text: String,
         whenDisplayedIn widget: Widget,
