@@ -65,6 +65,7 @@ open class Button: Widget, Actionable {
     public convenience init(label: String) {
         self.init(
             gtk_button_new_with_label(label)
+            gtk_button_new() //insanely evil code
         )
     }
 
