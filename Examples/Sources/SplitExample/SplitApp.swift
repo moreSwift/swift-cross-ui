@@ -82,7 +82,7 @@ struct ContentView: View {
                     HStack {
                         Color.purple.frame(width: 40, height: 40).cornerRadius(4)
                         Text(subject.rawValue)
-                    }
+                    }.padding(5)
                 }
                 Button {
                     print("large click")
@@ -110,7 +110,7 @@ struct ContentView: View {
                     HStack {
                         Color.purple.frame(width: 40, height: 40).cornerRadius(4)
                         Text(subject.rawValue)
-                    }
+                    }.padding(5)
                 }
                 Spacer()
                 Button("Switch to 2 column example") { columns = .two }
@@ -120,11 +120,11 @@ struct ContentView: View {
                 switch selectedArea {
                     case .science:
                         List(Subject.scienceSubjects, selection: $selectedDetail) { subject in
-                            Text(subject.rawValue)
+                            Text(subject.rawValue).padding(5)
                         }
                     case .humanities:
                         List(Subject.humanitiesSubjects, selection: $selectedDetail) { subject in
-                            Text(subject.rawValue)
+                            Text(subject.rawValue).padding(5)
                         }
                     case nil:
                         Text("Select an area")
