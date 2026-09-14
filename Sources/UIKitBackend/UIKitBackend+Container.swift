@@ -136,6 +136,10 @@ extension UIKitBackend {
         let child = container.childWidgets[index]
         child.x = position.x
         child.y = position.y
+
+        if position.x < 0 {
+            print(position.x)
+        }
     }
 
     public func remove(childAt index: Int, from container: Widget) {

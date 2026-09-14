@@ -77,38 +77,6 @@ class CustomSplitViewController: UISplitViewController {
 
             child.viewControllers = [sidebarContainer]
         }
-
-        override func viewDidLoad() {
-            print("Constraining \(ObjectIdentifier(sidebarContainer.view)) and \(ObjectIdentifier(sidebarContainer.child.view))")
-            // NSLayoutConstraint.activate([
-            //     sidebarContainer.view.leadingAnchor.constraint(
-            //         equalTo: sidebarContainer.child.view.leadingAnchor
-            //     ),
-            //     sidebarContainer.view.trailingAnchor.constraint(
-            //         equalTo: sidebarContainer.child.view.trailingAnchor
-            //     ),
-            //     sidebarContainer.view.topAnchor.constraint(
-            //         equalTo: sidebarContainer.child.view.topAnchor
-            //     ),
-            //     sidebarContainer.view.bottomAnchor.constraint(
-            //         equalTo: sidebarContainer.child.view.bottomAnchor
-            //     ),
-            //     mainContainer.view.leadingAnchor.constraint(
-            //         equalTo: mainContainer.child.view.leadingAnchor
-            //     ),
-            //     mainContainer.view.trailingAnchor.constraint(
-            //         equalTo: mainContainer.child.view.trailingAnchor
-            //     ),
-            //     mainContainer.view.topAnchor.constraint(
-            //         equalTo: mainContainer.child.view.topAnchor
-            //     ),
-            //     mainContainer.view.bottomAnchor.constraint(
-            //         equalTo: mainContainer.child.view.bottomAnchor
-            //     ),
-            // ])
-
-            super.viewDidLoad()
-        }
     }
 
     extension UIKitBackend {
