@@ -183,13 +183,6 @@ class BaseViewWidget: UIView, WidgetProtocolHelpers {
         updateTopConstraint()
     }
 
-    override func touchesBegan(
-        _ touches: Set<UITouch>,
-        with event: UIEvent?
-    ) {
-        print("Touched base view widget: \(Self.self)")
-    }
-
     func add(childWidget: some WidgetProtocol) {
         if childWidget.parentWidget === self { return }
         childWidget.removeFromParentWidget()
@@ -242,13 +235,6 @@ class BaseControllerWidget: UIViewController, WidgetProtocolHelpers {
     fileprivate var topConstraint: NSLayoutConstraint?
     fileprivate var widthConstraint: NSLayoutConstraint?
     fileprivate var heightConstraint: NSLayoutConstraint?
-
-    override func touchesBegan(
-        _ touches: Set<UITouch>,
-        with event: UIEvent?
-    ) {
-        print("Touched base controller widget: \(Self.self)")
-    }
 
     var x = 0 {
         didSet {
@@ -404,13 +390,6 @@ class NavigationControllerWidget: UINavigationController, WidgetProtocolHelpers 
     fileprivate var topConstraint: NSLayoutConstraint?
     fileprivate var widthConstraint: NSLayoutConstraint?
     fileprivate var heightConstraint: NSLayoutConstraint?
-
-    override func touchesBegan(
-        _ touches: Set<UITouch>,
-        with event: UIEvent?
-    ) {
-        print("Touched base controller widget: \(Self.self)")
-    }
 
     var x = 0 {
         didSet {
