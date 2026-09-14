@@ -187,6 +187,13 @@ extension BackendFeatures.BaseStubs {
         todo()
     }
 
+    public func setColumnVisibilityChangeHandler(
+        ofSplitView splitView: Widget,
+        to action: @escaping (NavigationSplitViewColumn, Bool) -> Void
+    ) {
+        todo()
+    }
+
     public func size(
         of text: String,
         whenDisplayedIn widget: Widget,
