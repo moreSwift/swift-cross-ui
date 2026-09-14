@@ -1,8 +1,8 @@
 import AppKit
 
-final class NSCustomMenuItem: NSMenuItem {    
+final class NSCustomMenuItem: NSMenuItem {
     var actionCallback: (() -> Void)?
-    
+
     @objc func runAction() {
         actionCallback?()
     }

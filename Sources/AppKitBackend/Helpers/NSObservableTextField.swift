@@ -4,7 +4,7 @@ class NSObservableTextField: NSTextField {
     override func textDidChange(_ notification: Notification) {
         onEdit?(self)
     }
-    
+
     @objc func runOnSubmitAction() {
         _onSubmitAction()
     }
