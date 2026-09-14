@@ -3,12 +3,21 @@ import UIKit
 
 extension UIKitBackend {
     public func createSelectableListView() -> Widget {
-        let listView = UICustomTableView(frame: CGRect(), style: .plain)
+        let listView = UICustomTableView(frame: CGRect(), style: .insetGrouped)
         listView.delegate = listView.customDelegate
         listView.dataSource = listView.customDelegate
 
         listView.customDelegate.allowSelections = true
         listView.backgroundColor = .clear
+
+        // These appear to be required in addition to the tableView(_:heightForHeaderInSection:)
+        // and tableView(_:heightForFooterInSection:) implementations in UICustomTableViewDelegate.
+        // Neither gets rid of the additional padding around grouped and insetGrouped list
+        // section on their own.
+        listView.sectionHeaderHeight = 0
+        listView.sectionFooterHeight = 0
+
+        listView.showsVerticalScrollIndicator = false
 
         return WrapperWidget(child: listView)
     }
@@ -112,6 +121,24 @@ class UICustomTableViewDelegate: NSObject, UITableViewDelegate, UITableViewDataS
         } else {
             return nil
         }
+    }
+
+    // Source: https://stackoverflow.com/a/37996322/8268001
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        // Removes extra padding in Grouped style
+        return CGFloat.leastNormalMagnitude
+    }
+
+    // Source: https://stackoverflow.com/a/37996322/8268001
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        // Removes extra padding in Grouped style
+        return CGFloat.leastNormalMagnitude
+    }
+}
+
+extension UICustomTableViewDelegate: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        scrollView.contentOffset.y = 0
     }
 }
 
