@@ -29,7 +29,7 @@ jobs:
           - platform: apitool
             paths: 'APITool/ Scripts/analyze_api.sh Scripts/generate_porting_kit.sh'
           - platform: gtk-bindings
-            paths: 'Sources/GtkCodeGen Sources/Gtk/Generated Sources/Gtk3/Generated Scripts/generate_gtk.sh Scripts/generate_gtk3.sh Scripts/generate_gtk4.sh Scripts/generate.sh'
+            paths: 'Sources/GtkCodeGen Sources/Gtk/Generated Sources/Gtk3/Generated Scripts/generate_gtk.sh Scripts/generate_gtk3.sh Scripts/generate_gtk4.sh'
     steps:
       - uses: actions/checkout@v6
         with:
