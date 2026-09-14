@@ -119,10 +119,15 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
         // Update split view size and sidebar width bounds
         let leadingContentSize = leadingResult.size
         let trailingContentSize = trailingResult.size
-        var size = ViewSize(
-            leadingContentSize.width + trailingContentSize.width,
-            max(leadingContentSize.height, trailingContentSize.height)
-        )
+        var size = ViewSize.zero
+        if visibleColumns.contains(.sidebar) {
+            size.width += leadingContentSize.width
+            size.height = max(size.height, leadingContentSize.height)
+        }
+        if visibleColumns.contains(.detail) {
+            size.width += trailingContentSize.width
+            size.height = max(size.height, trailingContentSize.height)
+        }
 
         if let proposedWidth = proposedSize.width {
             size.width = max(size.width, proposedWidth)
@@ -170,6 +175,8 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
 
         let visibleColumns = backend.visibleColumns(ofSplitView: widget)
         if visibleColumns.count == 1 {
+            // UIKit needs these, otherwise its panes get a 0x0 container around
+            // them, which prevents them from receiving any clicks.
             backend.setSize(
                 of: children.leadingPaneContainer.into(),
                 to: layout.size.vector
@@ -178,25 +185,43 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
                 of: children.trailingPaneContainer.into(),
                 to: layout.size.vector
             )
-        }
 
-        // Center pane children
-        backend.setPosition(
-            ofChildAt: 0,
-            in: children.leadingPaneContainer.into(),
-            to: SIMD2(
-                leadingWidth - leadingResult.size.vector.x,
-                layout.size.vector.y - leadingResult.size.vector.y
-            ) / 2
-        )
-        backend.setPosition(
-            ofChildAt: 0,
-            in: children.trailingPaneContainer.into(),
-            to: SIMD2(
-                layout.size.vector.x - leadingWidth - trailingResult.size.vector.x,
-                layout.size.vector.y - trailingResult.size.vector.y
-            ) / 2
-        )
+            // Center pane children
+            backend.setPosition(
+                ofChildAt: 0,
+                in: children.leadingPaneContainer.into(),
+                to: Alignment.center.position(
+                    ofChild: leadingResult.size.vector,
+                    in: layout.size.vector
+                )
+            )
+            backend.setPosition(
+                ofChildAt: 0,
+                in: children.trailingPaneContainer.into(),
+                to: Alignment.center.position(
+                    ofChild: trailingResult.size.vector,
+                    in: layout.size.vector
+                )
+            )
+        } else if visibleColumns.count > 1 {
+            // Center pane children
+            backend.setPosition(
+                ofChildAt: 0,
+                in: children.leadingPaneContainer.into(),
+                to: SIMD2(
+                    leadingWidth - leadingResult.size.vector.x,
+                    layout.size.vector.y - leadingResult.size.vector.y
+                ) / 2
+            )
+            backend.setPosition(
+                ofChildAt: 0,
+                in: children.trailingPaneContainer.into(),
+                to: SIMD2(
+                    layout.size.vector.x - leadingWidth - trailingResult.size.vector.x,
+                    layout.size.vector.y - trailingResult.size.vector.y
+                ) / 2
+            )
+        }
     }
 }
 
