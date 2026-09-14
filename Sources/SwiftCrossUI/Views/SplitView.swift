@@ -187,7 +187,7 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
                 )
             )
         )
-        
+
         let visibleColumns = backend.visibleColumns(ofSplitView: widget)
         if visibleColumns.count == 1 {
             // UIKit needs these, otherwise its panes get a 0x0 container around
