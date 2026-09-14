@@ -167,6 +167,12 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
         let leadingResult = children.leadingChild.commit()
         let trailingResult = children.trailingChild.commit()
 
+        backend.setColumnVisibilityChangeHandler(ofSplitView: widget) { column, isVisible in
+            if column == .detail && isVisible == false {
+                leadingResult.preferences.deselectListViews?()
+            }
+        }
+
         let leadingWidth = backend.sidebarWidth(ofSplitView: widget)
 
         let size = layout.size.vector

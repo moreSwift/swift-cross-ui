@@ -1,29 +1,12 @@
 import UIKit
 @_spi(Backends) import SwiftCrossUI
 
-class CustomSplitViewController: UISplitViewController {
-    override func touchesBegan(
-        _ touches: Set<UITouch>,
-        with event: UIEvent?
-    ) {
-        print("Touched split view controller")
-    }
-}
-
 #if os(iOS) || targetEnvironment(macCatalyst)
     final class SplitWidget: WrapperControllerWidget<UISplitViewController>,
         UISplitViewControllerDelegate
     {
-        final class ColumnWidget: NavigationControllerWidget {
+        final class SidebarContainer: NavigationControllerWidget {
             unowned var splitWidget: SplitWidget!
-
-            override func touchesBegan(
-                _ touches: Set<UITouch>,
-                with event: UIEvent?
-            ) {
-                print("Touched column widget")
-                print(children)
-            }
 
             override func viewWillTransition(
                 to size: CGSize,
@@ -34,7 +17,34 @@ class CustomSplitViewController: UISplitViewController {
                     splitWidget.hasCalledResizeHandler = true
                 }
             }
+
+            override func viewDidAppear(_ animated: Bool) {
+                splitWidget.columnVisibilityChangeHandler?(.sidebar, true)
+            }
         }
+
+        final class DetailContainer: ContainerWidget {
+            unowned var splitWidget: SplitWidget!
+
+            override func viewDidDisappear(_ animated: Bool) {
+                // We can't do viewWillDisappear, because contrary to its name,
+                // it isn't a guarantee that the view will actually disappear;
+                // the user can cancel an interactive transition
+
+                splitWidget.columnVisibilityChangeHandler?(.detail, false)
+
+                // viewDidAppear doesn't work when dismissing back to the
+                // underlying sidebar view, so we handle the appearance
+                // notification here as well
+                splitWidget.columnVisibilityChangeHandler?(.sidebar, true)
+            }
+
+            override func viewDidAppear(_ animated: Bool) {
+                splitWidget.columnVisibilityChangeHandler?(.detail, true)
+            }
+        }
+
+        var columnVisibilityChangeHandler: ((NavigationSplitViewColumn, Bool) -> Void)?
 
         var resizeHandler: (() -> Void)? {
             didSet {
@@ -53,21 +63,21 @@ class CustomSplitViewController: UISplitViewController {
             }
         }
 
-        let sidebarContainer: ColumnWidget
-        let mainContainer: ColumnWidget
+        let sidebarContainer: SidebarContainer
+        let detailContainer: DetailContainer
 
         init(sidebarWidget: some WidgetProtocol, mainWidget: some WidgetProtocol) {
             // UISplitViewController requires its children to be controllers, not views
-            sidebarContainer = ColumnWidget(root: sidebarWidget)
-            mainContainer = ColumnWidget(root: mainWidget)
+            sidebarContainer = SidebarContainer(root: sidebarWidget)
+            detailContainer = DetailContainer(child: mainWidget)
 
             super.init(child: UISplitViewController())
 
             sidebarContainer.parentWidget = self
-            mainContainer.parentWidget = self
-            childWidgets = [sidebarContainer, mainContainer]
+            detailContainer.parentWidget = self
+            childWidgets = [sidebarContainer, detailContainer]
             sidebarContainer.splitWidget = self
-            mainContainer.splitWidget = self
+            detailContainer.splitWidget = self
 
             child.delegate = self
 
@@ -137,7 +147,7 @@ class CustomSplitViewController: UISplitViewController {
                     fatalError("NavigationSplitViewColumn.content not supported on iOS yet")
                 case .detail:
                     splitView.child.showDetailViewController(
-                        splitView.mainContainer,
+                        splitView.detailContainer,
                         sender: nil
                     )
             }
@@ -156,7 +166,7 @@ class CustomSplitViewController: UISplitViewController {
                 // if visibleColumns.contains(.sidebar) {
                 //     insets = splitView.sidebarContainer.root.view.safeAreaInsets
                 // } else if visibleColumns.contains(.detail) {
-                //     insets = splitView.mainContainer.root.view.safeAreaInsets
+                //     insets = splitView.detailContainer.root.view.safeAreaInsets
                 // } else {
                 //     logger.warning(
                 //         """
@@ -184,6 +194,14 @@ class CustomSplitViewController: UISplitViewController {
             } else {
                 return .zero
             }
+        }
+
+        public func setColumnVisibilityChangeHandler(
+            ofSplitView splitView: Widget,
+            to action: @escaping (NavigationSplitViewColumn, Bool) -> Void
+        ) {
+            let splitView = splitView as! SplitWidget
+            splitView.columnVisibilityChangeHandler = action
         }
     }
 #else
@@ -217,6 +235,13 @@ class CustomSplitViewController: UISplitViewController {
         public func visibleColumns(
             ofSplitView splitView: Widget
         ) -> Set<NavigationSplitViewColumn> {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func setColumnVisibilityChangeHandler(
+            ofSplitView splitView: Widget,
+            to action: @escaping (NavigationSplitViewColumn, Bool) -> Void
+        ) {
             fatalError("\(Self.self): \(#function) not implemented")
         }
     }

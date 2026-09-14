@@ -230,7 +230,10 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
 
         return ViewLayoutResult(
             size: size,
-            childResults: childResults
+            childResults: childResults,
+            preferencesOverlay: PreferenceValues.default.with(\.deselectListViews) {
+                selection.wrappedValue = nil
+            }
         )
     }
 
