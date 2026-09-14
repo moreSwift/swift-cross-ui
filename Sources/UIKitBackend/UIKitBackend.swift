@@ -241,6 +241,12 @@ public final class UIKitBackend:
         UIApplication.shared.open(url)
     }
 
+    public func tag(widget: Widget, as tag: String) {
+        if let widget = widget as? BaseViewWidget {
+            widget.stringTag = tag
+        }
+    }
+
     // MARK: - Unimplemented Features
 
     public func createToggle() -> Widget {
