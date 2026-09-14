@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        platform: [android, linux, macos, uikit, windows, apitool]
+        platform: [android, linux, macos, uikit, windows, apitool, gtk-bindings]
         include:
           - platform: android
             paths: 'Sources/AndroidBackend/ Sources/AndroidBackendShim/'
@@ -28,6 +28,8 @@ jobs:
             paths: 'Sources/WinUIBackend/ Sources/WinUIInterop/ vcpkg.json'
           - platform: apitool
             paths: 'APITool/ Scripts/analyze_api.sh Scripts/generate_porting_kit.sh'
+          - platform: gtk-bindings
+            paths: 'Sources/GtkCodeGen Sources/Gtk/Generated Sources/Gtk3/Generated Scripts/generate_gtk.sh Scripts/generate_gtk3.sh Scripts/generate_gtk4.sh Scripts/generate_gyb.sh Scripts/generate.sh'
     steps:
       - uses: actions/checkout@v6
         with:
@@ -55,6 +57,7 @@ jobs:
       uikit: ${{ steps.check_files.outputs.uikit }}
       windows: ${{ steps.check_files.outputs.windows }}
       apitool: ${{ steps.check_files.outputs.apitool }}
+      gtk-bindings: ${{ steps.check_files.outputs.gtk-bindings }}
 
   macos:
     runs-on: macos-15
@@ -140,6 +143,24 @@ jobs:
 
     - name: Run APITool stub generation
       run: ./Scripts/generate_porting_kit.sh
+
+  check-generated-gtk-bindings:
+    runs-on: ubuntu-24.04
+    needs: check_file_changes
+    if: ${{ needs.check_file_changes.outputs.gtk-bindings == 'true' }}
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up submodules
+      run: |
+        git submodule init
+        git submodule update
+        
+    - name: Generate Gtk Bindings
+      run: ./Scripts/generate_gtk.sh
+
+    - name: Check generated Gtk Bindings
+      run: git diff --exit-code
 
   android:
     runs-on: macos-15
