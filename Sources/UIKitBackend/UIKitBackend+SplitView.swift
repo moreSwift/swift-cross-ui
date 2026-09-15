@@ -1,37 +1,50 @@
 import UIKit
+@_spi(Backends) import SwiftCrossUI
 
 #if os(iOS) || targetEnvironment(macCatalyst)
     final class SplitWidget: WrapperControllerWidget<UISplitViewController>,
         UISplitViewControllerDelegate
     {
-        private final class ColumnView: UIView {
+        final class SidebarContainer: NavigationControllerWidget {
             unowned var splitWidget: SplitWidget!
 
-            @available(*, unavailable)
-            required init?(coder: NSCoder) {
-                fatalError("init(coder:) is not used for this view")
-            }
-
-            init() {
-                super.init(frame: .zero)
-            }
-
-            override func layoutSubviews() {
-                super.layoutSubviews()
+            override func viewWillTransition(
+                to size: CGSize,
+                with coordinator: UIViewControllerTransitionCoordinator
+            ) {
                 if !splitWidget.hasCalledResizeHandler {
                     splitWidget.resizeHandler?()
                     splitWidget.hasCalledResizeHandler = true
                 }
             }
-        }
 
-        private final class ColumnWidget: ContainerWidget {
-            let columnView = ColumnView()
-
-            override func loadView() {
-                view = columnView
+            override func viewDidAppear(_ animated: Bool) {
+                splitWidget.columnVisibilityChangeHandler?(.sidebar, true)
             }
         }
+
+        final class DetailContainer: ContainerWidget {
+            unowned var splitWidget: SplitWidget!
+
+            override func viewDidDisappear(_ animated: Bool) {
+                // We can't do viewWillDisappear, because contrary to its name,
+                // it isn't a guarantee that the view will actually disappear;
+                // the user can cancel an interactive transition
+
+                splitWidget.columnVisibilityChangeHandler?(.detail, false)
+
+                // viewDidAppear doesn't work when dismissing back to the
+                // underlying sidebar view, so we handle the appearance
+                // notification here as well
+                splitWidget.columnVisibilityChangeHandler?(.sidebar, true)
+            }
+
+            override func viewDidAppear(_ animated: Bool) {
+                splitWidget.columnVisibilityChangeHandler?(.detail, true)
+            }
+        }
+
+        var columnVisibilityChangeHandler: ((NavigationSplitViewColumn, Bool) -> Void)?
 
         var resizeHandler: (() -> Void)? {
             didSet {
@@ -50,59 +63,28 @@ import UIKit
             }
         }
 
-        private let sidebarContainer: ColumnWidget
-        private let mainContainer: ColumnWidget
+        let sidebarContainer: SidebarContainer
+        let detailContainer: DetailContainer
 
         init(sidebarWidget: some WidgetProtocol, mainWidget: some WidgetProtocol) {
             // UISplitViewController requires its children to be controllers, not views
-            sidebarContainer = ColumnWidget(child: sidebarWidget)
-            mainContainer = ColumnWidget(child: mainWidget)
+            sidebarContainer = SidebarContainer(root: sidebarWidget)
+            detailContainer = DetailContainer(child: mainWidget)
 
             super.init(child: UISplitViewController())
 
             sidebarContainer.parentWidget = self
-            mainContainer.parentWidget = self
-            childWidgets = [sidebarContainer, mainContainer]
-            sidebarContainer.columnView.splitWidget = self
-            mainContainer.columnView.splitWidget = self
+            detailContainer.parentWidget = self
+            childWidgets = [sidebarContainer, detailContainer]
+            sidebarContainer.splitWidget = self
+            detailContainer.splitWidget = self
 
             child.delegate = self
 
             child.preferredDisplayMode = .oneBesideSecondary
             child.preferredPrimaryColumnWidthFraction = 0.3
 
-            child.viewControllers = [sidebarContainer, mainContainer]
-        }
-
-        override func viewDidLoad() {
-            NSLayoutConstraint.activate([
-                sidebarContainer.view.leadingAnchor.constraint(
-                    equalTo: sidebarContainer.child.view.leadingAnchor
-                ),
-                sidebarContainer.view.trailingAnchor.constraint(
-                    equalTo: sidebarContainer.child.view.trailingAnchor
-                ),
-                sidebarContainer.view.topAnchor.constraint(
-                    equalTo: sidebarContainer.child.view.topAnchor
-                ),
-                sidebarContainer.view.bottomAnchor.constraint(
-                    equalTo: sidebarContainer.child.view.bottomAnchor
-                ),
-                mainContainer.view.leadingAnchor.constraint(
-                    equalTo: mainContainer.child.view.leadingAnchor
-                ),
-                mainContainer.view.trailingAnchor.constraint(
-                    equalTo: mainContainer.child.view.trailingAnchor
-                ),
-                mainContainer.view.topAnchor.constraint(
-                    equalTo: mainContainer.child.view.topAnchor
-                ),
-                mainContainer.view.bottomAnchor.constraint(
-                    equalTo: mainContainer.child.view.bottomAnchor
-                ),
-            ])
-
-            super.viewDidLoad()
+            child.viewControllers = [sidebarContainer]
         }
     }
 
@@ -111,11 +93,6 @@ import UIKit
             leadingChild: any WidgetProtocol,
             trailingChild: any WidgetProtocol
         ) -> any WidgetProtocol {
-            precondition(
-                UIDevice.current.userInterfaceIdiom != .phone,
-                "NavigationSplitView is currently unsupported on iPhone and iPod touch."
-            )
-
             return SplitWidget(sidebarWidget: leadingChild, mainWidget: trailingChild)
         }
 
@@ -140,6 +117,91 @@ import UIKit
             let splitWidget = splitView as! SplitWidget
             splitWidget.child.minimumPrimaryColumnWidth = CGFloat(minimumWidth)
             splitWidget.child.maximumPrimaryColumnWidth = CGFloat(maximumWidth)
+        }
+
+        public func visibleColumns(
+            ofSplitView splitView: Widget
+        ) -> Set<NavigationSplitViewColumn> {
+            // let splitView = splitView as! SplitWidget
+            // if splitView.child.isCollapsed {
+            //     // TODO(stackotter): Return the correct view of the split
+            //     return [.sidebar]
+            // } else {
+            //     return [.sidebar, .detail]
+            // }
+
+            // TODO(stackotter): Fix visible column detection (commented out code doesn't appear to work)
+            return [.sidebar]
+        }
+
+        public func showColumn(
+            _ column: NavigationSplitViewColumn,
+            ofSplitView splitView: Widget
+        ) {
+            let splitView = splitView as! SplitWidget
+            switch column.column {
+                case .sidebar:
+                    splitView.child.show(splitView.sidebarContainer, sender: nil)
+                case .content:
+                    // TODO(stackotter): Implement triple column split view support for iOS <14
+                    fatalError("NavigationSplitViewColumn.content not supported on iOS yet")
+                case .detail:
+                    splitView.child.showDetailViewController(
+                        splitView.detailContainer,
+                        sender: nil
+                    )
+            }
+        }
+
+        public func internalPadding(
+            ofSplitView splitView: Widget,
+            column: NavigationSplitViewColumn
+        ) -> SIMD2<Int> {
+            let splitView = splitView as! SplitWidget
+
+            let visibleColumns = self.visibleColumns(ofSplitView: splitView)
+            if visibleColumns.count == 1 {
+                // // Account for the safe area reserved for navigation controls
+                // let insets: UIEdgeInsets
+                // if visibleColumns.contains(.sidebar) {
+                //     insets = splitView.sidebarContainer.root.view.safeAreaInsets
+                // } else if visibleColumns.contains(.detail) {
+                //     insets = splitView.detailContainer.root.view.safeAreaInsets
+                // } else {
+                //     logger.warning(
+                //         """
+                //         Failed to compute safe area insets of split view, couldn't \
+                //         find a presented column to measure
+                //         """
+                //     )
+                //     return .zero
+                // }
+
+                // return SIMD2(
+                //     0,
+                //     LayoutSystem.roundSize(Double(insets.top))
+                // )
+
+                // The code above doesn't work on the first update (where the
+                // safe areas appear to be zero). Someone with more time and more
+                // UIKit expertise can probably find a nicer way to measure the
+                // size of the UINavigationController safe area.
+
+                // Value obtained empirically via Xcode view hierarchy debugger
+                // TODO(stackotter): Measure this value at runtime to ensure that it
+                //   survives iOS redesigns and different form-factors.
+                return SIMD2(0, 64)
+            } else {
+                return .zero
+            }
+        }
+
+        public func setColumnVisibilityChangeHandler(
+            ofSplitView splitView: Widget,
+            to action: @escaping (NavigationSplitViewColumn, Bool) -> Void
+        ) {
+            let splitView = splitView as! SplitWidget
+            splitView.columnVisibilityChangeHandler = action
         }
     }
 #else
@@ -166,6 +228,19 @@ import UIKit
             ofSplitView splitView: Widget,
             minimum minimumWidth: Int,
             maximum maximumWidth: Int
+        ) {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func visibleColumns(
+            ofSplitView splitView: Widget
+        ) -> Set<NavigationSplitViewColumn> {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func setColumnVisibilityChangeHandler(
+            ofSplitView splitView: Widget,
+            to action: @escaping (NavigationSplitViewColumn, Bool) -> Void
         ) {
             fatalError("\(Self.self): \(#function) not implemented")
         }
