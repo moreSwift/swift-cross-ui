@@ -27,19 +27,28 @@ extension AppKitBackend: BackendFeatures.Pickers {
         environment: EnvironmentValues,
         onChange: @escaping (Int?) -> Void
     ) {
+        picker.appearance = environment.colorScheme.nsAppearance
         if let picker = picker as? NSPopUpButton {
             picker.isEnabled = environment.isEnabled
 
             let menu = picker.menu!
 
             for (item, option) in zip(menu.items, options) {
-                item.attributedTitle = Self.attributedString(for: option, in: environment)
+                item.attributedTitle = Self.attributedString(
+                    for: option,
+                    in: environment,
+                    useTextColor: true
+                )
             }
 
             if menu.numberOfItems < options.count {
                 for i in menu.numberOfItems..<options.count {
                     let item = NSMenuItem()
-                    item.attributedTitle = Self.attributedString(for: options[i], in: environment)
+                    item.attributedTitle = Self.attributedString(
+                        for: options[i],
+                        in: environment,
+                        useTextColor: true
+                    )
                     menu.addItem(item)
                 }
             } else {
