@@ -412,9 +412,10 @@ if androidBackendSupported {
             name: "AndroidBackend",
             dependencies: [
                 "SwiftCrossUI",
-                "AndroidBackendShim",
                 .product(name: "Mutex", package: "swift-mutex"),
                 .product(name: "DequeModule", package: "swift-collections"),
+
+                .target(name: "AndroidBackendShim", condition: .when(platforms: [.android])),
 
                 // These two dependencies have to be marked as only included on Android
                 // (even though this target is only used on Android) because SwiftPM requires
