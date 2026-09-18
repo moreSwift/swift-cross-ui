@@ -10,8 +10,8 @@ class FocusStateManager: NSObject {
     }
     private var windowFocusStates = [ObjectIdentifier: WindowFocusState]()
 
-    func register(_ data: [WidgetFocusObserver], for widget: NSView) {
-        focusObservers[ObjectIdentifier(widget)] = data
+    func register(_ observers: [WidgetFocusObserver], for widget: NSView) {
+        focusObservers[ObjectIdentifier(widget)] = observers
     }
 
     override func observeValue(

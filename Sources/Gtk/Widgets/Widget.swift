@@ -35,8 +35,34 @@ open class Widget: GObject {
     public lazy var css: CSSBlock = CSSBlock(forClass: customCSSClass) {
         didSet {
             guard oldValue != css else { return }
-            cssProvider.loadCss(from: css.stringRepresentation)
+            reloadCSS()
         }
+    }
+
+    /// The focus related CSS rules applied directly to this widget.
+    public lazy var focusCSS: CSSBlock = CSSBlock(forClass: "\(customCSSClass):focus") {
+        didSet {
+            guard oldValue != focusCSS else { return }
+            reloadCSS()
+        }
+    }
+
+    /// The focus related CSS rules applied directly to this widget.
+    public lazy var focusWithinCSS: CSSBlock =
+        CSSBlock(forClass: "\(customCSSClass):focus-within")
+    {
+        didSet {
+            guard oldValue != focusWithinCSS else { return }
+            reloadCSS()
+        }
+    }
+
+    private func reloadCSS() {
+        cssProvider.loadCss(from: """
+                \(focusWithinCSS.stringRepresentation)
+                \(focusCSS.stringRepresentation)
+                \(css.stringRepresentation)
+            """)
     }
 
     /// A unique CSS class for this widget. The class is lazily added to the
@@ -128,6 +154,38 @@ open class Widget: GObject {
         controller.registerSignals()
     }
 
+    public var root: Gtk.Window? {
+        guard let ptr = gtk_widget_get_root(widgetPointer) else { return nil }
+        return Window(ptr)
+    }
+
+    /// Makes the widget the key view in the window it belongs to.
+    /// Equivalent to `NSWindow/makeFirstResponder(_)`.
+    public func makeKey() {
+        // Wrap in g idle to make sure focus runs after gtk is done doing it's things
+        // and drawing so we can know for sure it will get focused correctly.
+        //
+        // I wrapped it in g_idle_add during my initial implementation after noticing
+        // that it sometimes wouldn't get focused correctly. A google search suggested
+        // g_idle_add and I never saw it again since.
+        g_idle_add(
+            { (data) -> Int32 in
+                guard let dataPointer = data else { return 0 }
+                let widget = dataPointer.assumingMemoryBound(to: GtkWidget.self)
+                gtk_widget_grab_focus(widget)
+
+                // We need to tell gtk to display the focus ring for consistency.
+                // For programmatic focus changes it doesn't show the ring by default.
+                if let root = gtk_widget_get_root(widget) {
+                    let windowPtr = UnsafeMutablePointer<GtkWindow>(root)
+                    gtk_window_set_focus_visible(windowPtr, true.toGBoolean())
+                }
+                return 0
+            },
+            widgetPointer
+        )
+    }
+
     @GObjectProperty(named: "name") public var name: String?
 
     @GObjectProperty(named: "overflow") public var overflow: Overflow
@@ -165,6 +223,9 @@ open class Widget: GObject {
 
     /// Set to -1 for no min height request
     @GObjectProperty(named: "height-request") public var minHeight: Int
+
+    /// Whether the widget or any of its descendents can accept the input focus.
+    @GObjectProperty(named: "can-focus") public var canFocus: Bool
 
     /// Sets the name of the Gtk view for useful debugging in inspector (Ctrl+Shift+D)
     public func tag(as tag: String) {

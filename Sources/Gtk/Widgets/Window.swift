@@ -120,6 +120,12 @@ open class Window: Widget {
         }
     }
 
+    /// Set focus to a specific widget or nil.
+    /// Equivalent to `NSWindow.makeFirstResponder(_:)`
+    public func setFocus(to widget: Widget?) {
+        gtk_root_set_focus(self.opaquePointer, widget?.widgetPointer)
+    }
+
     private var escapeKeyEventController: EventControllerKey?
     public var onCloseRequest: ((Window) -> Void)?
     public var onDestroy: ((Window) -> Void)?
