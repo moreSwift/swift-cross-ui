@@ -22,5 +22,4 @@ extension DummyBackend: BackendFeatures.Core {
     public func setRootEnvironmentChangeHandler(
         to action: @escaping @Sendable @MainActor () -> Void
     ) {}
-
 }

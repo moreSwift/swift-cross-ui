@@ -19,11 +19,13 @@ extension AppKitBackend: BackendFeatures.ApplicationMenus {
             case .button(let label, let action):
                 // Custom subclass is used to keep strong reference to action
                 // wrapper.
-                let renderedItem = NSCustomMenuItem(
-                    title: label,
-                    action: nil,
-                    keyEquivalent: ""
+                let renderedItem = NSCustomMenuItem()
+                renderedItem.attributedTitle = attributedString(
+                    for: label,
+                    in: environment,
+                    useTextColor: true
                 )
+
                 if let action, environment.isEnabled {
                     renderedItem.actionCallback = action
                     renderedItem.action = #selector(renderedItem.runAction)
@@ -33,10 +35,11 @@ extension AppKitBackend: BackendFeatures.ApplicationMenus {
             case .toggle(let label, let value, let onChange):
                 // Custom subclass is used to keep strong reference to action
                 // wrapper.
-                let renderedItem = NSCustomMenuItem(
-                    title: label,
-                    action: nil,
-                    keyEquivalent: ""
+                let renderedItem = NSCustomMenuItem()
+                renderedItem.attributedTitle = attributedString(
+                    for: label,
+                    in: environment,
+                    useTextColor: true
                 )
                 renderedItem.isOn = value
 
@@ -71,7 +74,11 @@ extension AppKitBackend: BackendFeatures.ApplicationMenus {
         }
 
         let menuItem = NSMenuItem()
-        menuItem.title = submenu.label
+        menuItem.attributedTitle = attributedString(
+            for: submenu.label,
+            in: environment,
+            useTextColor: true
+        )
         menuItem.submenu = renderedMenu
         return menuItem
     }
