@@ -77,9 +77,9 @@ extension GtkBackend: BackendFeatures.FocusHandling, BackendFeatures.FocusDisabl
                 widget.focusWithinCSS.set(property: cssProperty)
             }
             widget.focusCSS.set(property: cssProperty)
-            return
+        } else {
+            widget.focusCSS = CSSBlock(forClass: widget.focusCSS.cssClass)
+            widget.focusWithinCSS = CSSBlock(forClass: widget.focusWithinCSS.cssClass)
         }
-        widget.focusCSS = CSSBlock(forClass: widget.focusCSS.cssClass)
-        widget.focusWithinCSS = CSSBlock(forClass: widget.focusWithinCSS.cssClass)
     }
 }

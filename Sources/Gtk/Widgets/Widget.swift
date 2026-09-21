@@ -154,9 +154,9 @@ open class Widget: GObject {
         controller.registerSignals()
     }
 
-    public var root: Gtk.Window? {
+    public var root: Gtk.AnyRoot? {
         guard let ptr = gtk_widget_get_root(widgetPointer) else { return nil }
-        return Window(ptr)
+        return AnyRoot(ptr)
     }
 
     /// Makes the widget the key view in the window it belongs to.
