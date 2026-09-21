@@ -59,6 +59,7 @@ struct ControlFocusabilityApp: App {
     @State var isFlavorPickerFocusable = true
     @State var isDatePickerStyleFocusable = true
     @State var isDatePickerFocusable = true
+    @State var allFocusEffectsDisabled: Bool = false
 
     @FocusState var focusState: Int?
 
@@ -293,8 +294,11 @@ struct ControlFocusabilityApp: App {
                     Toggle(enabled ? "Disable all" : "Enable all", isOn: $enabled)
                         .padding()
                         .focusableIfSupported(false)
+                    Toggle("Disable all focus effects", isOn: $allFocusEffectsDisabled)
+                        .focusableIfSupported(false)
                 }
             }
+            .focusEffectDisabled(allFocusEffectsDisabled)
         }.defaultSize(width: 400, height: 600)
     }
 }
