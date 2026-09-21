@@ -75,4 +75,58 @@ struct StackLayoutTests {
         #expect(result.size.height == ViewGraphHelpers.environment.resolvedFont.lineHeight)
         #expect(result.size.vector.x == minimumWidthWithoutWrapping)
     }
+
+    @MainActor
+    @Test(
+        "Layout HStack with one axis unspecified",
+        arguments: [ProposedViewSize(100, nil), ProposedViewSize(nil, 100)]
+    )
+    func layoutHStackOneAxisUnspecified(_ proposedSize: ProposedViewSize) {
+        let string = "Test"
+        let view = HStack(spacing: 0) {
+            Text(string)
+            Spacer(minLength: 0)
+            Text(string)
+        }
+
+        let (result, node) = ViewGraphHelpers.computeLayoutAndNode(
+            of: view,
+            proposedSize: proposedSize
+        )
+
+        let size = result.size
+        let textWidth = TextRenderingHelpers.sizeOfText(string, textWidget: node.widget).x
+        let lineHeight = TextRenderingHelpers.defaultFont.lineHeight
+        let unspecifiedWidth = Double(textWidth * 2) + Spacer.idealLength
+
+        #expect(size.height == lineHeight)
+        #expect(size.width == proposedSize.width ?? unspecifiedWidth)
+    }
+
+    @MainActor
+    @Test(
+        "Layout VStack with one axis unspecified",
+        arguments: [ProposedViewSize(100, nil), ProposedViewSize(nil, 100)]
+    )
+    func layoutVStackOneAxisUnspecified(_ proposedSize: ProposedViewSize) {
+        let string = "Test"
+        let view = VStack(spacing: 0) {
+            Text(string)
+            Spacer(minLength: 0)
+            Text(string)
+        }
+
+        let (result, node) = ViewGraphHelpers.computeLayoutAndNode(
+            of: view,
+            proposedSize: proposedSize
+        )
+
+        let size = result.size
+        let textWidth = TextRenderingHelpers.sizeOfText(string, textWidget: node.widget).x
+        let lineHeight = TextRenderingHelpers.defaultFont.lineHeight
+        let unspecifiedHeight = lineHeight * 2 + Spacer.idealLength
+
+        #expect(size.height == proposedSize.height ?? unspecifiedHeight)
+        #expect(size.width == Double(textWidth))
+    }
 }

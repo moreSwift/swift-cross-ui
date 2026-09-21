@@ -16,8 +16,8 @@ struct StackContextRendersDifferently {
         }
     }
 
-    @Test func testVStack() {
-        stackTest(
+    @Test func testVStack() throws {
+        try stackTest(
             view: VStack { TestView() },
             check: { firstPosition, secondPosition in
                 firstPosition.y != secondPosition.y &&
@@ -26,8 +26,8 @@ struct StackContextRendersDifferently {
         )
     }
 
-    @Test func testHStack() {
-        stackTest(
+    @Test func testHStack() throws {
+        try stackTest(
             view: HStack { TestView() },
             check: { firstPosition, secondPosition in
                 firstPosition.y == secondPosition.y &&
@@ -36,8 +36,8 @@ struct StackContextRendersDifferently {
         )
     }
 
-    @Test func testZStack() {
-        stackTest(
+    @Test func testZStack() throws {
+        try stackTest(
             view: ZStack { TestView() },
             check: { firstPosition, secondPosition in
                 firstPosition == secondPosition
@@ -48,50 +48,14 @@ struct StackContextRendersDifferently {
     func stackTest<V: View>(
         view: V,
         check: (SIMD2<Int>, SIMD2<Int>) -> Bool
-    ) {
-        let backend = DummyBackend()
-        let window = backend.createWindow(withDefaultSize: nil, id: "window")
-        let environment = EnvironmentValues(backend: backend).with(\.window, window)
+    ) throws {
+        let widget = ViewGraphHelpers.committedNode(for: view).widget
 
-        let node = ViewGraphNode(for: view, backend: backend, environment: environment)
+        let container: DummyBackend.Container = try widget.locateDescendant { container in
+            let children = container.getChildren()
 
-        _ = node.computeLayout(
-            proposedSize: .unspecified,
-            environment: environment
-        )
-
-        _ = node.commit()
-
-        let widget = node.widget
-
-        var lastParent: DummyBackend.Widget? = nil
-        var children = widget.getChildren()
-
-        while children.count != 2 {
-            guard let first = children.first else {
-                Issue.record("Unexpectedly didn't find children.")
-                return
-            }
-            lastParent = first
-            children = first.getChildren()
-        }
-
-        guard
-            let _ = children.first as? DummyBackend.TextView,
-            let _ = children.last as? DummyBackend.TextView
-        else {
-            Issue.record("Unexpectedly didn't find text views.")
-            return
-        }
-
-        guard let container = lastParent as? DummyBackend.Container else {
-            Issue.record("Parent of text views unexpectedly wasn't a container.")
-            return
-        }
-
-        guard container.children.count == 2 else {
-            Issue.record("Expected there to be two children in the container.")
-            return
+            return children.count == 2
+                && children as? [DummyBackend.TextView] != nil
         }
 
         let (_, firstPosition) = container.children[0]
