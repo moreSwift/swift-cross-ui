@@ -1,0 +1,49 @@
+# xcodegen source of truth for PreviewsExample.xcodeproj.
+#
+# The committed .xcodeproj is directly usable without installing xcodegen.
+# Regenerate after editing this file with:
+#   xcodegen generate --spec Examples/PreviewsExample/project.yml \
+#     --project Examples/PreviewsExample
+name: PreviewsExample
+options:
+  bundleIdPrefix: dev.moreswift.swift-cross-ui.examples
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: false
+packages:
+  SwiftCrossUI:
+    path: ../..
+targets:
+  PreviewsExample:
+    type: application
+    platform: macOS
+    sources:
+      - Sources
+    dependencies:
+      - package: SwiftCrossUI
+        product: SwiftCrossUIPreviews
+      - package: SwiftCrossUI
+        product: SwiftCrossUI
+    info:
+      path: Info.plist
+      properties:
+        CFBundleName: PreviewsExample
+        LSMinimumSystemVersion: "14.0"
+        NSPrincipalClass: NSApplication
+    settings:
+      base:
+        SWIFT_VERSION: "6.0"
+        PRODUCT_BUNDLE_IDENTIFIER: dev.moreswift.swift-cross-ui.examples.PreviewsExample
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: NO
+schemes:
+  PreviewsExample:
+    build:
+      targets:
+        PreviewsExample: all
+    run:
+      config: Debug
+    test:
+      config: Debug
