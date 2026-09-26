@@ -43,5 +43,47 @@ extension BackendFeatures {
             minimum minimumWidth: Int,
             maximum maximumWidth: Int
         )
+
+        /// Gets the visible columns of a split view.
+        /// - Parameter splitView: The split view.
+        /// - Returns: The split view's visible columns.
+        func visibleColumns(ofSplitView splitView: Widget) -> Set<NavigationSplitViewColumn>
+
+        /// Updates a split view's configuration to display the specified column.
+        /// - Parameters:
+        ///   - column: The column to show.
+        ///   - splitView: The split view.
+        func showColumn(
+            _ column: NavigationSplitViewColumn,
+            ofSplitView splitView: Widget
+        )
+
+        /// Computes the amount of internal padding taken up by built-in
+        /// controls of a split view within the given column. For example, on iOS
+        /// in collapsed mode, the split view reserves space at the top of each
+        /// column for navigation controls.
+        /// - Parameters:
+        ///   - splitView: The split view.
+        ///   - column: The column to get the internal padding of.
+        /// - Returns: The internal padding of the requested column.
+        func internalPadding(
+            ofSplitView splitView: Widget,
+            column: NavigationSplitViewColumn
+        ) -> SIMD2<Int>
+
+        /// Sets the function to be called when one of the split view's columns
+        /// appears or disappears due to a user interaction (not due to a backend
+        /// method call).
+        /// - Parameters:
+        ///   - splitView: The split view.
+        ///   - action: The action to run. The first parameter is the column that
+        ///     has changed visibility, and the second parameter represents
+        ///     whether the column is visible or not after the change. For example,
+        ///     if the column has disappeared then the second parameter would be
+        ///     `false`.
+        func setColumnVisibilityChangeHandler(
+            ofSplitView splitView: Widget,
+            to action: @escaping (NavigationSplitViewColumn, Bool) -> Void
+        )
     }
 }

@@ -75,4 +75,15 @@ public struct ProposedViewSize: Hashable, Sendable {
             self[component: axis.orientation] = newValue
         }
     }
+
+    public static func - (left: Self, right: SIMD2<Int>) -> Self {
+        var left = left
+        if let width = left.width {
+            left.width = max(0, width - Double(right.x))
+        }
+        if let height = left.height {
+            left.height = max(0, height - Double(right.y))
+        }
+        return left
+    }
 }

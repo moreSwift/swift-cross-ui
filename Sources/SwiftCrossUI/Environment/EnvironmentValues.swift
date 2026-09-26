@@ -493,6 +493,10 @@ extension EnvironmentValues {
 
     /// Whether to highlight a focused widget.
     @Entry public var focusEffectDisabled: Bool = false
+
+    /// An action triggered when the user performs something akin to a navigation.
+    /// In SwiftCrossUI's case, that means selecting a List item.
+    @Entry var navigationAction: (() -> Void)?
 }
 
 extension EnvironmentValues {
