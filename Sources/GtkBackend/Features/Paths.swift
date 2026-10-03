@@ -174,12 +174,12 @@ extension GtkBackend: BackendFeatures.Paths {
                 case .circle(let center, let radius):
                     cairo_arc(cairo, center.x, center.y, radius, 0, 2 * .pi)
                 case .arc(
-                let center,
-                let radius,
-                let startAngle,
-                let endAngle,
-                let clockwise
-            ):
+                    let center,
+                    let radius,
+                    let startAngle,
+                    let endAngle,
+                    let clockwise
+                ):
                     let arcFunc = clockwise ? cairo_arc : cairo_arc_negative
                     arcFunc(
                         cairo,

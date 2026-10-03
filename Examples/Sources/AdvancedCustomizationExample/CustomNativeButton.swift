@@ -81,9 +81,7 @@ struct CustomNativeButton {
             context: Context
         ) {
             button.setTitle(label, for: .normal)
-            if #available(iOS 15.0, tvOS 15.0, *) {
-                button.configuration = .bordered()
-            }
+            button.configuration = .bordered()
         }
     }
 
@@ -91,9 +89,7 @@ struct CustomNativeButton {
         var button = UIButton()
 
         override func loadView() {
-            if #available(iOS 15.0, tvOS 15.0, *) {
-                button.configuration = .bordered()
-            }
+            button.configuration = .bordered()
             view = button
         }
     }

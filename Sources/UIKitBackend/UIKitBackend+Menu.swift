@@ -7,7 +7,6 @@ extension UIKitBackend {
         case separator
     }
 
-    @available(tvOS 14, *)
     private static func renderMenuItem(
         _ item: ResolvedMenu.Item,
         environment: EnvironmentValues
@@ -47,7 +46,6 @@ extension UIKitBackend {
         }
     }
 
-    @available(tvOS 14, *)
     static func buildMenu(
         content: ResolvedMenu,
         label: String,
@@ -86,7 +84,7 @@ extension UIKitBackend {
     }
 }
 
-@available(iOS 14, macCatalyst 14, tvOS 17, *)
+@available(tvOS 17, *)
 extension UIKitBackend: BackendFeatures.AttachedMenus {
     public final class Menu {
         var uiMenu: UIMenu?

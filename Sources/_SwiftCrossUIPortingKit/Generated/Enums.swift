@@ -115,15 +115,17 @@ public enum BlendMode : Swift.Sendable {
     case plusLighter
 }
 
-@available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, visionOS 26.0, *)
-public enum AttributedTextFormatting {
-}
-
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 public enum ShapeRole : Swift.Sendable {
     case fill
     case stroke
     case separator
+}
+
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
+public enum AccessibilityAdjustmentDirection : Swift.Sendable {
+    case increment
+    case decrement
 }
 
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
@@ -189,17 +191,16 @@ public enum TransitionPhase {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
-public enum CoordinateSpace {
-    case global
-    case local
-    case named(Swift.AnyHashable)
-}
-
-@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
 public enum TextAlignment : Swift.Hashable, Swift.CaseIterable {
     case leading
     case center
     case trailing
+}
+
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
+public enum RoundedCornerStyle : Swift.Sendable {
+    case circular
+    case continuous
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
@@ -242,22 +243,10 @@ public enum ColorSchemeContrast : Swift.CaseIterable, Swift.Sendable {
     case increased
 }
 
-@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
-public enum RoundedCornerStyle : Swift.Sendable {
-    case circular
-    case continuous
-}
-
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 public enum AccessibilityLabeledPairRole {
     case label
     case content
-}
-
-@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
-public enum AccessibilityAdjustmentDirection : Swift.Sendable {
-    case increment
-    case decrement
 }
 
 @available(iOS 13.4, macOS 10.15, *)
@@ -309,13 +298,6 @@ public enum ScenePhase : Swift.Comparable {
     case active
 }
 
-@available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
-public enum ScrollTransitionPhase {
-    case topLeading
-    case identity
-    case bottomTrailing
-}
-
 @available(macOS 15.0, *)
 @available(iOS, unavailable)
 @available(tvOS, unavailable)
@@ -350,17 +332,15 @@ public enum SidebarRowSize : Swift.Sendable {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
+@available(macOS, deprecated: 27.0, message: "Use #Preview instead.")
+@available(iOS, deprecated: 27.0, message: "Use #Preview instead.")
+@available(tvOS, deprecated: 27.0, message: "Use #Preview instead.")
+@available(visionOS, deprecated: 27.0, message: "Use #Preview instead.")
 public enum PreviewPlatform : Swift.Sendable {
     case iOS
     case macOS
     case tvOS
     case watchOS
-}
-
-@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
-public enum PopoverAttachmentAnchor {
-    case rect(Anchor<Foundation.CGRect>.Source)
-    case point(UnitPoint)
 }
 
 @available(macOS 10.15, tvOS 13.0, *)
@@ -372,15 +352,6 @@ public enum MoveCommandDirection : Swift.Sendable {
     case down
     case left
     case right
-}
-
-@available(iOS 17.5, macOS 14.5, visionOS 26.2, *)
-@available(watchOS, unavailable)
-@available(tvOS, unavailable)
-public enum PencilSqueezeGesturePhase : Swift.Equatable {
-    case active(PencilSqueezeGestureValue)
-    case ended(PencilSqueezeGestureValue)
-    case failed
 }
 
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)

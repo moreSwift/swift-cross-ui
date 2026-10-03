@@ -265,7 +265,6 @@ final class DatePickerWidget: WrapperWidget<UIDatePicker> {
     }
 }
 
-@available(iOS 14, macCatalyst 14, *)
 @available(tvOS, unavailable)
 final class ColorPickerWidget: WrapperWidget<UIColorWell> {
     private var opacity: CGFloat = 1.0
@@ -533,7 +532,7 @@ extension UIKitBackend {
         wrapper.setOn(state)
     }
 
-    #if os(iOS) || os(visionOS) || targetEnvironment(macCatalyst)
+    #if os(iOS) || os(visionOS)
         public func createSlider() -> Widget {
             SliderWidget()
         }
@@ -603,7 +602,7 @@ extension UIKitBackend: BackendFeatures.TapGestures {
     }
 }
 
-#if os(iOS) || os(visionOS) || targetEnvironment(macCatalyst)
+#if os(iOS) || os(visionOS)
     extension UIKitBackend: BackendFeatures.HoverGestures {
         public func createHoverTarget(wrapping child: Widget) -> Widget {
             HoverableWidget(child: child)
@@ -621,13 +620,7 @@ extension UIKitBackend: BackendFeatures.TapGestures {
 
     extension UIKitBackend: BackendFeatures.DatePickers {
         public nonisolated var supportedDatePickerStyles: [DatePickerStyle] {
-            if #available(iOS 14, macCatalyst 14, *) {
-                [.automatic, .graphical, .compact, .wheel]
-            } else if #available(iOS 13.4, macCatalyst 13.4, *) {
-                [.automatic, .compact, .wheel]
-            } else {
-                [.automatic]
-            }
+            [.automatic, .graphical, .compact, .wheel]
         }
 
         public func createDatePicker() -> Widget {
@@ -666,27 +659,19 @@ extension UIKitBackend: BackendFeatures.TapGestures {
                         fatalError("Unexpected Components: \(components)")
                 }
 
-            if #available(iOS 13.4, macCatalyst 13.4, *) {
-                switch environment.datePickerStyle {
-                    case .automatic:
-                        datePickerWidget.child.preferredDatePickerStyle = .automatic
-                    case .compact:
-                        datePickerWidget.child.preferredDatePickerStyle = .compact
-                    case .graphical:
-                        guard #available(iOS 14, macCatalyst 14, *) else {
-                            preconditionFailure(
-                                "DatePickerStyle.graphical is only available on iOS 14 or newer"
-                            )
-                        }
-                        datePickerWidget.child.preferredDatePickerStyle = .inline
-                    case .wheel:
-                        datePickerWidget.child.preferredDatePickerStyle = .wheels
-                }
+            switch environment.datePickerStyle {
+                case .automatic:
+                    datePickerWidget.child.preferredDatePickerStyle = .automatic
+                case .compact:
+                    datePickerWidget.child.preferredDatePickerStyle = .compact
+                case .graphical:
+                    datePickerWidget.child.preferredDatePickerStyle = .inline
+                case .wheel:
+                    datePickerWidget.child.preferredDatePickerStyle = .wheels
             }
         }
     }
 
-    @available(iOS 14, macCatalyst 14, *)
     extension UIKitBackend: BackendFeatures.ColorPickers {
         public func createColorPicker() -> any WidgetProtocol {
             ColorPickerWidget()

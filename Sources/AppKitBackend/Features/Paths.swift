@@ -160,12 +160,12 @@ extension AppKitBackend: BackendFeatures.Paths {
                         )
                     )
                 case .arc(
-                let center,
-                let radius,
-                let startAngle,
-                let endAngle,
-                let clockwise
-            ):
+                    let center,
+                    let radius,
+                    let startAngle,
+                    let endAngle,
+                    let clockwise
+                ):
                     path.appendArc(
                         withCenter: NSPoint(x: center.x, y: center.y),
                         radius: CGFloat(radius),

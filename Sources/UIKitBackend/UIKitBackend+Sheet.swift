@@ -59,38 +59,34 @@ extension UIKitBackend {
         )
 
         let defaultColor: UIColor?
-        #if targetEnvironment(macCatalyst)
-            defaultColor = nil
-        #else
-            // These values were obtained by measuring the colors on my Mac, so they
-            // are likely not completely accurate (these are just how they appeared
-            // in my Mac's color space).
-            switch environment.colorScheme {
-                case .light:
+        // These values were obtained by measuring the colors on my Mac, so they
+        // are likely not completely accurate (these are just how they appeared
+        // in my Mac's color space).
+        switch environment.colorScheme {
+            case .light:
+                defaultColor = UIColor(
+                    red: 1,
+                    green: 1,
+                    blue: 1,
+                    alpha: 1
+                )
+            case .dark:
+                #if os(tvOS)
                     defaultColor = UIColor(
-                        red: 1,
-                        green: 1,
-                        blue: 1,
+                        red: 15 / 255,
+                        green: 15 / 255,
+                        blue: 15 / 255,
                         alpha: 1
                     )
-                case .dark:
-                    #if os(tvOS)
-                        defaultColor = UIColor(
-                            red: 15 / 255,
-                            green: 15 / 255,
-                            blue: 15 / 255,
-                            alpha: 1
-                        )
-                    #else
-                        defaultColor = UIColor(
-                            red: 28 / 255,
-                            green: 28 / 255,
-                            blue: 30 / 255,
-                            alpha: 1
-                        )
-                    #endif
-            }
-        #endif
+                #else
+                    defaultColor = UIColor(
+                        red: 28 / 255,
+                        green: 28 / 255,
+                        blue: 30 / 255,
+                        alpha: 1
+                    )
+                #endif
+        }
         sheet.view.backgroundColor = backgroundColor?.uiColor ?? defaultColor
 
         // From the UIKit docs for isModalInPresentation:
@@ -126,75 +122,55 @@ extension UIKitBackend {
     }
 
     private func setPresentationDetents(of sheet: CustomSheet, to detents: [PresentationDetent]) {
-        if #available(iOS 15.0, macCatalyst 15.0, *) {
-            #if !os(tvOS) && !os(visionOS)
-                if let sheetPresentation = sheet.sheetPresentationController {
-                    // From the UIKit docs for `detents`:
-                    //   The default value is an array that contains the value
-                    //   large(). This array must contain at least one element.
-                    guard !detents.isEmpty else {
-                        sheetPresentation.detents = [.large()]
-                        return
-                    }
 
-                    sheetPresentation.detents = detents.map {
-                        switch $0 {
-                            case .medium: return .medium()
-                            case .large: return .large()
-                            case .fraction(let fraction):
-                                if #available(iOS 16.0, *) {
-                                    return .custom(
-                                        identifier: .init("Fraction:\(fraction)"),
-                                        resolver: { context in
-                                            context.maximumDetentValue * fraction
-                                        }
-                                    )
-                                } else {
-                                    return .medium()
-                                }
-                            case .height(let height):
-                                if #available(iOS 16.0, *) {
-                                    return .custom(
-                                        identifier: .init("Height:\(height)"),
-                                        resolver: { _ in
-                                            height
-                                        }
-                                    )
-                                } else {
-                                    return .medium()
-                                }
-                        }
+        #if os(iOS)
+            if let sheetPresentation = sheet.sheetPresentationController {
+                // From the UIKit docs for `detents`:
+                //   The default value is an array that contains the value
+                //   large(). This array must contain at least one element.
+                guard !detents.isEmpty else {
+                    sheetPresentation.detents = [.large()]
+                    return
+                }
+
+                sheetPresentation.detents = detents.map {
+                    switch $0 {
+                        case .medium: return .medium()
+                        case .large: return .large()
+                        case .fraction(let fraction):
+                            if #available(iOS 16.0, *) {
+                                return .custom(
+                                    identifier: .init("Fraction:\(fraction)"),
+                                    resolver: { context in
+                                        context.maximumDetentValue * fraction
+                                    }
+                                )
+                            } else {
+                                return .medium()
+                            }
+                        case .height(let height):
+                            if #available(iOS 16.0, *) {
+                                return .custom(
+                                    identifier: .init("Height:\(height)"),
+                                    resolver: { _ in
+                                        height
+                                    }
+                                )
+                            } else {
+                                return .medium()
+                            }
                     }
                 }
-            #endif
-        } else {
-            // TODO: Maybe we can backport the detent behaviour?
-            debugLogOnce(
-                """
-                your current OS version doesn't support variable sheet heights; \
-                setting presentationDetents only has an effect from iOS 15.0; \
-                tvOS and visionOS do not support it at all
-                """
-            )
-        }
+            }
+        #endif
     }
 
     private func setPresentationCornerRadius(of sheet: CustomSheet, to radius: Double?) {
-        if #available(iOS 15.0, *) {
-            #if !os(tvOS) && !os(visionOS)
-                if let sheetController = sheet.sheetPresentationController {
-                    sheetController.preferredCornerRadius = radius.map { CGFloat($0) }
-                }
-            #endif
-        } else {
-            debugLogOnce(
-                """
-                your current OS version doesn't support variable sheet corner \
-                radii; setting them only has an effect from iOS 15.0; tvOS and \
-                visionOS do not support it at all
-                """
-            )
-        }
+        #if os(iOS)
+            if let sheetController = sheet.sheetPresentationController {
+                sheetController.preferredCornerRadius = radius.map { CGFloat($0) }
+            }
+        #endif
     }
 
     private func setPresentationDragIndicatorVisibility(
@@ -202,28 +178,18 @@ extension UIKitBackend {
         to visibility: Visibility,
         detents: [PresentationDetent]
     ) {
-        if #available(iOS 15.0, *) {
-            #if !os(tvOS) && !os(visionOS)
-                if let sheetController = sheet.sheetPresentationController {
-                    switch visibility {
-                        case .visible:
-                            sheetController.prefersGrabberVisible = true
-                        case .hidden:
-                            sheetController.prefersGrabberVisible = false
-                        case .automatic:
-                            sheetController.prefersGrabberVisible = detents.count > 1
-                    }
+        #if os(iOS)
+            if let sheetController = sheet.sheetPresentationController {
+                switch visibility {
+                    case .visible:
+                        sheetController.prefersGrabberVisible = true
+                    case .hidden:
+                        sheetController.prefersGrabberVisible = false
+                    case .automatic:
+                        sheetController.prefersGrabberVisible = detents.count > 1
                 }
-            #endif
-        } else {
-            debugLogOnce(
-                """
-                your current OS version doesn't support setting sheet drag \
-                indicator visibility; setting this only has an effect from iOS \
-                15.0; tvOS and visionOS do not support it at all
-                """
-            )
-        }
+            }
+        #endif
     }
 }
 

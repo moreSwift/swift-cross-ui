@@ -23,12 +23,10 @@ extension UIKitBackend {
         button.isEnabled = environment.isEnabled
         button.buttonStyle = environment.resolvedButtonStyle.kind
 
-        if #available(iOS 15.0, tvOS 15.0, macCatalyst 15.0, *) {
-            button.configuration = switch environment.resolvedButtonStyle.kind {
-                case .bordered: .bordered()
-                case .borderless: .borderless()
-                case .plain: .plain()
-            }
+        button.configuration = switch environment.resolvedButtonStyle.kind {
+            case .bordered: .bordered()
+            case .borderless: .borderless()
+            case .plain: .plain()
         }
 
         // Automatically sets the label text of a Button("") {} as accessibilityLabel.
@@ -117,17 +115,11 @@ final class UICustomButton: UIButton {
     var label: UIView
 
     static var horizontalInsets: CGFloat {
-        guard #available(iOS 15.0, tvOS 15.0, macCatalyst 15.0, *) else {
-            return 24
-        }
         let insets = UIButton.Configuration.bordered().contentInsets
         return insets.leading + insets.trailing
     }
 
     static var verticalInsets: CGFloat {
-        guard #available(iOS 15.0, tvOS 15.0, macCatalyst 15.0, *) else {
-            return 14
-        }
         let insets = UIButton.Configuration.bordered().contentInsets
         return insets.bottom + insets.top
     }
@@ -195,11 +187,6 @@ final class UICustomButton: UIButton {
 
 extension ButtonStyle.Kind {
     fileprivate func updateBackground(_ button: UICustomButton) {
-        // We don't support bordered button style on older versions.
-        guard #available(iOS 15.0, tvOS 15.0, macCatalyst 15.0, *) else {
-            return
-        }
-
         switch self {
             case .bordered:
                 button.configuration = .bordered()
@@ -210,12 +197,6 @@ extension ButtonStyle.Kind {
     }
 
     fileprivate func applyModifications(_ button: UICustomButton) {
-        guard #available(iOS 15.0, tvOS 15.0, macCatalyst 15.0, *) else {
-            button.label.alpha = button.isEnabled
-                ? button.isHighlighted ? 0.8 : 1.0
-                : 0.5
-            return
-        }
         switch self {
             case .bordered:
                 button.label.alpha = button.isEnabled ? 1.0: 0.7

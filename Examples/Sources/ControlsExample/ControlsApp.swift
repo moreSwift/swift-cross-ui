@@ -58,31 +58,25 @@ struct ControlsApp: App {
                     VStack(spacing: 30) {
                         VStack {
                             Text("Button (persisted)")
-                            if #available(iOS 15.0, tvOS 15.0, macCatalyst 15.0, *) {
-                                Text("Default ButtonStyle: \(defaultButtonStyle)")
-                                #if !canImport(Gtk3Backend)
-                                    Picker(
-                                        of: [
-                                            ButtonStyle.bordered,
-                                            ButtonStyle.plain,
-                                            ButtonStyle.borderless
-                                        ],
-                                        selection: $buttonStyle
-                                    )
-                                #endif
-                                Button("Click me!") {
-                                    count += 1
-                                }
-                                .buttonStyle(buttonStyle)
-                            } else {
-                                Button("Click me!") {
-                                    count += 1
-                                }
+                            Text("Default ButtonStyle: \(defaultButtonStyle)")
+                            #if !canImport(Gtk3Backend)
+                                Picker(
+                                    of: [
+                                        ButtonStyle.bordered,
+                                        ButtonStyle.plain,
+                                        ButtonStyle.borderless
+                                    ],
+                                    selection: $buttonStyle
+                                )
+                            #endif
+                            Button("Click me!") {
+                                count += 1
                             }
+                            .buttonStyle(buttonStyle)
                             Text("Count: \(count)")
                         }
 
-                        if #available(iOS 14, macCatalyst 14, tvOS 17, *) {
+                        if #available(tvOS 17, *) {
                             VStack {
                                 Text("Menu button")
                                 Menu("Menu") {
@@ -206,15 +200,13 @@ struct ControlsApp: App {
                         #endif
 
                         #if !os(tvOS) && !canImport(AndroidBackend)
-                            if #available(iOS 14, macCatalyst 14, *) {
-                                VStack {
-                                    ColorPicker("Choose a color:", selection: $color)
+                            VStack {
+                                ColorPicker("Choose a color:", selection: $color)
 
-                                    HStack {
-                                        Text("You chose:")
+                                HStack {
+                                    Text("You chose:")
 
-                                        color.frame(maxWidth: 50, maxHeight: 20)
-                                    }
+                                    color.frame(maxWidth: 50, maxHeight: 20)
                                 }
                             }
                         #endif
