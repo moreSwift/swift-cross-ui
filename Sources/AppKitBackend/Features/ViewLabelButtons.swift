@@ -16,23 +16,25 @@ extension AppKitBackend: BackendFeatures.ViewLabelButtons {
     public func updateButton(
         _ button: NSView,
         environment: EnvironmentValues,
+        pressStateChanged: @escaping (Bool) -> Void,
         action: @escaping () -> Void
     ) {
         let button = button as! NSCustomButton
 
+        button.onPressStateChange = pressStateChanged
         button.action = action
         button.isEnabled = environment.isEnabled
-        button.buttonStyle = environment.resolvedButtonStyle.kind
+        button.buttonStyle = environment.resolvedButtonStyle.baseButtonStyle.kind
     }
 
     public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
-        switch environment.resolvedButtonStyle.kind {
+        switch environment.resolvedButtonStyle.baseButtonStyle.kind {
             case .bordered: measureBorderedButtonPadding()
             case .plain, .borderless: SIMD2<Int>(0, 0)
         }
     }
 
-    public func defaultButtonStyle() -> ButtonStyle { .bordered }
+    public func defaultButtonStyle() -> any ButtonStyle { BorderedButtonStyle() }
 
     func measureBorderedButtonPadding() -> SIMD2<Int> {
         if let borderedButtonPadding { return borderedButtonPadding }
@@ -60,7 +62,7 @@ extension AppKitBackend: BackendFeatures.ViewLabelButtons {
     }
 }
 
-extension ButtonStyle.Kind {
+extension BaseButtonStyle.Kind {
     func applyModifications(to button: NSCustomButton) {
         switch self {
             case .bordered:

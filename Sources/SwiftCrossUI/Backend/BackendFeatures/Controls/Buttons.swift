@@ -54,6 +54,7 @@ extension BackendFeatures {
         func updateButton(
             _ button: Widget,
             environment: EnvironmentValues,
+            pressStateChanged: @escaping (Bool) -> Void,
             action: @escaping () -> Void
         )
 
@@ -71,7 +72,7 @@ extension BackendFeatures {
         /// The default button style that the backend desires.
         ///
         /// - Returns: The default ``ButtonStyle``.
-        func defaultButtonStyle() -> ButtonStyle
+        func defaultButtonStyle() -> any ButtonStyle
 
         /// Modifies the environment for the body of a button label.
         ///
@@ -80,7 +81,8 @@ extension BackendFeatures {
         ///
         /// - Returns: The modified environment.
         func computeButtonLabelEnvironment(
-            from environment: EnvironmentValues
+            from environment: EnvironmentValues,
+            withPressedState isPressed: Bool
         ) -> EnvironmentValues
     }
 }
@@ -88,11 +90,12 @@ extension BackendFeatures {
 // MARK: - Default Implementations
 extension BackendFeatures.ViewLabelButtons {
     public func computeButtonLabelEnvironment(
-        from environment: EnvironmentValues
+        from environment: EnvironmentValues,
+        withPressedState isPressed: Bool
     ) -> EnvironmentValues {
         var labelEnvironment = environment
 
-        let buttonStyle = environment.resolvedButtonStyle.kind
+        let buttonStyle = environment.resolvedButtonStyle.baseButtonStyle.kind
         let deviceClass = environment.backend.deviceClass
 
         if
