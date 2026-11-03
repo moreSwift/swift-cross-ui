@@ -19,7 +19,6 @@ extension WinUIBackend: BackendFeatures.ColorPickers {
                 colorSwatch?.width = Double(args.newSize.width) - padding.left - padding.right
                 colorSwatch?.height = Double(args.newSize.height) - padding.top - padding.bottom
             })
-        // TODO: remove on deinit
         return button
     }
 
