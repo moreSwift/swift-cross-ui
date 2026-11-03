@@ -6,8 +6,8 @@ import UWP
 extension WinUIBackend: BackendFeatures.ColorPickers {
     public func createColorPicker() -> Widget {
         let colorSwatch = createColorableRectangle()
-		colorSwatch.horizontalAlignment = HorizontalAlignment.center
-		colorSwatch.verticalAlignment = VerticalAlignment.center
+        colorSwatch.horizontalAlignment = HorizontalAlignment.center
+        colorSwatch.verticalAlignment = VerticalAlignment.center
 
         let button = ColorButton()
         button.content = colorSwatch
