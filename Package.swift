@@ -316,11 +316,31 @@ let package = Package(
             dependencies: [
                 "SwiftCrossUI",
                 .target(name: "WinUIInterop", condition: .when(platforms: [.windows])),
-                .product(name: "WinUI", package: "swift-winui", condition: .when(platforms: [.windows])),
-                .product(name: "UWP", package: "swift-winui", condition: .when(platforms: [.windows])),
-                .product(name: "CWinRT", package: "swift-winui", condition: .when(platforms: [.windows])),
-                .product(name: "WinAppSDK", package: "swift-winui", condition: .when(platforms: [.windows])),
-                .product(name: "WindowsFoundation", package: "swift-winui", condition: .when(platforms: [.windows])),
+                .product(
+                    name: "WinUI",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "UWP",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "CWinRT",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "WinAppSDK",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "WindowsFoundation",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
                 .product(name: "Mutex", package: "swift-mutex"),
             ]
         ),
