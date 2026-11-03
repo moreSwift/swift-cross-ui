@@ -768,7 +768,7 @@ public final class WinUIBackend:
             return SIMD2(296, 29)
         } else if widget is ColorButton {
             // Same size rectangle as appkit rectangle size + button padding
-            return SIMD2(66, 32)
+            return SIMD2(66, 31)
         }
 
         let oldWidth = widget.width
