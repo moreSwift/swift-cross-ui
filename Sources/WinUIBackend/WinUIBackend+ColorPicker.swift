@@ -13,12 +13,12 @@ extension WinUIBackend: BackendFeatures.ColorPickers {
         button.content = colorSwatch
 
         button.buttonSizeChangedEventCleanup = button.sizeChanged
-	.addHandler({ [weak colorSwatch, weak button] _, args in
-	    guard let args, let padding = button?.padding else { return }
-	    
-            colorSwatch?.width = Double(args.newSize.width) - padding.left - padding.right
-            colorSwatch?.height = Double(args.newSize.height) - padding.top - padding.bottom
-        })
+            .addHandler({ [weak colorSwatch, weak button] _, args in
+                guard let args, let padding = button?.padding else { return }
+
+                colorSwatch?.width = Double(args.newSize.width) - padding.left - padding.right
+                colorSwatch?.height = Double(args.newSize.height) - padding.top - padding.bottom
+            })
         // TODO: remove on deinit
         return button
     }
@@ -105,7 +105,7 @@ final class ColorButton: WinUI.Button {
     }
 
     deinit {
-	buttonSizeChangedEventCleanup?.dispose()
+        buttonSizeChangedEventCleanup?.dispose()
     }
 }
 
