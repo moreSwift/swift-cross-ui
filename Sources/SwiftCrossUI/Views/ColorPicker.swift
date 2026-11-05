@@ -63,9 +63,8 @@ extension ColorPicker: View {
 
     /// Makes the ``ColorPicker`` freely resizable.
     public consuming func resizable(_ isResizable: Bool = true) -> Self {
-        var mutable = self
-        mutable.isResizable = isResizable
-        return mutable
+        self.isResizable = isResizable
+        return self
     }
 }
 
