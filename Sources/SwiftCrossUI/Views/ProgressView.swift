@@ -8,7 +8,7 @@ public struct ProgressView<Label: View>: View {
     private var progress: Double?
     private var kind: Kind
     private var isSpinnerResizable: Bool = false
-    
+
     @Environment(\.labelsHidden) var labelsHidden
 
     private enum Kind {

@@ -55,7 +55,7 @@ public struct DatePicker<Label: View> {
     private var range: ClosedRange<Date>
     private var components: DatePickerComponents
     private var style: DatePickerStyle = .automatic
-    
+
     @Environment(\.labelsHidden) var labelsHidden
 
     /// Displays a date input.
