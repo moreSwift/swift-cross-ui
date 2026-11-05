@@ -55,6 +55,8 @@ public struct DatePicker<Label: View> {
     private var range: ClosedRange<Date>
     private var components: DatePickerComponents
     private var style: DatePickerStyle = .automatic
+    
+    @Environment(\.labelsHidden) var labelsHidden
 
     /// Displays a date input.
     /// - Parameters:
@@ -103,7 +105,9 @@ public struct DatePicker<Label: View> {
 extension DatePicker: View {
     public var body: some View {
         HStack {
-            label
+            if !labelsHidden {
+                label
+            }
 
             DatePickerImplementation(selection: selection, range: range, components: components)
         }
