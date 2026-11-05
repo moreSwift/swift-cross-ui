@@ -151,7 +151,7 @@ extension UIKitBackend: BackendFeatures.WindowBehaviors {
         minimizable: Bool,
         resizable: Bool
     ) {
-        if #available(iOS 16, tvOS 16, macCatalyst 16, *) {
+        if #available(iOS 16, tvOS 16, *) {
             window.windowScene?.windowingBehaviors?.isClosable = closable
             window.windowScene?.windowingBehaviors?.isMiniaturizable = minimizable
         }

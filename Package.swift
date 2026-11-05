@@ -127,7 +127,7 @@ if env["SCUI_BENCHMARK_VIZ"] == "1" {
 
 let package = Package(
     name: "swift-cross-ui",
-    platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .macCatalyst(.v13), .visionOS(.v1)],
+    platforms: [.macOS(.v12), .iOS(.v15), .tvOS(.v15), .visionOS(.v1)],
     products: [
         .library(name: "SwiftCrossUI", type: libraryType, targets: ["SwiftCrossUI"]),
         .library(name: "AppKitBackend", type: libraryType, targets: ["AppKitBackend"]),

@@ -82,10 +82,18 @@ struct ContentView: View {
                     HStack {
                         Color.purple.frame(width: 40, height: 40).cornerRadius(4)
                         Text(subject.rawValue)
-                    }
+                    }.padding(5)
+                }
+                Button {
+                    print("large click")
+                } label: {
+                    Color.red.frame(width: 100, height: 100)
                 }
                 Spacer()
-                Button("Switch to 3 column example") { columns = .three }
+                Button("Switch to 3 column example") {
+                    print("3 column")
+                    columns = .three
+                }
             }.padding(10)
         } detail: {
             VStack {
@@ -102,7 +110,7 @@ struct ContentView: View {
                     HStack {
                         Color.purple.frame(width: 40, height: 40).cornerRadius(4)
                         Text(subject.rawValue)
-                    }
+                    }.padding(5)
                 }
                 Spacer()
                 Button("Switch to 2 column example") { columns = .two }
@@ -112,11 +120,11 @@ struct ContentView: View {
                 switch selectedArea {
                     case .science:
                         List(Subject.scienceSubjects, selection: $selectedDetail) { subject in
-                            Text(subject.rawValue)
+                            Text(subject.rawValue).padding(5)
                         }
                     case .humanities:
                         List(Subject.humanitiesSubjects, selection: $selectedDetail) { subject in
-                            Text(subject.rawValue)
+                            Text(subject.rawValue).padding(5)
                         }
                     case nil:
                         Text("Select an area")
@@ -140,7 +148,12 @@ struct SplitApp: App {
     var body: some Scene {
         WindowGroup("Split") {
             #hotReloadable {
-                ContentView()
+                VStack {
+                    ContentView()
+                    Button("Hi") {
+                        print("hi")
+                    }
+                }
             }
         }
         .defaultSize(width: 600, height: 250)

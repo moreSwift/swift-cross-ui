@@ -230,7 +230,10 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
 
         return ViewLayoutResult(
             size: size,
-            childResults: childResults
+            childResults: childResults,
+            preferencesOverlay: PreferenceValues.default.with(\.deselectListViews) {
+                selection.wrappedValue = nil
+            }
         )
     }
 
@@ -256,6 +259,7 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         backend.setSize(of: widget, to: layout.size.vector)
         backend.setSelectionHandler(forSelectableListView: widget) { selectedIndex in
             selection.wrappedValue = associatedSelectionValue(selectedIndex)
+            environment.navigationAction?()
         }
 
         let selectedIndex: Int?
