@@ -127,7 +127,7 @@ if env["SCUI_BENCHMARK_VIZ"] == "1" {
 
 let package = Package(
     name: "swift-cross-ui",
-    platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .macCatalyst(.v13), .visionOS(.v1)],
+    platforms: [.macOS(.v12), .iOS(.v15), .tvOS(.v15), .visionOS(.v1)],
     products: [
         .library(name: "SwiftCrossUI", type: libraryType, targets: ["SwiftCrossUI"]),
         .library(name: "AppKitBackend", type: libraryType, targets: ["AppKitBackend"]),
@@ -412,9 +412,10 @@ if androidBackendSupported {
             name: "AndroidBackend",
             dependencies: [
                 "SwiftCrossUI",
-                "AndroidBackendShim",
                 .product(name: "Mutex", package: "swift-mutex"),
                 .product(name: "DequeModule", package: "swift-collections"),
+
+                .target(name: "AndroidBackendShim", condition: .when(platforms: [.android])),
 
                 // These two dependencies have to be marked as only included on Android
                 // (even though this target is only used on Android) because SwiftPM requires

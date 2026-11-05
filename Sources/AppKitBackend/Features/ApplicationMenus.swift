@@ -19,35 +19,36 @@ extension AppKitBackend: BackendFeatures.ApplicationMenus {
             case .button(let label, let action):
                 // Custom subclass is used to keep strong reference to action
                 // wrapper.
-                let renderedItem = NSCustomMenuItem(
-                    title: label,
-                    action: nil,
-                    keyEquivalent: ""
+                let renderedItem = NSCustomMenuItem()
+                renderedItem.attributedTitle = attributedString(
+                    for: label,
+                    in: environment,
+                    useTextColor: true
                 )
+
                 if let action, environment.isEnabled {
-                    let wrappedAction = Action(action)
-                    renderedItem.actionWrapper = wrappedAction
-                    renderedItem.action = #selector(wrappedAction.run)
-                    renderedItem.target = wrappedAction
+                    renderedItem.actionCallback = action
+                    renderedItem.action = #selector(renderedItem.runAction)
+                    renderedItem.target = renderedItem
                 }
                 return renderedItem
             case .toggle(let label, let value, let onChange):
                 // Custom subclass is used to keep strong reference to action
                 // wrapper.
-                let renderedItem = NSCustomMenuItem(
-                    title: label,
-                    action: nil,
-                    keyEquivalent: ""
+                let renderedItem = NSCustomMenuItem()
+                renderedItem.attributedTitle = attributedString(
+                    for: label,
+                    in: environment,
+                    useTextColor: true
                 )
                 renderedItem.isOn = value
 
                 if environment.isEnabled {
-                    let wrappedAction = Action {
+                    renderedItem.actionCallback = { [unowned renderedItem] in
                         onChange(!renderedItem.isOn)
                     }
-                    renderedItem.actionWrapper = wrappedAction
-                    renderedItem.action = #selector(wrappedAction.run)
-                    renderedItem.target = wrappedAction
+                    renderedItem.action = #selector(renderedItem.runAction)
+                    renderedItem.target = renderedItem
                 }
 
                 return renderedItem
@@ -73,7 +74,11 @@ extension AppKitBackend: BackendFeatures.ApplicationMenus {
         }
 
         let menuItem = NSMenuItem()
-        menuItem.title = submenu.label
+        menuItem.attributedTitle = attributedString(
+            for: submenu.label,
+            in: environment,
+            useTextColor: true
+        )
         menuItem.submenu = renderedMenu
         return menuItem
     }

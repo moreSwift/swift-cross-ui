@@ -7,7 +7,6 @@ extension AppKitBackend: BackendFeatures.ViewLabelButtons {
     ) -> NSView {
         let button = NSCustomButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setupButton()
 
         button.addAndSetupLabel(child)
 
@@ -63,13 +62,13 @@ extension AppKitBackend: BackendFeatures.ViewLabelButtons {
 
 extension ButtonStyle.Kind {
     func applyModifications(to button: NSCustomButton) {
-        button.button.isHidden = true
         switch self {
             case .bordered:
-                button.button.isHidden = false
-                button.button.isEnabled = button.isEnabled
-                button.button.isHighlighted = button.isHighlighted
+                button.setupButton()
+                button.button?.isEnabled = button.isEnabled
+                button.button?.isHighlighted = button.isHighlighted
             case .plain, .borderless:
+                button.removeButton()
                 button.alphaValue = button.isEnabled
                     ? button.isHighlighted ? 0.80: 1.0
                     : 0.5
@@ -94,7 +93,7 @@ extension ButtonStyle.Kind {
     func drawFocusRingMask(on button: NSCustomButton) {
         switch self {
             case .bordered:
-                button.button.drawFocusRingMask()
+                button.button?.drawFocusRingMask()
             case .plain, .borderless:
                 let maskPath = NSBezierPath(rect: button.bounds)
                 maskPath.fill()

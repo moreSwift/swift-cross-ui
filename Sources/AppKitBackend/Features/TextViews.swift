@@ -62,16 +62,18 @@ extension AppKitBackend: BackendFeatures.TextViews {
 
     static func attributedString(
         for text: String,
-        in environment: EnvironmentValues
+        in environment: EnvironmentValues,
+        useTextColor: Bool = false
     ) -> NSAttributedString {
         NSAttributedString(
             string: text,
-            attributes: attributes(forTextIn: environment)
+            attributes: attributes(forTextIn: environment, useTextColor: useTextColor)
         )
     }
 
     private static func attributes(
-        forTextIn environment: EnvironmentValues
+        forTextIn environment: EnvironmentValues,
+        useTextColor: Bool = false
     ) -> [NSAttributedString.Key: Any] {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment =
@@ -91,8 +93,20 @@ extension AppKitBackend: BackendFeatures.TextViews {
         paragraphStyle.maximumLineHeight = CGFloat(resolvedFont.lineHeight)
         paragraphStyle.lineSpacing = 0
 
+        let foregroundColor: NSColor
+        if useTextColor,
+           environment.suggestedForegroundColor
+           == environment.colorScheme.defaultForegroundColor
+        {
+            foregroundColor = NSColor.textColor
+        } else {
+            foregroundColor = NSColor.overridingVibrancy(
+                with: environment.suggestedForegroundColor.resolve(in: environment).nsColor
+            )
+        }
+
         return [
-            .foregroundColor: environment.suggestedForegroundColor.resolve(in: environment).nsColor,
+            .foregroundColor: foregroundColor,
             .font: font(for: resolvedFont),
             .paragraphStyle: paragraphStyle,
         ]
@@ -140,6 +154,15 @@ extension AppKitBackend: BackendFeatures.TextViews {
                 .black
             case .heavy:
                 .heavy
+        }
+    }
+}
+
+extension NSColor {
+    /// Makes AppKit not apply vibrancy changes to the given color.
+    static func overridingVibrancy(with color: NSColor) -> NSColor {
+        NSColor(name: nil) { _ in
+            color
         }
     }
 }
