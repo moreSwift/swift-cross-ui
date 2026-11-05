@@ -238,6 +238,20 @@ import UIKit
             fatalError("\(Self.self): \(#function) not implemented")
         }
 
+        public func showColumn(
+            _ column: NavigationSplitViewColumn,
+            ofSplitView splitView: Widget
+        ) {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
+        public func internalPadding(
+            ofSplitView splitView: Widget,
+            column: NavigationSplitViewColumn
+        ) -> SIMD2<Int> {
+            fatalError("\(Self.self): \(#function) not implemented")
+        }
+
         public func setColumnVisibilityChangeHandler(
             ofSplitView splitView: Widget,
             to action: @escaping (NavigationSplitViewColumn, Bool) -> Void
