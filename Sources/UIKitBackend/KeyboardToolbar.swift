@@ -101,7 +101,6 @@ extension Button: ToolbarItem where Label == TupleView1<Text> {
 // Despite the fact that this is unavailable on tvOS, the `introduced: 14`
 // clause is required for all current Swift versions to accept it.
 // See https://forums.swift.org/t/contradictory-available-s-are-required/78831
-@available(iOS 14, macCatalyst 14, *)
 @available(tvOS, unavailable, introduced: 14)
 @available(visionOS, unavailable)
 extension Spacer: ToolbarItem {
@@ -146,7 +145,6 @@ struct FixedWidthToolbarItem<Base: ToolbarItem>: ToolbarItem {
 }
 
 // Setting width on a flexible space is ignored, you must use a fixed space from the outset
-@available(iOS 14, macCatalyst 14, *)
 @available(tvOS, unavailable, introduced: 14)
 @available(visionOS, unavailable)
 struct FixedWidthSpacerItem: ToolbarItem {
@@ -192,9 +190,7 @@ extension ToolbarItem {
     /// nil, the item will have its natural size.
     @_disfavoredOverload
     public func frame(width: Double?) -> any ToolbarItem {
-        if #available(iOS 14, macCatalyst 14, *),
-           self is Spacer || self is FixedWidthSpacerItem
-        {
+        if self is Spacer || self is FixedWidthSpacerItem {
             FixedWidthSpacerItem(width: width)
         } else {
             FixedWidthToolbarItem(base: self, width: width)
