@@ -60,14 +60,8 @@ public final class UIKitBackend:
     public var defaultPickerStyle: BackendPickerStyle {
         #if os(tvOS)
             .segmented
-        #elseif os(visionOS)
-            .menu
         #else
-            if #available(iOS 14, macCatalyst 14, *) {
-                .menu
-            } else {
-                .wheel
-            }
+            .menu
         #endif
     }
 
@@ -79,11 +73,7 @@ public final class UIKitBackend:
                 [.segmented]
             }
         #else
-            if #available(iOS 14, macCatalyst 14, *) {
-                [.menu, .segmented, .wheel]
-            } else {
-                [.segmented, .wheel]
-            }
+            [.menu, .segmented, .wheel]
         #endif
     }
 
@@ -378,7 +368,7 @@ open class ApplicationDelegate: UIResponder, UIApplicationDelegate {
     /// The commands API only gives control over the label of each menu. Override this method if
     /// you also need to control the menus' identifiers.
     ///
-    /// This method is only used on Mac Catalyst.
+    /// This is only used on iOS.
     open func mapMenuIdentifier(_ label: String) -> UIMenu.Identifier {
         switch label {
             case "File": .file
@@ -386,6 +376,7 @@ open class ApplicationDelegate: UIResponder, UIApplicationDelegate {
             case "View": .view
             case "Window": .window
             case "Help": .help
+            case "Format": .format
             default:
                 if let bundleId = Bundle.main.bundleIdentifier {
                     .init(rawValue: "\(bundleId).\(label)")
@@ -397,14 +388,10 @@ open class ApplicationDelegate: UIResponder, UIApplicationDelegate {
 
     /// Asks the receiving responder to add and remove items from a menu system.
     ///
-    /// When targeting Mac Catalyst, you should call `super.buildMenu(with: builder)` at some
-    /// point in your implementation. If you do not, then calls to
-    /// ``SwiftCrossUI/Scene/commands(_:)`` will have no effect.
+    /// You should call `super.buildMenu(with: builder)` at some point in your implementation. If
+    /// you do not, then calls to ``SwiftCrossUI/Scene/commands(_:)`` will have no effect.
     open override func buildMenu(with builder: any UIMenuBuilder) {
-        guard
-            #available(tvOS 14, *),
-            builder.system == .main
-        else {
+        guard builder.system == .main else {
             return
         }
 
@@ -428,8 +415,7 @@ open class ApplicationDelegate: UIResponder, UIApplicationDelegate {
 
 /// The root class for scene delegates of SwiftCrossUI apps.
 ///
-/// SwiftCrossUI apps do not have to be scene-based. If you are writing a scene-based app,
-/// derive your scene delegate from this class.
+/// Derive your scene delegate from this class.
 open class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     public var window: UIWindow? {
         willSet {

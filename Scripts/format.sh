@@ -12,7 +12,10 @@ cd "$(dirname "$0")"/../
 # Minimum SwiftFormat version required by the rules enabled in .swiftformat.
 # simplifyGenericConstraints (the newest rule in --rules) was added in 0.59.0;
 # older SwiftFormat versions reject it with "Unknown rule: simplifyGenericConstraints".
-MIN_SWIFTFORMAT_VERSION="0.59.0"
+# And more recently, they fixed a switch case formatting bug, so you need at least
+# 0.63.1 otherwise you'll locally fail to format certain switch cases that CI now
+# handles correctly.
+MIN_SWIFTFORMAT_VERSION="0.63.1"
 
 if ! which swiftformat &>/dev/null; then
   echo "swiftformat not found. Install it with 'brew install swiftformat' (or see https://github.com/nicklockwood/SwiftFormat/releases)." >&2

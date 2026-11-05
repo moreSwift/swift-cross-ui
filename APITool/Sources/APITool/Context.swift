@@ -95,7 +95,9 @@ struct Context {
             "--target",
             "SwiftCrossUI",
             "-Xswiftc",
-            "-emit-module-interface"
+            "-emit-module-interface",
+            "--build-system",
+            "native",
         ]
         process.currentDirectoryPath = swiftCrossUICheckout.path
         do {

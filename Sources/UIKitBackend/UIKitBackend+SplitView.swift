@@ -1,6 +1,6 @@
 import UIKit
 
-#if os(iOS) || targetEnvironment(macCatalyst)
+#if os(iOS)
     final class SplitWidget: WrapperControllerWidget<UISplitViewController>,
         UISplitViewControllerDelegate
     {

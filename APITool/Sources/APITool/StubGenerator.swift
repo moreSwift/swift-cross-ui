@@ -106,6 +106,52 @@ enum StubGenerator {
             let index = attributes.index(before: attributes.endIndex)
             attributes[index].trailingTrivia = [.newlines(1)]
         }
+
+        // Handle anyAppleOS deprecations for older compilers, by splitting them into multiple
+        // attributes.
+        // Note: `@available(anyAppleOS 27.1, *)` etc that might come up in the future will have to
+        // be handled differently, as that requires expanding the arguments within the attribute
+        // rather than generating multiple attributes.
+        attributes = AttributeListSyntax(attributes.flatMap {
+            switch $0 {
+                case .attribute(let attribute)
+                where attribute.attributeName.trimmedDescription == "available":
+                    if let arguments = attribute.arguments?.as(AvailabilityArgumentListSyntax.self),
+                       arguments.first?.trimmedDescription == "anyAppleOS,"
+                    {
+                        return ["macOS", "iOS", "tvOS", "visionOS"].enumerated()
+                            .map { (
+                                index: Int,
+                                platform: TokenSyntax
+                            ) -> AttributeListSyntax.Element in
+                                let firstArgument = AvailabilityArgumentSyntax(
+                                    argument: .availabilityVersionRestriction(
+                                        PlatformVersionSyntax(platform: platform)
+                                    ),
+                                    trailingComma: ",",
+                                    trailingTrivia: " "
+                                )
+                                // The formatter doesn't correctly handle line breaks between attributes
+                                return .attribute(AttributeSyntax(
+                                    leadingTrivia: index == 0 ? attribute.leadingTrivia : nil,
+                                    attributeName: attribute.attributeName,
+                                    leftParen: "(",
+                                    arguments: .availability(AvailabilityArgumentListSyntax(
+                                        CollectionOfOne(firstArgument) +
+                                            Array(arguments.dropFirst())
+                                    )),
+                                    rightParen: ")",
+                                    trailingTrivia: attribute.trailingTrivia
+                                ))
+                            }
+                    } else {
+                        return [$0]
+                    }
+                default:
+                    return [$0]
+            }
+        })
+
         return attributes
     }
 
@@ -118,6 +164,7 @@ enum StubGenerator {
 
     private static func output(decls: [Syntax], to file: URL) throws {
         let stub = header + decls.map(\.description).joined(separator: "\n")
+            .replacingOccurrences(of: "::", with: ".")
             .replacingOccurrences(of: "SwiftUI.", with: "")
             .replacingOccurrences(of: "SwiftUICore.", with: "")
             .replacingOccurrences(of: "_Concurrency.", with: "")
