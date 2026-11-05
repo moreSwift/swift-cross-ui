@@ -202,21 +202,22 @@ struct ControlsApp: App {
                         #endif
 
                         #if !os(tvOS) && !canImport(AndroidBackend)
-                                VStack {
-                                    Toggle(
-                                        "Enable ColorPicker resizability",
-                                        isOn: $isColorPickerResizable
-                                    )
-                                    Slider(value: $colorPickerSize, in: 10...100)
-                                    ColorPicker("Choose a color:", selection: $color)
-                                        .resizable(isColorPickerResizable)
-                                        .frame(height: 20 + colorPickerSize)
+                            VStack {
+                                Toggle(
+                                    "Enable ColorPicker resizability",
+                                    isOn: $isColorPickerResizable
+                                )
+                                Slider(value: $colorPickerSize, in: 10...100)
+                                ColorPicker("Choose a color:", selection: $color)
+                                    .resizable(isColorPickerResizable)
+                                    .frame(height: 20 + colorPickerSize)
 
                                 HStack {
                                     Text("You chose:")
 
                                     color.frame(maxWidth: 50, maxHeight: 20)
                                 }
+                            }
                         #endif
                     }.padding().disabled(!enabled)
 
