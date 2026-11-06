@@ -46,6 +46,7 @@ struct ControlsApp: App {
     @State var pickerStyle: BuiltInPickerStyle? = .automatic
     @State var buttonStyle: ButtonStyle? = nil
     @State var color: Color = .red
+    @State var hideLabels = false
     @State var isColorPickerResizable: Bool = false
     @State var colorPickerSize: Double = 20
 
@@ -223,8 +224,10 @@ struct ControlsApp: App {
 
                     Toggle(enabled ? "Disable all" : "Enable all", isOn: $enabled)
                         .padding()
+                    Toggle(hideLabels ? "Show Labels": "Hide labels", isOn: $hideLabels)
                 }
             }
+            .labelsHidden(hideLabels)
         }.defaultSize(width: 400, height: 600)
     }
 }

@@ -11,6 +11,8 @@ public struct ColorPicker<Label: View> {
     private var supportsOpacity: Bool
     var isResizable = false
 
+    @Environment(\.labelsHidden) var labelsHidden
+
     /// Creates a color picker with a text label generated from a title string.
     /// - Parameters:
     ///   - label: The title displayed by the color picker.
@@ -49,9 +51,11 @@ public struct ColorPicker<Label: View> {
 extension ColorPicker: View {
     public var body: some View {
         HStack {
-            label
+            if !labelsHidden {
+                label
 
-            HorizontalControlSpacer()
+                HorizontalControlSpacer()
+            }
 
             ColorPickerImplementation(
                 selection: selection,
