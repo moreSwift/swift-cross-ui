@@ -42,4 +42,10 @@ final class CustomColorWell: NSColorWell {
     @objc func onColorChanged() {
         onChange?(color)
     }
+
+    override var intrinsicContentSize: NSSize {
+        // Result of measuring ColorPicker("", $color).labelsHidden()
+        // with GeometryReader in SwiftUI.
+        NSSize(width: 48.0, height: 24.0)
+    }
 }

@@ -315,12 +315,37 @@ let package = Package(
             name: "WinUIBackend",
             dependencies: [
                 "SwiftCrossUI",
-                "WinUIInterop",
-                .product(name: "WinUI", package: "swift-winui"),
-                .product(name: "UWP", package: "swift-winui"),
-                .product(name: "CWinRT", package: "swift-winui"),
-                .product(name: "WinAppSDK", package: "swift-winui"),
-                .product(name: "WindowsFoundation", package: "swift-winui"),
+                // Even though these dependencies should be able to be unconditional
+                // dependencies, we have to only include them on Windows to workaround
+                // a swift-build bug where SwiftPM 6.4+ tries to build some of our
+                // Windows-specific dependencies even when WinUIBackend hasn't been
+                // imported.
+                .target(name: "WinUIInterop", condition: .when(platforms: [.windows])),
+                .product(
+                    name: "WinUI",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "UWP",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "CWinRT",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "WinAppSDK",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "WindowsFoundation",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
                 .product(name: "Mutex", package: "swift-mutex"),
             ]
         ),
