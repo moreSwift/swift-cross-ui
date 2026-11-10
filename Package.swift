@@ -167,7 +167,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/stackotter/swift-image-formats",
-            .upToNextMinor(from: "0.5.0")
+            .upToNextMinor(from: "0.6.0")
         ),
         .package(
             url: "https://github.com/moreSwift/swift-winui",
@@ -346,7 +346,11 @@ let package = Package(
                     package: "swift-winui",
                     condition: .when(platforms: [.windows])
                 ),
-                .product(name: "Mutex", package: "swift-mutex"),
+                .product(
+                    name: "Mutex",
+                    package: "swift-mutex",
+                    condition: .when(platforms: [.windows])
+                ),
             ]
         ),
         .target(
