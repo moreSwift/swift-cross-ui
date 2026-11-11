@@ -56,6 +56,8 @@ public struct DatePicker<Label: View> {
     private var components: DatePickerComponents
     private var style: DatePickerStyle = .automatic
 
+    @Environment(\.labelsHidden) var labelsHidden
+
     /// Displays a date input.
     /// - Parameters:
     ///   - selection: The currently-selected date.
@@ -103,7 +105,9 @@ public struct DatePicker<Label: View> {
 extension DatePicker: View {
     public var body: some View {
         HStack {
-            label
+            if !labelsHidden {
+                label
+            }
 
             DatePickerImplementation(selection: selection, range: range, components: components)
         }
@@ -147,7 +151,9 @@ internal struct DatePickerImplementation: ElementaryView {
 
         // I reject your proposedSize and substitute my own
         let naturalSize = backend.naturalSize(of: widget)
-        return ViewLayoutResult.leafView(size: ViewSize(naturalSize))
+        return ViewLayoutResult
+            .leafView(size: ViewSize(naturalSize))
+            .with(\.isNeverFocusable, false)
     }
 
     func commit<Backend: BaseAppBackend>(

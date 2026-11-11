@@ -134,7 +134,6 @@ public final class WinUIBackend:
     public let defaultTableRowContentHeight = 20
     public let defaultTableCellVerticalPadding = 4
     public let defaultPaddingAmount = 10
-    public let requiresToggleSwitchSpacer = false
     public let requiresImageUpdateOnScaleFactorChange = false
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
@@ -767,6 +766,9 @@ public final class WinUIBackend:
             // https://github.com/marcelwgn/microsoft-ui-xaml/blob/ff21f9b212cea2191b959649e45e52486c8465aa/src/controls/dev/CommonStyles/DatePicker_themeresources.xaml#L261
             // Height is experimentally 29 which I don't see anywhere in that file.
             return SIMD2(296, 29)
+        } else if widget is ColorButton {
+            // Same size rectangle as appkit rectangle size + button padding
+            return SIMD2(66, 31)
         }
 
         let oldWidth = widget.width
@@ -963,10 +965,12 @@ public final class WinUIBackend:
         action: @escaping () -> Void
     ) {
         let button = button as! WinUI.Button
-        let block = TextBlock()
+
+        let block = createTextView() as! WinUI.TextBlock
         block.text = label
         button.content = block
         environment.apply(to: block)
+
         environment.apply(to: button)
         internalState.buttonClickActions[ObjectIdentifier(button)] = action
     }
@@ -995,10 +999,12 @@ public final class WinUIBackend:
         environment: EnvironmentValues
     ) {
         let button = button as! WinUI.Button
-        let block = TextBlock()
+
+        let block = createTextView() as! WinUI.TextBlock
         block.text = label
         button.content = block
         environment.apply(to: block)
+
         environment.apply(to: button)
         button.flyout = menu
     }
@@ -1480,6 +1486,33 @@ public final class WinUIBackend:
         }
     }
 
+    public func visibleColumns(
+        ofSplitView splitView: Widget
+    ) -> Set<NavigationSplitViewColumn> {
+        return [.sidebar, .detail]
+    }
+
+    public func showColumn(
+        _ column: NavigationSplitViewColumn,
+        ofSplitView splitView: Widget
+    ) {
+        // We don't hide columns yet, so we can implement this trivially :)
+    }
+
+    public func internalPadding(
+        ofSplitView splitView: Widget,
+        column: NavigationSplitViewColumn
+    ) -> SIMD2<Int> {
+        .zero
+    }
+
+    public func setColumnVisibilityChangeHandler(
+        ofSplitView splitView: Widget,
+        to action: @escaping (NavigationSplitViewColumn, Bool) -> Void
+    ) {
+        // TODO(stackotter): Handle toggling sidebar visibility
+    }
+
     public func createToggle() -> Widget {
         let toggle = ToggleButton()
         toggle.click.addHandler { [weak internalState] _, _ in
@@ -1954,12 +1987,12 @@ public final class WinUIBackend:
                     ellipse.center = Point(x: Float(center.x), y: Float(center.y))
                     geometry.append(ellipse)
                 case .arc(
-                let center,
-                let radius,
-                let startAngle,
-                let endAngle,
-                let clockwise
-            ):
+                    let center,
+                    let radius,
+                    let startAngle,
+                    let endAngle,
+                    let clockwise
+                ):
                     let startPoint = Point(
                         x: Float(center.x + radius * cos(startAngle)),
                         y: Float(center.y + radius * sin(startAngle))

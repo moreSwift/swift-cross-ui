@@ -14,20 +14,22 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        platform: [android, linux, macos, uikit, windows, apitool]
+        platform: [android, linux, macos, uikit, windows, apitool, gtk-bindings]
         include:
           - platform: android
             paths: 'Sources/AndroidBackend/ Sources/AndroidBackendShim/'
           - platform: linux
-            paths: 'Sources/*Gtk*/ Tests/ Scripts/test.sh'
+            paths: 'Sources/*Gtk*/ Sources/DummyBackend Tests/ Scripts/test.sh'
           - platform: macos
-            paths: 'Sources/AppKitBackend/ Sources/*Gtk*/ Tests/ Scripts/test.sh'
+            paths: 'Sources/AppKitBackend/ Sources/*Gtk*/ Sources/DummyBackend Tests/ Scripts/test.sh'
           - platform: uikit
             paths: 'Sources/UIKitBackend/'
           - platform: windows
             paths: 'Sources/WinUIBackend/ Sources/WinUIInterop/ vcpkg.json'
           - platform: apitool
             paths: 'APITool/ Scripts/analyze_api.sh Scripts/generate_porting_kit.sh'
+          - platform: gtk-bindings
+            paths: 'Sources/GtkCodeGen Sources/Gtk/Generated Sources/Gtk3/Generated Scripts/generate_gtk.sh Scripts/generate_gtk3.sh Scripts/generate_gtk4.sh'
     steps:
       - uses: actions/checkout@v6
         with:
@@ -55,6 +57,7 @@ jobs:
       uikit: ${{ steps.check_files.outputs.uikit }}
       windows: ${{ steps.check_files.outputs.windows }}
       apitool: ${{ steps.check_files.outputs.apitool }}
+      gtk-bindings: ${{ steps.check_files.outputs.gtk-bindings }}
 
   macos:
     runs-on: macos-15
@@ -117,7 +120,8 @@ jobs:
         swift build --target AdvancedCustomizationExample && \
         swift build --target MusicPlayerExample && \
         swift build --target FontsExample && \
-        swift build --target TapGesturesExample
+        swift build --target TapGesturesExample && \
+        swift build --target ObservableExample
 
   apitool:
     runs-on: macos-15
@@ -132,6 +136,11 @@ jobs:
     - name: Swift version
       run: swift --version
 
+    # The macOS image comes with SwiftFormat preinstalled, but we need a newer
+    # version (see Scripts/format.sh for version requirement)
+    - name: Install SwiftFormat
+      run: brew update && brew install swiftformat
+
     - uses: actions/checkout@v3
 
     - name: Run APITool analysis
@@ -139,6 +148,32 @@ jobs:
 
     - name: Run APITool stub generation
       run: ./Scripts/generate_porting_kit.sh
+
+  check-generated-gtk-bindings:
+    runs-on: ubuntu-24.04
+    needs: check_file_changes
+    if: ${{ needs.check_file_changes.outputs.gtk-bindings == 'true' }}
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Homebrew
+      run: echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
+
+    - name: Install SwiftFormat
+      run: brew install swiftformat
+
+    - name: Set up submodules
+      run: |
+        git submodule init
+        git submodule update
+        
+    - name: Generate Gtk Bindings
+      run: ./Scripts/generate_gtk.sh
+
+    - name: Check generated Gtk Bindings
+      run: |
+        git diff --exit-code -- Sources/Gtk/Generated && \
+        git diff --exit-code -- Sources/Gtk3/Generated
 
   android:
     runs-on: macos-15
@@ -250,6 +285,7 @@ jobs:
         ../swift-bundler bundle TapGesturesExample --platform Android
         ../swift-bundler bundle WebViewExample --platform Android
         ../swift-bundler bundle WindowingExample --platform Android
+        ../swift-bundler bundle ObservableExample --platform Android
 
     - name: Build AndroidBackend and extract symbol graphs
       uses: ./.github/actions/extract-symbol-graphs
@@ -318,6 +354,7 @@ jobs:
             buildtarget ControlsExample
             buildtarget FontsExample
             buildtarget TapGesturesExample
+            buildtarget ObservableExample
 
             if [ $device_type != TV ]; then
               # Slider is not implemented for tvOS
@@ -344,56 +381,6 @@ jobs:
         upload: true
         xcodebuild: true
         xcodebuild-device-type: ${{ matrix.device-type }}
-
-  uikit-catalyst:
-    runs-on: macos-15
-    needs: check_file_changes
-    if: ${{ needs.check_file_changes.outputs.uikit == 'true' }}
-    steps:
-    - name: Setup Xcode 16.4 (Swift 6.1.2)
-      uses: maxim-lobanov/setup-xcode@v1.6.0
-      with:
-        xcode-version: '16.4'
-
-    - name: Swift version
-      run: swift --version
-
-    - name: Install xcbeautify
-      run: brew install xcbeautify
-
-    - uses: actions/checkout@v3
-
-    - name: Build
-      run: |
-        set -uxo pipefail
-        buildtarget () {
-          # Use the same derived data path as DocC compilation so that we don't duplicate work.
-          xcodebuild -derivedDataPath /tmp/data -skipMacroValidation -scheme "$1" -destination "variant=Mac Catalyst,arch=arm64,platform=macOS" -usePackageSupportBuiltinSCM build | xcbeautify --renderer github-actions
-        }
-
-        buildtarget SwiftCrossUI
-        buildtarget _SwiftCrossUIPortingKit
-        buildtarget UIKitBackend
-
-        cd Examples
-
-        buildtarget CounterExample
-        buildtarget GreetingGeneratorExample
-        buildtarget NavigationExample
-        buildtarget StressTestExample
-        buildtarget NotesExample
-        buildtarget PathsExample
-        buildtarget ControlsExample
-        buildtarget RandomNumberGeneratorExample
-        buildtarget WebViewExample
-        buildtarget HoverExample
-        buildtarget AdvancedCustomizationExample
-        buildtarget SplitExample
-        buildtarget MusicPlayerExample
-        buildtarget FontsExample
-        buildtarget TapGesturesExample
-        # TODO test whether this works on Catalyst
-        # buildtarget SplitExample
 
   windows:
     runs-on: windows-latest
@@ -560,7 +547,8 @@ jobs:
         swift build --target AdvancedCustomizationExample && \
         swift build --target MusicPlayerExample && \
         swift build --target FontsExample && \
-        swift build --target TapGesturesExample
+        swift build --target TapGesturesExample && \
+        swift build --target ObservableExample
 
   assemble-docs:
     runs-on: macos-15

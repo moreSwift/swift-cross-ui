@@ -15,7 +15,7 @@ public struct CastBackendMacro: BodyMacro {
         // Get the single generic argument.
         guard
             let newBackend = Attribute(attribute).name
-            .genericArguments?.first?._baseSyntax
+                .genericArguments?.first?._baseSyntax
         else {
             throw MacroError(
                 "@CastBackend macro expects a single type parameter"
@@ -26,9 +26,9 @@ public struct CastBackendMacro: BodyMacro {
         // generate one randomly.
         let backendGeneric =
             if let backendGenericName = Attribute(attribute)
-                .asMacroAttribute?.arguments
-                .first(where: { $0.label == "backendGenericName" })?
-                .expr.asStringLiteral?.value
+                    .asMacroAttribute?.arguments
+                    .first(where: { $0.label == "backendGenericName" })?
+                    .expr.asStringLiteral?.value
             {
                 TokenSyntax.identifier(backendGenericName)
             } else {
@@ -59,8 +59,8 @@ public struct CastBackendMacro: BodyMacro {
         let widgetType: TypeSyntax?
         if
             let returnsWidgetExpr = Attribute(attribute)
-            .asMacroAttribute?.arguments
-            .first(where: { $0.label == "returnsWidget" })?.expr,
+                .asMacroAttribute?.arguments
+                .first(where: { $0.label == "returnsWidget" })?.expr,
             returnsWidgetExpr.asBooleanLiteral?.value == true
         {
             guard let returnClause = signature.returnClause else {

@@ -14,7 +14,7 @@ var hotReloadingDependencies: [Package.Dependency] = []
     hotReloadingDependencies = [
         .package(
             url: "https://github.com/moreSwift/swift-bundler",
-            revision: "496c0638dc2c6750c7873832a08c36c74631aed4"
+            revision: "8b0ce824919d8e11d5c4862eeabb30f4ce01220b"
         )
     ]
     exampleDependencies.append(
@@ -28,7 +28,7 @@ var hotReloadingDependencies: [Package.Dependency] = []
 
 let package = Package(
     name: "Examples",
-    platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .macCatalyst(.v13), .visionOS(.v1)],
+    platforms: [.macOS(.v12), .iOS(.v15), .tvOS(.v15), .visionOS(.v1)],
     dependencies: [
         .package(name: "swift-cross-ui", path: ".."),
         .package(
@@ -119,6 +119,14 @@ let package = Package(
         ),
         .executableTarget(
             name: "TapGesturesExample",
+            dependencies: exampleDependencies
+        ),
+        .executableTarget(
+            name: "ControlFocusabilityTest",
+            dependencies: exampleDependencies
+        ),
+        .executableTarget(
+            name: "ObservableExample",
             dependencies: exampleDependencies
         ),
     ]

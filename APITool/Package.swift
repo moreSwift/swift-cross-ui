@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "APITool",
-    platforms: [.macOS(.v10_15)],
+    platforms: [.macOS(.v12)],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax", from: "603.0.0"),
         .package(url: "https://github.com/stackotter/swift-macro-toolkit", from: "0.8.0"),

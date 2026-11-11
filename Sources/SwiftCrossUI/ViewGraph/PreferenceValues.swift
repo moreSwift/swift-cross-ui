@@ -12,6 +12,7 @@ public struct PreferenceValues: Sendable {
         windowDismissBehavior: nil,
         preferredWindowMinimizeBehavior: nil,
         windowResizeBehavior: nil,
+        deselectListViews: nil,
         layoutPriority: defaultLayoutPriority
     )
 
@@ -45,6 +46,9 @@ public struct PreferenceValues: Sendable {
 
     /// Controls whether the user can resize the enclosing window.
     public var windowResizeBehavior: WindowInteractionBehavior?
+
+    /// Deselects all list views within the associated view hierarchy.
+    var deselectListViews: (@Sendable @MainActor () -> Void)?
 
     /// The layout priority of the view.
     var layoutPriority: Double
@@ -89,6 +93,12 @@ extension PreferenceValues {
         preferredWindowMinimizeBehavior =
             children.compactMap(\.preferredWindowMinimizeBehavior).first
         windowResizeBehavior = children.compactMap(\.windowResizeBehavior).first
+
+        deselectListViews = {
+            for child in children {
+                child.deselectListViews?()
+            }
+        }
 
         if let firstChild = children.first, children.count == 1 {
             layoutPriority = firstChild.layoutPriority

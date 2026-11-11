@@ -9,13 +9,15 @@ public struct ProgressView<Label: View>: View {
     private var kind: Kind
     private var isSpinnerResizable: Bool = false
 
+    @Environment(\.labelsHidden) var labelsHidden
+
     private enum Kind {
         case spinner
         case bar
     }
 
     public var body: some View {
-        if label as? EmptyView == nil {
+        if label as? EmptyView == nil, !labelsHidden {
             progressIndicator
             label
         } else {
