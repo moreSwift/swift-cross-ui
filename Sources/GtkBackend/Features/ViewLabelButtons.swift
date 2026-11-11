@@ -48,7 +48,10 @@ extension GtkBackend: BackendFeatures.ViewLabelButtons {
         let testString = "Teststring"
         let dummyButton = Button()
         dummyButton.label = testString
-        dummyButton.css.set(properties: Self.cssProperties(for: rootEnvironment, isControl: true), clear: true)
+        dummyButton.css.set(
+            properties: Self.cssProperties(for: rootEnvironment, isControl: true),
+            clear: true
+        )
 
         let textView = CustomLabel(string: testString)
         // css needs to be set, otherwise text measures way too big.

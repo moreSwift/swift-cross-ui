@@ -32,6 +32,9 @@ extension GtkBackend: BackendFeatures.DatePickers {
             onChange(date)
         }
         calendarWidget.sensitive = environment.isEnabled
-        calendarWidget.css.set(properties: Self.cssProperties(for: environment, isControl: true), clear: true)
+        calendarWidget.css.set(
+            properties: Self.cssProperties(for: environment, isControl: true),
+            clear: true
+        )
     }
 }

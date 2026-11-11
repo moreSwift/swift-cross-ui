@@ -24,7 +24,10 @@ extension GtkBackend: BackendFeatures.TextFields {
             onSubmit()
         }
 
-        textField.css.set(properties: Self.cssProperties(for: environment, isControl: true), clear: true)
+        textField.css.set(
+            properties: Self.cssProperties(for: environment, isControl: true),
+            clear: true
+        )
     }
 
     public func setContent(ofTextField textField: Widget, to content: String) {
