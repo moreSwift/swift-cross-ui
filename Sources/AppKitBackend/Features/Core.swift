@@ -44,13 +44,13 @@ extension AppKitBackend: BackendFeatures.Core {
         // This doesn't strictly affect the root environment, but it does require us
         // to re-compute the app's layout, and this is how backends should trigger top
         // level updates.
-        DistributedNotificationCenter.default.addObserver(
+        NotificationCenter.default.addObserver(
             forName: NSScroller.preferredScrollerStyleDidChangeNotification,
             object: nil,
             queue: OperationQueue.main
         ) { _ in
             // Self.scrollBarWidth has changed
-            Task { @MainActor in
+            MainActor.assumeIsolated {
                 action()
             }
         }
