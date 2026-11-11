@@ -2,12 +2,6 @@ import CGtk3
 import Gtk3
 @_spi(Backends) import SwiftCrossUI
 
-extension SwiftCrossUI.Icon {
-    public init(gtkIcon: String) {
-        self = .system(.custom(gtkIcon))
-    }
-}
-
 extension Gtk3Backend: BackendFeatures.Icons {
     static func iconName(for icon: Icon.SystemIcon) -> String {
         switch icon.storage {
@@ -31,18 +25,22 @@ extension Gtk3Backend: BackendFeatures.Icons {
 
     public func updateIconView(
         _ iconView: Widget,
-        icon: Icon,
+        icon: Icon.SystemIcon,
         environment: EnvironmentValues
     ) {
-        switch icon.kind {
-            case .system(let icon):
-                let iconView = iconView as! Gtk3.Image
-                iconView.iconName = Self.iconName(for: icon)
-                iconView.pixelSize = Int(environment.resolvedFont.pointSize)
-                if let tintColor = environment.foregroundColor?.resolve(in: environment) {
-                    iconView.css.set(property: .foregroundColor(tintColor.gtkColor))
-                }
+        let iconView = iconView as! Gtk3.Image
+        iconView.iconName = Self.iconName(for: icon)
+        iconView.pixelSize = Int(environment.resolvedFont.pointSize)
+        if let tintColor = environment.foregroundColor?.resolve(in: environment) {
+            iconView.css.set(property: .foregroundColor(tintColor.gtkColor))
         }
     }
 }
 
+extension SwiftCrossUI.Icon {
+    /// Displays a Gtk 3 icon. Only available under Gtk3Backend.
+    /// - Parameter gtk3Icon: The identifier of the Gtk 3 icon to display.
+    public init(gtk3Icon: String) {
+        self = .system(.custom(gtk3Icon))
+    }
+}

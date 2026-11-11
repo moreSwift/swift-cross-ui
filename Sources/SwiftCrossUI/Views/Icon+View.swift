@@ -4,7 +4,7 @@ extension Icon: ElementaryView {
     @CastBackend<BackendFeatures.Icons>(returnsWidget: true)
     public func asWidget<Backend: BaseAppBackend>(backend: Backend) -> Backend.Widget {
         switch kind {
-            case .system(let systemIcon):
+            case .system:
                 return backend.createIconView()
         }
     }
@@ -28,7 +28,10 @@ extension Icon: ElementaryView {
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        backend.updateIconView(widget, icon: self, environment: environment)
-        backend.setSize(of: widget, to: layout.size.vector)
+        switch kind {
+            case .system(let icon):
+                backend.updateIconView(widget, icon: icon, environment: environment)
+                backend.setSize(of: widget, to: layout.size.vector)
+        }
     }
 }

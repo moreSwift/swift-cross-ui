@@ -28,26 +28,25 @@ extension AppKitBackend: BackendFeatures.Icons {
 
     public func updateIconView(
         _ iconView: Widget,
-        icon: Icon,
+        icon: Icon.SystemIcon,
         environment: EnvironmentValues
     ) {
-        switch icon.kind {
-            case .system(let icon):
-                let iconView = iconView as! NSImageView
-                let image = Self.sfSymbol(for: icon)?.withSymbolConfiguration(
-                    .init(
-                        pointSize: environment.resolvedFont.pointSize,
-                        weight: Self.weight(for: environment.resolvedFont.weight)
-                    )
-                )
-                iconView.image = image
-                iconView.contentTintColor = environment.foregroundColor?.resolve(in: environment).nsColor
-        }
+        let iconView = iconView as! NSImageView
+        let image = Self.sfSymbol(for: icon)?.withSymbolConfiguration(
+            NSImage.SymbolConfiguration(
+                pointSize: environment.resolvedFont.pointSize,
+                weight: Self.weight(for: environment.resolvedFont.weight)
+            )
+        )
+        iconView.image = image
+        iconView.contentTintColor = environment.foregroundColor?
+            .resolve(in: environment).nsColor
     }
 }
 
 extension SwiftCrossUI.Icon {
-    /// Creates an icon from an sfSymbol. Only available under AppKitBackend.
+    /// Displays an SF Symbol. Only available under AppKitBackend and UIKitBackend.
+    /// - Parameter sfSymbol: The SF symbol identifier for the icon to display.
     public init(sfSymbol: String) {
         self = .system(.custom(sfSymbol))
     }

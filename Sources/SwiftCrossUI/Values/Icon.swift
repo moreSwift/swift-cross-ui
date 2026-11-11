@@ -7,7 +7,6 @@ public struct Icon: Hashable, Sendable {
         // TODO: Add a `crossPlatform` case here
     }
 
-
     /// A set of system-adaptive icons, a limited set of icons for developers
     /// who want to create an absolutely native experience.
     @_spi(Backends) public enum SystemIconKind: Hashable, Sendable {
@@ -33,6 +32,7 @@ public struct Icon: Hashable, Sendable {
         }
 
         @_spi(Backends) public var storage: Storage
+
         init(storage: Storage) {
             self.storage = storage
         }
@@ -56,13 +56,15 @@ public struct Icon: Hashable, Sendable {
         /// A system icon representing a searching operation.
         public static let search = Self(kind: .search)
 
-        /// Creates a custom system icon that uses a default identifier, or a platform-specific
-        /// identifier if provided.
+        /// Creates a custom system icon from a backend-specific identifier.
+        /// - Parameter identifier: A backend-specific icon identifier (e.g. an
+        ///   SF Symbol name when targeting AppKitBackend/UIKitBackend)
         public static func custom(_ identifier: String) -> Self {
             return Self(storage: .custom(identifier))
         }
     }
 
+    /// A system icon.
     public static func system(_ icon: SystemIcon) -> Icon {
         Self(kind: .system(icon))
     }
