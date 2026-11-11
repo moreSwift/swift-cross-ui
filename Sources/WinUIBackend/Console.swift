@@ -17,29 +17,31 @@ extension WinUIBackend {
     /// Adapted from: https://stackoverflow.com/a/55875595/8268001
     static func attachToParentConsole() throws {
         let redirected = StandardStream.allCases.filter(\.isRedirected)
-        let consoleStreams = StandardStream.allCases.filter { !redirected.contains($0) }
+        let consoleStreams = StandardStream.allCases.filter { stream in
+            !redirected.contains(stream)
+        }
+
         guard !consoleStreams.isEmpty else {
             return
         }
+
         let redirectedHandles = redirected.map { ($0.handleID, GetStdHandle($0.handleID)) }
         try Self.releaseConsole(consoleStreams)
+
         // -1 attaches to parent's console
         if AttachConsole(DWORD(bitPattern: -1)) {
             // AttachConsole points the standard handles at the console unless
-            // the process was started with STARTF_USESTDHANDLES, which cmd.exe
-            // doesn't use for its own redirections (`app.exe > out.txt`), so
-            // put the redirected ones back. Best-effort: the C streams keep
-            // their own descriptors regardless, so a failure only leaves
-            // GetStdHandle (FileHandle, child processes) on the console.
+            // the process was started with STARTF_USESTDHANDLES, so we have to
+            // restore any redirections that we detected.
             for (handleID, handle) in redirectedHandles {
                 _ = SetStdHandle(handleID, handle)
             }
+
             try Self.redirectConsoleIO(consoleStreams)
-            // Only after the redirection: releasing stdout onto NUL can leave
-            // STD_OUTPUT_HANDLE pointing at NUL (the CRT updates it for console
-            // apps). A bigger buffer is cosmetic, so failing to get one isn't
-            // an error.
+
             if consoleStreams.contains(.output) {
+                // Resizing the buffer isn't a hard requirement, so we can safely
+                // ignore failures
                 try? Self.adjustConsoleBuffer(1024)
             }
         }
@@ -113,11 +115,10 @@ extension WinUIBackend {
             }
         }
 
-        /// Whether the caller redirected this stream away from the console:
-        /// its handle is a file, a pipe or a character device that isn't a
-        /// console (`NUL`, a serial port). A console handle (e.g. one
-        /// inherited from the parent) is not a redirection; it gets released
-        /// and reattached to the parent's console like a missing handle.
+        /// Whether the caller redirected this stream away from the console.
+        /// We assume that that's the case if its handle is a file, a pipe
+        /// or a character device that isn't a console (e.g. `NUL`, or a
+        /// serial port).
         var isRedirected: Bool {
             guard let handle = GetStdHandle(handleID) else {
                 return false
