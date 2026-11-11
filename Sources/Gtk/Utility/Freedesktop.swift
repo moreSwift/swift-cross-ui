@@ -311,11 +311,23 @@ private func requestResponse(
 public enum Freedesktop {
     public enum Portal {
         public enum Settings {
-            fileprivate static let bus = try! Bus(interfaceName: "Settings")
+            private static let busState = Mutex<Bus?>(nil)
+
+            private static func getBus() throws(FreedesktopError.BusError) -> Bus {
+                try busState.withLock { stored throws(FreedesktopError.BusError) -> Bus in
+                    if let existing = stored {
+                        return existing
+                    }
+
+                    let newBus = try Bus(interfaceName: "Location")
+                    stored = newBus
+                    return newBus
+                }
+            }
 
             public enum Version {
                 public static func get() throws(FreedesktopError.BusError) -> UInt32 {
-                    guard let prop = bus.readProperty("version") else {
+                    guard let prop = try getBus().readProperty("version") else {
                         throw .failedCall
                     }
 
@@ -330,7 +342,7 @@ public enum Freedesktop {
                 let decodeSignal: (OpaquePointer) -> T?
 
                 public func read() throws(FreedesktopError.BusError) -> T {
-                    let result = try bus.call(namespace: namespace, key: key, method: "Read")
+                    let result = try getBus().call(namespace: namespace, key: key, method: "Read")
                     guard let value = decodeResult(result.pointer) else {
                         throw .failedCall
                     }
@@ -340,6 +352,14 @@ public enum Freedesktop {
 
                 public func observe() -> AsyncStream<T> {
                     AsyncStream { continuation in
+                        let bus: Bus
+                        do {
+                            bus = try getBus()
+                        } catch {
+                            continuation.finish()
+                            return
+                        }
+
                         let id = bus.subscribe(
                             signal: "g-signal::SettingChanged",
                             namespace: namespace,
@@ -349,7 +369,11 @@ public enum Freedesktop {
 
                             continuation.yield(value)
                         }
-                        continuation.onTermination = { _ in bus.unsubscribe(from: id) }
+                        continuation.onTermination = { _ in
+                            do {
+                                try getBus().unsubscribe(from: id)
+                            } catch {}
+                        }
                     }
                 }
 
@@ -418,22 +442,36 @@ public enum Freedesktop {
         }
 
         public enum Account {
-            private static let bus = try! Bus(interfaceName: "Account")
+            private static let busState = Mutex<Bus?>(nil)
+
+            private static func getBus() throws(FreedesktopError.BusError) -> Bus {
+                try busState.withLock { stored throws(FreedesktopError.BusError) -> Bus in
+                    if let existing = stored {
+                        return existing
+                    }
+
+                    let newBus = try Bus(interfaceName: "Location")
+                    stored = newBus
+                    return newBus
+                }
+            }
 
             public enum Version {
                 public static func get() throws(FreedesktopError.BusError) -> UInt32 {
-                    guard let prop = bus.readProperty("version")
-                    else { throw .failedCall }
+                    guard let prop = try getBus().readProperty("version") else {
+                        throw .failedCall
+                    }
+
                     return prop.uint32()
                 }
             }
 
             public enum UserInformation {
-                private static func read(_ key: String) throws(FreedesktopError.BusError)
-                    -> String
-                {
+                private static func read(
+                    _ key: String
+                ) throws(FreedesktopError.BusError) -> String {
                     let result = try requestResponse(
-                        bus: bus,
+                        bus: try getBus(),
                         method: "GetUserInformation"
                     ) { token in
                         // Format: (window_identifier, options_dict)
@@ -508,12 +546,16 @@ public enum Freedesktop {
                 }
             }
 
-            private static let busState = Mutex<Bus?>(nil)
             private static let session = Mutex<(handle: String?, started: Bool)>((nil, false))
+
+            private static let busState = Mutex<Bus?>(nil)
 
             private static func getBus() throws(FreedesktopError.BusError) -> Bus {
                 try busState.withLock { stored throws(FreedesktopError.BusError) -> Bus in
-                    if let existing = stored { return existing }
+                    if let existing = stored {
+                        return existing
+                    }
+
                     let newBus = try Bus(interfaceName: "Location")
                     stored = newBus
                     return newBus
@@ -528,6 +570,7 @@ public enum Freedesktop {
 
                 let token =
                     "swift_cross_ui_\(UUID().uuidString.replacingOccurrences(of: "-", with: "_"))"
+
                 var parts = ["'session_handle_token': <'\(token)'>"]
                 if options.accuracy != .exact {
                     parts.append("'accuracy': <uint32 \(options.accuracy.rawValue)>")
@@ -544,11 +587,16 @@ public enum Freedesktop {
 
                     guard
                         let input = GVariant.parse("(@a{sv} {\(parts.joined(separator: ", "))},)")
-                    else { throw .malformedInput }
+                    else {
+                        throw .malformedInput
+                    }
 
                     let result = try bus.call(method: "CreateSession", parameters: input)
-                    guard let sessionHandle = result.child(0)?.string()
-                    else { throw .failedCall }
+
+                    guard let sessionHandle = result.child(0)?.string() else {
+                        throw .failedCall
+                    }
+
                     state.handle = sessionHandle
 
                     let parent = options.parentWindow.isEmpty ? "''" : "'\(options.parentWindow)'"
@@ -564,8 +612,10 @@ public enum Freedesktop {
             public enum Version {
                 public static func get() throws(FreedesktopError.BusError) -> UInt32 {
                     let bus = try getBus()
-                    guard let prop = bus.readProperty("version")
-                    else { throw .failedCall }
+                    guard let prop = bus.readProperty("version") else {
+                        throw .failedCall
+                    }
+
                     return prop.uint32()
                 }
             }
