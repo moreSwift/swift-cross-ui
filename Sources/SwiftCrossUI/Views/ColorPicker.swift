@@ -9,6 +9,7 @@ public struct ColorPicker<Label: View> {
     private var label: Label
     private var selection: Binding<Color>
     private var supportsOpacity: Bool
+    var isResizable = false
 
     @Environment(\.labelsHidden) var labelsHidden
 
@@ -56,14 +57,25 @@ extension ColorPicker: View {
                 HorizontalControlSpacer()
             }
 
-            ColorPickerImplementation(selection: selection, supportsOpacity: supportsOpacity)
+            ColorPickerImplementation(
+                selection: selection,
+                supportsOpacity: supportsOpacity,
+                isResizable: isResizable
+            )
         }
+    }
+
+    /// Makes the ``ColorPicker`` freely resizable.
+    public consuming func resizable(_ isResizable: Bool = true) -> Self {
+        self.isResizable = isResizable
+        return self
     }
 }
 
 struct ColorPickerImplementation: ElementaryView {
     @Binding var selection: Color
     var supportsOpacity: Bool
+    var isResizable: Bool
 
     let body = EmptyView()
 
@@ -88,7 +100,15 @@ struct ColorPickerImplementation: ElementaryView {
         }
 
         let naturalSize = backend.naturalSize(of: widget)
-        return ViewLayoutResult.leafView(size: ViewSize(naturalSize))
+
+        if !isResizable {
+            return ViewLayoutResult.leafView(size: ViewSize(naturalSize))
+        }
+
+        return ViewLayoutResult.leafView(size: ViewSize(
+            proposedSize.width ?? Double(naturalSize.x),
+            proposedSize.height ?? Double(naturalSize.y)
+        ))
     }
 
     @CastBackend<BackendFeatures.ColorPickers>
