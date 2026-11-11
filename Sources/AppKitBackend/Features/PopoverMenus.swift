@@ -1,7 +1,7 @@
 import AppKit
 @_spi(Backends) import SwiftCrossUI
 
-extension AppKitBackend: BackendFeatures.PopoverMenus {
+extension AppKitBackend: BackendFeatures.MenuButtons, BackendFeatures.PopoverMenus {
     public typealias Menu = NSMenu
 
     public func createPopoverMenu() -> Menu {

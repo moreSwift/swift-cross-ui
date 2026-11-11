@@ -104,6 +104,11 @@ icon = 'Icons/MusicPlayerExample.png'
 identifier = 'dev.swiftcrossui.GradientsExample'
 product = 'GradientsExample'
 version = '0.1.0'
+
+[apps.IconsExample]
+identifier = 'dev.swiftcrossui.IconsExample'
+product = 'IconsExample'
+version = '0.1.0'
     
 [apps.TapGesturesExample]
 identifier = 'dev.swiftcrossui.TapGesturesExample'
