@@ -154,11 +154,10 @@ public class Bus {
 
         let data = CallbackBox((namespace, key, handler))
 
-        #if os(macOS)
-            let flags = GConnectFlags()
-        #else
-            let flags = GConnectFlags(0)
-        #endif
+        // `GConnectFlags(rawValue:)` compiles however GLib's headers get imported: as an option set
+        // (macOS, and GLib 2.88 on Ubuntu 26.04, where `GConnectFlags(0)` is rejected) or as a plain
+        // C enum (older GLib).
+        let flags = GConnectFlags(rawValue: 0)
 
         let handlerId = g_signal_connect_data(
             self.proxy,
