@@ -2408,7 +2408,9 @@ public class CustomWindow: WinUI.Window {
         self.activated.addHandler { [weak self] _, args in
             switch args?.windowActivationState {
                 case .codeActivated, .pointerActivated: self?.isActive = true
+
                 case .deactivated: self?.isActive = false
+
                 // NB: The compiler apparently thinks we didn't exhaustively switch
                 // over this enum without this `default` (even after adding a `case nil`).
                 // Might be because it doesn't treat the underlying C enum as a Swift enum?

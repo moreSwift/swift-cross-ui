@@ -110,8 +110,26 @@ extension GtkBackend: BackendFeatures.Core {
         )
     }
 
+    private func getPreferredColorScheme() -> ColorScheme {
+        #if os(Linux)
+            let colorSchemeId: UInt32? = try? Freedesktop.Portal.Settings.Appearance.ColorScheme
+                .read()
+
+            // https://github.com/flatpak/xdg-desktop-portal/blob/fae2c09a530eeef30af8d6401870fd5bae5d3989/data/org.freedesktop.portal.Settings.xml#L38
+            if colorSchemeId == 1 {
+                return .dark
+            } else if colorSchemeId == 2 {
+                return .light
+            }
+        #endif
+
+        // TODO: Implement this stuff for MacOS & Windows
+        return .light
+    }
+
     public func computeRootEnvironment(defaultEnvironment: EnvironmentValues) -> EnvironmentValues {
         defaultEnvironment
+            .with(\.colorScheme, getPreferredColorScheme())
             .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
@@ -120,5 +138,8 @@ extension GtkBackend: BackendFeatures.Core {
     ) {
         // TODO: React to theme changes
         self.rootEnvironmentChangeHandler = action
+        _ = Freedesktop.Portal.Settings.Appearance.ColorScheme.subscribe { _ in
+            action()
+        }
     }
 }
