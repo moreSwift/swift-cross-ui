@@ -155,7 +155,7 @@ public class Bus {
         let data = CallbackBox((namespace, key, handler))
 
         // `GConnectFlags(rawValue:)` compiles however GLib's headers get imported: as an option set
-        // (macOS, and GLib 2.86 on Ubuntu 26.04, where `GConnectFlags(0)` is rejected) or as a plain
+        // (macOS, and GLib 2.88 on Ubuntu 26.04, where `GConnectFlags(0)` is rejected) or as a plain
         // C enum (older GLib).
         let flags = GConnectFlags(rawValue: 0)
 
