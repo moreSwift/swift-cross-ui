@@ -88,7 +88,12 @@ extension WinUIBackend: BackendFeatures.Alerts {
             return
         }
 
-        alert.xamlRoot = window.content.xamlRoot
+        guard let xamlRoot = window.content.xamlRoot else {
+            logger.warning("WinUI can't show alert before window XamlRoot is available")
+            return
+        }
+
+        alert.xamlRoot = xamlRoot
         alert.window = window
 
         // WinUI only allows one dialog at a time (subsequent dialogs throw

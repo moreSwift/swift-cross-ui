@@ -3,6 +3,7 @@ module CGtk [system] {
   link "gtk-4"
   link "pango-1.0"
   link "pangocairo-1.0"
+  link "gio-2.0"
 
   export *
 }
