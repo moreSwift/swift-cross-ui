@@ -87,7 +87,6 @@ extension GtkBackend: BackendFeatures.TextViews {
             }
 
         textView.selectable = environment.isTextSelectionEnabled
-        textView.css.clear()
-        textView.css.set(properties: Self.cssProperties(for: environment))
+        textView.css.set(properties: Self.cssProperties(for: environment), clear: true)
     }
 }

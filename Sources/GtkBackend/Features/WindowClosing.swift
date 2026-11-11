@@ -11,9 +11,12 @@ extension GtkBackend: BackendFeatures.WindowClosing {
         ofWindow window: Window,
         to action: @escaping () -> Void
     ) {
-        window.onCloseRequest = { _ in
+        window.onCloseRequest = { [weak self] _ in
             action()
             window.destroy()
+            // Forget the closed window: its wrapper holds its widgets, and each styled widget's
+            // display-wide style provider, for as long as it is in `windows`.
+            self?.windows.removeAll { $0 === window }
         }
     }
 }

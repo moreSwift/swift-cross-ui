@@ -18,7 +18,9 @@ extension GtkBackend: BackendFeatures.StringLabelButtons {
         button.sensitive = environment.isEnabled
         button.label = label
         button.clicked = { _ in action() }
-        button.css.clear()
-        button.css.set(properties: Self.cssProperties(for: environment, isControl: true))
+        button.css.set(
+            properties: Self.cssProperties(for: environment, isControl: true),
+            clear: true
+        )
     }
 }

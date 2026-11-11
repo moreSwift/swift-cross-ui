@@ -4,6 +4,9 @@ import CGtk
 public class CSSProvider {
     var pointer: UnsafeMutablePointer<GtkCssProvider>
     var display: OpaquePointer
+    /// The CSS last loaded. A provider is display-wide, so a load restyles every widget on the
+    /// display: a load of the same text again is skipped.
+    private var loaded: String?
 
     public init(
         forDisplay display: OpaquePointer = gdk_display_get_default(),
@@ -24,7 +27,10 @@ public class CSSProvider {
     ///
     /// Deprecated since: 4.12
     public func loadCss(from data: String) {
+        guard data != loaded else { return }
+        loaded = data
         // TODO: Connect to parsing-error signal to log parsing errors.
-        gtk_css_provider_load_from_data(pointer, data, gssize(data.count))
+        // The length is in UTF-8 bytes: `count` (characters) cut CSS holding a non-ASCII font name short.
+        gtk_css_provider_load_from_data(pointer, data, gssize(data.utf8.count))
     }
 }
