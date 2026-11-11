@@ -81,72 +81,6 @@ final class UIPickerViewPicker: WrapperWidget<UIPickerView>, Picker, UIPickerVie
     #endif
 }
 
-final class UITableViewPicker: WrapperWidget<UITableView>, Picker, UITableViewDelegate,
-    UITableViewDataSource
-{
-    private static let reuseIdentifier =
-        "__SwiftCrossUI_UIKitBackend_UITableViewPicker.reuseIdentifier"
-
-    private var options: [String] = []
-    private var onSelect: ((Int?) -> Void)?
-
-    init() {
-        super.init(child: UITableView(frame: .zero, style: .plain))
-
-        child.delegate = self
-        child.dataSource = self
-
-        child.register(UITableViewCell.self, forCellReuseIdentifier: Self.reuseIdentifier)
-    }
-
-    func setOptions(to options: [String]) {
-        self.options = options
-        child.reloadData()
-    }
-
-    func setChangeHandler(to onChange: @escaping (Int?) -> Void) {
-        onSelect = onChange
-    }
-
-    func setSelectedOption(to index: Int?) {
-        if let index {
-            child.selectRow(
-                at: IndexPath(row: index, section: 0),
-                animated: true,
-                scrollPosition: .middle
-            )
-        } else {
-            child.selectRow(at: nil, animated: false, scrollPosition: .none)
-        }
-    }
-
-    func updateEnvironment(_ environment: EnvironmentValues) {
-        child.isUserInteractionEnabled = environment.isEnabled
-    }
-
-    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
-        options.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: Self.reuseIdentifier,
-            for: indexPath
-        )
-
-        cell.textLabel!.text = options[indexPath.row]
-
-        return cell
-    }
-
-    func tableView(
-        _: UITableView,
-        didSelectRowAt indexPath: IndexPath
-    ) {
-        onSelect?(indexPath.row)
-    }
-}
-
 final class UISegmentedControlPicker: WrapperWidget<UISegmentedControl>, Picker {
     private var options: [String] = []
     private var onSelect: ((Int?) -> Void)?
@@ -193,7 +127,7 @@ final class UISegmentedControlPicker: WrapperWidget<UISegmentedControl>, Picker 
     }
 }
 
-@available(iOS 14, macCatalyst 14, tvOS 17, *)
+@available(tvOS 17, *)
 final class UIButtonPicker: WrapperWidget<UIButton>, Picker {
     private var options: [String] = []
     private var onSelect: ((Int?) -> Void)?
@@ -294,7 +228,7 @@ extension UIKitBackend {
     public func createPicker(style: BackendPickerStyle) -> Widget {
         switch style {
             case .menu:
-                if #available(iOS 14, macCatalyst 14, tvOS 17, *) {
+                if #available(tvOS 17, *) {
                     UIButtonPicker()
                 } else {
                     preconditionFailure("Current OS is too old to support menu buttons.")
@@ -304,13 +238,7 @@ extension UIKitBackend {
             case .segmented:
                 UISegmentedControlPicker()
             case .wheel:
-                #if targetEnvironment(macCatalyst)
-                    if #available(macCatalyst 14, *), UIDevice.current.userInterfaceIdiom == .mac {
-                        UITableViewPicker()
-                    } else {
-                        UIPickerViewPicker()
-                    }
-                #elseif os(tvOS)
+                #if os(tvOS)
                     preconditionFailure("wheel is unsupported on tvOS")
                 #else
                     UIPickerViewPicker()

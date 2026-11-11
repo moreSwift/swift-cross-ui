@@ -4,6 +4,7 @@
 /// can appear as a switch, a button, or a checkbox.
 public struct Toggle: View {
     @Environment(\.toggleStyle) var toggleStyle
+    @Environment(\.labelsHidden) var labelsHidden
 
     /// The label to be shown on or beside the toggle.
     var label: String
@@ -29,9 +30,11 @@ public struct Toggle: View {
         switch toggleStyle.style {
             case .switch:
                 HStack {
-                    Text(label)
+                    if !labelsHidden {
+                        Text(label)
 
-                    HorizontalControlSpacer()
+                        HorizontalControlSpacer()
+                    }
 
                     ToggleSwitch(isOn: active)
                 }
@@ -39,9 +42,11 @@ public struct Toggle: View {
                 ToggleButton(label, isOn: active)
             case .checkbox:
                 HStack {
-                    Text(label)
+                    if !labelsHidden {
+                        Text(label)
 
-                    HorizontalControlSpacer()
+                        HorizontalControlSpacer()
+                    }
 
                     Checkbox(isOn: active)
                 }

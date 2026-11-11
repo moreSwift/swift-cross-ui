@@ -25,4 +25,27 @@ extension DummyBackend: BackendFeatures.SplitViews {
         splitView.minimumSidebarWidth = minimumWidth
         splitView.maximumSidebarWidth = maximumWidth
     }
+
+    public func visibleColumns(
+        ofSplitView splitView: Widget
+    ) -> Set<NavigationSplitViewColumn> {
+        return [.sidebar, .detail]
+    }
+
+    public func showColumn(
+        _ column: NavigationSplitViewColumn,
+        ofSplitView splitView: Widget
+    ) {}
+
+    public func internalPadding(
+        ofSplitView splitView: Widget,
+        column: NavigationSplitViewColumn
+    ) -> SIMD2<Int> {
+        .zero
+    }
+
+    public func setColumnVisibilityChangeHandler(
+        ofSplitView splitView: Widget,
+        to action: @escaping (NavigationSplitViewColumn, Bool) -> Void
+    ) {}
 }
