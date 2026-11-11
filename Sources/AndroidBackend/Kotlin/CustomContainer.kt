@@ -1,20 +1,13 @@
 package dev.swiftcrossui.androidbackend
 
 import android.app.Activity
-import android.view.ViewGroup
-import android.util.Log
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 
-class CustomContainer(
-    val activity: Activity
-): ViewGroup(activity) {
-    class LayoutParams(
-        width: Int,
-        height: Int,
-        var x: Int,
-        var y: Int
-    ): ViewGroup.LayoutParams(width, height) {}
+class CustomContainer(val activity: Activity) : ViewGroup(activity) {
+    class LayoutParams(width: Int, height: Int, var x: Int, var y: Int) :
+        ViewGroup.LayoutParams(width, height) {}
 
     override fun checkLayoutParams(layoutParams: ViewGroup.LayoutParams?): Boolean {
         return layoutParams is LayoutParams
@@ -46,14 +39,10 @@ class CustomContainer(
             // AndroidBackend.setSize(of:to:). This often leads to views
             // within such a view not being visible at all.
             val layoutParams = child.layoutParams
-            val widthSpec = View.MeasureSpec.makeMeasureSpec(
-                layoutParams.width,
-                View.MeasureSpec.EXACTLY
-            )
-            val heightSpec = View.MeasureSpec.makeMeasureSpec(
-                layoutParams.height,
-                View.MeasureSpec.EXACTLY
-            )
+            val widthSpec =
+                View.MeasureSpec.makeMeasureSpec(layoutParams.width, View.MeasureSpec.EXACTLY)
+            val heightSpec =
+                View.MeasureSpec.makeMeasureSpec(layoutParams.height, View.MeasureSpec.EXACTLY)
             child.measure(widthSpec, heightSpec)
         }
     }
@@ -66,7 +55,7 @@ class CustomContainer(
                 layoutParams.x,
                 layoutParams.y,
                 layoutParams.x + layoutParams.width,
-                layoutParams.y + layoutParams.height
+                layoutParams.y + layoutParams.height,
             )
         }
     }

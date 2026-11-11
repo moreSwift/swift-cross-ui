@@ -8,7 +8,7 @@ struct PlaybackBar: View {
         HStack {
             VStack(alignment: .leading, spacing: 5) {
                 if let currentSongId = mediaPlayer.currentSong,
-                    let song = storage.config.song(withId: currentSongId)
+                   let song = storage.config.song(withId: currentSongId)
                 {
                     Text(song.name)
                     if let artist = song.artist {

@@ -67,7 +67,8 @@ extension Shape {
     @MainActor
     @CastBackend<BackendFeatures.Paths>(returnsWidget: true)
     public func asWidget<Backend: BaseAppBackend>(
-        _ children: any ViewGraphNodeChildren, backend: Backend
+        _ children: any ViewGraphNodeChildren,
+        backend: Backend
     ) -> Backend.Widget {
         let container = backend.createPathWidget()
         let storage = children as! ShapeStorage

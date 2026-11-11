@@ -37,7 +37,8 @@ extension View {
     /// Deprecated and renamed for clarity. Use ``fontWeight(_:)`` to make text
     /// bold.
     @available(
-        *, deprecated,
+        *,
+        deprecated,
         message: "Use View.emphasized() instead",
         renamed: "View.emphasized()"
     )

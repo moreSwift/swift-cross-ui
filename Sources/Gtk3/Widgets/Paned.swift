@@ -34,10 +34,11 @@ open class Paned: Container, Orientable {
         endChild?.didMoveToParent()
 
         let handler:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::position", handler: gCallback(handler)) {
             [weak self] (_: OpaquePointer) in

@@ -1,5 +1,5 @@
 import AppKit
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 extension AppKitBackend {
     // MARK: TextField
@@ -84,7 +84,7 @@ extension AppKitBackend {
             secureField.font = Self.font(for: resolvedFont)
         }
 
-        secureField.onEdit = { textField in
+        secureField.onEdit = { _ in
             onChange(secureField.stringValue)
         }
         secureField.onSubmit = onSubmit

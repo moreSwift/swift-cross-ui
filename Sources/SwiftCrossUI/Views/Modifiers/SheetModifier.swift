@@ -90,18 +90,37 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
     ) {
         _ = children.childNode.commit()
 
-        if isPresented.wrappedValue && children.sheet == nil {
-            let sheetViewGraphNode = ViewGraphNode(
-                for: sheetContent(),
-                backend: backend,
-                environment: environment
-            )
-            let sheetContentNode = AnyViewGraphNode(sheetViewGraphNode)
-            children.sheetContentNode = sheetContentNode
+        if isPresented.wrappedValue {
+            let needsPresenting = children.sheet == nil
 
-            let sheet = backend.createSheet(
-                content: children.sheetContentNode!.widget.into()
-            )
+            let sheet: NewBackend.Sheet
+            if children.sheetContentNode == nil {
+                let sheetViewGraphNode = ViewGraphNode(
+                    for: sheetContent(),
+                    backend: backend,
+                    environment: environment
+                )
+                let sheetContentNode = AnyViewGraphNode(sheetViewGraphNode)
+                children.sheetContentNode = sheetContentNode
+
+                sheet = backend.createSheet(
+                    content: children.sheetContentNode!.widget.into()
+                )
+            } else {
+                guard
+                    let existingSheet = children.sheet,
+                    let castedSheet = existingSheet as? NewBackend.Sheet
+                else {
+                    logger.warning(
+                        """
+                        SheetModifier has a nil sheet, even though the sheet \
+                        has already been presented
+                        """
+                    )
+                    return
+                }
+                sheet = castedSheet
+            }
 
             let dismissAction = DismissAction(action: { [isPresented] in
                 isPresented.wrappedValue = false
@@ -109,8 +128,8 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
 
             let sheetEnvironment =
                 environment
-                .with(\.dismiss, dismissAction)
-                .with(\.sheet, sheet)
+                    .with(\.dismiss, dismissAction)
+                    .with(\.sheet, sheet)
 
             _ = children.sheetContentNode!.computeLayout(
                 with: sheetContent(),
@@ -132,18 +151,22 @@ struct SheetModifier<Content: View, SheetContent: View>: TypeSafeView {
                 onDismiss: { handleDismiss(children: children) },
                 cornerRadius: preferences.presentationCornerRadius,
                 detents: preferences.presentationDetents ?? [],
-                dragIndicatorVisibility:
-                    preferences.presentationDragIndicatorVisibility ?? .automatic,
+                dragIndicatorVisibility: preferences.presentationDragIndicatorVisibility
+                    ?? .automatic,
                 backgroundColor: preferences.presentationBackground?.resolve(in: environment),
                 interactiveDismissDisabled: preferences.interactiveDismissDisabled ?? false
             )
 
             let parentSheet = environment.sheet.map { $0 as! NewBackend.Sheet }
-            backend.presentSheet(
-                sheet,
-                window: window as! NewBackend.Window,
-                parentSheet: parentSheet
-            )
+
+            if needsPresenting {
+                backend.presentSheet(
+                    sheet,
+                    window: window as! NewBackend.Window,
+                    parentSheet: parentSheet
+                )
+            }
+
             children.sheet = sheet
             children.window = window
             children.parentSheet = parentSheet

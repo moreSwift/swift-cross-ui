@@ -16,6 +16,7 @@ For this reason we recommend using `DefaultBackend` unless you have particular c
 - <doc:DefaultBackend>
 - <doc:AppKitBackend>
 - <doc:UIKitBackend>
+- <doc:AndroidBackend>
 - <doc:WinUIBackend>
 - <doc:GtkBackend>
 - <doc:Gtk3Backend>

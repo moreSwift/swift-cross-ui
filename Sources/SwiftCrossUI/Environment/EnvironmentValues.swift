@@ -22,7 +22,7 @@ public struct EnvironmentValues {
     /// because it would be weird to have two pretty equivalent ways of resolving
     /// fonts.
     @MainActor
-    package var resolvedFont: Font.Resolved {
+    @_spi(Backends) public var resolvedFont: Font.Resolved {
         font.resolve(in: fontResolutionContext)
     }
 
@@ -40,7 +40,7 @@ public struct EnvironmentValues {
     /// Each view graph node sets its own handler when passing the environment
     /// on to its children, setting up a bottom-up update chain up which resize
     /// events can propagate.
-    var onResize: @MainActor (_ newSize: ViewSize) -> Void
+    @_spi(Backends) public var onResize: @MainActor (_ newSize: ViewSize) -> Void
 
     /// Backing storage for extensible subscript
     private var values: [ObjectIdentifier: Any]
@@ -203,7 +203,7 @@ public struct EnvironmentValues {
     ///
     /// - Parameters:
     ///   - backend: The app's backend.
-    package init<Backend: BaseAppBackend>(backend: Backend) {
+    @_spi(Backends) public init<Backend: BaseAppBackend>(backend: Backend) {
         self.backend = backend
 
         onResize = { _ in }
@@ -248,6 +248,13 @@ extension EnvironmentValues {
     /// affecting layout.
     @Entry public var layoutAlignment: StackAlignment = .center
 
+    /// Whether to use the ZStack StackLayout variants.
+    @Entry public var usesZStackLayout: Bool = false
+
+    /// The alignment of content inside a ``ZStack``.
+    /// Only gets used when ``usesZStackLayout`` is `true`.
+    @Entry public var zStackContentAlignment: Alignment = .center
+
     /// The current stack spacing.
     ///
     /// Inherited by ``ForEach`` and ``Group`` so that they can be used without
@@ -268,6 +275,11 @@ extension EnvironmentValues {
 
     /// How lines should be aligned relative to each other when line wrapped.
     @Entry public var multilineTextAlignment: HorizontalAlignment = .leading
+
+    /// Whether to override the case of displayed ``Text`` views.
+    ///
+    /// `nil` displays the text without any case changes.
+    @Entry public var textCase: Text.Case?
 
     /// The current color scheme of the current view scope.
     @Entry public var colorScheme: ColorScheme = .light
@@ -299,7 +311,7 @@ extension EnvironmentValues {
     @Entry public var scrollDismissesKeyboardMode: ScrollDismissesKeyboardMode = .automatic
 
     /// The style of list to use.
-    @Entry package var listStyle: ListStyle = .default
+    @Entry @_spi(Backends) public var listStyle: ListStyle = .default
 
     /// The style of toggle to use.
     @Entry public var toggleStyle: ToggleStyle = .button
@@ -332,7 +344,8 @@ extension EnvironmentValues {
     /// Backing store for ``EnvironmentValues/openWindowFunctionsByID``.
     /// Used to resolve "non-sendable type" warnings in Swift 5 and errors in Swift 6 language mode.
     @Entry private var openWindowFunctionsByIDStore = UncheckedSendable(
-        wrappedValue: Box<[String: @MainActor () -> Void]>([:]))
+        wrappedValue: Box<[String: @MainActor () -> Void]>([:])
+    )
 
     /// A mapping of window IDs to functions that open the corresponding windows.
     internal var openWindowFunctionsByID: Box<[String: @MainActor () -> Void]> {
@@ -358,14 +371,14 @@ extension EnvironmentValues {
     ///   use ``appPhase`` instead.
     public package(set) var scenePhase: ScenePhase {
         get {
-            if window != nil {
-                // If there's a window but no scenePhase, we assume that the
-                // backend is actively trying to _set_ the scene phase; return
-                // a dummy value to prevent a crash.
-                return .inactive
-            }
-
             guard let phase = self[__Key_scenePhase.self] else {
+                if window != nil {
+                    // If there's a window but no scenePhase, we assume that the
+                    // backend is actively trying to _set_ the scene phase; return
+                    // a dummy value to prevent a crash.
+                    return .inactive
+                }
+
                 fatalError(
                     """
                     'scenePhase' accessed from outside a scene (most likely \
@@ -390,7 +403,7 @@ extension EnvironmentValues {
     /// in, if any.
     ///
     /// This is a very internal detail that should never get exposed to users.
-    package var window: Any? {
+    @_spi(Backends) public var window: Any? {
         get {
             windowStore.wrappedValue
         }
@@ -407,7 +420,7 @@ extension EnvironmentValues {
     /// in, if any.
     ///
     /// This is a very internal detail that should never get exposed to users.
-    package var sheet: Any? {
+    @_spi(Backends) public var sheet: Any? {
         get {
             sheetStore.wrappedValue
         }
@@ -421,6 +434,9 @@ extension EnvironmentValues {
 
     /// The current time zone that views should use when handling dates.
     @Entry public var timeZone: TimeZone = .current
+
+    /// The current locale.
+    @Entry public var locale: Locale = .current
 
     /// The display style used by ``Picker``.
     @Entry public var pickerStyle: any PickerStyle = .automatic
@@ -439,6 +455,48 @@ extension EnvironmentValues {
     /// The maximum number of lines that text can occupy in a view.
     public var lineLimit: Int? {
         lineLimitSettings?.limit
+    }
+
+    /// Whether the current device has a circular screen. Primarily Android smart watches.
+    @Entry public var isCircularScreen: Bool = false
+
+    /// The display style used by ``Button``.
+    @Entry public var buttonStyle: ButtonStyle?
+
+    /// The default button style as declared by the backend.
+    @MainActor
+    public var defaultButtonStyle: ButtonStyle {
+        backend.defaultButtonStyle()
+    }
+
+    /// The resolved ``ButtonStyle``. Either ``buttonStyle``, or ``defaultButtonStyle`` if nil.
+    @MainActor
+    public var resolvedButtonStyle: ButtonStyle {
+        buttonStyle ?? defaultButtonStyle
+    }
+
+    /// The amount of padding that the current backend applies to the labels of buttons with the current ``ButtonStyle``.
+    @MainActor
+    public var buttonPadding: SIMD2<Int> {
+        backend.buttonPadding(in: self)
+    }
+
+    /// The device class of the current device.
+    @MainActor
+    public var deviceClass: DeviceClass { backend.deviceClass }
+}
+
+extension EnvironmentValues {
+    func applyingTextTransforms(to string: String) -> String {
+        var string = string
+
+        switch textCase {
+            case .lowercase: string = string.lowercased(with: locale)
+            case .uppercase: string = string.uppercased(with: locale)
+            case nil: break
+        }
+
+        return string
     }
 }
 

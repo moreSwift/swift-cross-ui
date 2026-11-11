@@ -1,7 +1,7 @@
 /// An item of a ``Menu`` or ``CommandMenu``.
 public enum MenuItem {
     /// A button.
-    case button(Button)
+    case button(Button<TupleView1<Text>>)
     /// Text.
     case text(Text)
     /// A toggle.
@@ -20,44 +20,4 @@ public enum MenuItem {
         @MainActor () -> MenuItem,
         @MainActor () -> (EnvironmentValues) -> EnvironmentValues
     )
-}
-
-// MARK: Views that can be used as menu items
-
-protocol MenuItemRepresentable: View {
-    nonisolated var asMenuItem: MenuItem { get }
-}
-
-extension Button: MenuItemRepresentable {
-    nonisolated var asMenuItem: MenuItem { .button(self) }
-}
-
-extension Text: MenuItemRepresentable {
-    nonisolated var asMenuItem: MenuItem { .text(self) }
-}
-
-extension Toggle: MenuItemRepresentable {
-    nonisolated var asMenuItem: MenuItem { .toggle(self) }
-}
-
-extension Divider: MenuItemRepresentable {
-    nonisolated var asMenuItem: MenuItem { .separator(self) }
-}
-
-@available(iOS 14, macCatalyst 14, tvOS 17, *)
-extension Menu: MenuItemRepresentable {
-    var asMenuItem: MenuItem { .submenu(self) }
-}
-
-extension TupleView1: MenuItemRepresentable where View0: MenuItemRepresentable {
-    var asMenuItem: MenuItem { view0.asMenuItem }
-}
-
-extension EnvironmentModifier: MenuItemRepresentable where Child: MenuItemRepresentable {
-    nonisolated var asMenuItem: MenuItem {
-        .modifiedEnvironment(
-            { self.body.asMenuItem },
-            { self.modification }
-        )
-    }
 }

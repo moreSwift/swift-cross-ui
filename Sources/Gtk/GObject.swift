@@ -18,6 +18,12 @@ open class GObject: GObjectRepresentable {
     }
 
     deinit {
+        // disconnect all GTK signal handlers before releasing the object
+        // to prevent callbacks firing on deallocated Swift wrapper instances.
+        for (id, _) in signals {
+            g_signal_handler_disconnect(gobjectPointer, id)
+        }
+
         g_object_unref(gobjectPointer)
     }
 
@@ -30,7 +36,10 @@ open class GObject: GObjectRepresentable {
     ///
     /// We made blocking support opt in to save memory and computation.
     public static let blockableSignalNames: Set<String> = [
-        "changed", "notify::active", "toggled", "value-changed",
+        "changed",
+        "notify::active",
+        "toggled",
+        "value-changed",
     ]
 
     /// Stores the signal handler ID of the handler that we have registered for
@@ -53,7 +62,8 @@ open class GObject: GObjectRepresentable {
         let box = SignalBox0(callback: callback)
         let handler:
             @convention(c) (
-                UnsafeMutableRawPointer, UnsafeMutableRawPointer
+                UnsafeMutableRawPointer,
+                UnsafeMutableRawPointer
             ) -> Void = { _, data in
                 let box = Unmanaged<SignalBox0>.fromOpaque(data).takeUnretainedValue()
                 box.callback()
@@ -96,7 +106,9 @@ open class GObject: GObjectRepresentable {
     }
 
     func addSignal<T1, T2, T3>(
-        name: String, handler: GCallback, callback: @escaping (T1, T2, T3) -> Void
+        name: String,
+        handler: GCallback,
+        callback: @escaping (T1, T2, T3) -> Void
     ) {
         let box = SignalBox3(callback: callback)
 
@@ -111,7 +123,9 @@ open class GObject: GObjectRepresentable {
     }
 
     func addSignal<T1, T2, T3, T4>(
-        name: String, handler: GCallback, callback: @escaping (T1, T2, T3, T4) -> Void
+        name: String,
+        handler: GCallback,
+        callback: @escaping (T1, T2, T3, T4) -> Void
     ) {
         let box = SignalBox4(callback: callback)
 
@@ -126,7 +140,9 @@ open class GObject: GObjectRepresentable {
     }
 
     func addSignal<T1, T2, T3, T4, T5>(
-        name: String, handler: GCallback, callback: @escaping (T1, T2, T3, T4, T5) -> Void
+        name: String,
+        handler: GCallback,
+        callback: @escaping (T1, T2, T3, T4, T5) -> Void
     ) {
         let box = SignalBox5(callback: callback)
 
@@ -141,7 +157,9 @@ open class GObject: GObjectRepresentable {
     }
 
     func addSignal<T1, T2, T3, T4, T5, T6>(
-        name: String, handler: GCallback, callback: @escaping (T1, T2, T3, T4, T5, T6) -> Void
+        name: String,
+        handler: GCallback,
+        callback: @escaping (T1, T2, T3, T4, T5, T6) -> Void
     ) {
         let box = SignalBox6(callback: callback)
 

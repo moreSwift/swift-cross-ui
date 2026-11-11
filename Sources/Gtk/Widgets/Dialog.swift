@@ -133,9 +133,9 @@ open class Dialog: Window {
 
         let handler1:
             @convention(c) (UnsafeMutableRawPointer, Int, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<Int>.run(data, value1)
-                }
+            { _, value1, data in
+                SignalBox1<Int>.run(data, value1)
+            }
 
         addSignal(name: "response", handler: gCallback(handler1)) { [weak self] (responseId: Int) in
             guard let self else { return }
@@ -143,10 +143,11 @@ open class Dialog: Window {
         }
 
         let handler2:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "notify::use-header-bar", handler: gCallback(handler2)) {
             [weak self] (_: OpaquePointer) in

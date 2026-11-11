@@ -138,7 +138,8 @@ struct SplitView<Sidebar: View, Detail: View>: TypeSafeView, View {
                 max(
                     children.minimumLeadingWidth,
                     layout.size.width - children.minimumTrailingWidth
-                ))
+                )
+            )
         )
 
         // Center pane children

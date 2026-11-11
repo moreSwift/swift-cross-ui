@@ -74,6 +74,11 @@ identifier = 'dev.swiftcrossui.HoverExample'
 product = 'HoverExample'
 version = '0.1.0'
 
+[apps.FontsExample]
+identifier = 'dev.swiftcrossui.FontsExample'
+product = 'FontsExample'
+version = '0.1.0'
+
 [apps.ForEachExample]
 identifier = 'dev.swiftcrossui.ForEachExample'
 product = 'ForEachExample'
@@ -94,3 +99,13 @@ identifier = 'dev.swiftcrossui.MusicPlayerExample'
 product = 'MusicPlayerExample'
 version = '0.1.0'
 icon = 'Icons/MusicPlayerExample.png'
+
+[apps.GradientsExample]
+identifier = 'dev.swiftcrossui.GradientsExample'
+product = 'GradientsExample'
+version = '0.1.0'
+    
+[apps.TapGesturesExample]
+identifier = 'dev.swiftcrossui.TapGesturesExample'
+product = 'TapGesturesExample'
+version = '0.1.0'

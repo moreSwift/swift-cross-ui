@@ -10,12 +10,10 @@ public struct CommandMenu {
     /// - Parameters:
     ///   - name: The menu's name.
     ///   - content: The menu's contents.
-    public init(
-        _ name: String,
-        @MenuItemsBuilder content: () -> [MenuItem]
-    ) {
+    @MainActor
+    public init(_ name: String, @ViewBuilder content: () -> some View) {
         self.name = name
-        self.content = content()
+        self.content = content()._asMenuItems
     }
 
     /// Creates a command menu.

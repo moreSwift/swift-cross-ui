@@ -66,8 +66,8 @@ app.run { window in
         newWindow.defaultSize = Size(width: 200, height: 200)
 
         let calendar = Calendar()
-        calendar.year = 2000
-        calendar.showHeading = true
+        // calendar.year = 2000
+        // calendar.showHeading = true
 
         newWindow.add(calendar)
         newWindow.showAll()

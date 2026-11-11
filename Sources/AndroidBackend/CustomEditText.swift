@@ -5,12 +5,10 @@ import AndroidKit
     "dev.swiftcrossui.androidbackend.CustomEditText",
     extends: AndroidKit.EditText.self
 )
-class CustomEditText: JavaObject {
+class CustomEditText: AndroidKit.EditText {
     @JavaMethod
     @_nonoverride convenience init(
         activity: Activity?,
-        onChange: SwiftAction? = nil,
-        onSubmit: SwiftAction? = nil,
         environment: JNIEnvironment? = nil
     )
 
@@ -19,4 +17,16 @@ class CustomEditText: JavaObject {
 
     @JavaMethod
     func setOnSubmit(_ action: SwiftAction?)
+
+    @JavaMethod
+    func setTextFromSwift(_ text: String)
+}
+
+@JavaClass("dev.swiftcrossui.androidbackend.SecureEditText", extends: CustomEditText.self)
+class SecureEditText: CustomEditText {
+    @JavaMethod
+    @_nonoverride convenience init(
+        activity: Activity?,
+        environment: JNIEnvironment? = nil
+    )
 }

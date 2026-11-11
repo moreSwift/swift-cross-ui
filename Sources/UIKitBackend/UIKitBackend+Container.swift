@@ -1,4 +1,4 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import UIKit
 
 final class ScrollWidget: ContainerWidget {
@@ -32,7 +32,8 @@ final class ScrollWidget: ContainerWidget {
                 childHeightConstraint!.isActive = false
             case (false, nil):
                 childHeightConstraint = child.view.heightAnchor.constraint(
-                    equalTo: scrollView.heightAnchor)
+                    equalTo: scrollView.heightAnchor
+                )
                 fallthrough
             case (false, false):
                 childHeightConstraint!.isActive = true
@@ -45,7 +46,8 @@ final class ScrollWidget: ContainerWidget {
                 childWidthConstraint!.isActive = false
             case (false, nil):
                 childWidthConstraint = child.view.widthAnchor.constraint(
-                    equalTo: scrollView.widthAnchor)
+                    equalTo: scrollView.widthAnchor
+                )
                 fallthrough
             case (false, false):
                 childWidthConstraint!.isActive = true
@@ -75,70 +77,70 @@ final class ScrollWidget: ContainerWidget {
 }
 
 #if os(visionOS)
-// UIToolTipInteractionDelegate isn't available on visionOS for some reason.
-// Thankfully, UIToolTipInteraction is available since visionOS 1.0, so it can
-// be a stored property.
-final class TooltipWidget: ContainerWidget {
-    private let interaction = UIToolTipInteraction()
-    
-    var text = "" {
-        didSet {
-            child.accessibilityHint = text
-            interaction.defaultToolTip = text
-        }
-    }
+    // UIToolTipInteractionDelegate isn't available on visionOS for some reason.
+    // Thankfully, UIToolTipInteraction is available since visionOS 1.0, so it can
+    // be a stored property.
+    final class TooltipWidget: ContainerWidget {
+        private let interaction = UIToolTipInteraction()
 
-    override init(child: some WidgetProtocol) {
-        super.init(child: child)
-        child.view.addInteraction(interaction)
-    }
-}
-#elseif os(tvOS)
-// tvOS gives linker errors for even attempting to reference
-// UIToolTipInteraction or UIToolTipInteractionDelegate, regardless of the
-// #available/@available guards.
-final class TooltipWidget: ContainerWidget {
-    var text = "" {
-        didSet {
-            child.accessibilityHint = text
+        var text = "" {
+            didSet {
+                child.accessibilityHint = text
+                interaction.defaultToolTip = text
+            }
         }
-    }
-}
-#else
-// Because stored properties cannot be conditionally available, there's no good
-// way to update interaction.defaultToolTip after initialization, so this has to
-// implement UIToolTipInteractionDelegate instead.
-final class TooltipWidget: ContainerWidget {
-    var text = "" {
-        didSet {
-            child.accessibilityHint = text
-        }
-    }
 
-    override init(child: some WidgetProtocol) {
-        super.init(child: child)
-
-        if #available(iOS 15, macCatalyst 15, *) {
-            let interaction = UIToolTipInteraction()
+        override init(child: some WidgetProtocol) {
+            super.init(child: child)
             child.view.addInteraction(interaction)
-            interaction.delegate = self
         }
     }
-}
+#elseif os(tvOS)
+    // tvOS gives linker errors for even attempting to reference
+    // UIToolTipInteraction or UIToolTipInteractionDelegate, regardless of the
+    // #available/@available guards.
+    final class TooltipWidget: ContainerWidget {
+        var text = "" {
+            didSet {
+                child.accessibilityHint = text
+            }
+        }
+    }
+#else
+    // Because stored properties cannot be conditionally available, there's no good
+    // way to update interaction.defaultToolTip after initialization, so this has to
+    // implement UIToolTipInteractionDelegate instead.
+    final class TooltipWidget: ContainerWidget {
+        var text = "" {
+            didSet {
+                child.accessibilityHint = text
+            }
+        }
 
-@available(iOS 15, macCatalyst 15, *)
-extension TooltipWidget: UIToolTipInteractionDelegate {
-    func toolTipInteraction(
-        _ interaction: UIToolTipInteraction,
-        configurationAt point: CGPoint
-    ) -> UIToolTipConfiguration? {
-        let rect = view.bounds
-        if rect.contains(point) {
-            return UIToolTipConfiguration(toolTip: text, in: rect)
+        override init(child: some WidgetProtocol) {
+            super.init(child: child)
+
+            if #available(iOS 15, macCatalyst 15, *) {
+                let interaction = UIToolTipInteraction()
+                child.view.addInteraction(interaction)
+                interaction.delegate = self
+            }
         }
-        return nil
     }
-}
+
+    @available(iOS 15, macCatalyst 15, *)
+    extension TooltipWidget: UIToolTipInteractionDelegate {
+        func toolTipInteraction(
+            _ interaction: UIToolTipInteraction,
+            configurationAt point: CGPoint
+        ) -> UIToolTipConfiguration? {
+            let rect = view.bounds
+            if rect.contains(point) {
+                return UIToolTipConfiguration(toolTip: text, in: rect)
+            }
+            return nil
+        }
+    }
 #endif
 
 extension UIKitBackend {
@@ -186,6 +188,10 @@ extension UIKitBackend {
         widget.view.backgroundColor = color.uiColor
     }
 
+    public func createCornerRadiusContainer(wrapping child: Widget) -> Widget {
+        child
+    }
+
     public func setCornerRadius(of widget: Widget, to radius: Int) {
         widget.view.layer.cornerRadius = CGFloat(radius)
         widget.view.layer.masksToBounds = true
@@ -223,11 +229,11 @@ extension UIKitBackend {
             hasHorizontalScrollBar: hasHorizontalScrollBar
         )
     }
-    
+
     public func createTooltipContainer(wrapping child: Widget) -> Widget {
         TooltipWidget(child: child)
     }
-    
+
     public func updateTooltipContainer(_ widget: Widget, tooltip: String) {
         let widget = widget as! TooltipWidget
         widget.text = tooltip

@@ -15,9 +15,10 @@ public struct Menu {
     /// - Parameters:
     ///   - label: The menu's label.
     ///   - items: The menu's items.
-    public init(_ label: String, @MenuItemsBuilder items: () -> [MenuItem]) {
+    @MainActor
+    public init(_ label: String, @ViewBuilder items: () -> some View) {
         self.label = label
-        self.items = items()
+        self.items = items()._asMenuItems
     }
 
     /// Resolves the menu to a representation used by backends.
@@ -33,7 +34,7 @@ public struct Menu {
     static func resolve(item: MenuItem) -> ResolvedMenu.Item {
         switch item {
             case .button(let button):
-                .button(button.label, button.action)
+                .button(button.body.view0.view0.string, button.action)
             case .text(let text):
                 .button(text.string, nil)
             case .toggle(let toggle):
@@ -62,6 +63,8 @@ public struct Menu {
 extension Menu: TypeSafeView {
     public var body: EmptyView { return EmptyView() }
 
+    public var _asMenuItems: [MenuItem] { [.submenu(self)] }
+
     func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
@@ -74,7 +77,7 @@ extension Menu: TypeSafeView {
         _ children: MenuStorage,
         backend: Backend
     ) -> Backend.Widget {
-        return backend.createButton()
+        return backend.createSimpleButton()
     }
 
     func layoutableChildren<Backend: BaseAppBackend>(
@@ -102,7 +105,7 @@ extension Menu: TypeSafeView {
                 // Our menu button action implementation needs to know the size
                 // of the button, but we don't have that yet, so just update it
                 // with an empty action and fix it in commit.
-                backend.updateButton(
+                backend.updateSimpleButton(
                     widget,
                     label: label,
                     environment: environment,
@@ -111,7 +114,7 @@ extension Menu: TypeSafeView {
             case .menuButton(let backend):
                 let menu =
                     children.menu.flatMap { $0 as? NewBackend.Menu }
-                    ?? backend.createPopoverMenu()
+                        ?? backend.createPopoverMenu()
                 children.menu = menu
                 backend.updateButton(
                     widget,
@@ -139,7 +142,7 @@ extension Menu: TypeSafeView {
 
         switch backend.menuImplementationStyle {
             case .dynamicPopover(let backend):
-                backend.updateButton(
+                backend.updateSimpleButton(
                     widget,
                     label: label,
                     environment: environment,

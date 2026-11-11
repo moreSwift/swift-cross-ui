@@ -64,10 +64,17 @@ public final class WindowGroupNode<Content: View>: SceneGraphNode {
                     scene: scene,
                     backend: backend,
                     environment: environment,
-                    onClose: { self.windowReferences[windowID] = nil }
+                    onClose: { self.windowReferences[windowID] = nil },
+                    id: nextId()
                 )
             ]
         }
+    }
+
+    private func nextId() -> String {
+        // Vaguely based off the research covered by https://github.com/pd95/SwiftUI-macos-HandleWindow
+        let baseId = scene.id ?? String(describing: Content.self)
+        return "\(baseId)-\(windowReferences.count)"
     }
 
     public func updateNode(
@@ -94,7 +101,8 @@ public final class WindowGroupNode<Content: View>: SceneGraphNode {
                     scene: scene,
                     backend: backend,
                     environment: environment,
-                    onClose: { self.windowReferences[windowID] = nil }
+                    onClose: { self.windowReferences[windowID] = nil },
+                    id: nextId()
                 )
                 windowReferences[windowID] = reference
 

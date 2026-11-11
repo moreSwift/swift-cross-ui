@@ -37,14 +37,16 @@ extension WidgetProtocolHelpers {
         }
 
         if let leftConstraint,
-            leftConstraint.secondAnchor === superview.safeAreaLayoutGuide.leftAnchor
+           leftConstraint.secondAnchor === superview.safeAreaLayoutGuide.leftAnchor
         {
             leftConstraint.constant = CGFloat(x)
             leftConstraint.isActive = true
         } else {
             self.leftConstraint?.isActive = false
             let leftConstraint = view.leftAnchor.constraint(
-                equalTo: superview.safeAreaLayoutGuide.leftAnchor, constant: CGFloat(x))
+                equalTo: superview.safeAreaLayoutGuide.leftAnchor,
+                constant: CGFloat(x)
+            )
             self.leftConstraint = leftConstraint
             // Set the constraint priority for leftConstraint (and topConstraint) to just
             // under "required" so that we don't get warnings about unsatisfiable constraints
@@ -63,14 +65,16 @@ extension WidgetProtocolHelpers {
         }
 
         if let topConstraint,
-            topConstraint.secondAnchor === superview.safeAreaLayoutGuide.topAnchor
+           topConstraint.secondAnchor === superview.safeAreaLayoutGuide.topAnchor
         {
             topConstraint.constant = CGFloat(y)
             topConstraint.isActive = true
         } else {
             self.topConstraint?.isActive = false
             let topConstraint = view.topAnchor.constraint(
-                equalTo: superview.safeAreaLayoutGuide.topAnchor, constant: CGFloat(y))
+                equalTo: superview.safeAreaLayoutGuide.topAnchor,
+                constant: CGFloat(y)
+            )
             self.topConstraint = topConstraint
             topConstraint.priority = .init(UILayoutPriority.required.rawValue - 1.0)
             topConstraint.isActive = true
@@ -181,7 +185,7 @@ class BaseViewWidget: UIView, WidgetProtocolHelpers {
         addSubview(childWidget.view)
 
         if let controller,
-            let childController
+           let childController
         {
             controller.addChild(childController)
             childController.didMove(toParent: controller)
@@ -292,7 +296,8 @@ class BaseControllerWidget: UIViewController, WidgetProtocolHelpers {
     func removeFromParentWidget() {
         if let parentWidget {
             parentWidget.childWidgets.remove(
-                at: parentWidget.childWidgets.firstIndex { $0 === self }!)
+                at: parentWidget.childWidgets.firstIndex { $0 === self }!
+            )
             self.parentWidget = nil
         }
         if parent != nil {

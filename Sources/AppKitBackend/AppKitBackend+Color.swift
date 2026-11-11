@@ -1,5 +1,5 @@
 import AppKit
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 extension AppKitBackend {
     // NB: We deliberately use the default implementation of `resolveAdaptiveColor(_:in:)`,

@@ -1,6 +1,6 @@
 import CGtk3
 import Gtk3
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 extension Gtk3Backend {
     public func resolveAdaptiveColor(

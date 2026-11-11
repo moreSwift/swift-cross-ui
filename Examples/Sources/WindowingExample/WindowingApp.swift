@@ -97,7 +97,7 @@ struct SheetDemo: View {
             Text("I'm only here for 5s")
                 .padding(20)
                 .presentationDetents([.medium])
-                .presentationCornerRadius(10)
+                .presentationCornerRadius(20)
                 .presentationBackground(.red)
         }
     }
@@ -111,6 +111,7 @@ struct SheetDemo: View {
                 Text("Root sheet")
                 Button("Present a nested sheet") {
                     isNestedSheetPresented = true
+                    print("Presented a nested sheet")
                 }
                 Button("Dismiss") {
                     dismiss()
@@ -246,21 +247,19 @@ struct WindowingApp: App {
                     HStack {
                         Text("Window title:")
 
-                        #if !os(Android)
-                            TextField("My window", text: $title)
-                        #endif
+                        TextField("My window", text: $title)
                     }
 
                     Text("App phase: \(appPhase)")
 
-                    #if !os(Android)
-                        Toggle("Enable resizing", isOn: $resizable)
-                            .windowResizeBehavior(resizable ? .enabled : .disabled)
-                        Toggle("Enable closing", isOn: $closable)
-                            .windowDismissBehavior(closable ? .enabled : .disabled)
-                        Toggle("Enable minimizing", isOn: $minimizable)
-                            .preferredWindowMinimizeBehavior(minimizable ? .enabled : .disabled)
+                    Toggle("Enable resizing", isOn: $resizable)
+                        .windowResizeBehavior(resizable ? .enabled : .disabled)
+                    Toggle("Enable closing", isOn: $closable)
+                        .windowDismissBehavior(closable ? .enabled : .disabled)
+                    Toggle("Enable minimizing", isOn: $minimizable)
+                        .preferredWindowMinimizeBehavior(minimizable ? .enabled : .disabled)
 
+                    #if !os(Android)
                         Image(bannerImage)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -268,7 +267,7 @@ struct WindowingApp: App {
                         Divider()
                     #endif
 
-                    #if !os(tvOS) && !os(Android)
+                    #if !os(tvOS)
                         FileDialogDemo()
 
                         Divider()
@@ -279,11 +278,11 @@ struct WindowingApp: App {
                         isAlertSceneShown = true
                     }
 
+                    Divider()
+
+                    SheetDemo()
+
                     #if !os(Android)
-                        Divider()
-
-                        SheetDemo()
-
                         Divider()
 
                         OpenWindowDemo()
@@ -306,6 +305,12 @@ struct WindowingApp: App {
                     Button("Item 2") {}
                     Button("Disabled item") {}
                         .disabled()
+                }
+
+                Divider()
+
+                ForEach([1, 2, 3, 4, 5], id: \.self) { num in
+                    Text("ForEach \(num)")
                 }
             }
         }

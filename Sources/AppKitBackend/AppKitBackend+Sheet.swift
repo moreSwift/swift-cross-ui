@@ -1,5 +1,5 @@
 import AppKit
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 extension AppKitBackend {
     public typealias Sheet = NSCustomSheet

@@ -21,14 +21,19 @@ final class WindowReference<SceneType: WindowingScene> {
     /// - Parameters:
     ///   - closeHandler: The action to perform when the window is closed. Should
     ///     dispose of the scene's reference to this `WindowReference`.
+    ///   - id: A unique id to use when restoring the window's frame from disk (if present).
     init<Backend: BaseAppBackend>(
         scene: SceneType,
         backend: Backend,
         environment: EnvironmentValues,
-        onClose closeHandler: @escaping @Sendable @MainActor () -> Void
+        onClose closeHandler: @escaping @Sendable @MainActor () -> Void,
+        id: String
     ) {
         self.scene = scene
-        let window = backend.createWindow(withDefaultSize: environment.defaultWindowSize)
+        let window = backend.createWindow(
+            withDefaultSize: environment.defaultWindowSize,
+            id: id
+        )
 
         viewGraph = ViewGraph(
             for: scene.content(),
@@ -62,8 +67,7 @@ final class WindowReference<SceneType: WindowingScene> {
                 needsWindowSizeCommit: false,
                 backend: backend,
                 environment: self.parentEnvironment,
-                windowSizeIsFinal:
-                    !backend.isWindowProgrammaticallyResizable(window)
+                windowSizeIsFinal: !backend.isWindowProgrammaticallyResizable(window)
             )
         }
 
@@ -75,8 +79,7 @@ final class WindowReference<SceneType: WindowingScene> {
                 needsWindowSizeCommit: false,
                 backend: backend,
                 environment: self.parentEnvironment,
-                windowSizeIsFinal:
-                    !backend.isWindowProgrammaticallyResizable(window)
+                windowSizeIsFinal: !backend.isWindowProgrammaticallyResizable(window)
             )
         }
     }
@@ -95,7 +98,7 @@ final class WindowReference<SceneType: WindowingScene> {
 
         let proposedWindowSize: SIMD2<Int>
         let usedDefaultSize: Bool
-        if isFirstUpdate && isProgramaticallyResizable {
+        if isFirstUpdate && isProgramaticallyResizable && !backend.restoresWindowFrames {
             proposedWindowSize = environment.defaultWindowSize
             usedDefaultSize = true
         } else {
@@ -266,10 +269,6 @@ final class WindowReference<SceneType: WindowingScene> {
             in: containerWidget.into(),
             to: (proposedWindowSize &- finalContentResult.size.vector) / 2
         )
-        backend.setSize(
-            of: containerWidget.into(),
-            to: proposedWindowSize
-        )
 
         if needsWindowSizeCommit {
             backend.setSize(ofWindow: window, to: proposedWindowSize)
@@ -280,12 +279,12 @@ final class WindowReference<SceneType: WindowingScene> {
             func setBehaviors<NewBackend: BackendFeatures.WindowBehaviors>(backend: NewBackend) {
                 backend.setBehaviors(
                     ofWindow: window as! NewBackend.Window,
-                    closable:
-                        finalContentResult.preferences.windowDismissBehavior?.isEnabled ?? true,
-                    minimizable:
-                        finalContentResult.preferences.preferredWindowMinimizeBehavior?.isEnabled ?? true,
-                    resizable:
-                        finalContentResult.preferences.windowResizeBehavior?.isEnabled ?? true
+                    closable: finalContentResult.preferences.windowDismissBehavior?
+                        .isEnabled ?? true,
+                    minimizable: finalContentResult.preferences.preferredWindowMinimizeBehavior?
+                        .isEnabled ?? true,
+                    resizable: finalContentResult.preferences.windowResizeBehavior?
+                        .isEnabled ?? true
                 )
             }
             setBehaviors(backend: backend)

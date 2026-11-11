@@ -14,11 +14,11 @@ class CustomSpinner: JavaObject {
 
     @JavaMethod
     func update(_ onChange: SwiftAction?, _ options: [String], _ isEnabled: Bool)
-    
+
     // Inheritied from Spinner; only present to avoid the extra as() call Swift-side.
     @JavaMethod
     func getSelectedItemPosition() -> Int32
-    
+
     @JavaMethod
     func selectOption(_ selectedOption: Int32)
 }

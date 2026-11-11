@@ -11,6 +11,9 @@ public struct OptionalView<V: View> {
 }
 
 extension OptionalView: View {
+    public var _asMenuItems: [MenuItem] {
+        view?._asMenuItems ?? []
+    }
 }
 
 extension OptionalView: TypeSafeView {
@@ -73,7 +76,11 @@ extension OptionalView: TypeSafeView {
         } else {
             hasToggled = children.node != nil
             children.node = nil
-            result = ViewLayoutResult.leafView(size: .zero)
+            result = ViewLayoutResult(
+                size: .zero,
+                childResults: [],
+                participateInStackLayoutsWhenEmpty: false
+            )
         }
         children.hasToggled = children.hasToggled || hasToggled
 

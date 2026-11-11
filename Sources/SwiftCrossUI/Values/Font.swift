@@ -254,12 +254,12 @@ public struct Font: Hashable, Sendable {
     public struct Resolved: Hashable, Sendable {
         /// A font identifier.
         public struct Identifier: Hashable, Sendable {
-            package var kind: Kind
+            @_spi(Backends) public var kind: Kind
 
             /// The system font.
             public static let system = Self(kind: .system)
 
-            package enum Kind: Hashable {
+            @_spi(Backends) public enum Kind: Hashable, Sendable {
                 case system
             }
         }
@@ -285,7 +285,7 @@ public struct Font: Hashable, Sendable {
     }
 
     @MainActor
-    package func resolve(in context: Context) -> Resolved {
+    @_spi(Backends) public func resolve(in context: Context) -> Resolved {
         let emphasizedWeight: Weight
         var resolved: Resolved
         switch kind {

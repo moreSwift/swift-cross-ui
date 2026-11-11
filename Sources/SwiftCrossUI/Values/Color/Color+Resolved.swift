@@ -68,7 +68,7 @@ extension Color {
     // NB: Also used in the default implementation for
     // `BackendFeatures.Colors.resolveAdaptiveColor(_:in:)`.
     @MainActor
-    package static func defaultResolveAdaptiveColor(
+    @_spi(Backends) public static func defaultResolveAdaptiveColor(
         _ adaptiveColor: Color.SystemAdaptive,
         in environment: EnvironmentValues
     ) -> Color.Resolved {

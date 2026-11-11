@@ -1,5 +1,5 @@
 import Logging
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import UIKit
 
 public final class UIKitBackend:
@@ -11,7 +11,8 @@ public final class UIKitBackend:
     BackendFeatures.CornerRadius,
     BackendFeatures.Paths,
     BackendFeatures.Tooltips,
-    BackendFeatures.Colors
+    BackendFeatures.Colors,
+    BackendFeatures.Gradients
 {
     static var onWindowEnvironmentChange: (() -> Void)?
     static var onBecomeActive: (() -> Void)?
@@ -36,6 +37,7 @@ public final class UIKitBackend:
 
     public let supportsMultipleWindows = false
     public let canOverrideWindowColorScheme = true
+    public let restoresWindowFrames = false
 
     public var deviceClass: DeviceClass {
         switch UIDevice.current.userInterfaceIdiom {
@@ -188,7 +190,9 @@ public final class UIKitBackend:
         return environment
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
+    public func setRootEnvironmentChangeHandler(
+        to action: @escaping @Sendable @MainActor () -> Void
+    ) {
         onTraitCollectionChange = action
         if timeZoneObserver == nil {
             timeZoneObserver = NotificationCenter.default.addObserver(
@@ -344,7 +348,7 @@ open class ApplicationDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         if let onReceiveURL = UIKitBackend.onReceiveURL,
-            let url = launchOptions?[.url] as? URL
+           let url = launchOptions?[.url] as? URL
         {
             onReceiveURL(url)
         }
@@ -398,9 +402,12 @@ open class ApplicationDelegate: UIResponder, UIApplicationDelegate {
     /// point in your implementation. If you do not, then calls to
     /// ``SwiftCrossUI/Scene/commands(_:)`` will have no effect.
     open override func buildMenu(with builder: any UIMenuBuilder) {
-        guard #available(tvOS 14, *),
+        guard
+            #available(tvOS 14, *),
             builder.system == .main
-        else { return }
+        else {
+            return
+        }
 
         for submenu in menu {
             let menuIdentifier = mapMenuIdentifier(submenu.label)
@@ -453,7 +460,7 @@ open class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         UIKitBackend.onBecomeActive = nil
 
         if let onReceiveURL = UIKitBackend.onReceiveURL,
-            let url = connectionOptions.userActivities.first?.webpageURL
+           let url = connectionOptions.userActivities.first?.webpageURL
         {
             onReceiveURL(url)
         }
@@ -461,7 +468,7 @@ open class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     open func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         if let onReceiveURL = UIKitBackend.onReceiveURL,
-            let url = userActivity.webpageURL
+           let url = userActivity.webpageURL
         {
             onReceiveURL(url)
         }

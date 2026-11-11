@@ -2,7 +2,9 @@
 public struct DefaultPickerStyle: PickerStyle, _BuiltinPickerStyle {
     public nonisolated init() {}
 
-    public func _asBackendPickerStyle<Backend: BaseAppBackend>(backend: Backend) -> BackendPickerStyle {
+    public func _asBackendPickerStyle<Backend: BaseAppBackend>(backend: Backend)
+        -> BackendPickerStyle
+    {
         backend.defaultPickerStyle
     }
 }

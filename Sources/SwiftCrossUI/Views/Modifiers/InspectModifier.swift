@@ -15,12 +15,12 @@ public struct InspectionPoints: OptionSet, RawRepresentable, Hashable, Sendable 
 /// backend. Make sure to import your chosen backend in any files where you
 /// need to inspect a widget. This type simply supports the implementation of
 /// those backend-specific modifiers.
-package struct InspectView<Child: View> {
+@_spi(Backends) public struct InspectView<Child: View> {
     var child: TupleView1<Child>
     var inspectionPoints: InspectionPoints
     var action: @MainActor (_ widget: AnyWidget, _ children: any ViewGraphNodeChildren) -> Void
 
-    package init<WidgetType>(
+    public init<WidgetType>(
         child: Child,
         inspectionPoints: InspectionPoints,
         action: @escaping @MainActor @Sendable (WidgetType) -> Void
@@ -32,7 +32,7 @@ package struct InspectView<Child: View> {
         }
     }
 
-    package init<WidgetType, Children: ViewGraphNodeChildren>(
+    public init<WidgetType, Children: ViewGraphNodeChildren>(
         child: Child,
         inspectionPoints: InspectionPoints,
         action: @escaping @MainActor @Sendable (WidgetType, Children) -> Void
@@ -46,9 +46,9 @@ package struct InspectView<Child: View> {
 }
 
 extension InspectView: View {
-    package var body: some View { EmptyView() }
+    public var body: some View { EmptyView() }
 
-    package func asWidget<Backend: BaseAppBackend>(
+    public func asWidget<Backend: BaseAppBackend>(
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {
@@ -60,7 +60,7 @@ extension InspectView: View {
         return widget
     }
 
-    package func children<Backend: BaseAppBackend>(
+    public func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
@@ -68,14 +68,14 @@ extension InspectView: View {
         child.children(backend: backend, snapshots: snapshots, environment: environment)
     }
 
-    package func layoutableChildren<Backend: BaseAppBackend>(
+    public func layoutableChildren<Backend: BaseAppBackend>(
         backend: Backend,
         children: any ViewGraphNodeChildren
     ) -> [LayoutSystem.LayoutableChild] {
         child.layoutableChildren(backend: backend, children: children)
     }
 
-    package func computeLayout<Backend: BaseAppBackend>(
+    public func computeLayout<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         proposedSize: ProposedViewSize,
@@ -96,7 +96,7 @@ extension InspectView: View {
         return result
     }
 
-    package func commit<Backend: BaseAppBackend>(
+    public func commit<Backend: BaseAppBackend>(
         _ widget: Backend.Widget,
         children: any ViewGraphNodeChildren,
         layout: ViewLayoutResult,
@@ -121,13 +121,13 @@ extension InspectView: View {
 /// Make sure to import your chosen backend in any files where you need to
 /// inspect a native window. This type simply supports the implementation of
 /// those backend-specified modifiers.
-package struct InspectWindowView<Child: View> {
+@_spi(Backends) public struct InspectWindowView<Child: View> {
     @Environment(\.window) var window
 
     var child: Child
     var action: @MainActor (_ window: Any) -> Void
 
-    package init<WindowType>(
+    public init<WindowType>(
         child: Child,
         action: @escaping @MainActor @Sendable (WindowType) -> Void
     ) {
@@ -139,7 +139,7 @@ package struct InspectWindowView<Child: View> {
 }
 
 extension InspectWindowView: View {
-    package var body: some View {
+    public var body: some View {
         child.onCommit {
             action(window!)
         }

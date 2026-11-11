@@ -19,7 +19,7 @@ class CustomContainer: JavaObject {
 
     @JavaMethod
     func addView(_ view: AndroidKit.View?, _ index: Int32)
-    
+
     @JavaMethod
     func getChildAt(_ index: Int32) -> AndroidKit.View?
 

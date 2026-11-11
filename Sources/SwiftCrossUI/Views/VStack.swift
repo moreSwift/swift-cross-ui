@@ -77,11 +77,11 @@ public struct VStack<Content: View>: View {
             children: layoutableChildren(backend: backend, children: children),
             cache: &cache,
             proposedSize: proposedSize,
-            environment:
-                environment
+            environment: environment
                 .with(\.layoutOrientation, .vertical)
                 .with(\.layoutAlignment, alignment.asStackAlignment)
-                .with(\.layoutSpacing, spacing),
+                .with(\.layoutSpacing, spacing)
+                .with(\.usesZStackLayout, false),
             backend: backend
         )
         (children as? TupleViewChildren)?.stackLayoutCache = cache
@@ -101,11 +101,11 @@ public struct VStack<Content: View>: View {
             children: layoutableChildren(backend: backend, children: children),
             cache: &cache,
             layout: layout,
-            environment:
-                environment
+            environment: environment
                 .with(\.layoutOrientation, .vertical)
                 .with(\.layoutAlignment, alignment.asStackAlignment)
-                .with(\.layoutSpacing, spacing),
+                .with(\.layoutSpacing, spacing)
+                .with(\.usesZStackLayout, false),
             backend: backend
         )
         (children as? TupleViewChildren)?.stackLayoutCache = cache

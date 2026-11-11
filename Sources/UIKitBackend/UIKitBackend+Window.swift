@@ -1,4 +1,4 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import UIKit
 
 final class RootViewController: UIViewController {
@@ -38,7 +38,8 @@ final class RootViewController: UIViewController {
     }
 
     override func viewWillTransition(
-        to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator
+        to size: CGSize,
+        with coordinator: any UIViewControllerTransitionCoordinator
     ) {
         resizeHandler?(size)
         super.viewWillTransition(to: size, with: coordinator)
@@ -66,7 +67,7 @@ final class RootViewController: UIViewController {
 extension UIKitBackend: BackendFeatures.WindowBehaviors {
     public typealias Window = UIWindow
 
-    public func createWindow(withDefaultSize _: SIMD2<Int>?) -> Window {
+    public func createWindow(withDefaultSize _: SIMD2<Int>?, id: String) -> Window {
         let window: UIWindow
 
         if !Self.hasReturnedAWindow {

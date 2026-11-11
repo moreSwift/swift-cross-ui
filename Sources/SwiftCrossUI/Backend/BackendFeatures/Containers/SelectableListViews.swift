@@ -42,6 +42,13 @@ extension BackendFeatures {
         /// Row heights should include base item padding (i.e. they should be the
         /// external height of the row rather than the internal height).
         ///
+        /// Implementations may assume that if the row count hasn't changed, the
+        /// `items` array hasn't either. And furthermore, if the row count has
+        /// increased, then the only new widgets are the widgets appended to the
+        /// end of the previous items array to reach the new item count. Likewise,
+        /// if the row count has decreased, then the `items` array will simply have
+        /// been truncated to the new length.
+        ///
         /// - Parameters:
         ///   - listView: The list view.
         ///   - items: An array of widgets to add to `listView`.

@@ -23,7 +23,8 @@ public struct OpenURLAction {
                     metadata: [
                         "url": "\(url)",
                         "error": "\(error)",
-                    ])
+                    ]
+                )
             }
         }
     }

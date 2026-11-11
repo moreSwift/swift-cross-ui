@@ -88,7 +88,8 @@ public final class Published<Value>: ObservableObject, PublishedMarkerProtocol {
     /// this initializer variant contains a deprecation warning to warn
     /// developers (but does nothing functionally different).
     @available(
-        *, deprecated,
+        *,
+        deprecated,
         message: "A class must conform to ObservableObject to be Published"
     )
     public init(wrappedValue: Value) where Value: AnyObject {

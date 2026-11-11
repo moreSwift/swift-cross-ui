@@ -1,4 +1,4 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import WinUI
 
 // Many force tries are required for the WinUI backend but we don't really want them
@@ -56,7 +56,9 @@ extension WinUIBackend {
         let secureField = PasswordBox()
         secureField.passwordChanged.addHandler { [weak internalState] _, _ in
             guard let internalState else { return }
-            internalState.textFieldChangeActions[ObjectIdentifier(secureField)]?(secureField.password)
+            internalState.textFieldChangeActions[ObjectIdentifier(secureField)]?(
+                secureField.password
+            )
         }
         secureField.keyUp.addHandler { [weak internalState] _, event in
             guard let internalState else { return }

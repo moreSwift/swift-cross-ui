@@ -1,5 +1,5 @@
 import Benchmark
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import DummyBackend
 import Foundation
 
@@ -29,7 +29,7 @@ struct Benchmarks {
         let backend = DummyBackend()
         let defaultEnvironment = EnvironmentValues(backend: backend)
         let environment = backend.computeRootEnvironment(defaultEnvironment: defaultEnvironment)
-            .with(\.window, backend.createWindow(withDefaultSize: nil))
+            .with(\.window, backend.createWindow(withDefaultSize: nil, id: "window"))
 
         @MainActor
         func makeNode<V: View>(_ view: V) -> ViewGraphNode<V, DummyBackend> {
@@ -49,7 +49,11 @@ struct Benchmarks {
         #endif
 
         @MainActor
-        func benchmarkLayout<V: TestCaseView>(of viewType: V.Type, _ size: ProposedViewSize, _ label: String) {
+        func benchmarkLayout<V: TestCaseView>(
+            of viewType: V.Type,
+            _ size: ProposedViewSize,
+            _ label: String
+        ) {
             #if BENCHMARK_VIZ
                 benchmarkVisualizations.append((
                     label,
@@ -69,7 +73,16 @@ struct Benchmarks {
 
         // Register benchmarks
         benchmarkLayout(of: GridView.self, ProposedViewSize(800, 800), "grid")
-        benchmarkLayout(of: ScrollableMessageListView.self, ProposedViewSize(800, 800), "message list")
+        benchmarkLayout(
+            of: ScrollableMessageListView.self,
+            ProposedViewSize(800, 800),
+            "message list"
+        )
+        benchmarkLayout(
+            of: EnvironmentHeavyView.self,
+            ProposedViewSize(800, 800),
+            "environment-heavy view"
+        )
 
         #if BENCHMARK_VIZ
             let names = benchmarkVisualizations.map(\.name).joined(separator: " | ")

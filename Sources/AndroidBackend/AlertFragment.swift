@@ -1,26 +1,24 @@
 import SwiftJava
 import AndroidKit
 
-@JavaClass(
-    "dev.swiftcrossui.androidbackend.AlertFragment",
-    extends: AndroidKit.DialogFragment.self
-)
+@JavaClass("dev.swiftcrossui.androidbackend.AlertFragment")
 public class AlertFragment: JavaObject {
     @JavaMethod
     func getButtonIndex() -> Int32
-    
+
     @JavaMethod
     func setAction(_ action: SwiftAction?)
-    
+
     @JavaMethod
     func update(
         _ title: String,
         _ buttons: [String]
     )
 
+    // Inherited from DialogFragment
     @JavaMethod
-    func show(_ activity: AndroidKit.Activity?)
-    
+    func show(_ manager: AndroidxFragmentManager?, _ tag: String)
+
     // Inherited from DialogFragment
     @JavaMethod
     func dismiss()

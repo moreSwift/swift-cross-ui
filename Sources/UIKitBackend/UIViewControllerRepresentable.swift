@@ -1,4 +1,4 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import UIKit
 
 /// The context associated with an instance of ``Representable``.

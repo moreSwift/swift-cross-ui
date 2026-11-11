@@ -109,6 +109,14 @@ public protocol View {
         environment: EnvironmentValues,
         backend: Backend
     )
+
+    /// Returns this view as an array of ``MenuItem``s.
+    ///
+    /// The default implementation forwards to ``body``; you should never have to override this.
+    ///
+    /// - Warning: This is an implementation detail and is subject to be changed or removed at any
+    ///   time.
+    var _asMenuItems: [MenuItem] { get }
 }
 
 extension View {
@@ -193,8 +201,7 @@ extension View {
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
-        let vStack = VStack(content: body)
-        return vStack.computeLayout(
+        return body.computeLayout(
             widget,
             children: children,
             proposedSize: proposedSize,
@@ -226,13 +233,23 @@ extension View {
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        let vStack = VStack(content: body)
-        return vStack.commit(
+        return body.commit(
             widget,
             children: children,
             layout: layout,
             environment: environment,
             backend: backend
         )
+    }
+
+    public var _asMenuItems: [MenuItem] { body._asMenuItems }
+
+    /// Resolves this view's menu content to the representation used by backends.
+    ///
+    /// This is the same resolution applied to ``Menu`` content and scene ``Commands``.
+    /// - Returns: The resolved menu.
+    @MainActor
+    @_spi(Backends) public func resolvedMenuContent() -> ResolvedMenu {
+        Menu.resolve(items: _asMenuItems)
     }
 }

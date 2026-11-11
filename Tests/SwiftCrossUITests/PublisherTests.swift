@@ -38,22 +38,34 @@ struct PublisherTests {
         // Ensure that published nested ObservableObject triggers observation
         observedChange = false
         state.publishedNestedState.count += 1
-        #expect(observedChange, "Expected nested published observable object mutation to trigger observation")
+        #expect(
+            observedChange,
+            "Expected nested published observable object mutation to trigger observation"
+        )
 
         // Ensure that replacing published nested ObservableObject triggers observation
         observedChange = false
         state.publishedNestedState = NestedState()
-        #expect(observedChange, "Expected replacing nested published observable object to trigger observation")
+        #expect(
+            observedChange,
+            "Expected replacing nested published observable object to trigger observation"
+        )
 
         // Ensure that replaced published nested ObservableObject triggers observation
         observedChange = false
         state.publishedNestedState.count += 1
-        #expect(observedChange, "Expected replaced nested published observable object mutation to trigger observation")
+        #expect(
+            observedChange,
+            "Expected replaced nested published observable object mutation to trigger observation"
+        )
 
         // Ensure that non-published nested ObservableObject doesn't trigger observation
         observedChange = false
         state.unpublishedNestedState.count += 1
-        #expect(!observedChange, "Expected nested unpublished observable object mutation to not trigger observation")
+        #expect(
+            !observedChange,
+            "Expected nested unpublished observable object mutation to not trigger observation"
+        )
 
         // Ensure that cancelling the observation prevents future observations
         cancellable.cancel()

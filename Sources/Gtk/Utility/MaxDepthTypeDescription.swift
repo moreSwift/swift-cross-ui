@@ -1,7 +1,9 @@
 /// If a type has generic subtypes deeper than `maxDepth` they are replaced
 /// by `moreTypeInfoIndicator`. eg: ViewContent2<Text, OptionalView<ViewContent2<ForEach<...>>>>
 func typeDescription<T>(
-    of _: T.Type, withMaxDepth maxDepth: Int, moreTypeInfoIndicator: String = "<...>"
+    of _: T.Type,
+    withMaxDepth maxDepth: Int,
+    moreTypeInfoIndicator: String = "<...>"
 ) -> String {
     var currentDepth = 0
     let fullTypeDescription = String(describing: T.self)
@@ -28,5 +30,5 @@ func typeDescription<T>(
 
     return
         clampedTypeDescription
-        .replacingOccurrences(of: "<>", with: moreTypeInfoIndicator)
+            .replacingOccurrences(of: "<>", with: moreTypeInfoIndicator)
 }

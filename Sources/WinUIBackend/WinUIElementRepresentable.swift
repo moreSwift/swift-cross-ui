@@ -1,4 +1,4 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import WinUI
 import WindowsFoundation
 
@@ -144,7 +144,7 @@ extension View where Self: WinUIElementRepresentable {
     ) -> ViewLayoutResult {
         let representingWidget = widget as! RepresentingWidget<Self>
         if let child = representingWidget.child,
-            let savedSize = representingWidget.savedSize
+           let savedSize = representingWidget.savedSize
         {
             child.width = savedSize.x
             child.height = savedSize.y

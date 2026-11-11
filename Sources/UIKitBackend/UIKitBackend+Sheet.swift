@@ -1,4 +1,4 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import UIKit
 
 extension UIKitBackend {
@@ -53,7 +53,10 @@ extension UIKitBackend {
         setPresentationDetents(of: sheet, to: detents)
         setPresentationCornerRadius(of: sheet, to: cornerRadius)
         setPresentationDragIndicatorVisibility(
-            of: sheet, to: dragIndicatorVisibility, detents: detents)
+            of: sheet,
+            to: dragIndicatorVisibility,
+            detents: detents
+        )
 
         let defaultColor: UIColor?
         #if targetEnvironment(macCatalyst)
@@ -65,16 +68,25 @@ extension UIKitBackend {
             switch environment.colorScheme {
                 case .light:
                     defaultColor = UIColor(
-                        red: 1, green: 1, blue: 1, alpha: 1
+                        red: 1,
+                        green: 1,
+                        blue: 1,
+                        alpha: 1
                     )
                 case .dark:
                     #if os(tvOS)
                         defaultColor = UIColor(
-                            red: 15 / 255, green: 15 / 255, blue: 15 / 255, alpha: 1
+                            red: 15 / 255,
+                            green: 15 / 255,
+                            blue: 15 / 255,
+                            alpha: 1
                         )
                     #else
                         defaultColor = UIColor(
-                            red: 28 / 255, green: 28 / 255, blue: 30 / 255, alpha: 1
+                            red: 28 / 255,
+                            green: 28 / 255,
+                            blue: 30 / 255,
+                            alpha: 1
                         )
                     #endif
             }
@@ -144,7 +156,7 @@ extension UIKitBackend {
                                 if #available(iOS 16.0, *) {
                                     return .custom(
                                         identifier: .init("Height:\(height)"),
-                                        resolver: { context in
+                                        resolver: { _ in
                                             height
                                         }
                                     )

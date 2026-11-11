@@ -24,6 +24,12 @@ public struct EitherView<A: View, B: View> {
 }
 
 extension EitherView: View {
+    public var _asMenuItems: [MenuItem] {
+        switch storage {
+            case .a(let a): a._asMenuItems
+            case .b(let b): b._asMenuItems
+        }
+    }
 }
 
 extension EitherView: TypeSafeView {

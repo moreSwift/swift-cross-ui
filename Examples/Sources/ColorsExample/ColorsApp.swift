@@ -13,19 +13,33 @@ struct ColorsApp: App {
     var colors: [Color] {
         if isShowingSystemColors {
             [
-                .system(.blue), .system(.brown),
-                .system(.gray), .system(.green),
-                .system(.orange), .system(.purple),
-                .system(.red), .system(.yellow),
+                .system(.blue),
+                .system(.brown),
+                .system(.gray),
+                .system(.green),
+                .system(.orange),
+                .system(.purple),
+                .system(.red),
+                .system(.yellow),
             ]
         } else {
             [
-                .blue, .brown, .gray, .green,
-                .orange, .purple, .red, .yellow,
+                .blue,
+                .brown,
+                .gray,
+                .green,
+                .orange,
+                .purple,
+                .red,
+                .yellow,
 
                 // Add the SCUI-exclusive colors to the end so as
                 // to make comparing the non-exclusive colors easier.
-                .cyan, .indigo, .mint, .pink, .teal,
+                .cyan,
+                .indigo,
+                .mint,
+                .pink,
+                .teal,
             ]
         }
     }
@@ -57,23 +71,14 @@ struct ColorsApp: App {
                         otherwise SCUI's built-in colors will be shown
                         """
                     )
-                    
-                    #if canImport(AndroidBackend)
-                        // TODO(bbrk24): Update this once AndroidBackend supports scrolling
+
+                    ScrollView(.horizontal) {
                         VStack(spacing: 5) {
                             colorStack.colorScheme(.dark)
                             colorStack.colorScheme(.light)
                             colorStack
                         }
-                    #else
-                        ScrollView(.horizontal) {
-                            VStack(spacing: 5) {
-                                colorStack.colorScheme(.dark)
-                                colorStack.colorScheme(.light)
-                                colorStack
-                            }
-                        }
-                    #endif
+                    }
                 }
                 .padding()
             }

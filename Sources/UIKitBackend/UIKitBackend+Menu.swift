@@ -1,4 +1,4 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import UIKit
 
 extension UIKitBackend {
@@ -95,7 +95,7 @@ extension UIKitBackend: BackendFeatures.AttachedMenus {
     public func createPopoverMenu() -> Menu {
         return Menu()
     }
-    
+
     public func updatePopoverMenu(
         _ menu: Menu,
         content: ResolvedMenu,
@@ -116,7 +116,7 @@ extension UIKitBackend: BackendFeatures.AttachedMenus {
     ) {
         let buttonWidget = button as! ButtonWidget
         buttonWidget.child.isEnabled = environment.isEnabled
-        setButtonTitle(buttonWidget, label, environment: environment)
+        setSimpleButtonTitle(buttonWidget, label, environment: environment)
         buttonWidget.child.menu = menu.uiMenu
         buttonWidget.child.showsMenuAsPrimaryAction = true
         if #available(iOS 16, macCatalyst 16, *) {

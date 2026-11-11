@@ -38,6 +38,10 @@ extension ForEach: TypeSafeView, View where Child: View {
         return EmptyView()
     }
 
+    public var _asMenuItems: [MenuItem] {
+        elements.map(child).flatMap(\._asMenuItems)
+    }
+
     func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
@@ -56,15 +60,7 @@ extension ForEach: TypeSafeView, View where Child: View {
         _ children: Children,
         backend: Backend
     ) -> Backend.Widget {
-        let container = backend.createContainer()
-        if idKeyPath == nil {
-            // Deprecated code path. We've centralised the new implementation
-            // into computeLayout and commit.
-            for (index, node) in children.nodes.enumerated() {
-                backend.insert(node.widget.into(), into: container, at: index)
-            }
-        }
-        return container
+        return backend.createContainer()
     }
 
     func computeLayout<Backend: BaseAppBackend>(
@@ -227,10 +223,6 @@ extension ForEach: TypeSafeView, View where Child: View {
 
         let elementsStartIndex = elements.startIndex
 
-        // TODO: The way we're reusing nodes for technically different elements means that if
-        //   Child has state of its own then it could get pretty confused thinking that its state
-        //   changed whereas it was actually just moved to a new slot in the array. Probably not
-        //   a huge issue, but definitely something to keep an eye on.
         var layoutableChildren: [LayoutSystem.LayoutableChild] = []
         for (i, node) in children.nodes.enumerated() {
             guard i < elements.count else {
@@ -268,6 +260,8 @@ extension ForEach: TypeSafeView, View where Child: View {
             }
             children.nodes.removeLast(unusedCount)
         }
+
+        children.layoutableChildren = layoutableChildren
 
         return LayoutSystem.computeStackLayout(
             container: widget,
@@ -415,9 +409,13 @@ class ForEachViewChildren<
 extension ForEach where ID == Int {
     /// Creates a view that creates child views on demand based on a collection of data.
     @available(
-        *, deprecated, renamed: "init(_:id:_:)",
-        message:
-            "ForEach requires an explicit 'id' parameter for non-Identifiable elements to correctly persist state across view updates"
+        *,
+        deprecated,
+        renamed: "init(_:id:_:)",
+        message: """
+            ForEach requires an explicit 'id' parameter for non-Identifiable \
+            elements to correctly persist state across view updates
+            """
     )
     @_disfavoredOverload
     public init(
@@ -430,43 +428,11 @@ extension ForEach where ID == Int {
     }
 }
 
-extension ForEach where Child == [MenuItem], ID == Int {
-    /// Creates a view that creates child views on demand based on a collection of data.
-    @available(
-        *,
-        deprecated,
-        message:
-            "ForEach requires an explicit 'id' parameter for non-Identifiable elements to correctly persist state across view updates"
-    )
-    @_disfavoredOverload
+extension ForEach where Items.Element: Identifiable, ID == Items.Element.ID {
+    /// Creates a view that creates child views on demand based on a collection of identifiable data.
     public init(
-        menuItems elements: Items,
-        @MenuItemsBuilder _ child: @escaping (Items.Element) -> [MenuItem]
-    ) {
-        self.elements = elements
-        self.child = child
-        self.idKeyPath = nil
-    }
-}
-
-extension ForEach where Child == [MenuItem] {
-    /// Creates a view that creates child views on demand based on a collection of data.
-    public init(
-        menuItems elements: Items,
-        id keyPath: KeyPath<Items.Element, ID>,
-        @MenuItemsBuilder _ child: @escaping (Items.Element) -> [MenuItem]
-    ) {
-        self.elements = elements
-        self.child = child
-        self.idKeyPath = keyPath
-    }
-}
-
-extension ForEach where Items.Element: Identifiable, Child == [MenuItem], ID == Items.Element.ID {
-    /// Creates a view that creates child views on demand based on a collection of data.
-    public init(
-        menuItems elements: Items,
-        @MenuItemsBuilder _ child: @escaping (Items.Element) -> [MenuItem]
+        _ elements: Items,
+        @ViewBuilder _ child: @escaping (Items.Element) -> Child
     ) {
         self.elements = elements
         self.child = child
@@ -474,11 +440,65 @@ extension ForEach where Items.Element: Identifiable, Child == [MenuItem], ID == 
     }
 }
 
-extension ForEach where Items.Element: Identifiable, ID == Items.Element.ID {
-    /// Creates a view that creates child views on demand based on a collection of identifiable data.
+// MARK: Deprecated MenuItem-based inits
+
+extension ForEach where ID == Int {
+    /// Creates a view that creates child views on demand based on a collection of data.
+    @available(
+        *,
+        deprecated,
+        message: """
+            ForEach requires an explicit 'id' parameter for non-Identifiable \
+            elements to correctly persist state across view updates
+            """
+    )
+    @_disfavoredOverload
     public init(
-        _ elements: Items,
-        child: @escaping (Items.Element) -> Child
+        menuItems elements: Items,
+        @ViewBuilder _ child: @escaping (Items.Element) -> Child
+    ) {
+        self.elements = elements
+        self.child = child
+        self.idKeyPath = nil
+    }
+}
+
+extension ForEach {
+    /// Creates a view that creates child views on demand based on a collection of data.
+    @available(
+        *,
+        deprecated,
+        renamed: "init(_:id:_:)",
+        message: """
+            Special treatment of menu item ForEach blocks is no longer necessary. \
+            Remove the menuItems parameter label.
+            """
+    )
+    public init(
+        menuItems elements: Items,
+        id keyPath: KeyPath<Items.Element, ID>,
+        @ViewBuilder _ child: @escaping (Items.Element) -> Child
+    ) {
+        self.elements = elements
+        self.child = child
+        self.idKeyPath = keyPath
+    }
+}
+
+extension ForEach where Items.Element: Identifiable, ID == Items.Element.ID {
+    /// Creates a view that creates child views on demand based on a collection of data.
+    @available(
+        *,
+        deprecated,
+        renamed: "init(_:_:)",
+        message: """
+            Special treatment of menu item ForEach blocks is no longer necessary. \
+            Remove the menuItems parameter label.
+            """
+    )
+    public init(
+        menuItems elements: Items,
+        @ViewBuilder _ child: @escaping (Items.Element) -> Child
     ) {
         self.elements = elements
         self.child = child

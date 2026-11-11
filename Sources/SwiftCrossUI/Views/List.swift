@@ -40,7 +40,7 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
         _ data: Data,
         selection: Binding<SelectionValue?>
     )
-    where
+        where
         Data.Element: CustomStringConvertible & Identifiable,
         Data.Element.ID == SelectionValue,
         Data.Index == Int,
@@ -265,8 +265,8 @@ public struct List<SelectionValue: Hashable, RowView: View>: TypeSafeView, View 
             selectedIndex = nil
         }
 
-        backend.setSelectedItem(ofSelectableListView: widget, toItemAt: selectedIndex)
         backend.updateSelectableListView(widget, environment: environment)
+        backend.setSelectedItem(ofSelectableListView: widget, toItemAt: selectedIndex)
     }
 }
 

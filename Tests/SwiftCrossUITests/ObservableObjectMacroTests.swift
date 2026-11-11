@@ -20,21 +20,21 @@ struct ObservableTests {
             }
             """,
             expandedSource: """
-            class ViewModel {
-                @SwiftCrossUI.Published
-                var name: String = ""
-            }
-            
-            extension ViewModel: SwiftCrossUI.ObservableObject {
-            }
-            """,
+                class ViewModel {
+                    @SwiftCrossUI.Published
+                    var name: String = ""
+                }
+
+                extension ViewModel: SwiftCrossUI.ObservableObject {
+                }
+                """,
             macroSpecs: testMacros,
             failureHandler: { spec in
                 Issue.record(spec.issueComment)
             }
         )
     }
-    
+
     @Test("Computed property gets skipped")
     func testComputedPropertyIsIgnored() {
         assertMacroExpansion(
@@ -46,21 +46,21 @@ struct ObservableTests {
             }
             """,
             expandedSource: """
-            class ViewModel {
-                var computed: Int { 1 + 1 }
-                var explicitGet: Int { get { 0 } }
-            }
-            
-            extension ViewModel: SwiftCrossUI.ObservableObject {
-            }
-            """,
+                class ViewModel {
+                    var computed: Int { 1 + 1 }
+                    var explicitGet: Int { get { 0 } }
+                }
+
+                extension ViewModel: SwiftCrossUI.ObservableObject {
+                }
+                """,
             macroSpecs: testMacros,
             failureHandler: { spec in
                 Issue.record(spec.issueComment)
             }
         )
     }
-    
+
     @Test("Stored property with observers doesn't get attribute")
     func testPropertyWithObserversGetsAttribute() {
         assertMacroExpansion(
@@ -73,22 +73,22 @@ struct ObservableTests {
             }
             """,
             expandedSource: """
-            class ViewModel {
-                var observed: String = "" {
-                    didSet { print("changed") }
+                class ViewModel {
+                    var observed: String = "" {
+                        didSet { print("changed") }
+                    }
                 }
-            }
-            
-            extension ViewModel: SwiftCrossUI.ObservableObject {
-            }
-            """,
+
+                extension ViewModel: SwiftCrossUI.ObservableObject {
+                }
+                """,
             macroSpecs: testMacros,
             failureHandler: { spec in
                 Issue.record(spec.issueComment)
             }
         )
     }
-    
+
     @Test("Private and static properties are ignored")
     func testPrivateAndStaticAreIgnored() {
         assertMacroExpansion(
@@ -101,22 +101,22 @@ struct ObservableTests {
             }
             """,
             expandedSource: """
-            class ViewModel {
-                private var secret = "shh"
-                static var shared = "info"
-                private(set) var readOnly = "safe"
-            }
-            
-            extension ViewModel: SwiftCrossUI.ObservableObject {
-            }
-            """,
+                class ViewModel {
+                    private var secret = "shh"
+                    static var shared = "info"
+                    private(set) var readOnly = "safe"
+                }
+
+                extension ViewModel: SwiftCrossUI.ObservableObject {
+                }
+                """,
             macroSpecs: testMacros,
             failureHandler: { spec in
                 Issue.record(spec.issueComment)
             }
         )
     }
-    
+
     @Test("ObservationIgnored is honored")
     func testObservationIgnoredIsHonored() {
         assertMacroExpansion(
@@ -127,20 +127,20 @@ struct ObservableTests {
             }
             """,
             expandedSource: """
-            class ViewModel {
-                @ObservationIgnored var skipMe = false
-            }
-            
-            extension ViewModel: SwiftCrossUI.ObservableObject {
-            }
-            """,
+                class ViewModel {
+                    @ObservationIgnored var skipMe = false
+                }
+
+                extension ViewModel: SwiftCrossUI.ObservableObject {
+                }
+                """,
             macroSpecs: testMacros,
             failureHandler: { spec in
                 Issue.record(spec.issueComment)
             }
         )
     }
-    
+
     @Test("Multiple Bindings get ignored")
     func testMultipleBindingsThrowError() {
         assertMacroExpansion(
@@ -151,20 +151,20 @@ struct ObservableTests {
             }
             """,
             expandedSource: """
-            class ViewModel {
-                var a, b: String
-            }
-            
-            extension ViewModel: SwiftCrossUI.ObservableObject {
-            }
-            """,
+                class ViewModel {
+                    var a, b: String
+                }
+
+                extension ViewModel: SwiftCrossUI.ObservableObject {
+                }
+                """,
             macroSpecs: testMacros,
             failureHandler: { spec in
                 Issue.record(spec.issueComment)
             }
         )
     }
-    
+
     @Test("Namespaced ObservationIgnored blocks application")
     func namespacedObservationIgnoredBlocksApplication() async throws {
         assertMacroExpansion(
@@ -175,13 +175,13 @@ struct ObservableTests {
             }
             """,
             expandedSource: """
-            class ViewModel {
-                @SwiftCrossUI.ObservationIgnored var skipMe = false
-            }
-            
-            extension ViewModel: SwiftCrossUI.ObservableObject {
-            }
-            """,
+                class ViewModel {
+                    @SwiftCrossUI.ObservationIgnored var skipMe = false
+                }
+
+                extension ViewModel: SwiftCrossUI.ObservableObject {
+                }
+                """,
             macroSpecs: testMacros,
             failureHandler: { spec in
                 Issue.record(spec.issueComment)

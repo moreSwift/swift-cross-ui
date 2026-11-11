@@ -1,7 +1,7 @@
 import CGtk
 import Foundation
 import Gtk
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import GtkCHelpers
 
 extension App {
@@ -28,7 +28,9 @@ public final class GtkBackend:
     BackendFeatures.Tooltips,
     BackendFeatures.Colors,
     BackendFeatures.DatePickers,
-    BackendFeatures.Windowing
+    BackendFeatures.Windowing,
+    BackendFeatures.LinearGradients,
+    BackendFeatures.RadialGradients
 {
     public typealias Window = Gtk.ApplicationWindow
     public typealias Widget = Gtk.Widget
@@ -53,10 +55,12 @@ public final class GtkBackend:
     public let requiresImageUpdateOnScaleFactorChange = false
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
-    public let defaultSheetCornerRadius = 10
     public let supportedDatePickerStyles: [DatePickerStyle] = [.automatic, .graphical]
     public let supportedPickerStyles: [BackendPickerStyle] = [.menu]
     public let canOverrideWindowColorScheme = false
+    public let restoresWindowFrames = false
+
+    let defaultSheetCornerRadius = 10
 
     var gtkApp: Application
 
@@ -72,6 +76,8 @@ public final class GtkBackend:
     private var rootEnvironmentChangeHandler: (() -> Void)?
 
     private var measurementCustomLabel: CustomLabel!
+
+    var borderedButtonPadding: SIMD2<Int>?
 
     private struct LogLocation: Hashable, Equatable {
         let file: String
@@ -165,7 +171,7 @@ public final class GtkBackend:
         }
     }
 
-    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
+    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?, id: String) -> Window {
         let window: Gtk.ApplicationWindow
         if let precreatedWindow {
             self.precreatedWindow = nil
@@ -317,7 +323,8 @@ public final class GtkBackend:
             )
             let process = Process()
             process.arguments = [
-                "dbus-send", "--print-reply",
+                "dbus-send",
+                "--print-reply",
                 "--dest=org.freedesktop.FileManager1",
                 "/org/freedesktop/FileManager1",
                 "org.freedesktop.FileManager1.ShowItems",
@@ -376,7 +383,11 @@ public final class GtkBackend:
                             actionName: "\(actionNamespace).\(actionName)"
                         )
                     case .toggle(let label, let value, let onChange):
-                        let gAction = GSimpleAction(name: actionName, state: value, action: onChange)
+                        let gAction = GSimpleAction(
+                            name: actionName,
+                            state: value,
+                            action: onChange
+                        )
                         gAction.enabled = environment.isEnabled
                         actionMap.addAction(gAction)
 
@@ -534,7 +545,10 @@ public final class GtkBackend:
             .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
+    public func setRootEnvironmentChangeHandler(
+        to action: @escaping @Sendable @MainActor () -> Void
+    ) {
+        // TODO: React to theme changes
         self.rootEnvironmentChangeHandler = action
         Freedesktop.Portal.Settings.Appearance.ColorScheme.subscribe { _ in
             action()
@@ -621,6 +635,10 @@ public final class GtkBackend:
         widget.css.set(property: .backgroundColor(color.gtkColor))
     }
 
+    public func createCornerRadiusContainer(wrapping child: Widget) -> Widget {
+        child
+    }
+
     public func setCornerRadius(of widget: Widget, to radius: Int) {
         widget.css.set(property: .cornerRadius(radius))
     }
@@ -656,7 +674,7 @@ public final class GtkBackend:
         to action: @escaping () -> Void
     ) {
         let splitView = splitView as! Paned
-        splitView.notifyPosition = { splitView in
+        splitView.notifyPosition = { _ in
             action()
         }
     }
@@ -729,10 +747,25 @@ public final class GtkBackend:
         to items: [Widget],
         withRowHeights rowHeights: [Int]
     ) {
+        // NOTE: This implementation works under the same assumptions as
+        //   AppKitBackend's implementation. Read the comment in
+        //   AppKitBackend.setItems for more details. In short, we assume
+        //   that modifications made to `items` between `setItems` calls
+        //   are either all pops, or all appends (not a mix).
+
         let listView = listView as! CustomListBox
-        listView.removeAll()
-        for item in items {
-            listView.append(item)
+
+        let previousRowCount = listView.cachedRowCount
+        listView.cachedRowCount = items.count
+
+        if items.count > previousRowCount {
+            for item in items[previousRowCount...] {
+                listView.append(item)
+            }
+        } else if items.count < previousRowCount {
+            for _ in 0..<(previousRowCount - items.count) {
+                listView.removeRow(at: items.count)
+            }
         }
     }
 
@@ -755,15 +788,13 @@ public final class GtkBackend:
     }
 
     public func setSelectedItem(ofSelectableListView listView: Widget, toItemAt index: Int?) {
-        let listView = listView as! ListBox
-        let handler = listView.rowSelected
-        listView.rowSelected = nil
+        let listView = listView as! CustomListBox
+        listView.cachedSelection = index
         if let index {
             listView.selectRow(at: index)
         } else {
             listView.unselectAll()
         }
-        listView.rowSelected = handler
     }
 
     public func createTooltipContainer(wrapping child: Widget) -> Widget {
@@ -819,7 +850,7 @@ public final class GtkBackend:
         let ellipsize: EllipsizeMode
         if let widget = widget as? CustomLabel {
             ellipsize = widget.ellipsize
-        } else if let widget = widget as? TextView {
+        } else if widget as? TextView != nil {
             // We don't ellipsize multi-line text editors
             ellipsize = .none
         } else {
@@ -978,25 +1009,6 @@ public final class GtkBackend:
     // }
 
     // MARK: Controls
-
-    public func createButton() -> Widget {
-        return Button()
-    }
-
-    public func updateButton(
-        _ button: Widget,
-        label: String,
-        environment: EnvironmentValues,
-        action: @escaping () -> Void
-    ) {
-        // TODO: Update button label color using environment
-        let button = button as! Gtk.Button
-        button.sensitive = environment.isEnabled
-        button.label = label
-        button.clicked = { _ in action() }
-        button.css.clear()
-        button.css.set(properties: Self.cssProperties(for: environment, isControl: true))
-    }
 
     public func createToggle() -> Widget {
         return ToggleButton()
@@ -1362,7 +1374,8 @@ public final class GtkBackend:
                 contents modelbutton {
                     color: \(CSSProperty.rgba(foreground));
                 }
-                """)
+                """
+        )
     }
 
     public func showPopoverMenu(
@@ -1560,9 +1573,9 @@ public final class GtkBackend:
             case .secondary:
                 let gesture =
                     tapGestureTarget.eventControllers.first {
-                        $0 is GestureClick
-                            && gtk_gesture_single_get_button($0.opaquePointer)
-                                == GDK_BUTTON_SECONDARY
+                        $0 is GestureClick &&
+                            (gtk_gesture_single_get_button($0.opaquePointer) ==
+                                GDK_BUTTON_SECONDARY)
                     } as! GestureClick
                 gesture.pressed = { _, nPress, _, _ in
                     guard environment.isEnabled, nPress == 1 else {
@@ -1573,7 +1586,7 @@ public final class GtkBackend:
             case .longPress:
                 let gesture =
                     tapGestureTarget.eventControllers.lazy.compactMap { $0 as? GestureLongPress }
-                    .first!
+                        .first!
                 gesture.pressed = { _, _, _ in
                     guard environment.isEnabled else {
                         return
@@ -1595,7 +1608,7 @@ public final class GtkBackend:
     ) {
         let gesture =
             hoverTarget.eventControllers.first { $0 is EventControllerMotion }
-            as! EventControllerMotion
+                as! EventControllerMotion
         gesture.enter = { _, _, _ in
             guard environment.isEnabled else { return }
             action(true)
@@ -1744,9 +1757,12 @@ public final class GtkBackend:
                     let control2 = (end + 2 * control) / 3
                     cairo_curve_to(
                         cairo,
-                        control1.x, control1.y,
-                        control2.x, control2.y,
-                        end.x, end.y
+                        control1.x,
+                        control1.y,
+                        control2.x,
+                        control2.y,
+                        end.x,
+                        end.y
                     )
                 case .cubicCurve(let control1, let control2, let end):
                     if index == 0 {
@@ -1754,25 +1770,30 @@ public final class GtkBackend:
                     }
                     cairo_curve_to(
                         cairo,
-                        control1.x, control1.y,
-                        control2.x, control2.y,
-                        end.x, end.y
+                        control1.x,
+                        control1.y,
+                        control2.x,
+                        control2.y,
+                        end.x,
+                        end.y
                     )
                 case .rectangle(let rect):
                     cairo_rectangle(
                         cairo,
-                        rect.origin.x, rect.origin.y,
-                        rect.size.x, rect.size.y
+                        rect.origin.x,
+                        rect.origin.y,
+                        rect.size.x,
+                        rect.size.y
                     )
                 case .circle(let center, let radius):
                     cairo_arc(cairo, center.x, center.y, radius, 0, 2 * .pi)
                 case .arc(
-                    let center,
-                    let radius,
-                    let startAngle,
-                    let endAngle,
-                    let clockwise
-                ):
+                let center,
+                let radius,
+                let startAngle,
+                let endAngle,
+                let clockwise
+            ):
                     let arcFunc = clockwise ? cairo_arc : cairo_arc_negative
                     arcFunc(
                         cairo,
@@ -1836,7 +1857,7 @@ public final class GtkBackend:
         return container
     }
 
-    private static func cssProperties(
+    static func cssProperties(
         for environment: EnvironmentValues,
         isControl: Bool = false
     ) -> [CSSProperty] {
@@ -1889,12 +1910,7 @@ public final class GtkBackend:
         }
 
         if isControl {
-            switch environment.colorScheme {
-                case .light:
-                    properties.append(.backgroundColor(Color(0.9, 0.9, 0.9, 1)))
-                case .dark:
-                    properties.append(.backgroundColor(Color(1, 1, 1, 0.1)))
-            }
+            properties.append(.backgroundColor(controlBackgroundColor(for: environment)))
             properties.append(CSSProperty(key: "border", value: "none"))
             properties.append(CSSProperty(key: "box-shadow", value: "none"))
         }
@@ -1902,10 +1918,16 @@ public final class GtkBackend:
         return properties
     }
 
-    public func createSheet(content: Widget) -> Sheet {
-        // TODO: dismissing a sheet with nested sheets doesn't trigger the onDismiss handlers of the nested sheets
-        // TODO: dismissing a sheet with nested sheets causes the app to freeze/deadlock or something along those lines...
+    static func controlBackgroundColor(for environment: borrowing EnvironmentValues) -> Gtk.Color {
+        switch environment.colorScheme {
+            case .light:
+                Color(0.9, 0.9, 0.9, 1)
+            case .dark:
+                Color(1, 1, 1, 0.1)
+        }
+    }
 
+    public func createSheet(content: Widget) -> Sheet {
         let sheet = Sheet()
         sheet.setChild(content)
 
@@ -1988,6 +2010,7 @@ public final class GtkBackend:
 
     public func dismissSheet(_ sheet: Sheet, window: Window, parentSheet: Sheet?) {
         dismissSheet(sheet)
+        parentSheet?.nestedSheet = nil
     }
 
     private func dismissSheet(_ sheet: Sheet) {
@@ -2022,6 +2045,7 @@ extension UnsafeMutablePointer {
 
 class CustomListBox: ListBox {
     var cachedSelection: Int? = nil
+    var cachedRowCount = 0
 }
 
 /// A custom label subclass that supports ellipsizing multi-line text. Regular
@@ -2047,7 +2071,8 @@ class CustomLabel: Label {
             layout,
             Int32(
                 (Double(height) * Double(PANGO_SCALE))
-                    .rounded(.towardZero))
+                    .rounded(.towardZero)
+            )
         )
     }
 }
@@ -2200,7 +2225,8 @@ final class TimePicker: Box {
         )
         minutePicker.text = "\(components.minute!)"
         minutePicker.valueChanged = { [unowned self] minutePicker in
-            guard let value = Int(exactly: minutePicker.value),
+            guard
+                let value = Int(exactly: minutePicker.value),
                 let newDate = calendar.date(bySetting: .minute, value: value, of: date)
             else {
                 return
@@ -2238,7 +2264,8 @@ final class TimePicker: Box {
         hourPicker.text =
             "\(TimePicker.transformToRange(components.hour!, hourCycle: self.hourCycle))"
         hourPicker.valueChanged = { [unowned self] hourPicker in
-            guard let value = Int(exactly: hourPicker.value),
+            guard
+                let value = Int(exactly: hourPicker.value),
                 let newDate = calendar.date(bySetting: .hour, value: value, of: date)
             else {
                 return

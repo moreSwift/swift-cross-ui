@@ -43,7 +43,8 @@ struct OverlayModifier<Content: View, Overlay: View>: TypeSafeView {
     }
 
     func asWidget<Backend: BaseAppBackend>(
-        _ children: TupleView2<Content, Overlay>.Children, backend: Backend
+        _ children: TupleView2<Content, Overlay>.Children,
+        backend: Backend
     ) -> Backend.Widget {
         body.asWidget(children, backend: backend)
     }

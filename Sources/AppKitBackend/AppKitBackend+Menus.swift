@@ -1,9 +1,9 @@
 import AppKit
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 extension AppKitBackend: BackendFeatures.PopoverMenus {
     public typealias Menu = NSMenu
-    
+
     public func createPopoverMenu() -> Menu {
         return NSMenu()
     }
@@ -20,7 +20,9 @@ extension AppKitBackend: BackendFeatures.PopoverMenus {
     }
 
     public func showPopoverMenu(
-        _ menu: Menu, at position: SIMD2<Int>, relativeTo widget: Widget,
+        _ menu: Menu,
+        at position: SIMD2<Int>,
+        relativeTo widget: Widget,
         closeHandler handleClose: @escaping () -> Void
     ) {
         // NSMenu.popUp(position:at:in:) blocks until the pop up is closed, and has to

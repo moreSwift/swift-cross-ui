@@ -4,7 +4,8 @@ import Foundation
     peer,
     names: named(hotReloadingExportedEntryPoint),
     named(hotReloadingImportedEntryPoint),
-    named(hotReloadingHasConnectedToServer))
+    named(hotReloadingHasConnectedToServer)
+)
 @attached(member, names: named(entryPoint), named(hotReloadingExprIds))
 public macro HotReloadable() =
     #externalMacro(module: "SwiftCrossUIMacrosPlugin", type: "HotReloadableAppMacro")

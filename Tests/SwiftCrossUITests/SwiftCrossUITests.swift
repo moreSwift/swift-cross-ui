@@ -2,7 +2,7 @@ import Testing
 import Foundation
 
 import DummyBackend
-@testable import SwiftCrossUI
+@testable @_spi(Backends) import SwiftCrossUI
 
 #if canImport(AppKitBackend)
     import AppKit
@@ -15,9 +15,9 @@ struct CounterView: View {
 
     var body: some View {
         VStack {
-            Button("Decrease") { count -= 1 }
+            Text("Decrease")
             Text("Count: 1")
-            Button("Increase") { count += 1 }
+            Text("Increase")
         }.padding()
     }
 }
@@ -39,18 +39,24 @@ struct SwiftCrossUITests {
         path.append(1)
         path.append([1, 2, 3])
         path.append(5.0)
-        
+
         let components = path.path(destinationTypes: [
-            String.self, Int.self, [Int].self, Double.self,
+            String.self,
+            Int.self,
+            [Int].self,
+            Double.self,
         ])
-        
+
         let encoded = try JSONEncoder().encode(path)
         let decodedPath = try JSONDecoder().decode(NavigationPath.self, from: encoded)
-        
+
         let decodedComponents = decodedPath.path(destinationTypes: [
-            String.self, Int.self, [Int].self, Double.self,
+            String.self,
+            Int.self,
+            [Int].self,
+            Double.self,
         ])
-        
+
         #expect(Self.compareComponents(ofType: String.self, components[0], decodedComponents[0]))
         #expect(Self.compareComponents(ofType: Int.self, components[1], decodedComponents[1]))
         #expect(Self.compareComponents(ofType: [Int].self, components[2], decodedComponents[2]))
@@ -59,7 +65,9 @@ struct SwiftCrossUITests {
 
     /// Helper function for `testCodableNavigationPath`.
     static func compareComponents<T: Equatable>(
-        ofType type: T.Type, _ original: Any, _ decoded: Any
+        ofType type: T.Type,
+        _ original: Any,
+        _ decoded: Any
     ) -> Bool {
         guard
             let original = original as? T,
@@ -75,7 +83,7 @@ struct SwiftCrossUITests {
     @MainActor
     func testBasicScrollView() async throws {
         let backend = DummyBackend()
-        let window = backend.createWindow(withDefaultSize: nil)
+        let window = backend.createWindow(withDefaultSize: nil, id: "window")
         let environment = EnvironmentValues(backend: backend)
             .with(\.window, window)
 
@@ -99,7 +107,9 @@ struct SwiftCrossUITests {
         #expect(result.size == ViewSize(80, 80))
 
         let rootWidget: DummyBackend.Widget = viewGraph.rootNode.widget.into()
-        let scrollView = try #require(rootWidget.firstWidget(ofType: DummyBackend.ScrollContainer.self))
+        let scrollView = try #require(
+            rootWidget.firstWidget(ofType: DummyBackend.ScrollContainer.self)
+        )
 
         #expect(scrollView.hasVerticalScrollBar)
         #expect(!scrollView.hasHorizontalScrollBar)
@@ -155,43 +165,51 @@ struct SwiftCrossUITests {
         #expect(ambientColorScheme.value == .dark)
     }
 
+    @Test("Ensure that a basic view has the expected dimensions under DummyBackend")
+    @MainActor
+    func testBasicLayout() async throws {
+        let backend = DummyBackend()
+        let window = backend.createWindow(withDefaultSize: SIMD2(200, 200), id: "window")
+
+        let environment = EnvironmentValues(backend: backend)
+            .with(\.window, window)
+        let viewGraph = ViewGraph(
+            for: CounterView(),
+            backend: backend,
+            environment: environment
+        )
+        backend.setChild(ofWindow: window, to: viewGraph.rootNode.widget.into())
+
+        let result = viewGraph.computeLayout(
+            proposedSize: ProposedViewSize(200, 200),
+            environment: environment
+        )
+
+        // CounterView is a padded VStack of two Buttons ("Decrease"/"Increase",
+        // 8 characters each) and a Text ("Count: 1", 8 characters), laid out under
+        // DummyBackend's character-metric approximation for the default (`.body`)
+        // font: pointSize 13, lineHeight 16 (Font.TextStyle's desktop table).
+        //
+        // Text sizing (DummyBackend.size(of:)): characterWidth = Int(13) * 2 / 3 = 8,
+        //   width = 8 * 8 = 64, height = lineHeight = 16
+        // Button size = label size + DummyBackend.buttonPadding (0, 0) = 64 x 16
+        //
+        // VStack union width = max(64, 64, 64) = 64
+        // VStack height = 16 + 16 + 16 + 2 * VStack.defaultSpacing(10) = 68
+        // .padding() adds DummyBackend.defaultPaddingAmount(10) on every edge:
+        //   width = 64 + 2 * 10 = 84, height = 68 + 2 * 10 = 88
+        #expect(
+            result.size == ViewSize(84, 88),
+            "View update result mismatch"
+        )
+
+        #expect(
+            result.preferences.onOpenURL == nil,
+            "onOpenURL not nil"
+        )
+    }
+
     #if canImport(AppKitBackend)
-        @Test("Ensure that a basic view has the expected dimensions under AppKitBackend")
-        @MainActor
-        func testBasicLayout() async throws {
-            let backend = AppKitBackend()
-            let window = backend.createWindow(withDefaultSize: SIMD2(200, 200))
-
-            // Idea taken from https://github.com/pointfreeco/swift-snapshot-testing/pull/533
-            // and implemented in AppKitBackend.
-            window.backingScaleFactorOverride = 1
-            window.colorSpace = .genericRGB
-
-            let environment = EnvironmentValues(backend: backend)
-                .with(\.window, window)
-            let viewGraph = ViewGraph(
-                for: CounterView(),
-                backend: backend,
-                environment: environment
-            )
-            backend.setChild(ofWindow: window, to: viewGraph.rootNode.widget.into())
-
-            let result = viewGraph.computeLayout(
-                proposedSize: ProposedViewSize(200, 200),
-                environment: environment
-            )
-
-            #expect(
-                result.size == ViewSize(92, 96),
-                "View update result mismatch"
-            )
-
-            #expect(
-                result.preferences.onOpenURL == nil,
-                "onOpenURL not nil"
-            )
-        }
-
         /// Snapshots an AppKit view to a TIFF image.
         @MainActor
         static func snapshotView(_ view: NSView) throws -> Data {

@@ -15,6 +15,7 @@ open class Window: Bin {
     @GObjectProperty(named: "deletable") public var deletable: Bool
     @GObjectProperty(named: "modal") public var isModal: Bool
     @GObjectProperty(named: "decorated") public var isDecorated: Bool
+    @GObjectProperty(named: "destroy-with-parent") public var destroyWithParent: Bool
 
     public var isActive: Bool {
         gtk_window_is_active(castedPointer()).toBool()
@@ -85,10 +86,11 @@ open class Window: Bin {
 
     public func registerDeleteEventSignal() {
         let handler:
-            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer) -> Void =
-                { _, value1, data in
-                    SignalBox1<OpaquePointer>.run(data, value1)
-                }
+            @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
+            -> Void =
+            { _, value1, data in
+                SignalBox1<OpaquePointer>.run(data, value1)
+            }
 
         addSignal(name: "delete-event", handler: gCallback(handler)) {
             [weak self] (_: OpaquePointer) in
@@ -111,4 +113,6 @@ open class Window: Bin {
             }
         }
     }
+
+    public var onDestroy: ((Window) -> Void)?
 }

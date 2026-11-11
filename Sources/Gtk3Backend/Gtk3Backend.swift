@@ -2,7 +2,7 @@ import CGtk3
 import Gtk3CHelpers
 import Foundation
 import Gtk3
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 extension App {
     public typealias Backend = Gtk3Backend
@@ -48,6 +48,7 @@ public final class Gtk3Backend:
     public let deviceClass = DeviceClass.desktop
     public let supportedPickerStyles: [BackendPickerStyle] = []
     public let canOverrideWindowColorScheme = false
+    public let restoresWindowFrames = false
 
     var gtkApp: Application
 
@@ -61,6 +62,8 @@ public final class Gtk3Backend:
     var windows: [Window] = []
 
     private var rootEnvironmentChangeHandler: (() -> Void)?
+
+    var borderedButtonPadding: SIMD2<Int>?
 
     private struct LogLocation: Hashable, Equatable {
         let file: String
@@ -169,7 +172,7 @@ public final class Gtk3Backend:
         }
     }
 
-    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
+    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?, id: String) -> Window {
         let window: Gtk3.ApplicationWindow
         if let precreatedWindow {
             self.precreatedWindow = nil
@@ -319,7 +322,11 @@ public final class Gtk3Backend:
                             actionName: "\(actionNamespace).\(actionName)"
                         )
                     case .toggle(let label, let value, let onChange):
-                        let gAction = GSimpleAction(name: actionName, state: value, action: onChange)
+                        let gAction = GSimpleAction(
+                            name: actionName,
+                            state: value,
+                            action: onChange
+                        )
                         gAction.enabled = environment.isEnabled
                         actionMap.addAction(gAction)
 
@@ -453,7 +460,8 @@ public final class Gtk3Backend:
             )
             let process = Process()
             process.arguments = [
-                "dbus-send", "--print-reply",
+                "dbus-send",
+                "--print-reply",
                 "--dest=org.freedesktop.FileManager1",
                 "/org/freedesktop/FileManager1",
                 "org.freedesktop.FileManager1.ShowItems",
@@ -541,7 +549,9 @@ public final class Gtk3Backend:
             .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {
+    public func setRootEnvironmentChangeHandler(
+        to action: @escaping @Sendable @MainActor () -> Void
+    ) {
         // TODO: React to theme changes
         self.rootEnvironmentChangeHandler = action
     }
@@ -630,6 +640,12 @@ public final class Gtk3Backend:
         widget.css.set(property: CSSProperty(key: "background-clip", value: "border-box"))
     }
 
+    // TODO(bbrk24): Create a custom clipping container. Setting the CSS corner radius doesn't work
+    //   if the widget is already a container widget.
+    public func createCornerRadiusContainer(wrapping child: Widget) -> Widget {
+        child
+    }
+
     public func setCornerRadius(of widget: Widget, to radius: Int) {
         widget.css.set(property: .cornerRadius(radius))
     }
@@ -666,7 +682,7 @@ public final class Gtk3Backend:
         to action: @escaping () -> Void
     ) {
         let splitView = splitView as! Paned
-        splitView.notifyPosition = { splitView in
+        splitView.notifyPosition = { _ in
             action()
         }
     }
@@ -939,27 +955,6 @@ public final class Gtk3Backend:
     // }
 
     // MARK: Controls
-
-    public func createButton() -> Widget {
-        return Button()
-    }
-
-    public func updateButton(
-        _ button: Widget,
-        label: String,
-        environment: EnvironmentValues,
-        action: @escaping () -> Void
-    ) {
-        // TODO: Update button label color using environment
-        let button = button as! Gtk3.Button
-        button.sensitive = environment.isEnabled
-        button.label = label
-        button.clicked = { _ in action() }
-        button.css.clear()
-        button.css.set(
-            properties: Self.cssProperties(for: environment, isControl: true)
-        )
-    }
 
     public func createToggle() -> Widget {
         return ToggleButton()
@@ -1443,8 +1438,8 @@ public final class Gtk3Backend:
             guard
                 environment.isEnabled,
                 eventType == GDK_BUTTON_PRESS
-                    || eventType == GDK_2BUTTON_PRESS
-                    || eventType == GDK_3BUTTON_PRESS
+                || eventType == GDK_2BUTTON_PRESS
+                || eventType == GDK_3BUTTON_PRESS
             else {
                 return
             }
@@ -1485,7 +1480,6 @@ public final class Gtk3Backend:
         // We don't actually care about leaking backends, but might as well use
         // a weak reference anyway.
         drawingArea.doDraw = { [weak self] cairo in
-            let scaleFactor = path.scaleFactor
             guard let self, let path = path.path else {
                 return
             }
@@ -1592,9 +1586,12 @@ public final class Gtk3Backend:
                     let control2 = (end + 2 * control) / 3
                     cairo_curve_to(
                         cairo,
-                        control1.x, control1.y,
-                        control2.x, control2.y,
-                        end.x, end.y
+                        control1.x,
+                        control1.y,
+                        control2.x,
+                        control2.y,
+                        end.x,
+                        end.y
                     )
                 case .cubicCurve(let control1, let control2, let end):
                     if index == 0 {
@@ -1602,25 +1599,30 @@ public final class Gtk3Backend:
                     }
                     cairo_curve_to(
                         cairo,
-                        control1.x, control1.y,
-                        control2.x, control2.y,
-                        end.x, end.y
+                        control1.x,
+                        control1.y,
+                        control2.x,
+                        control2.y,
+                        end.x,
+                        end.y
                     )
                 case .rectangle(let rect):
                     cairo_rectangle(
                         cairo,
-                        rect.origin.x, rect.origin.y,
-                        rect.size.x, rect.size.y
+                        rect.origin.x,
+                        rect.origin.y,
+                        rect.size.x,
+                        rect.size.y
                     )
                 case .circle(let center, let radius):
                     cairo_arc(cairo, center.x, center.y, radius, 0, 2 * .pi)
                 case .arc(
-                    let center,
-                    let radius,
-                    let startAngle,
-                    let endAngle,
-                    let clockwise
-                ):
+                let center,
+                let radius,
+                let startAngle,
+                let endAngle,
+                let clockwise
+            ):
                     let arcFunc = clockwise ? cairo_arc : cairo_arc_negative
                     arcFunc(
                         cairo,
@@ -1647,7 +1649,7 @@ public final class Gtk3Backend:
     }
     // MARK: Helpers
 
-    private static func cssProperties(
+    static func cssProperties(
         for environment: EnvironmentValues,
         isControl: Bool = false
     ) -> [CSSProperty] {
@@ -1696,20 +1698,28 @@ public final class Gtk3Backend:
         }
 
         if isControl {
-            switch environment.colorScheme {
-                case .light:
-                    properties.append(.border(color: Color.eightBit(209, 209, 209), width: 1))
-                    properties.append(.backgroundColor(Color(1, 1, 1, 1)))
-                    properties.append(.caretColor(Color.eightBit(139, 142, 143)))
-                case .dark:
-                    properties.append(.border(color: Color.eightBit(32, 32, 32), width: 1))
-                    properties.append(.backgroundColor(Color(1, 1, 1, 0.1)))
-                    properties.append(.caretColor(Color(1, 1, 1)))
-            }
-            properties.append(.init(key: "box-shadow", value: "none"))
+            properties.append(contentsOf: controlCSS(for: environment))
         }
 
         return properties
+    }
+
+    static func controlCSS(for environment: EnvironmentValues) -> [CSSProperty]{
+        let themeDependentCSS: [CSSProperty] = switch environment.colorScheme {
+            case .light:
+                [
+                    .border(color: Color.eightBit(209, 209, 209), width: 1),
+                    .backgroundColor(Color(1, 1, 1, 1)),
+                    .caretColor(Color.eightBit(139, 142, 143))
+                ]
+            case .dark:
+                [
+                    .border(color: Color.eightBit(32, 32, 32), width: 1),
+                    .backgroundColor(Color(1, 1, 1, 0.1)),
+                    .caretColor(Color(1, 1, 1))
+                ]
+        }
+        return themeDependentCSS + [.init(key: "box-shadow", value: "none")]
     }
 
     // MARK: - Unimplemented Features
@@ -1804,7 +1814,7 @@ final class TooltipContainer: Fixed {
                 deallocateText()
 
                 tooltip = .allocate(capacity: buf.count)
-                tooltip.initialize(from: buf)
+                _ = tooltip.initialize(from: buf)
             }
         }
 

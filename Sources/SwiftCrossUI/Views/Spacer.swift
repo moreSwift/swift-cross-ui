@@ -6,7 +6,7 @@ public struct Spacer: ElementaryView, View {
 
     /// The minimum length this spacer can be shrunk to, along the axis of
     /// expansion.
-    package var minLength: Int?
+    @_spi(Backends) public var minLength: Int?
 
     /// Creates a spacer with a given minimum length along its axis or axes
     /// of expansion.
@@ -27,11 +27,18 @@ public struct Spacer: ElementaryView, View {
         backend: Backend
     ) -> ViewLayoutResult {
         var size = ViewSize.zero
-        let proposedLength = proposedSize[component: environment.layoutOrientation]
-        size[component: environment.layoutOrientation] = max(
-            Double(minLength ?? 0),
-            proposedLength ?? Self.idealLength
-        )
+
+        if environment.usesZStackLayout {
+            size = proposedSize.replacingUnspecifiedDimensions(
+                by: ViewSize(Self.idealLength, Self.idealLength)
+            )
+        } else {
+            let proposedLength = proposedSize[component: environment.layoutOrientation]
+            size[component: environment.layoutOrientation] = max(
+                Double(minLength ?? 0),
+                proposedLength ?? Self.idealLength
+            )
+        }
 
         return ViewLayoutResult(
             size: size,

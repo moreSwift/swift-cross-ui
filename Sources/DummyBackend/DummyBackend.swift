@@ -1,5 +1,5 @@
 import Foundation
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 public final class DummyBackend:
     BaseAppBackend,
@@ -7,12 +7,15 @@ public final class DummyBackend:
     BackendFeatures.CornerRadius,
     BackendFeatures.Tables,
     BackendFeatures.Colors,
-    BackendFeatures.Windowing
+    BackendFeatures.Windowing,
+    BackendFeatures.DatePickers
 {
+
     public class Window {
         static let defaultSize = SIMD2<Int>(400, 200)
 
         public var size: SIMD2<Int>
+        public var id: String
         public var minimumSize: SIMD2<Int> = .zero
         public var maximumSize: SIMD2<Int>?
         public var title = "Window"
@@ -25,8 +28,9 @@ public final class DummyBackend:
         public var phase = ScenePhase.inactive
         public var colorScheme = ColorScheme.light
 
-        public init(defaultSize: SIMD2<Int>?) {
+        public init(defaultSize: SIMD2<Int>?, id: String) {
             size = defaultSize ?? Self.defaultSize
+            self.id = id
         }
     }
 
@@ -72,10 +76,35 @@ public final class DummyBackend:
         }
     }
 
-    public class Button: Widget {
+    public class SimpleButton: Widget {
         public var label = ""
         public var font: Font.Resolved?
         public var action: (() -> Void)?
+        public var menu: Menu?
+
+        /// Menu sizes its button widget through `naturalSize(of:)`, so leaving
+        /// this at zero renders zero-sized menu buttons.
+        override public var naturalSize: SIMD2<Int> {
+            guard let font else { return .zero }
+            let labelSize = DummyBackend.textSize(
+                of: label,
+                displayedWith: font,
+                proposedWidth: nil,
+                proposedHeight: nil
+            )
+            let horizontalPadding = 10
+            let verticalPadding = 5
+            return SIMD2(
+                labelSize.x + horizontalPadding * 2,
+                labelSize.y + verticalPadding * 2
+            )
+        }
+    }
+
+    public class Button: Widget {
+        public var label: Widget?
+        public var action: (() -> Void)?
+        public var buttonStyle: ButtonStyle = .bordered
     }
 
     public class ToggleButton: Widget {
@@ -249,6 +278,28 @@ public final class DummyBackend:
         }
     }
 
+    public class DatePicker: Widget {
+        var style: DatePickerStyle = .automatic
+        var value = Date()
+        var range = Date.distantPast ... Date.distantFuture
+        var components: DatePickerComponents = .init(rawValue: 0)
+        var onChange: ((Date) -> Void)?
+        var enabled = true
+    }
+
+    public class Picker: Widget {
+        let style: BackendPickerStyle
+        var selectedIndex: Int?
+        var options: [String] = []
+        var onChange: ((Int?) -> Void)?
+        var enabled = true
+
+        init(style: BackendPickerStyle) {
+            self.style = style
+            super.init()
+        }
+    }
+
     public var defaultTableRowContentHeight = 10
     public var defaultTableCellVerticalPadding = 10
     public var defaultPaddingAmount = 10
@@ -257,8 +308,15 @@ public final class DummyBackend:
     public var requiresImageUpdateOnScaleFactorChange = false
     public var deviceClass = DeviceClass.desktop
     public var supportsMultipleWindows = true
-    public var supportedPickerStyles: [BackendPickerStyle] = []
+    public var supportedPickerStyles: [BackendPickerStyle] = [
+        .menu,
+        .radioGroup,
+        .segmented,
+        .wheel
+    ]
     public let canOverrideWindowColorScheme = true
+    public let restoresWindowFrames = false
+    public let supportedDatePickerStyles: [DatePickerStyle] = [.automatic, .compact, .graphical]
 
     public var incomingURLHandler: ((URL) -> Void)?
     public var appPhase = AppPhase.active
@@ -269,8 +327,8 @@ public final class DummyBackend:
         callback()
     }
 
-    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?) -> Window {
-        Window(defaultSize: defaultSize)
+    public func createWindow(withDefaultSize defaultSize: SIMD2<Int>?, id: String) -> Window {
+        Window(defaultSize: defaultSize, id: id)
     }
 
     public func updateWindow(_ window: Window, environment: EnvironmentValues) {
@@ -329,7 +387,7 @@ public final class DummyBackend:
     public func activate(window: Window) {
         window.phase = .active
     }
-    
+
     public func close(window: Window) {
         window.closeHandler?()
     }
@@ -349,7 +407,9 @@ public final class DummyBackend:
             .with(\.appPhase, appPhase)
     }
 
-    public func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void) {}
+    public func setRootEnvironmentChangeHandler(
+        to action: @escaping @Sendable @MainActor () -> Void
+    ) {}
 
     public func computeWindowEnvironment(window: Window, rootEnvironment: EnvironmentValues)
         -> EnvironmentValues
@@ -359,7 +419,8 @@ public final class DummyBackend:
     }
 
     public func setWindowEnvironmentChangeHandler(
-        of window: Window, to action: @escaping @Sendable @MainActor () -> Void
+        of window: Window,
+        to action: @escaping @Sendable @MainActor () -> Void
     ) {}
 
     public func setIncomingURLHandler(to action: @escaping (URL) -> Void) {
@@ -403,6 +464,10 @@ public final class DummyBackend:
 
     public func setColor(ofColorableRectangle widget: Widget, to color: Color.Resolved) {
         (widget as! Rectangle).color = color
+    }
+
+    public func createCornerRadiusContainer(wrapping child: Widget) -> Widget {
+        child
     }
 
     public func setCornerRadius(of widget: Widget, to radius: Int) {
@@ -454,7 +519,9 @@ public final class DummyBackend:
     }
 
     public func setItems(
-        ofSelectableListView listView: Widget, to items: [Widget], withRowHeights rowHeights: [Int]
+        ofSelectableListView listView: Widget,
+        to items: [Widget],
+        withRowHeights rowHeights: [Int]
     ) {
         let selectableListView = listView as! SelectableListView
         selectableListView.items = items
@@ -462,7 +529,8 @@ public final class DummyBackend:
     }
 
     public func setSelectionHandler(
-        forSelectableListView listView: Widget, to action: @escaping (Int) -> Void
+        forSelectableListView listView: Widget,
+        to action: @escaping (Int) -> Void
     ) {
         (listView as! SelectableListView).selectionHandler = action
     }
@@ -487,7 +555,9 @@ public final class DummyBackend:
     }
 
     public func setSidebarWidthBounds(
-        ofSplitView splitView: Widget, minimum minimumWidth: Int, maximum maximumWidth: Int
+        ofSplitView splitView: Widget,
+        minimum minimumWidth: Int,
+        maximum maximumWidth: Int
     ) {
         let splitView = splitView as! SplitView
         splitView.minimumSidebarWidth = minimumWidth
@@ -501,9 +571,23 @@ public final class DummyBackend:
         proposedHeight: Int?,
         environment: EnvironmentValues
     ) -> SIMD2<Int> {
-        let resolvedFont = environment.resolvedFont
-        let lineHeight = Int(resolvedFont.lineHeight)
-        let characterHeight = Int(resolvedFont.pointSize)
+        Self.textSize(
+            of: text,
+            displayedWith: environment.resolvedFont,
+            proposedWidth: proposedWidth,
+            proposedHeight: proposedHeight
+        )
+    }
+
+    /// Single source of truth for DummyBackend's character-metric text sizing.
+    private nonisolated static func textSize(
+        of text: String,
+        displayedWith font: Font.Resolved,
+        proposedWidth: Int?,
+        proposedHeight: Int?
+    ) -> SIMD2<Int> {
+        let lineHeight = Int(font.lineHeight)
+        let characterHeight = Int(font.pointSize)
         let characterWidth = characterHeight * 2 / 3
 
         guard let proposedWidth else {
@@ -586,19 +670,45 @@ public final class DummyBackend:
         table.rowHeights = rowHeights
     }
 
-    public func createButton() -> Widget {
-        Button()
+    public func createSimpleButton() -> Widget {
+        SimpleButton()
     }
 
-    public func updateButton(
+    public func updateSimpleButton(
         _ button: Widget,
         label: String,
         environment: EnvironmentValues,
         action: @escaping () -> Void
     ) {
-        let button = button as! Button
+        let button = button as! SimpleButton
         button.label = label
         button.action = action
+        button.font = environment.resolvedFont
+    }
+
+    public func createButton(wrapping widget: Widget) -> Widget {
+        let button = Button()
+        button.label = widget
+
+        return button
+    }
+
+    public func updateButton(
+        _ button: Widget,
+        environment: EnvironmentValues,
+        action: @escaping () -> Void
+    ) {
+        let button = button as! Button
+        button.buttonStyle = environment.resolvedButtonStyle
+        button.action = action
+    }
+
+    public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
+        SIMD2<Int>(0, 0)
+    }
+
+    public func defaultButtonStyle() -> ButtonStyle {
+        .bordered
     }
 
     public func createToggle() -> Widget {
@@ -642,7 +752,8 @@ public final class DummyBackend:
     }
 
     public func updateCheckbox(
-        _ checkboxWidget: Widget, environment: SwiftCrossUI.EnvironmentValues,
+        _ checkboxWidget: Widget,
+        environment: SwiftCrossUI.EnvironmentValues,
         onChange: @escaping (Bool) -> Void
     ) {
         (checkboxWidget as! Checkbox).toggleHandler = onChange
@@ -729,29 +840,52 @@ public final class DummyBackend:
         getContent(ofTextField: secureField)
     }
 
-    // MARK: - Unimplemented Features
-    // FIXME: Implement them so we can test them
+    public func createDatePicker() -> Widget {
+        DatePicker()
+    }
 
-    public func createPicker(style: SwiftCrossUI.BackendPickerStyle) -> Widget {
-        fatalError("\(Self.self): \(#function) not implemented")
+    public func updateDatePicker(
+        _ datePicker: Widget,
+        environment: EnvironmentValues,
+        date: Date,
+        range: ClosedRange<Date>,
+        components: DatePickerComponents,
+        onChange: @escaping (Date) -> Void
+    ) {
+        let datePicker = datePicker as! DatePicker
+        datePicker.style = environment.datePickerStyle
+        datePicker.value = date
+        datePicker.range = range
+        datePicker.components = components
+        datePicker.onChange = onChange
+        datePicker.enabled = environment.isEnabled
+    }
+
+    public func createPicker(style: BackendPickerStyle) -> Widget {
+        Picker(style: style)
     }
 
     public func updatePicker(
         _ picker: Widget,
         options: [String],
-        environment: SwiftCrossUI.EnvironmentValues,
+        environment: EnvironmentValues,
         onChange: @escaping (Int?) -> Void
     ) {
-        fatalError("\(Self.self): \(#function) not implemented")
+        let picker = picker as! Picker
+        picker.options = options
+        picker.onChange = onChange
+        picker.enabled = environment.isEnabled
     }
 
     public func setSelectedOption(
         ofPicker picker: Widget,
         to selectedOption: Int?
     ) {
-        fatalError("\(Self.self): \(#function) not implemented")
+        (picker as! Picker).selectedIndex = selectedOption
     }
 
+    // MARK: - Unimplemented Features
+    // FIXME: Implement them so we can test them
     public func createProgressBar() -> Widget {
         fatalError("\(Self.self): \(#function) not implemented")
     }

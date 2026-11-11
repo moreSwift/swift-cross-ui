@@ -77,21 +77,29 @@ import UIKit
         override func viewDidLoad() {
             NSLayoutConstraint.activate([
                 sidebarContainer.view.leadingAnchor.constraint(
-                    equalTo: sidebarContainer.child.view.leadingAnchor),
+                    equalTo: sidebarContainer.child.view.leadingAnchor
+                ),
                 sidebarContainer.view.trailingAnchor.constraint(
-                    equalTo: sidebarContainer.child.view.trailingAnchor),
+                    equalTo: sidebarContainer.child.view.trailingAnchor
+                ),
                 sidebarContainer.view.topAnchor.constraint(
-                    equalTo: sidebarContainer.child.view.topAnchor),
+                    equalTo: sidebarContainer.child.view.topAnchor
+                ),
                 sidebarContainer.view.bottomAnchor.constraint(
-                    equalTo: sidebarContainer.child.view.bottomAnchor),
+                    equalTo: sidebarContainer.child.view.bottomAnchor
+                ),
                 mainContainer.view.leadingAnchor.constraint(
-                    equalTo: mainContainer.child.view.leadingAnchor),
+                    equalTo: mainContainer.child.view.leadingAnchor
+                ),
                 mainContainer.view.trailingAnchor.constraint(
-                    equalTo: mainContainer.child.view.trailingAnchor),
+                    equalTo: mainContainer.child.view.trailingAnchor
+                ),
                 mainContainer.view.topAnchor.constraint(
-                    equalTo: mainContainer.child.view.topAnchor),
+                    equalTo: mainContainer.child.view.topAnchor
+                ),
                 mainContainer.view.bottomAnchor.constraint(
-                    equalTo: mainContainer.child.view.bottomAnchor),
+                    equalTo: mainContainer.child.view.bottomAnchor
+                ),
             ])
 
             super.viewDidLoad()
@@ -105,7 +113,8 @@ import UIKit
         ) -> any WidgetProtocol {
             precondition(
                 UIDevice.current.userInterfaceIdiom != .phone,
-                "NavigationSplitView is currently unsupported on iPhone and iPod touch.")
+                "NavigationSplitView is currently unsupported on iPhone and iPod touch."
+            )
 
             return SplitWidget(sidebarWidget: leadingChild, mainWidget: trailingChild)
         }

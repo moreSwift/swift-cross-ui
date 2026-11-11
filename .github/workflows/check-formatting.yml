@@ -1,0 +1,20 @@
+name: Check formatting; Run './Scripts/format.sh' if this fails.
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    name: "check-formatted"
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Set up Homebrew
+        run: echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
+      - name: Install SwiftFormat
+        run: brew install swiftformat
+      - name: Check formatting
+        run: LINT=1 ./Scripts/format.sh

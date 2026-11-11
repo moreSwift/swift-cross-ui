@@ -14,9 +14,9 @@ GtkWidget *wrapped_gtk_message_dialog_new(void);
 // failing in the next (with identical code). Then when I tried recreating the
 // issue on my Mac I could, even though I successfully built Gtk/Gtk3 a few days
 // earlier... I'm perplexed, but this does at least solve the issue
-const GConnectFlags SHIM_G_CONNECT_AFTER;
-const GConnectFlags SHIM_G_CONNECT_SWAPPED;
-const GApplicationFlags SHIM_G_APPLICATION_HANDLES_OPEN;
+extern const GConnectFlags SHIM_G_CONNECT_AFTER;
+extern const GConnectFlags SHIM_G_CONNECT_SWAPPED;
+extern const GApplicationFlags SHIM_G_APPLICATION_HANDLES_OPEN;
 
 #ifdef __cplusplus
 }

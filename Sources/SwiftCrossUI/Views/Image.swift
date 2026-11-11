@@ -176,12 +176,12 @@ extension Image: TypeSafeView {
 
 /// Image's persistent storage. Only exposed with the `package` access level
 /// in order for backends to implement the `Image.inspect(_:_:)` modifier.
-package class ImageChildren: ViewGraphNodeChildren {
+@_spi(Backends) public class ImageChildren: ViewGraphNodeChildren {
     var cachedImageSource: Image.Source? = nil
     var cachedImage: ImageFormats.Image<RGBA>? = nil
     var cachedImageDisplaySize: SIMD2<Int> = .zero
     var container: AnyWidget
-    package var imageWidget: AnyWidget
+    public var imageWidget: AnyWidget
     var imageChanged = false
     var isContainerEmpty = true
     var lastScaleFactor: Double = 1
@@ -191,6 +191,6 @@ package class ImageChildren: ViewGraphNodeChildren {
         imageWidget = AnyWidget(backend.createImageView())
     }
 
-    package var widgets: [AnyWidget] = []
-    package var erasedNodes: [ErasedViewGraphNode] = []
+    public var widgets: [AnyWidget] = []
+    public var erasedNodes: [ErasedViewGraphNode] = []
 }

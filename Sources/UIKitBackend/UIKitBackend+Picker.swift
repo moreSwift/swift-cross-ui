@@ -1,4 +1,4 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import UIKit
 
 protocol Picker: WidgetProtocol {
@@ -130,7 +130,9 @@ final class UITableViewPicker: WrapperWidget<UITableView>, Picker, UITableViewDe
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
-            withIdentifier: Self.reuseIdentifier, for: indexPath)
+            withIdentifier: Self.reuseIdentifier,
+            for: indexPath
+        )
 
         cell.textLabel!.text = options[indexPath.row]
 

@@ -19,8 +19,8 @@ class _App<AppRoot: App> {
     var dynamicPropertyUpdater: DynamicPropertyUpdater<AppRoot>
 
     /// Wraps a user's app implementation.
-    init(_ app: AppRoot) {
-        backend = app.backend
+    init(_ app: AppRoot, backend: AppRoot.Backend) {
+        self.backend = backend
         self.app = app
         self.environment = EnvironmentValues(backend: backend)
         self.cancellables = []
@@ -59,20 +59,21 @@ class _App<AppRoot: App> {
 
             dynamicPropertyUpdater.update(app, with: environment, previousValue: nil)
 
-            let mirror = Mirror(reflecting: app)
-            for property in mirror.children {
-                if property.label == "state" && property.value is ObservableObject {
-                    logger.warning(
-                        """
-                        the App.state protocol requirement has been removed in favour of \
-                        SwiftUI-style @State annotations; decorate \(AppRoot.self).state \
-                        with the @State property wrapper to restore previous behaviour
-                        """
-                    )
-                }
+            forEachField(of: app) { name, _, fieldValue in
+                #if DEBUG
+                    if name == "state", fieldValue is ObservableObject {
+                        logger.warning(
+                            """
+                            the App.state protocol requirement has been removed in favour of \
+                            SwiftUI-style @State annotations; decorate \(AppRoot.self).state \
+                            with the @State property wrapper to restore previous behaviour
+                            """
+                        )
+                    }
+                #endif
 
-                guard let value = property.value as? any ObservableProperty else {
-                    continue
+                guard let value = fieldValue as? any ObservableProperty else {
+                    return // i.e. continue
                 }
 
                 let cancellable =

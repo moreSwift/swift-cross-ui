@@ -22,6 +22,17 @@ extension BackendFeatures {
         /// This is used to determine text sizing and other adaptive properties.
         var deviceClass: DeviceClass { get }
 
+        /// Performs early backend setup before a backend is created.
+        ///
+        /// This is useful for backends that want to perform certain setup actions
+        /// before the user's `App.init` implementation runs, such as WinUIBackend
+        /// which has to perform setup in order for `print` to work sensibly for
+        /// GUI apps on Windows.
+        ///
+        /// This is guaranteed to be the first code that runs in SwiftCrossUI's
+        /// default `App.main` implementation.
+        static func earlySetup()
+
         /// Runs the backend's main run loop.
         ///
         /// The app will exit when this method returns. This will always be the
@@ -80,5 +91,13 @@ extension BackendFeatures {
         ///
         /// - Parameter action: The root environment change handler.
         func setRootEnvironmentChangeHandler(to action: @escaping @Sendable @MainActor () -> Void)
+    }
+}
+
+// MARK: Default implementations
+
+extension BackendFeatures.Core {
+    public static func earlySetup() {
+        // Most backends don't have to do any early setup
     }
 }

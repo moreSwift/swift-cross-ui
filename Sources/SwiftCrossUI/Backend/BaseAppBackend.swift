@@ -14,6 +14,6 @@
 /// - ``BackendFeatures/Controls``
 public typealias BaseAppBackend =
     BackendFeatures.Core
-    & BackendFeatures.Containers
-    & BackendFeatures.PassiveViews
-    & BackendFeatures.Controls
+        & BackendFeatures.Containers
+        & BackendFeatures.PassiveViews
+        & BackendFeatures.Controls

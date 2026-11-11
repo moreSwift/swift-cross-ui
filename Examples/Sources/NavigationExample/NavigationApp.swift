@@ -43,17 +43,29 @@ struct NavigationApp: App {
                                 .padding(.bottom, 10)
 
                             NavigationLink(
-                                "Physics", value: ScienceSubject.physics, path: $path)
+                                "Physics",
+                                value: ScienceSubject.physics,
+                                path: $path
+                            )
                             NavigationLink(
-                                "Chemistry", value: ScienceSubject.chemistry, path: $path)
+                                "Chemistry",
+                                value: ScienceSubject.chemistry,
+                                path: $path
+                            )
                         case .humanities:
                             Text("Choose a humanities subject")
                                 .padding(.bottom, 10)
 
                             NavigationLink(
-                                "English", value: HumanitiesSubject.english, path: $path)
+                                "English",
+                                value: HumanitiesSubject.english,
+                                path: $path
+                            )
                             NavigationLink(
-                                "History", value: HumanitiesSubject.history, path: $path)
+                                "History",
+                                value: HumanitiesSubject.history,
+                                path: $path
+                            )
                     }
 
                     backButton

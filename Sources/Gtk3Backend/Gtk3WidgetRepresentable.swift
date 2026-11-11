@@ -1,5 +1,5 @@
 import Gtk3
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 
 /// The context associated with an instance of ``Representable``.
 @MainActor
@@ -141,7 +141,7 @@ extension View where Self: Gtk3WidgetRepresentable {
 
         let representingWidget = widget as! RepresentingWidget<Self>
         if let child = representingWidget.child,
-            let savedSizeRequest = representingWidget.savedSizeRequest
+           let savedSizeRequest = representingWidget.savedSizeRequest
         {
             backend.setSize(of: child, to: savedSizeRequest)
         }

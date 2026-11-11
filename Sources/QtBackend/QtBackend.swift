@@ -152,7 +152,10 @@ public struct QtBackend: AppBackend {
     }
 
     public func updateSlider(
-        _ slider: Widget, minimum: Double, maximum: Double, decimalPlaces: Int,
+        _ slider: Widget,
+        minimum: Double,
+        maximum: Double,
+        decimalPlaces: Int,
         onChange: @escaping (Double) -> Void
     ) {
         let slider = slider as! QSlider

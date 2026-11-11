@@ -1,4 +1,4 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import UIKit
 
 extension UIKitBackend {
@@ -156,7 +156,9 @@ extension UIKitBackend {
             // Thank you to Sam Dods for the base idea
             #if !os(tvOS)
                 let longPress = UILongPressGestureRecognizer(
-                    target: self, action: #selector(didLongPress))
+                    target: self,
+                    action: #selector(didLongPress)
+                )
                 addGestureRecognizer(longPress)
                 isUserInteractionEnabled = true
             #endif

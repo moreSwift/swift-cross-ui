@@ -10,10 +10,14 @@ class MainRunLoopTickler {
 
     fun loop(nextDelayMilliseconds: Int? = null) {
         val delay = nextDelayMilliseconds ?: getDefaultDelay()
-        Handler(Looper.getMainLooper()).postDelayed({
-            val nextDelay: Int = tickle()
-            loop(nextDelay)
-        }, delay.toLong())
+        Handler(Looper.getMainLooper())
+            .postDelayed(
+                {
+                    val nextDelay: Int = tickle()
+                    loop(nextDelay)
+                },
+                delay.toLong(),
+            )
     }
 
     external fun tickle(): Int

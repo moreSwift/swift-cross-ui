@@ -4,4 +4,4 @@
 // being given a handle to it.
 int main(int argc, char **argv);
 
-void android_log(int priority, const char *namespace, const char *message);
+void android_log(int priority, const char *tag, const char *message);

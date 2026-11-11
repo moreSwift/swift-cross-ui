@@ -50,6 +50,7 @@ extension Font.TextStyle {
             lineHeight: 16
         )
 
+        /// Creates a resolved text style.
         public init(
             pointSize: Double,
             weight: Font.Weight = .regular,
@@ -90,6 +91,7 @@ extension Font.TextStyle {
         .phone: mobileTextStyles,
         .tablet: mobileTextStyles,
         .tv: tvTextStyles,
+        .watch: watchTextStyles,
     ]
 
     private static let desktopTextStyles: [Self: Resolved] = [
@@ -281,6 +283,67 @@ extension Font.TextStyle {
             weight: .medium,
             emphasizedWeight: .bold,
             lineHeight: 30
+        ),
+    ]
+
+    // Like largeTitle and footnote on TV, callout and subheadline here are inferred from other
+    // device classes.
+    private static let watchTextStyles: [Self: Resolved] = [
+        .largeTitle: Resolved(
+            pointSize: 36,
+            emphasizedWeight: .bold,
+            lineHeight: 38.5
+        ),
+        .title: Resolved(
+            pointSize: 34,
+            emphasizedWeight: .semibold,
+            lineHeight: 36.5
+        ),
+        .title2: Resolved(
+            pointSize: 28,
+            emphasizedWeight: .semibold,
+            lineHeight: 30.5
+        ),
+        .title3: Resolved(
+            pointSize: 19,
+            emphasizedWeight: .semibold,
+            lineHeight: 21.5
+        ),
+        .headline: Resolved(
+            pointSize: 21,
+            weight: .semibold,
+            emphasizedWeight: .semibold,
+            lineHeight: 23.5
+        ),
+        .body: Resolved(
+            pointSize: 21,
+            emphasizedWeight: .semibold,
+            lineHeight: 23.5
+        ),
+        .callout: Resolved(
+            pointSize: 20,
+            emphasizedWeight: .semibold,
+            lineHeight: 22.5
+        ),
+        .subheadline: Resolved(
+            pointSize: 19,
+            emphasizedWeight: .semibold,
+            lineHeight: 21.5
+        ),
+        .caption: Resolved(
+            pointSize: 18,
+            emphasizedWeight: .semibold,
+            lineHeight: 20.5
+        ),
+        .caption2: Resolved(
+            pointSize: 17,
+            emphasizedWeight: .semibold,
+            lineHeight: 19.5
+        ),
+        .footnote: Resolved(
+            pointSize: 16,
+            emphasizedWeight: .semibold,
+            lineHeight: 18.5
         ),
     ]
 }

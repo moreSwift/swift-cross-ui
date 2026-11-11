@@ -9,6 +9,7 @@
 - ``Ellipse``
 - ``Capsule``
 - ``Circle``
+- ``InsettableShape``
 
 ### Styling
 
