@@ -2,6 +2,7 @@ extension BackendFeatures {
     /// Backend methods for linear gradients.
     ///
     /// Used by ``LinearGradient``.
+    @MainActor
     public protocol LinearGradients: Core {
         /// Creates the widget for a ``LinearGradient``.
         func createLinearGradientWidget() -> Widget

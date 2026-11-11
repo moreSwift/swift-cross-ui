@@ -127,7 +127,7 @@ if env["SCUI_BENCHMARK_VIZ"] == "1" {
 
 let package = Package(
     name: "swift-cross-ui",
-    platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .macCatalyst(.v13), .visionOS(.v1)],
+    platforms: [.macOS(.v12), .iOS(.v15), .tvOS(.v15), .visionOS(.v1)],
     products: [
         .library(name: "SwiftCrossUI", type: libraryType, targets: ["SwiftCrossUI"]),
         .library(name: "AppKitBackend", type: libraryType, targets: ["AppKitBackend"]),
@@ -136,6 +136,11 @@ let package = Package(
         .library(name: "WinUIBackend", type: libraryType, targets: ["WinUIBackend"]),
         .library(name: "DefaultBackend", type: libraryType, targets: ["DefaultBackend"]),
         .library(name: "UIKitBackend", type: libraryType, targets: ["UIKitBackend"]),
+        .library(
+            name: "_SwiftCrossUIPortingKit",
+            type: libraryType,
+            targets: ["_SwiftCrossUIPortingKit"]
+        ),
         .library(name: "Gtk", type: libraryType, targets: ["Gtk"]),
         .library(name: "Gtk3", type: libraryType, targets: ["Gtk3"]),
         .executable(name: "GtkExample", targets: ["GtkExample"]),
@@ -162,11 +167,11 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/stackotter/swift-image-formats",
-            .upToNextMinor(from: "0.5.0")
+            .upToNextMinor(from: "0.6.0")
         ),
         .package(
             url: "https://github.com/moreSwift/swift-winui",
-            .upToNextMinor(from: "0.2.1")
+            .upToNextMinor(from: "0.2.2")
         ),
         .package(
             url: "https://github.com/stackotter/swift-benchmark",
@@ -175,6 +180,14 @@ let package = Package(
         .package(
             url: "https://github.com/swhitty/swift-mutex",
             .upToNextMinor(from: "0.0.6")
+        ),
+        .package(
+            url: "https://github.com/apple/swift-collections",
+            .upToNextMajor(from: "1.5.0")
+        ),
+        .package(
+            url: "https://github.com/moreSwift/swift-observation-polyfill",
+            .upToNextMinor(from: "0.1.1")
         ),
         // .package(
         //     url: "https://github.com/stackotter/TermKit",
@@ -198,14 +211,8 @@ let package = Package(
                 .product(name: "ImageFormats", package: "swift-image-formats"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Mutex", package: "swift-mutex"),
-
-                // This import is purely required to fix a linker issue and a plugin build
-                // error that occur on macOS when building for non-Android platforms now that
-                // we've added the AndroidBackend. Providing the '--disable-experimental-prebuilts'
-                // flag when building SwiftCrossUI apps doesn't seem to be sufficient to fix
-                // the issues, even though I would've thought that was the effect that adding
-                // this dependency has.
-                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "ObservationPolyfillCore", package: "swift-observation-polyfill"),
+                .product(name: "ObservationPolyfill", package: "swift-observation-polyfill"),
             ],
             exclude: [
                 "Builders/ViewBuilder.swift.gyb",
@@ -217,6 +224,10 @@ let package = Package(
                 "Scenes/TupleScene.swift.gyb",
             ],
             swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
+        ),
+        .target(
+            name: "_SwiftCrossUIPortingKit",
+            dependencies: ["SwiftCrossUI"]
         ),
         .testTarget(
             name: "SwiftCrossUITests",
@@ -253,7 +264,11 @@ let package = Package(
         ),
         .target(
             name: "Gtk",
-            dependencies: ["CGtk", "GtkCHelpers"],
+            dependencies: [
+                "CGtk",
+                "GtkCHelpers",
+                .product(name: "Mutex", package: "swift-mutex"),
+            ],
             exclude: ["LICENSE.md"]
         ),
         .executableTarget(
@@ -304,13 +319,42 @@ let package = Package(
             name: "WinUIBackend",
             dependencies: [
                 "SwiftCrossUI",
-                "WinUIInterop",
-                .product(name: "WinUI", package: "swift-winui"),
-                .product(name: "UWP", package: "swift-winui"),
-                .product(name: "CWinRT", package: "swift-winui"),
-                .product(name: "WinAppSDK", package: "swift-winui"),
-                .product(name: "WindowsFoundation", package: "swift-winui"),
-                .product(name: "Mutex", package: "swift-mutex"),
+                // Even though these dependencies should be able to be unconditional
+                // dependencies, we have to only include them on Windows to workaround
+                // a swift-build bug where SwiftPM 6.4+ tries to build some of our
+                // Windows-specific dependencies even when WinUIBackend hasn't been
+                // imported.
+                .target(name: "WinUIInterop", condition: .when(platforms: [.windows])),
+                .product(
+                    name: "WinUI",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "UWP",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "CWinRT",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "WinAppSDK",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "WindowsFoundation",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "Mutex",
+                    package: "swift-mutex",
+                    condition: .when(platforms: [.windows])
+                ),
             ]
         ),
         .target(
@@ -401,8 +445,10 @@ if androidBackendSupported {
             name: "AndroidBackend",
             dependencies: [
                 "SwiftCrossUI",
-                "AndroidBackendShim",
                 .product(name: "Mutex", package: "swift-mutex"),
+                .product(name: "DequeModule", package: "swift-collections"),
+
+                .target(name: "AndroidBackendShim", condition: .when(platforms: [.android])),
 
                 // These two dependencies have to be marked as only included on Android
                 // (even though this target is only used on Android) because SwiftPM requires

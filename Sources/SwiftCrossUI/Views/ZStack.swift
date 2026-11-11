@@ -43,19 +43,6 @@ public struct ZStack<Content: View>: View {
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
-        let childResults = layoutableChildren(backend: backend, children: children)
-            .map { child in
-                child.computeLayout(
-                    proposedSize: proposedSize,
-                    environment: environment
-                )
-            }
-
-        let size = ViewSize(
-            childResults.map(\.size.width).max() ?? 0,
-            childResults.map(\.size.height).max() ?? 0
-        )
-
         if !(children is TupleViewChildren || children is EmptyViewChildren) {
             logger.warning(
                 "ZStack will not function correctly with non-TupleView content",
@@ -66,16 +53,20 @@ public struct ZStack<Content: View>: View {
             )
         }
 
-        (children as? TupleViewChildren)?.stackLayoutCache = StackLayoutCache(
-            priorityGroups: [],
-            isHidden: [],
-            totalSpacing: 0,
-            totalReservedSpace: 0,
-            minimumLengths: [],
-            redistributeSpaceOnCommit: proposedSize.width == nil || proposedSize.height == nil
+        var cache = (children as? TupleViewChildren)?.stackLayoutCache ?? StackLayoutCache.initial
+        let result = LayoutSystem.computeZStackLayout(
+            container: widget,
+            children: layoutableChildren(backend: backend, children: children),
+            cache: &cache,
+            proposedSize: proposedSize,
+            environment: environment
+                .with(\.usesZStackLayout, true)
+                .with(\.zStackContentAlignment, alignment)
+                .with(\.layoutOrientation, .vertical),
+            backend: backend
         )
-
-        return ViewLayoutResult(size: size, childResults: childResults)
+        (children as? TupleViewChildren)?.stackLayoutCache = cache
+        return result
     }
 
     public func commit<Backend: BaseAppBackend>(
@@ -85,31 +76,18 @@ public struct ZStack<Content: View>: View {
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        let cache = (children as? TupleViewChildren)?.stackLayoutCache ?? StackLayoutCache.initial
-        let children = layoutableChildren(backend: backend, children: children)
-
-        if cache.redistributeSpaceOnCommit {
-            for child in children {
-                _ = child.computeLayout(
-                    proposedSize: ProposedViewSize(layout.size),
-                    environment: environment
-                )
-            }
-        }
-
-        let size = layout.size
-        let layoutResults = children.map { child in
-            child.commit()
-        }
-
-        for (i, layoutResult) in layoutResults.enumerated() {
-            let position = alignment.position(
-                ofChild: layoutResult.size.vector,
-                in: size.vector
-            )
-            backend.setPosition(ofChildAt: i, in: widget, to: position)
-        }
-
-        backend.setSize(of: widget, to: size.vector)
+        var cache = (children as? TupleViewChildren)?.stackLayoutCache ?? StackLayoutCache.initial
+        LayoutSystem.commitZStackLayout(
+            container: widget,
+            children: layoutableChildren(backend: backend, children: children),
+            cache: &cache,
+            layout: layout,
+            environment: environment
+                .with(\.usesZStackLayout, true)
+                .with(\.zStackContentAlignment, alignment)
+                .with(\.layoutOrientation, .vertical),
+            backend: backend
+        )
+        (children as? TupleViewChildren)?.stackLayoutCache = cache
     }
 }

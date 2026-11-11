@@ -60,3 +60,5 @@
 - ``LineLimit``
 - ``ScenePhase``
 - ``MenuOrder``
+- ``DeviceClass``
+- ``ScrollDismissesKeyboardMode``

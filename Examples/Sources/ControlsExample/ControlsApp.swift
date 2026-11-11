@@ -44,9 +44,15 @@ struct ControlsApp: App {
     @State var progressViewSize: Double = 10
     @State var isProgressViewResizable = true
     @State var pickerStyle: BuiltInPickerStyle? = .automatic
+    @State var buttonStyle: ButtonStyle? = nil
+    @State var color: Color = .red
+    @State var hideLabels = false
+    @State var isColorPickerResizable: Bool = false
+    @State var colorPickerSize: Double = 20
 
     @Environment(\.supportedDatePickerStyles) var supportedDatePickerStyles
     @Environment(\.isPickerStyleSupported) var isPickerStyleSupported
+    @Environment(\.defaultButtonStyle) var defaultButtonStyle
 
     var body: some Scene {
         WindowGroup("ControlsApp") {
@@ -55,22 +61,37 @@ struct ControlsApp: App {
                     VStack(spacing: 30) {
                         VStack {
                             Text("Button (persisted)")
+                            Text("Default ButtonStyle: \(defaultButtonStyle)")
+                            #if !canImport(Gtk3Backend)
+                                Picker(
+                                    of: [
+                                        ButtonStyle.bordered,
+                                        ButtonStyle.plain,
+                                        ButtonStyle.borderless
+                                    ],
+                                    selection: $buttonStyle
+                                )
+                            #endif
                             Button("Click me!") {
                                 count += 1
                             }
+                            .buttonStyle(buttonStyle)
                             Text("Count: \(count)")
                         }
 
-                        VStack {
-                            Text("Menu button")
-                            Menu("Menu") {
-                                Button("Button item") {
-                                    print("Button item clicked")
-                                }
-                                Toggle("Toggle item", isOn: $menuToggleState)
-                                Menu("Submenu") {
-                                    Text("Text item 1")
-                                    Text("Text item 2")
+                        if #available(tvOS 17, *) {
+                            VStack {
+                                Text("Menu button")
+                                Menu("Menu") {
+                                    Button("Button item") {
+                                        print("Button item clicked")
+                                    }
+                                    Divider()
+                                    Toggle("Toggle item", isOn: $menuToggleState)
+                                    Menu("Submenu") {
+                                        Text("Text item 1")
+                                        Text("Text item 2")
+                                    }
                                 }
                             }
                         }
@@ -131,7 +152,6 @@ struct ControlsApp: App {
                                     .frame(width: progressViewSize, height: progressViewSize)
                             }
                         #endif
-
                         #if !canImport(Gtk3Backend)
                             VStack {
                                 Text("Picker")
@@ -181,12 +201,33 @@ struct ControlsApp: App {
                                 }
                             #endif
                         #endif
+
+                        #if !os(tvOS) && !canImport(AndroidBackend)
+                            VStack {
+                                Toggle(
+                                    "Enable ColorPicker resizability",
+                                    isOn: $isColorPickerResizable
+                                )
+                                Slider(value: $colorPickerSize, in: 10...100)
+                                ColorPicker("Choose a color:", selection: $color)
+                                    .resizable(isColorPickerResizable)
+                                    .frame(height: 20 + colorPickerSize)
+
+                                HStack {
+                                    Text("You chose:")
+
+                                    color.frame(maxWidth: 50, maxHeight: 20)
+                                }
+                            }
+                        #endif
                     }.padding().disabled(!enabled)
 
                     Toggle(enabled ? "Disable all" : "Enable all", isOn: $enabled)
                         .padding()
+                    Toggle(hideLabels ? "Show Labels": "Hide labels", isOn: $hideLabels)
                 }
             }
+            .labelsHidden(hideLabels)
         }.defaultSize(width: 400, height: 600)
     }
 }

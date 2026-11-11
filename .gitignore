@@ -16,3 +16,4 @@ notes.json
 /Tools
 .docc-build/
 .idea
+._*

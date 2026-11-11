@@ -72,19 +72,6 @@ open class Window: Bin {
         gtk_window_close(castedPointer())
     }
 
-    public func setEscapeKeyPressedHandler(to handler: (() -> Void)?) {
-        escapeKeyPressed = handler
-
-        guard escapeKeyEventController == nil else { return }
-
-        let keyEventController = EventControllerKey(widget: widgetPointer)
-        keyEventController.keyPressed = { [weak self] _, keyval, _, _ in
-            guard keyval == GDK_KEY_Escape else { return }
-            self?.escapeKeyPressed?()
-        }
-        escapeKeyEventController = keyEventController
-    }
-
     public func setMinimumSize(to minimumSize: Size) {
         gtk_widget_set_size_request(
             castedPointer(),
@@ -127,7 +114,5 @@ open class Window: Bin {
         }
     }
 
-    private var escapeKeyEventController: EventControllerKey?
     public var onDestroy: ((Window) -> Void)?
-    public var escapeKeyPressed: (() -> Void)?
 }

@@ -1,5 +1,5 @@
 import Benchmark
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import DummyBackend
 import Foundation
 
@@ -77,6 +77,11 @@ struct Benchmarks {
             of: ScrollableMessageListView.self,
             ProposedViewSize(800, 800),
             "message list"
+        )
+        benchmarkLayout(
+            of: EnvironmentHeavyView.self,
+            ProposedViewSize(800, 800),
+            "environment-heavy view"
         )
 
         #if BENCHMARK_VIZ

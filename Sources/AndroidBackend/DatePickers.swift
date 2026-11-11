@@ -21,6 +21,9 @@ class AbstractDatePicker: AndroidKit.LinearLayout {
 
     @JavaMethod
     func setComponents(_ components: Int32)
+
+    @JavaMethod
+    func setLocale(_ locale: AndroidKit.Locale!)
 }
 
 @JavaClass(

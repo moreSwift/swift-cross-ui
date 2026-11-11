@@ -265,12 +265,44 @@ final class DatePickerWidget: WrapperWidget<UIDatePicker> {
     }
 }
 
+@available(tvOS, unavailable)
+final class ColorPickerWidget: WrapperWidget<UIColorWell> {
+    private var opacity: CGFloat = 1.0
+
+    var color: UIColor {
+        get {
+            let color = child.selectedColor ?? .clear
+            if !child.supportsAlpha {
+                return color.withAlphaComponent(opacity)
+            }
+            return color
+        }
+        set {
+            opacity = newValue.cgColor.alpha
+            child.selectedColor = newValue
+        }
+    }
+
+    var onChange: ((UIColor) -> Void)? {
+        didSet {
+            if oldValue == nil {
+                child.addTarget(self, action: #selector(colorChanged), for: .valueChanged)
+            }
+        }
+    }
+
+    @objc
+    func colorChanged() {
+        onChange?(color)
+    }
+}
+
 extension UIKitBackend {
-    public func createButton() -> Widget {
+    public func createSimpleButton() -> Widget {
         ButtonWidget()
     }
 
-    func setButtonTitle(
+    func setSimpleButtonTitle(
         _ buttonWidget: ButtonWidget,
         _ label: String,
         environment: EnvironmentValues
@@ -297,7 +329,7 @@ extension UIKitBackend {
         #endif
     }
 
-    public func updateButton(
+    public func updateSimpleButton(
         _ button: Widget,
         label: String,
         environment: EnvironmentValues,
@@ -305,7 +337,7 @@ extension UIKitBackend {
     ) {
         let buttonWidget = button as! ButtonWidget
 
-        setButtonTitle(buttonWidget, label, environment: environment)
+        setSimpleButtonTitle(buttonWidget, label, environment: environment)
 
         buttonWidget.onTap = action
         buttonWidget.child.isEnabled = environment.isEnabled
@@ -500,7 +532,7 @@ extension UIKitBackend {
         wrapper.setOn(state)
     }
 
-    #if os(iOS) || os(visionOS) || targetEnvironment(macCatalyst)
+    #if os(iOS) || os(visionOS)
         public func createSlider() -> Widget {
             SliderWidget()
         }
@@ -570,7 +602,7 @@ extension UIKitBackend: BackendFeatures.TapGestures {
     }
 }
 
-#if os(iOS) || os(visionOS) || targetEnvironment(macCatalyst)
+#if os(iOS) || os(visionOS)
     extension UIKitBackend: BackendFeatures.HoverGestures {
         public func createHoverTarget(wrapping child: Widget) -> Widget {
             HoverableWidget(child: child)
@@ -588,13 +620,7 @@ extension UIKitBackend: BackendFeatures.TapGestures {
 
     extension UIKitBackend: BackendFeatures.DatePickers {
         public nonisolated var supportedDatePickerStyles: [DatePickerStyle] {
-            if #available(iOS 14, macCatalyst 14, *) {
-                [.automatic, .graphical, .compact, .wheel]
-            } else if #available(iOS 13.4, macCatalyst 13.4, *) {
-                [.automatic, .compact, .wheel]
-            } else {
-                [.automatic]
-            }
+            [.automatic, .graphical, .compact, .wheel]
         }
 
         public func createDatePicker() -> Widget {
@@ -633,23 +659,41 @@ extension UIKitBackend: BackendFeatures.TapGestures {
                         fatalError("Unexpected Components: \(components)")
                 }
 
-            if #available(iOS 13.4, macCatalyst 13.4, *) {
-                switch environment.datePickerStyle {
-                    case .automatic:
-                        datePickerWidget.child.preferredDatePickerStyle = .automatic
-                    case .compact:
-                        datePickerWidget.child.preferredDatePickerStyle = .compact
-                    case .graphical:
-                        guard #available(iOS 14, macCatalyst 14, *) else {
-                            preconditionFailure(
-                                "DatePickerStyle.graphical is only available on iOS 14 or newer"
-                            )
-                        }
-                        datePickerWidget.child.preferredDatePickerStyle = .inline
-                    case .wheel:
-                        datePickerWidget.child.preferredDatePickerStyle = .wheels
-                }
+            switch environment.datePickerStyle {
+                case .automatic:
+                    datePickerWidget.child.preferredDatePickerStyle = .automatic
+                case .compact:
+                    datePickerWidget.child.preferredDatePickerStyle = .compact
+                case .graphical:
+                    datePickerWidget.child.preferredDatePickerStyle = .inline
+                case .wheel:
+                    datePickerWidget.child.preferredDatePickerStyle = .wheels
             }
+        }
+    }
+
+    extension UIKitBackend: BackendFeatures.ColorPickers {
+        public func createColorPicker() -> any WidgetProtocol {
+            ColorPickerWidget()
+        }
+
+        public func updateColorPicker(
+            _ colorPicker: any WidgetProtocol,
+            supportsOpacity: Bool,
+            environment: EnvironmentValues,
+            onChange: @escaping (Color.Resolved) -> Void
+        ) {
+            let colorPicker = colorPicker as! ColorPickerWidget
+            colorPicker.child.supportsAlpha = supportsOpacity
+            colorPicker.child.isEnabled = environment.isEnabled
+            colorPicker.onChange = { onChange(Color.Resolved($0)) }
+        }
+
+        public func setValue(
+            ofColorPicker colorPicker: any WidgetProtocol,
+            to color: Color.Resolved
+        ) {
+            (colorPicker as! ColorPickerWidget).color = color.uiColor
         }
     }
 #endif

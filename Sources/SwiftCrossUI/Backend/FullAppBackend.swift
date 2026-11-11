@@ -23,6 +23,9 @@
 /// - ``BackendFeatures/DatePickers``
 /// - ``BackendFeatures/Windowing``
 /// - ``BackendFeatures/Gradients``
+/// - ``BackendFeatures/FocusHandling``
+/// - ``BackendFeatures/FocusDisabling``
+/// - ``BackendFeatures/ColorPickers``
 /// - ``BackendFeatures/Icons``
 public typealias FullAppBackend =
     BaseAppBackend
@@ -44,6 +47,9 @@ public typealias FullAppBackend =
         & BackendFeatures.DatePickers
         & BackendFeatures.Windowing
         & BackendFeatures.Gradients
+        & BackendFeatures.FocusHandling
+        & BackendFeatures.FocusDisabling
+        & BackendFeatures.ColorPickers
         & BackendFeatures.Icons
 
 /// A typealias for ``FullAppBackend``.
@@ -66,3 +72,11 @@ public typealias FullAppBackend =
         """
 )
 public typealias AppBackend = FullAppBackend
+
+/// This utility function purely exists as a way to get the type checker to enforce
+/// FullAppBackend conformance on the passed value at compile time. We use this
+/// approach to ensure that backends such as AppKitBackend conform to FullAppBackend
+/// so that we can implement the backend's features across multiple files with explicit
+/// conformances to each constituent protocol of FullAppBackend.
+@_spi(Backends)
+public func ensureFullAppBackendConformance<Backend: FullAppBackend>(_ backend: Backend) {}

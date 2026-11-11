@@ -2,17 +2,19 @@ package dev.swiftcrossui.androidbackend.datepickers
 
 import android.app.Dialog
 import android.app.TimePickerDialog
+import android.icu.text.DateFormat
 import android.icu.util.Calendar
 import android.icu.util.GregorianCalendar
-import android.icu.util.ULocale
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.fragment.app.FragmentActivity
 import java.time.LocalTime
+import java.util.Locale
 
 class TimeButton(private val activity: FragmentActivity) : Button(activity) {
     private var _value = LocalTime.now()
+    private var locale = Locale.getDefault()
 
     var action: (() -> Unit)? = null
 
@@ -43,6 +45,13 @@ class TimeButton(private val activity: FragmentActivity) : Button(activity) {
         updateText()
     }
 
+    fun setLocale(locale: Locale) {
+        if (locale != this.locale) {
+            this.locale = locale
+            updateText()
+        }
+    }
+
     private fun updateText() {
         val calendar = GregorianCalendar()
         calendar[Calendar.HOUR_OF_DAY] = _value.hour
@@ -50,11 +59,7 @@ class TimeButton(private val activity: FragmentActivity) : Button(activity) {
 
         setText(
             calendar
-                .getDateTimeFormat(
-                    android.icu.text.DateFormat.NONE,
-                    android.icu.text.DateFormat.SHORT,
-                    ULocale.getDefault(),
-                )
+                .getDateTimeFormat(DateFormat.NONE, DateFormat.SHORT, locale)
                 .format(calendar.time)
         )
     }
@@ -67,11 +72,9 @@ class TimeButton(private val activity: FragmentActivity) : Button(activity) {
         lateinit var button: TimeButton
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val context = requireContext()
-
             val dialog =
                 TimePickerDialog(
-                    context,
+                    requireContext(),
                     TimePickerDialog.OnTimeSetListener { _, hour, minute ->
                         val newValue = LocalTime.of(hour, minute)
                         if (newValue != button._value) {
@@ -82,7 +85,7 @@ class TimeButton(private val activity: FragmentActivity) : Button(activity) {
                     },
                     button._value.hour,
                     button._value.minute,
-                    android.text.format.DateFormat.is24HourFormat(context),
+                    is24HourLocale(button.locale),
                 )
 
             return dialog

@@ -34,7 +34,7 @@ public struct Menu {
     static func resolve(item: MenuItem) -> ResolvedMenu.Item {
         switch item {
             case .button(let button):
-                .button(button.label, button.action)
+                .button(button.body.view0.view0.string, button.action)
             case .text(let text):
                 .button(text.string, nil)
             case .toggle(let toggle):
@@ -77,7 +77,7 @@ extension Menu: TypeSafeView {
         _ children: MenuStorage,
         backend: Backend
     ) -> Backend.Widget {
-        return backend.createButton()
+        return backend.createSimpleButton()
     }
 
     func layoutableChildren<Backend: BaseAppBackend>(
@@ -105,7 +105,7 @@ extension Menu: TypeSafeView {
                 // Our menu button action implementation needs to know the size
                 // of the button, but we don't have that yet, so just update it
                 // with an empty action and fix it in commit.
-                backend.updateButton(
+                backend.updateSimpleButton(
                     widget,
                     label: label,
                     environment: environment,
@@ -126,7 +126,9 @@ extension Menu: TypeSafeView {
 
         var size = backend.naturalSize(of: widget)
         size.x = buttonWidth ?? size.x
-        return ViewLayoutResult.leafView(size: ViewSize(size))
+        return ViewLayoutResult
+            .leafView(size: ViewSize(size))
+            .with(\.isNeverFocusable, false)
     }
 
     @CastBackend<BackendFeatures.MenuButtons>(backendGenericName: "NewBackend")
@@ -142,7 +144,7 @@ extension Menu: TypeSafeView {
 
         switch backend.menuImplementationStyle {
             case .dynamicPopover(let backend):
-                backend.updateButton(
+                backend.updateSimpleButton(
                     widget,
                     label: label,
                     environment: environment,

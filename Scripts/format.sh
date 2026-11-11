@@ -1,17 +1,79 @@
 #!/bin/bash
 
+dir=$(pwd)
+
+if [ ! -z "$1" ] && [ ! -e "$1" ]; then
+  echo "Input file/dir doesn't exist"
+  exit 1
+fi
+
 cd "$(dirname "$0")"/../
 
+# Minimum SwiftFormat version required by the rules enabled in .swiftformat.
+# simplifyGenericConstraints (the newest rule in --rules) was added in 0.59.0;
+# older SwiftFormat versions reject it with "Unknown rule: simplifyGenericConstraints".
+# And more recently, they fixed a switch case formatting bug, so you need at least
+# 0.63.1 otherwise you'll locally fail to format certain switch cases that CI now
+# handles correctly. And then they changed stuff again in 0.64.5.
+MIN_SWIFTFORMAT_VERSION="0.64.5"
+
+if ! which swiftformat &>/dev/null; then
+  echo "swiftformat not found. Install it with 'brew install swiftformat' (or see https://github.com/nicklockwood/SwiftFormat/releases)." >&2
+  exit 1
+fi
+
+installed_version="$(swiftformat --version | tr -dc '0-9.')"
+
+version_ge() {
+  # Compares dot-separated version numbers component-by-component without
+  # relying on GNU sort -V, which macOS's built-in sort does not support.
+  local IFS=.
+  local -a v1=($1)
+  local -a v2=($2)
+  local i
+  for ((i = 0; i < 3; i++)); do
+    local a="${v1[i]:-0}"
+    local b="${v2[i]:-0}"
+    if ((10#$a > 10#$b)); then
+      return 0
+    elif ((10#$a < 10#$b)); then
+      return 1
+    fi
+  done
+  return 0
+}
+
+if ! version_ge "$installed_version" "$MIN_SWIFTFORMAT_VERSION"; then
+  echo "SwiftFormat $installed_version is too old; this repo's .swiftformat rules require >= $MIN_SWIFTFORMAT_VERSION." >&2
+  echo "Upgrade with 'brew upgrade swiftformat' (or 'mint install nicklockwood/SwiftFormat'), or download a release from https://github.com/nicklockwood/SwiftFormat/releases." >&2
+  exit 1
+fi
+
+SWIFTFORMAT_LINT_FLAGS=""
+KTFMT_LINT_FLAGS=""
+
+if [ -n "$LINT" ]; then
+    SWIFTFORMAT_LINT_FLAGS="--lint"
+    KTFMT_LINT_FLAGS="--quiet --dry-run --set-exit-if-changed"
+    set -eo pipefail
+fi
+
 if [ -z "$1" ]; then
-  swiftformat .
-else
-  swiftformat $1
+  swiftformat . $SWIFTFORMAT_LINT_FLAGS
+elif find "$dir/$1" -name "*.swift" | grep '^' &>/dev/null; then
+  swiftformat "$dir/$1" $SWIFTFORMAT_LINT_FLAGS
 fi
 
 if which java &>/dev/null; then
-  ./Scripts/ensure_ktfmt.sh
-
-  java -jar Tools/ktfmt.jar --kotlinlang-style --quiet Sources/AndroidBackend/Kotlin/
+  if [ -z "$1" ]; then
+    ./Scripts/ensure_ktfmt.sh
+    echo "Running ktfmt..."
+    java -jar Tools/ktfmt.jar --kotlinlang-style --quiet $KTFMT_LINT_FLAGS Sources/AndroidBackend/Kotlin/
+  elif find "$dir/$1" -name "*.kt" | grep '^' &>/dev/null; then
+    ./Scripts/ensure_ktfmt.sh
+    echo "Running ktfmt..."
+    java -jar Tools/ktfmt.jar --kotlinlang-style --quiet $KTFMT_LINT_FLAGS "$dir/$1"
+  fi
 else
   echo 'Skipping ktfmt, as Java was not found. To format Kotlin files, install Java 17.' >&2
 fi

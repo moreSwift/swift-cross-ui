@@ -1,7 +1,7 @@
 /// An item of a ``Menu`` or ``CommandMenu``.
 public enum MenuItem {
     /// A button.
-    case button(Button)
+    case button(Button<TupleView1<Text>>)
     /// Text.
     case text(Text)
     /// A toggle.

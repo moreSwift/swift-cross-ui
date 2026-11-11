@@ -23,7 +23,7 @@ open class GObject: GObjectRepresentable {
         for (id, _) in signals {
             g_signal_handler_disconnect(gobjectPointer, id)
         }
-  
+
         g_object_unref(gobjectPointer)
     }
 

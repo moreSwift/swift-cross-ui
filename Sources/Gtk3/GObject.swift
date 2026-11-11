@@ -29,7 +29,7 @@ open class GObject: GObjectRepresentable {
 
             disconnectSignal(gobjectPointer, handlerId: handlerId)
         }
-      
+
         g_object_unref(gobjectPointer)
     }
 

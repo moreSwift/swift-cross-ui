@@ -116,6 +116,7 @@ extension AndroidBackend: BackendFeatures.DatePickers {
         )
         datePicker.setValue(Self.getLocalDateTime(date: date, timeZone: environment.timeZone))
         datePicker.setEnabled(environment.isEnabled)
+        datePicker.setLocale(getJavaLocale(for: environment.locale))
 
         datePicker.setAction(SwiftAction(environment: Self.env) {
             let date = Self.getFoundationDate(

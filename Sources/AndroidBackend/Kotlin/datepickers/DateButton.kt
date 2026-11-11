@@ -3,8 +3,8 @@ package dev.swiftcrossui.androidbackend.datepickers
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.icu.text.DateFormat
+import android.icu.util.Calendar
 import android.icu.util.GregorianCalendar
-import android.icu.util.ULocale
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatDialogFragment
@@ -12,12 +12,14 @@ import androidx.fragment.app.FragmentActivity
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import java.util.Locale
 
 class DateButton(private val activity: FragmentActivity) : Button(activity) {
     private var minDate = Constants.defaultMinDate
     private var maxDate = Constants.defaultMaxDate
 
     private var _value = LocalDate.now()
+    private var locale = Locale.getDefault()
 
     var action: (() -> Unit)? = null
 
@@ -47,13 +49,20 @@ class DateButton(private val activity: FragmentActivity) : Button(activity) {
         updateText()
     }
 
+    fun setLocale(locale: Locale) {
+        if (locale != this.locale) {
+            this.locale = locale
+            updateText()
+        }
+    }
+
     private fun updateText() {
         val calendar = GregorianCalendar()
         calendar.set(_value.year, _value.monthValue - 1, _value.dayOfMonth)
 
         setText(
             calendar
-                .getDateTimeFormat(DateFormat.LONG, DateFormat.NONE, ULocale.getDefault())
+                .getDateTimeFormat(DateFormat.LONG, DateFormat.NONE, locale)
                 .format(calendar.time)
         )
     }
@@ -95,6 +104,7 @@ class DateButton(private val activity: FragmentActivity) : Button(activity) {
 
             dialog.datePicker.minDate = button.minDate
             dialog.datePicker.maxDate = button.maxDate
+            dialog.datePicker.firstDayOfWeek = Calendar.getInstance(button.locale).firstDayOfWeek
 
             return dialog
         }

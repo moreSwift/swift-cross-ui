@@ -17,21 +17,72 @@ extension App {
     public typealias Backend = WinUIBackend
 
     public var backend: WinUIBackend {
-        WinUIBackend()
+        WinUIBackend(urlSchemes: Self.metadata?.urlSchemes?.map(\.scheme))
     }
 }
 
 class WinUIApplication: SwiftApplication, @unchecked Sendable {
-    static let callback = Mutex<(@MainActor (WinUIApplication) -> Void)?>(nil)
+    static let callback = Mutex<(@MainActor (WinUIApplication, AppInstance) -> Void)?>(nil)
+    static let urlSchemes = Mutex<[String]>([])
 
     override func onLaunched(_ args: WinUI.LaunchActivatedEventArgs) {
+        // Register the schemes on each launch. Windows ignores duplicate URL
+        // scheme registrations so this is safe.
+        let schemes = Self.urlSchemes.withLock { $0 }
+        var processName = ProcessInfo.processInfo.processName
+        if processName.hasSuffix(".exe") {
+            processName = String(processName.dropLast(".exe".count))
+        }
+        for scheme in schemes {
+            ActivationRegistrationManager.registerForProtocolActivation(
+                scheme,
+                "",
+                processName,
+                ""
+            )
+        }
+
+        // Adapted from https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/applifecycle/applifecycle-single-instance
+        let args = try! AppInstance.getCurrent().getActivatedEventArgs()!
+        let keyInstance = AppInstance.findOrRegisterForKey(processName)!
+        guard keyInstance.isCurrent else {
+            Self.redirectActivation(args, to: keyInstance)
+        }
+
         Self.callback.withLock { callback in
             // We can't explicitly hop to the main actor because we haven't set up
             // our WinUI MainActor fix yet.
             MainActor.assumeIsolated {
-                callback?(self)
+                callback?(self, keyInstance)
             }
         }
+    }
+
+    // Adapted from https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/applifecycle/applifecycle-single-instance
+    static func redirectActivation(
+        _ args: AppActivationArguments,
+        to keyInstance: AppInstance
+    ) -> Never {
+        let semaphore = DispatchSemaphore(value: 0)
+        let promise = try! keyInstance.redirectActivationToAsync(args)!
+        promise.completed = { _, _ in
+            semaphore.signal()
+        }
+
+        semaphore.wait()
+
+        // Bring key instance to the foreground
+        do {
+            try InstancingHelpers.activateProcess(withId: Int(keyInstance.processId))
+        } catch {
+            print(
+                """
+                Failed to bring key instance (pid=\(keyInstance.processId)) to \
+                foreground: \(error.localizedDescription)
+                """
+            )
+        }
+        Foundation.exit(0)
     }
 }
 
@@ -83,7 +134,6 @@ public final class WinUIBackend:
     public let defaultTableRowContentHeight = 20
     public let defaultTableCellVerticalPadding = 4
     public let defaultPaddingAmount = 10
-    public let requiresToggleSwitchSpacer = false
     public let requiresImageUpdateOnScaleFactorChange = false
     public let supportsMultipleWindows = true
     public let deviceClass = DeviceClass.desktop
@@ -100,6 +150,8 @@ public final class WinUIBackend:
     public var scrollBarWidth: Int {
         12
     }
+
+    var borderedButtonPadding: SIMD2<Int>?
 
     class InternalState {
         var buttonClickActions: [ObjectIdentifier: () -> Void] = [:]
@@ -118,8 +170,15 @@ public final class WinUIBackend:
 
     private var measurementTextBlock: TextBlock!
 
-    public init() {
+    public convenience init() {
+        self.init(urlSchemes: nil)
+    }
+
+    public init(urlSchemes: [String]?) {
         internalState = InternalState()
+        WinUIApplication.urlSchemes.withLock { schemes in
+            schemes = urlSchemes ?? []
+        }
     }
 
     struct Error: LocalizedError {
@@ -165,7 +224,7 @@ public final class WinUIBackend:
         SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)
 
         WinUIApplication.callback.withLock { launchCallback in
-            launchCallback = { application in
+            launchCallback = { application, instance in
                 // Toggle Switch has annoying default 'internal margins' (not Control
                 // margins that we can set directly) that we can luckily get rid of by
                 // overriding the relevant resource values.
@@ -189,6 +248,14 @@ public final class WinUIBackend:
                 //   let value = try! pv.GetDoubleImpl()
 
                 self.measurementTextBlock = (self.createTextView() as! TextBlock)
+
+                instance.activated.addHandler { (_, args: AppActivationArguments?) in
+                    guard let args else {
+                        logger.warning("Received activation with no activation arguments?")
+                        return
+                    }
+                    self.processActivationArguments(args)
+                }
 
                 callback()
             }
@@ -339,15 +406,23 @@ public final class WinUIBackend:
     }
 
     public func show(window: Window) {
-        try! window.activate()
+        activate(window: window)
     }
 
     public func activate(window: Window) {
-        try! window.activate()
+        do {
+            try window.activate()
+        } catch {
+            logger.warning("Failed to activate window: \(error)")
+        }
     }
 
     public func close(window: Window) {
-        try! window.close()
+        do {
+            try window.close()
+        } catch {
+            logger.warning("Failed to close window: \(error)")
+        }
     }
 
     public func setCloseHandler(
@@ -457,10 +532,14 @@ public final class WinUIBackend:
         let blue = Int(backgroundColor.b)
         let isLight = 5 * green + 2 * red + blue > 8 * 128
 
+        let locale = Foundation.Locale.windowsCurrent
+
         return
             defaultEnvironment
                 .with(\.colorScheme, isLight ? .light : .dark)
                 .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
+                .with(\.locale, locale)
+                .with(\.calendar, locale.calendar)
     }
 
     public func setRootEnvironmentChangeHandler(
@@ -497,9 +576,33 @@ public final class WinUIBackend:
         }
     }
 
+    var incomingURLHandler: ((URL) -> Void)?
+
     public func setIncomingURLHandler(to action: @escaping (URL) -> Void) {
-        // TODO: Implement WinUIBackend setIncomingURLHandler
-        logger.warning("\(#function) not implemented")
+        let isFirstCall = incomingURLHandler == nil
+        self.incomingURLHandler = action
+
+        if isFirstCall {
+            // Check if this app instance was launched by a URL activation. If it
+            // was a URL activation, then handle it now.
+            let args = try! AppInstance.getCurrent().getActivatedEventArgs()!
+            processActivationArguments(args)
+        }
+    }
+
+    private func processActivationArguments(_ args: AppActivationArguments) {
+        if args.kind == .protocol {
+            if let data = args.data as? IProtocolActivatedEventArgs {
+                let urlString = data.uri.absoluteUri
+                if let url = URL(string: urlString) {
+                    self.incomingURLHandler?(url)
+                } else {
+                    logger.warning("Failed to parse activation URL: \(urlString)")
+                }
+            } else {
+                logger.warning("Failed to get activation URL")
+            }
+        }
     }
 
     public func createContainer() -> Widget {
@@ -663,6 +766,9 @@ public final class WinUIBackend:
             // https://github.com/marcelwgn/microsoft-ui-xaml/blob/ff21f9b212cea2191b959649e45e52486c8465aa/src/controls/dev/CommonStyles/DatePicker_themeresources.xaml#L261
             // Height is experimentally 29 which I don't see anywhere in that file.
             return SIMD2(296, 29)
+        } else if widget is ColorButton {
+            // Same size rectangle as appkit rectangle size + button padding
+            return SIMD2(66, 31)
         }
 
         let oldWidth = widget.width
@@ -843,8 +949,8 @@ public final class WinUIBackend:
         environment.apply(to: block)
     }
 
-    public func createButton() -> Widget {
-        let button = Button()
+    public func createSimpleButton() -> Widget {
+        let button = WinUI.Button()
         button.click.addHandler { [weak internalState] _, _ in
             guard let internalState else { return }
             internalState.buttonClickActions[ObjectIdentifier(button)]?()
@@ -852,17 +958,19 @@ public final class WinUIBackend:
         return button
     }
 
-    public func updateButton(
+    public func updateSimpleButton(
         _ button: Widget,
         label: String,
         environment: EnvironmentValues,
         action: @escaping () -> Void
     ) {
         let button = button as! WinUI.Button
-        let block = TextBlock()
+
+        let block = createTextView() as! WinUI.TextBlock
         block.text = label
         button.content = block
         environment.apply(to: block)
+
         environment.apply(to: button)
         internalState.buttonClickActions[ObjectIdentifier(button)] = action
     }
@@ -891,10 +999,12 @@ public final class WinUIBackend:
         environment: EnvironmentValues
     ) {
         let button = button as! WinUI.Button
-        let block = TextBlock()
+
+        let block = createTextView() as! WinUI.TextBlock
         block.text = label
         button.content = block
         environment.apply(to: block)
+
         environment.apply(to: button)
         button.flyout = menu
     }
@@ -1376,6 +1486,33 @@ public final class WinUIBackend:
         }
     }
 
+    public func visibleColumns(
+        ofSplitView splitView: Widget
+    ) -> Set<NavigationSplitViewColumn> {
+        return [.sidebar, .detail]
+    }
+
+    public func showColumn(
+        _ column: NavigationSplitViewColumn,
+        ofSplitView splitView: Widget
+    ) {
+        // We don't hide columns yet, so we can implement this trivially :)
+    }
+
+    public func internalPadding(
+        ofSplitView splitView: Widget,
+        column: NavigationSplitViewColumn
+    ) -> SIMD2<Int> {
+        .zero
+    }
+
+    public func setColumnVisibilityChangeHandler(
+        ofSplitView splitView: Widget,
+        to action: @escaping (NavigationSplitViewColumn, Bool) -> Void
+    ) {
+        // TODO(stackotter): Handle toggling sidebar visibility
+    }
+
     public func createToggle() -> Widget {
         let toggle = ToggleButton()
         toggle.click.addHandler { [weak internalState] _, _ in
@@ -1850,12 +1987,12 @@ public final class WinUIBackend:
                     ellipse.center = Point(x: Float(center.x), y: Float(center.y))
                     geometry.append(ellipse)
                 case .arc(
-                let center,
-                let radius,
-                let startAngle,
-                let endAngle,
-                let clockwise
-            ):
+                    let center,
+                    let radius,
+                    let startAngle,
+                    let endAngle,
+                    let clockwise
+                ):
                     let startPoint = Point(
                         x: Float(center.x + radius * cos(startAngle)),
                         y: Float(center.y + radius * sin(startAngle))
@@ -2271,7 +2408,9 @@ public class CustomWindow: WinUI.Window {
         self.activated.addHandler { [weak self] _, args in
             switch args?.windowActivationState {
                 case .codeActivated, .pointerActivated: self?.isActive = true
+
                 case .deactivated: self?.isActive = false
+
                 // NB: The compiler apparently thinks we didn't exhaustively switch
                 // over this enum without this `default` (even after adding a `case nil`).
                 // Might be because it doesn't treat the underlying C enum as a Swift enum?

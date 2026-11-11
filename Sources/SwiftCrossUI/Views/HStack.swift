@@ -57,7 +57,8 @@ public struct HStack<Content: View>: View {
             environment: environment
                 .with(\.layoutOrientation, .horizontal)
                 .with(\.layoutAlignment, alignment.asStackAlignment)
-                .with(\.layoutSpacing, spacing),
+                .with(\.layoutSpacing, spacing)
+                .with(\.usesZStackLayout, false),
             backend: backend
         )
         (children as? TupleViewChildren)?.stackLayoutCache = cache
@@ -80,7 +81,8 @@ public struct HStack<Content: View>: View {
             environment: environment
                 .with(\.layoutOrientation, .horizontal)
                 .with(\.layoutAlignment, alignment.asStackAlignment)
-                .with(\.layoutSpacing, spacing),
+                .with(\.layoutSpacing, spacing)
+                .with(\.usesZStackLayout, false),
             backend: backend
         )
         (children as? TupleViewChildren)?.stackLayoutCache = cache

@@ -5,10 +5,6 @@ extension BackendFeatures {
     /// ``ToggleStyle/switch``.
     @MainActor
     public protocol Switches: Core {
-        /// If `true`, a toggle in the ``ToggleStyle/switch`` style grows to fill
-        /// its parent container.
-        var requiresToggleSwitchSpacer: Bool { get }
-
         /// Creates a switch that is either on or off.
         ///
         /// - Returns: A switch.

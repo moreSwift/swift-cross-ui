@@ -167,6 +167,33 @@ extension BackendFeatures.BaseStubs {
         todo()
     }
 
+    public func visibleColumns(
+        ofSplitView splitView: Widget
+    ) -> Set<NavigationSplitViewColumn> {
+        todo()
+    }
+
+    public func showColumn(
+        _ column: NavigationSplitViewColumn,
+        ofSplitView splitView: Widget
+    ) {
+        todo()
+    }
+
+    public func internalPadding(
+        ofSplitView splitView: Widget,
+        column: NavigationSplitViewColumn
+    ) -> SIMD2<Int> {
+        todo()
+    }
+
+    public func setColumnVisibilityChangeHandler(
+        ofSplitView splitView: Widget,
+        to action: @escaping (NavigationSplitViewColumn, Bool) -> Void
+    ) {
+        todo()
+    }
+
     public func size(
         of text: String,
         whenDisplayedIn widget: Widget,
@@ -206,16 +233,38 @@ extension BackendFeatures.BaseStubs {
         todo()
     }
 
-    public func createButton() -> Widget {
+    public func createSimpleButton() -> Widget {
         todo()
     }
 
-    public func updateButton(
+    public func updateSimpleButton(
         _ button: Widget,
         label: String,
         environment: EnvironmentValues,
         action: @escaping () -> Void
     ) {
+        todo()
+    }
+
+    public func createButton(
+        wrapping: Widget
+    ) -> Widget {
+        todo()
+    }
+
+    public func updateButton(
+        _ button: Widget,
+        environment: EnvironmentValues,
+        action: @escaping () -> Void
+    ) {
+        todo()
+    }
+
+    public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
+        todo()
+    }
+
+    public func defaultButtonStyle() -> ButtonStyle {
         todo()
     }
 
@@ -522,10 +571,6 @@ extension BackendFeatures.BaseStubs {
     }
 
     public var requiresImageUpdateOnScaleFactorChange: Bool {
-        todo()
-    }
-
-    public var requiresToggleSwitchSpacer: Bool {
         todo()
     }
 

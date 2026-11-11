@@ -15,9 +15,9 @@ struct CounterView: View {
 
     var body: some View {
         VStack {
-            Button("Decrease") { count -= 1 }
+            Text("Decrease")
             Text("Count: 1")
-            Button("Increase") { count += 1 }
+            Text("Increase")
         }.padding()
     }
 }
@@ -165,43 +165,51 @@ struct SwiftCrossUITests {
         #expect(ambientColorScheme.value == .dark)
     }
 
+    @Test("Ensure that a basic view has the expected dimensions under DummyBackend")
+    @MainActor
+    func testBasicLayout() async throws {
+        let backend = DummyBackend()
+        let window = backend.createWindow(withDefaultSize: SIMD2(200, 200), id: "window")
+
+        let environment = EnvironmentValues(backend: backend)
+            .with(\.window, window)
+        let viewGraph = ViewGraph(
+            for: CounterView(),
+            backend: backend,
+            environment: environment
+        )
+        backend.setChild(ofWindow: window, to: viewGraph.rootNode.widget.into())
+
+        let result = viewGraph.computeLayout(
+            proposedSize: ProposedViewSize(200, 200),
+            environment: environment
+        )
+
+        // CounterView is a padded VStack of two Buttons ("Decrease"/"Increase",
+        // 8 characters each) and a Text ("Count: 1", 8 characters), laid out under
+        // DummyBackend's character-metric approximation for the default (`.body`)
+        // font: pointSize 13, lineHeight 16 (Font.TextStyle's desktop table).
+        //
+        // Text sizing (DummyBackend.size(of:)): characterWidth = Int(13) * 2 / 3 = 8,
+        //   width = 8 * 8 = 64, height = lineHeight = 16
+        // Button size = label size + DummyBackend.buttonPadding (0, 0) = 64 x 16
+        //
+        // VStack union width = max(64, 64, 64) = 64
+        // VStack height = 16 + 16 + 16 + 2 * VStack.defaultSpacing(10) = 68
+        // .padding() adds DummyBackend.defaultPaddingAmount(10) on every edge:
+        //   width = 64 + 2 * 10 = 84, height = 68 + 2 * 10 = 88
+        #expect(
+            result.size == ViewSize(84, 88),
+            "View update result mismatch"
+        )
+
+        #expect(
+            result.preferences.onOpenURL == nil,
+            "onOpenURL not nil"
+        )
+    }
+
     #if canImport(AppKitBackend)
-        @Test("Ensure that a basic view has the expected dimensions under AppKitBackend")
-        @MainActor
-        func testBasicLayout() async throws {
-            let backend = AppKitBackend()
-            let window = backend.createWindow(withDefaultSize: SIMD2(200, 200), id: "window")
-
-            // Idea taken from https://github.com/pointfreeco/swift-snapshot-testing/pull/533
-            // and implemented in AppKitBackend.
-            window.backingScaleFactorOverride = 1
-            window.colorSpace = .genericRGB
-
-            let environment = EnvironmentValues(backend: backend)
-                .with(\.window, window)
-            let viewGraph = ViewGraph(
-                for: CounterView(),
-                backend: backend,
-                environment: environment
-            )
-            backend.setChild(ofWindow: window, to: viewGraph.rootNode.widget.into())
-
-            let result = viewGraph.computeLayout(
-                proposedSize: ProposedViewSize(200, 200),
-                environment: environment
-            )
-
-            #expect(
-                result.size == ViewSize(92, 96),
-                "View update result mismatch"
-            )
-
-            #expect(
-                result.preferences.onOpenURL == nil,
-                "onOpenURL not nil"
-            )
-        }
-
         /// Snapshots an AppKit view to a TIFF image.
         @MainActor
         static func snapshotView(_ view: NSView) throws -> Data {

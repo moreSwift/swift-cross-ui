@@ -5,16 +5,18 @@ import Foundation
 /// Useful in dynamic use-cases such as hot reloading, but not recommended if
 /// there are alternate strongly-typed solutions to your problem since
 /// ``AnyView`` has significantly more overhead than strongly typed views.
-public struct AnyView: TypeSafeView {
-    typealias Children = AnyViewChildren
-
-    public var body = EmptyView()
-
+public struct AnyView {
     var child: any View
 
     public init(_ child: any View) {
         self.child = child
     }
+}
+
+extension AnyView: TypeSafeView {
+    typealias Children = AnyViewChildren
+
+    public var body: some View { return EmptyView() }
 
     func children<Backend: BaseAppBackend>(
         backend: Backend,

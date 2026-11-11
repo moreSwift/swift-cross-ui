@@ -76,6 +76,7 @@ struct GtkCodeGen {
         "Gdk.Clipboard": "OpaquePointer",
         "Gdk.ModifierType": "GdkModifierType",
         "Pango.EllipsizeMode": "EllipsizeMode",
+        "Gdk.RGBA": "GdkRGBA",
     ]
 
     static let interfaces: [String] = [
@@ -137,15 +138,16 @@ struct GtkCodeGen {
             "CheckButton",
             "Calendar",
             "SpinButton",
-            "EventControllerKey",
         ]
-        let gtk3AllowListedClasses = ["MenuShell", "EventBox"]
+        let gtk3AllowListedClasses = ["MenuShell", "EventBox", "ColorButton"]
         let gtk4AllowListedClasses = [
             "Picture",
             "DropDown",
             "Popover",
             "ListBox",
             "EventControllerMotion",
+            "EventControllerKey",
+            "EventControllerFocus"
         ]
 
         for class_ in gir.namespace.classes {
@@ -958,7 +960,13 @@ struct GtkCodeGen {
         var type = cType
         if type.last == "*" {
             let pointeeType = convertCType(String(type.dropLast()))
-            type = "UnsafeMutablePointer<\(pointeeType)>!"
+            if pointeeType.hasSuffix(" const") {
+                type = "UnsafePointer<\(pointeeType.dropLast(6))>!"
+            } else if pointeeType.hasPrefix("const ") {
+                type = "UnsafePointer<\(pointeeType.dropFirst(6))>!"
+            } else {
+                type = "UnsafeMutablePointer<\(pointeeType)>!"
+            }
         }
         return type
     }

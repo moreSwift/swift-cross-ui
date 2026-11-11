@@ -1,5 +1,5 @@
 {
-  "originHash" : "e1d47171a0f09d7abb802e04c331d0a0a5062a8b24a023170a5295c7a5107321",
+  "originHash" : "96c304ca67c0f3d64e5f43dd57e5d1d27ebebf62ba5bde8ae6cedd7c40b3dffd",
   "pins" : [
     {
       "identity" : "androidkit",
@@ -11,12 +11,12 @@
       }
     },
     {
-      "identity" : "jpeg",
+      "identity" : "libjpegturbo",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stackotter/jpeg",
+      "location" : "https://github.com/stackotter/libjpegturbo",
       "state" : {
-        "revision" : "a27e47f49479993b2541bc5f5c95d9354ed567a0",
-        "version" : "1.0.2"
+        "revision" : "a718dfb7b0ca18c9e8c36639712e9a56f9b5f0ae",
+        "version" : "0.1.3"
       }
     },
     {
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-android-sdk/swift-android-native.git",
       "state" : {
-        "revision" : "6ff6e6274fccafac7fdabb4cf7c958d747f44831",
-        "version" : "2.0.1"
+        "revision" : "5f71c1584b3cbe3842d335ebb4d7b545205d9945",
+        "version" : "2.1.0"
       }
     },
     {
@@ -96,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stackotter/swift-image-formats",
       "state" : {
-        "revision" : "d735e0ed3d4a4aed50f4042494e7c769b5b70229",
-        "version" : "0.5.0"
+        "revision" : "c361fe1d8d7731d5e25991b50be8f964731794ab",
+        "version" : "0.6.1"
       }
     },
     {
@@ -146,6 +146,15 @@
       }
     },
     {
+      "identity" : "swift-observation-polyfill",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/moreSwift/swift-observation-polyfill",
+      "state" : {
+        "revision" : "d8843fa6dbf970aab42faaf101c9ce1cfd16fb94",
+        "version" : "0.1.1"
+      }
+    },
+    {
       "identity" : "swift-subprocess",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-subprocess.git",
@@ -168,8 +177,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-system",
       "state" : {
-        "revision" : "7502b711c92a17741fa625d722b0ccbd595d8ed1",
-        "version" : "1.7.2"
+        "revision" : "869129b7bf4ecc57b97d0193ad29690ca2134750",
+        "version" : "1.8.1"
       }
     },
     {
@@ -177,8 +186,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/moreSwift/swift-winui",
       "state" : {
-        "revision" : "df7642fbb88e23a9cc1bbd366c7d6d3780fd0251",
-        "version" : "0.2.1"
+        "revision" : "c4f1cb75c02f4a4fdefcef2e5c5c4388c7cf9389",
+        "version" : "0.2.2"
       }
     },
     {
@@ -197,6 +206,15 @@
       "state" : {
         "revision" : "ad30daacb7e4666e1a56bfdd48498f5ac4ff081d",
         "version" : "0.3.0"
+      }
+    },
+    {
+      "identity" : "xctest-dynamic-overlay",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
+      "state" : {
+        "revision" : "d9308ad679143c26a30dec52daefe82f54af2b82",
+        "version" : "1.13.1"
       }
     },
     {

@@ -6,7 +6,7 @@ import Foundation
 /// This is where updates are initiated when a view's state updates, and where state is persisted
 /// even when a view gets recomputed by its parent.
 @MainActor
-public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
+public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: ModelObserver, Sendable {
     /// The view's single widget for the entirety of its lifetime in the view graph.
     ///
     public var widget: Backend.Widget {
@@ -60,6 +60,9 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
     /// The dynamic property updater for this view.
     private var dynamicPropertyUpdater: DynamicPropertyUpdater<NodeView>
 
+    /// Used by the ``ModelObserver`` protocol to prevent duplicate view updates.
+    var currentViewModelObservationID: UUID?
+
     /// Creates a node for a given view while also creating the nodes for its children, creating
     /// the view's widget, and starting to observe its state for changes.
     public init(
@@ -75,9 +78,9 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         snapshot?.restore(to: view)
 
         // First create the view's child nodes and widgets
-        let childSnapshots =
-            snapshot?.isValid(for: NodeView.self) == true
-                ? snapshot?.children : snapshot.map { [$0] }
+        let childSnapshots = snapshot.map { snapshot in
+            snapshot.isValid(for: NodeView.self) ? snapshot.children : [snapshot]
+        }
 
         currentLayout = nil
         resultCache = [:]
@@ -85,19 +88,19 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         parentEnvironment = environment
         cancellables = []
 
-        let mirror = Mirror(reflecting: view)
-        dynamicPropertyUpdater = DynamicPropertyUpdater(for: view, mirror: mirror)
+        dynamicPropertyUpdater = DynamicPropertyUpdater(for: nodeView)
 
         let viewEnvironment = updateEnvironment(environment)
 
         dynamicPropertyUpdater.update(view, with: viewEnvironment, previousValue: nil)
 
-        let children = view.children(
-            backend: backend,
-            snapshots: childSnapshots,
-            environment: viewEnvironment
-        )
-        self.children = children
+        self.children = self.observe(with: backend) {
+            view.children(
+                backend: backend,
+                snapshots: childSnapshots,
+                environment: viewEnvironment
+            )
+        }
 
         // Then create the widget for the view itself
         let widget = view.asWidget(
@@ -110,29 +113,32 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         backend.tag(widget: widget, as: tag)
 
         // Update the view and its children when state changes (children are always updated first).
-        for property in mirror.children {
-            if property.label == "state" && property.value is ObservableObject {
-                logger.warning(
-                    """
-                    the View.state protocol requirement has been removed in favour of \
-                    SwiftUI-style @State annotations; decorate \(NodeView.self).state \
-                    with the @State property wrapper to restore previous behaviour
-                    """
-                )
+        forEachField(of: view) { name, _, fieldValue in
+            #if DEBUG
+                if name == "state", fieldValue is ObservableObject {
+                    logger.warning(
+                        """
+                        the View.state protocol requirement has been removed in favour of \
+                        SwiftUI-style @State annotations; decorate \(NodeView.self).state \
+                        with the @State property wrapper to restore previous behaviour
+                        """
+                    )
+                }
+            #endif
+
+            guard let value = fieldValue as? any ObservableProperty else {
+                return // i.e. continue
             }
 
-            guard let value = property.value as? any ObservableProperty else {
-                continue
+            let cancellable = value.didChange.observeAsUIUpdater(backend: backend) { [weak self] in
+                self?.bottomUpUpdate()
             }
-
-            cancellables.append(
-                value.didChange
-                    .observeAsUIUpdater(backend: backend) { [weak self] in
-                        guard let self else { return }
-                        self.bottomUpUpdate()
-                    }
-            )
+            cancellables.append(cancellable)
         }
+    }
+
+    func viewModelDidChange<B: BackendFeatures.Core>(backend: B) {
+        bottomUpUpdate()
     }
 
     /// Triggers the view to be updated as part of a bottom-up chain of updates (where either the
@@ -199,7 +205,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
 
         if proposedSize == lastProposedSize && !resultCache.isEmpty
             && (!parentEnvironment.allowLayoutCaching || environment.allowLayoutCaching),
-            let currentLayout
+           let currentLayout
         {
             // If the previous proposal is the same as the current one, and our
             // cache hasn't been invalidated, then we can reuse the current layout.
@@ -230,13 +236,15 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
 
         dynamicPropertyUpdater.update(view, with: viewEnvironment, previousValue: previousView)
 
-        let result = view.computeLayout(
-            widget,
-            children: children,
-            proposedSize: proposedSize,
-            environment: viewEnvironment,
-            backend: backend
-        )
+        let result = self.observe(with: backend) {
+            view.computeLayout(
+                widget,
+                children: children,
+                proposedSize: proposedSize,
+                environment: viewEnvironment,
+                backend: backend
+            )
+        }
 
         // We assume that the view's sizing behaviour won't change between consecutive
         // layout computations and the following commit, because groups of updates
@@ -258,6 +266,14 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: Sendable {
         guard let currentLayout else {
             logger.warning("layout committed before being computed, ignoring")
             return .leafView(size: .zero)
+        }
+
+        if !currentLayout.isNeverFocusable {
+            BackendHelpers.applyFocusRelatedProperties(
+                from: parentEnvironment,
+                to: AnyWidget(widget),
+                with: backend
+            )
         }
 
         if parentEnvironment.allowLayoutCaching {

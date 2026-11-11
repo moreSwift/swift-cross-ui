@@ -80,7 +80,8 @@ public struct VStack<Content: View>: View {
             environment: environment
                 .with(\.layoutOrientation, .vertical)
                 .with(\.layoutAlignment, alignment.asStackAlignment)
-                .with(\.layoutSpacing, spacing),
+                .with(\.layoutSpacing, spacing)
+                .with(\.usesZStackLayout, false),
             backend: backend
         )
         (children as? TupleViewChildren)?.stackLayoutCache = cache
@@ -103,7 +104,8 @@ public struct VStack<Content: View>: View {
             environment: environment
                 .with(\.layoutOrientation, .vertical)
                 .with(\.layoutAlignment, alignment.asStackAlignment)
-                .with(\.layoutSpacing, spacing),
+                .with(\.layoutSpacing, spacing)
+                .with(\.usesZStackLayout, false),
             backend: backend
         )
         (children as? TupleViewChildren)?.stackLayoutCache = cache

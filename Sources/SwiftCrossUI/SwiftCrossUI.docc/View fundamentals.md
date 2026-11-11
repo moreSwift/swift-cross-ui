@@ -27,4 +27,6 @@ The main two view composition primitives are ``VStack``, for vertical layouts, a
 - ``ProgressView``
 - ``WebView``
 - ``GeometryReader``
+- ``GeometryProxy``
 - ``AnyView``
+- ``ContentUnavailableView``

@@ -58,9 +58,7 @@ struct CounterApp: App {
                                 // Button is an NSButton on macOS
                                 button.bezelColor = .red
                             #elseif canImport(UIKitBackend)
-                                if #available(iOS 15.0, tvOS 15.0, *) {
-                                    button.configuration = .bordered()
-                                }
+                                button.configuration = .bordered()
                             #elseif canImport(WinUIBackend)
                                 button.cornerRadius.topLeft = 10
                                 let brush = WinUI.SolidColorBrush()

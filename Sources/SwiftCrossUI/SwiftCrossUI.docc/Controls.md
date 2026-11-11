@@ -19,7 +19,9 @@ Employ controls to receive user input.
 
 ### Related
 
+- ``ButtonStyle``
+- ``DatePickerStyle``
+- ``DatePickerComponents``
 - ``MenuItem``
 - ``ToggleStyle``
 - ``TextContentType``
-- ``DatePickerStyle``

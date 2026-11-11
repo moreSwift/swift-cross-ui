@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.LinearLayout
 import dev.swiftcrossui.androidbackend.SwiftAction
 import java.time.LocalDateTime
+import java.util.Locale
 
 abstract class AbstractDatePicker(context: Context) : LinearLayout(context) {
     companion object {
@@ -56,4 +57,6 @@ abstract class AbstractDatePicker(context: Context) : LinearLayout(context) {
         timeView.isEnabled = enabled
         super.setEnabled(enabled)
     }
+
+    abstract fun setLocale(locale: Locale)
 }

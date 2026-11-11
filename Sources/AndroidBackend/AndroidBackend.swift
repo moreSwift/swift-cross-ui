@@ -5,6 +5,7 @@ import AndroidKit
 import AndroidGraphics
 import AndroidBackendShim
 import Mutex
+import DequeModule
 
 // Many force tries are required for the Android backend but we don't really want them
 // anywhere else so just disable the lint rule at a file level.
@@ -115,6 +116,9 @@ public final class AndroidBackend: BaseAppBackend {
     static var activity: Activity!
 
     var helpers: AndroidBackendHelpers
+
+    static let maxLocaleCacheSize = 25
+    var localeCache = Deque<(Foundation.Locale, AndroidKit.Locale)>()
 
     public init() {
         helpers = AndroidBackendHelpers(environment: Self.env)
@@ -301,14 +305,19 @@ public final class AndroidBackend: BaseAppBackend {
             .getConfiguration()
             .isScreenRound()
 
-        if let identifier = helpers.getTimeZoneIdentifier()?.toString(),
-           let timeZone = Foundation.TimeZone(identifier: identifier)
-        {
-            environment.timeZone = timeZone
-            environment.calendar = getCurrentCalendar(timeZone: timeZone)
-        } else {
-            environment.calendar = getCurrentCalendar(timeZone: nil)
+        var timeZone: Foundation.TimeZone?
+
+        if let identifier = helpers.getTimeZoneIdentifier()?.toString() {
+            timeZone = Foundation.TimeZone(identifier: identifier)
         }
+
+        if let timeZone {
+            environment.timeZone = timeZone
+        }
+
+        let (calendar, locale) = getCurrentCalendarAndLocale(timeZone: timeZone)
+        environment.calendar = calendar
+        environment.locale = locale
 
         environment
             .appStorageProvider = SharedPreferencesAppStorageProvider(activity: Self.activity)
@@ -441,7 +450,7 @@ public final class AndroidBackend: BaseAppBackend {
         widget.setLayoutParams(layoutParams)
     }
 
-    public func createButton() -> Widget {
+    public func createSimpleButton() -> Widget {
         AndroidKit.Button(Self.activity, environment: Self.env)
     }
 
@@ -451,7 +460,7 @@ public final class AndroidBackend: BaseAppBackend {
         return jstring.as(CharSequence.self)!
     }
 
-    public func updateButton(
+    public func updateSimpleButton(
         _ button: Widget,
         label: String,
         environment: EnvironmentValues,
@@ -533,6 +542,33 @@ public final class AndroidBackend: BaseAppBackend {
         ofSplitView splitView: Widget,
         minimum minimumWidth: Int,
         maximum maximumWidth: Int
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func visibleColumns(
+        ofSplitView splitView: Widget
+    ) -> Set<NavigationSplitViewColumn> {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func showColumn(
+        _ column: NavigationSplitViewColumn,
+        ofSplitView splitView: Widget
+    ) {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func internalPadding(
+        ofSplitView splitView: Widget,
+        column: NavigationSplitViewColumn
+    ) -> SIMD2<Int> {
+        fatalError("\(Self.self): \(#function) not implemented")
+    }
+
+    public func setColumnVisibilityChangeHandler(
+        ofSplitView splitView: Widget,
+        to action: @escaping (NavigationSplitViewColumn, Bool) -> Void
     ) {
         fatalError("\(Self.self): \(#function) not implemented")
     }

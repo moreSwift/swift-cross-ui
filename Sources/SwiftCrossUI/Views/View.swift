@@ -201,8 +201,7 @@ extension View {
         environment: EnvironmentValues,
         backend: Backend
     ) -> ViewLayoutResult {
-        let vStack = VStack(content: body)
-        return vStack.computeLayout(
+        return body.computeLayout(
             widget,
             children: children,
             proposedSize: proposedSize,
@@ -234,8 +233,7 @@ extension View {
         environment: EnvironmentValues,
         backend: Backend
     ) {
-        let vStack = VStack(content: body)
-        return vStack.commit(
+        return body.commit(
             widget,
             children: children,
             layout: layout,
@@ -245,4 +243,13 @@ extension View {
     }
 
     public var _asMenuItems: [MenuItem] { body._asMenuItems }
+
+    /// Resolves this view's menu content to the representation used by backends.
+    ///
+    /// This is the same resolution applied to ``Menu`` content and scene ``Commands``.
+    /// - Returns: The resolved menu.
+    @MainActor
+    @_spi(Backends) public func resolvedMenuContent() -> ResolvedMenu {
+        Menu.resolve(items: _asMenuItems)
+    }
 }
