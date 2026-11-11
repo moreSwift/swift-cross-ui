@@ -37,7 +37,7 @@ public class Bus {
 
     init(interfaceName: String) throws(FreedesktopError.BusError) {
         self.interfaceName = interfaceName
-        let p = g_dbus_proxy_new_for_bus_sync(
+        let proxy = g_dbus_proxy_new_for_bus_sync(
             G_BUS_TYPE_SESSION,
             DBUS_PROXY_FLAGS_NONE,
             nil,
@@ -48,8 +48,10 @@ public class Bus {
             nil
         )
 
-        guard let p else { throw FreedesktopError.BusError.noProxy }
-        self.proxy = p
+        guard let proxy else {
+            throw FreedesktopError.BusError.noProxy
+        }
+        self.proxy = proxy
     }
 
     deinit {
@@ -63,19 +65,27 @@ public class Bus {
     public func call(namespace: String, key: String, method: String)
         throws(FreedesktopError.BusError) -> GVariant
     {
-        guard let v = GVariant.parse("('\(namespace)', '\(key)')") else { throw .malformedInput }
+        guard
+            !namespace.contains("'"),
+            !key.contains("'"),
+            let variant = GVariant.parse("('\(namespace)', '\(key)')")
+        else {
+            throw .malformedInput
+        }
 
         let output = g_dbus_proxy_call_sync(
             proxy,
             method,
-            v.pointer,
+            variant.pointer,
             DBUS_CALL_FLAGS_NONE,
             gint(-1),
             nil,
             nil
         )
 
-        guard let output else { throw .failedCall }
+        guard let output else {
+            throw .failedCall
+        }
 
         return GVariant(owning: output)
     }
@@ -93,7 +103,9 @@ public class Bus {
             nil
         )
 
-        guard let output else { throw .failedCall }
+        guard let output else {
+            throw .failedCall
+        }
 
         return GVariant(owning: output)
     }
@@ -120,19 +132,24 @@ public class Bus {
                 UnsafePointer<CChar>?,
                 OpaquePointer?,
                 UnsafeMutableRawPointer?
-            ) -> Void = { _, _, sig, params, data in
-                let dataTyped =
+            ) -> Void = { _, _, sig, params, box in
+                let data =
                     Unmanaged<CallbackBox<(String, String, (OpaquePointer) -> Void)>>.fromOpaque(
-                        data!
+                        box!
                     ).takeUnretainedValue()
-                let (namespaceInner, keyInner, handlerInner) = dataTyped.value
+                let (namespaceInner, keyInner, handlerInner) = data.value
 
-                guard let walker = GVariant(params),
-                      walker.child(0)?.string() == namespaceInner,
-                      walker.child(1)?.string() == keyInner
-                else { return }
+                guard
+                    let walker = GVariant(params),
+                    walker.child(0)?.string() == namespaceInner,
+                    walker.child(1)?.string() == keyInner
+                else {
+                    return
+                }
 
-                if let ptr = walker.child(2)?.pointer { handlerInner(ptr) }
+                if let ptr = walker.child(2)?.pointer {
+                    handlerInner(ptr)
+                }
             }
 
         let data = CallbackBox((namespace, key, handler))
@@ -167,6 +184,7 @@ private func decodeLocationData(from raw: OpaquePointer)
     -> Freedesktop.Portal.Location.LocationData?
 {
     guard let walker = GVariant(raw) else { return nil }
+
     let timestamp = walker.lookup("Timestamp")
     return Freedesktop.Portal.Location.LocationData(
         latitude: walker.lookup("Latitude")?.double(),
@@ -185,7 +203,10 @@ private func parseLocationUpdate(
     sessionHandle: String
 ) -> Freedesktop.Portal.Location.LocationData? {
     guard GVariant(params)?.child(0)?.string() == sessionHandle else { return nil }
-    return GVariant(params)?.child(1).flatMap { decodeLocationData(from: $0.pointer) }
+
+    return GVariant(params)?.child(1).flatMap { value in
+        decodeLocationData(from: value.pointer)
+    }
 }
 
 private func requestResponse(
@@ -193,10 +214,15 @@ private func requestResponse(
     method: String,
     input: (String) -> GVariant?
 ) throws(FreedesktopError.BusError) -> GVariant {
-    guard let connection = bus.connection() else { throw .failedCall }
-    guard let uniqueName = g_dbus_connection_get_unique_name(connection) else { throw .failedCall }
+    guard
+        let connection = bus.connection(),
+        let uniqueName = g_dbus_connection_get_unique_name(connection)
+    else {
+        throw .failedCall
+    }
 
-    let token = "swift_cross_ui_\(UUID().uuidString.replacingOccurrences(of: "-", with: "_"))"
+    let uuid = UUID().uuidString.replacingOccurrences(of: "-", with: "_")
+    let token = "swift_cross_ui_\(uuid)"
     let sender = String(cString: uniqueName)
         .replacingOccurrences(of: ":", with: "")
         .replacingOccurrences(of: ".", with: "_")
@@ -211,16 +237,21 @@ private func requestResponse(
     }
 
     let callback: DBusSignalHandler = { _, _, _, _, _, params, data in
-        guard let params, let data else { return }
-        let s = data.assumingMemoryBound(to: State.self)
-        guard let walker = GVariant(params),
-              let response = walker.child(0)?.uint32()
-        else { return }
-        s.pointee.response = response
-        if let child1 = walker.child(1) {
-            s.pointee.results = GVariant(owning: g_variant_ref(child1.pointer))
+        guard
+            let params,
+            let data,
+            let walker = GVariant(params),
+            let response = walker.child(0)?.uint32()
+        else {
+            return
         }
-        s.pointee.done = true
+
+        let state = data.assumingMemoryBound(to: State.self)
+        state.pointee.response = response
+        if let child = walker.child(1) {
+            state.pointee.results = GVariant(owning: g_variant_ref(child.pointer))
+        }
+        state.pointee.done = true
     }
 
     var sub = g_dbus_connection_signal_subscribe(
@@ -265,7 +296,9 @@ private func requestResponse(
     }
     defer { g_dbus_connection_signal_unsubscribe(connection, sub) }
 
-    while !state.pointee.done { g_main_context_iteration(nil, 1) }
+    while !state.pointee.done {
+        g_main_context_iteration(nil, 1)
+    }
 
     guard state.pointee.response == 0, let results = state.pointee.results else {
         throw .failedCall
@@ -282,25 +315,30 @@ public enum Freedesktop {
 
             public enum Version {
                 public static func get() throws(FreedesktopError.BusError) -> UInt32 {
-                    guard let prop = bus.readProperty("version")
-                    else { throw .failedCall }
+                    guard let prop = bus.readProperty("version") else {
+                        throw .failedCall
+                    }
+
                     return prop.uint32()
                 }
             }
 
-            fileprivate struct SettingField<T> {
+            public struct SettingField<T> {
                 let namespace: String
                 let key: String
                 let decodeResult: (OpaquePointer) -> T?
                 let decodeSignal: (OpaquePointer) -> T?
 
-                func read() throws(FreedesktopError.BusError) -> T {
+                public func read() throws(FreedesktopError.BusError) -> T {
                     let result = try bus.call(namespace: namespace, key: key, method: "Read")
-                    guard let value = decodeResult(result.pointer) else { throw .failedCall }
+                    guard let value = decodeResult(result.pointer) else {
+                        throw .failedCall
+                    }
+
                     return value
                 }
 
-                func observe() -> AsyncStream<T> {
+                public func observe() -> AsyncStream<T> {
                     AsyncStream { continuation in
                         let id = bus.subscribe(
                             signal: "g-signal::SettingChanged",
@@ -308,13 +346,14 @@ public enum Freedesktop {
                             key: key
                         ) { raw in
                             guard let value = decodeSignal(raw) else { return }
+
                             continuation.yield(value)
                         }
                         continuation.onTermination = { _ in bus.unsubscribe(from: id) }
                     }
                 }
 
-                func subscribe(_ handler: @escaping (T) -> Void) -> Task<Void, Never> {
+                public func subscribe(_ handler: @escaping (T) -> Void) -> Task<Void, Never> {
                     Task { @MainActor in
                         for await value in observe() {
                             handler(value)
@@ -324,120 +363,57 @@ public enum Freedesktop {
             }
 
             public enum Appearance {
-                public enum ColorScheme {
-                    private static let field = SettingField(
-                        namespace: "org.freedesktop.appearance",
-                        key: "color-scheme",
-                        decodeResult: {
-                            GVariant($0)?.child(0)?.variant()?.variant()?.uint32()
-                        },
-                        decodeSignal: { GVariant($0)?.variant()?.uint32() }
-                    )
-
-                    public static func read() throws(FreedesktopError.BusError) -> UInt32 {
-                        try field.read()
+                public static let ColorScheme = SettingField(
+                    namespace: "org.freedesktop.appearance",
+                    key: "color-scheme",
+                    decodeResult: { result in
+                        GVariant(result)?.child(0)?.variant()?.variant()?.uint32()
+                    },
+                    decodeSignal: { signal in
+                        GVariant(signal)?.variant()?.uint32()
                     }
+                )
 
-                    public static func observe() -> AsyncStream<UInt32> {
-                        field.observe()
+                private static func decodeColor(variant: GVariant?) -> (Double, Double, Double)? {
+                    guard
+                        let triple = variant?.child(0)?.variant()?.variant(),
+                        let r = triple.child(0)?.double(),
+                        let g = triple.child(1)?.double(),
+                        let b = triple.child(2)?.double()
+                    else {
+                        return nil
                     }
-
-                    public static func subscribe(_ handler: @escaping (UInt32) -> Void)
-                        -> Task<Void, Never>
-                    {
-                        field.subscribe(handler)
-                    }
+                    return (r, g, b)
                 }
 
-                public enum AccentColor {
-                    private static let field = SettingField<(Float64, Float64, Float64)>(
-                        namespace: "org.freedesktop.appearance",
-                        key: "accent-color",
-                        decodeResult: { raw in
-                            guard let triple = GVariant(raw)?.child(0)?.variant()?.variant()
-                            else { return nil }
-                            guard let r = triple.child(0)?.double(),
-                                  let g = triple.child(1)?.double(),
-                                  let b = triple.child(2)?.double()
-                            else { return nil }
-                            return (r, g, b)
-                        },
-                        decodeSignal: { raw in
-                            guard let inner = GVariant(raw)?.variant() else { return nil }
-                            guard let r = inner.child(0)?.double(),
-                                  let g = inner.child(1)?.double(),
-                                  let b = inner.child(2)?.double()
-                            else { return nil }
-                            return (r, g, b)
-                        }
-                    )
-
-                    public static func read() throws(FreedesktopError.BusError)
-                        -> (Float64, Float64, Float64)
-                    {
-                        try field.read()
+                public static let AccentColor = SettingField<(Double, Double, Double)>(
+                    namespace: "org.freedesktop.appearance",
+                    key: "accent-color",
+                    decodeResult: { raw in
+                        return decodeColor(variant: GVariant(raw))
+                    },
+                    decodeSignal: { raw in
+                        return decodeColor(variant: GVariant(raw))
                     }
+                )
 
-                    public static func observe() -> AsyncStream<(Float64, Float64, Float64)> {
-                        field.observe()
-                    }
+                public static let Contrast = SettingField(
+                    namespace: "org.freedesktop.appearance",
+                    key: "contrast",
+                    decodeResult: {
+                        GVariant($0)?.child(0)?.variant()?.variant()?.uint32()
+                    },
+                    decodeSignal: { GVariant($0)?.variant()?.uint32() }
+                )
 
-                    public static func subscribe(
-                        _ handler: @escaping ((Float64, Float64, Float64)) -> Void
-                    ) -> Task<Void, Never> {
-                        field.subscribe(handler)
-                    }
-                }
-
-                public enum Contrast {
-                    private static let field = SettingField(
-                        namespace: "org.freedesktop.appearance",
-                        key: "contrast",
-                        decodeResult: {
-                            GVariant($0)?.child(0)?.variant()?.variant()?.uint32()
-                        },
-                        decodeSignal: { GVariant($0)?.variant()?.uint32() }
-                    )
-
-                    public static func read() throws(FreedesktopError.BusError) -> UInt32 {
-                        try field.read()
-                    }
-
-                    public static func observe() -> AsyncStream<UInt32> {
-                        field.observe()
-                    }
-
-                    public static func subscribe(_ handler: @escaping (UInt32) -> Void)
-                        -> Task<Void, Never>
-                    {
-                        field.subscribe(handler)
-                    }
-                }
-
-                public enum ReducedMotion {
-                    private static let field = SettingField(
-                        namespace: "org.freedesktop.appearance",
-                        key: "reduced-motion",
-                        decodeResult: {
-                            GVariant($0)?.child(0)?.variant()?.variant()?.uint32()
-                        },
-                        decodeSignal: { GVariant($0)?.variant()?.uint32() }
-                    )
-
-                    public static func read() throws(FreedesktopError.BusError) -> UInt32 {
-                        try field.read()
-                    }
-
-                    public static func observe() -> AsyncStream<UInt32> {
-                        field.observe()
-                    }
-
-                    public static func subscribe(_ handler: @escaping (UInt32) -> Void)
-                        -> Task<Void, Never>
-                    {
-                        field.subscribe(handler)
-                    }
-                }
+                public static let ReducedMotion = SettingField(
+                    namespace: "org.freedesktop.appearance",
+                    key: "reduced-motion",
+                    decodeResult: {
+                        GVariant($0)?.child(0)?.variant()?.variant()?.uint32()
+                    },
+                    decodeSignal: { GVariant($0)?.variant()?.uint32() }
+                )
             }
         }
 
@@ -600,9 +576,13 @@ public enum Freedesktop {
                 try startSession(options: options)
                 let sessionHandle = session.withLock { $0.handle! }
                 let bus = try getBus()
-                guard let connection = bus.connection() else { throw .failedCall }
 
-                typealias State = (done: Bool, data: LocationData?, sh: String)
+                guard let connection = bus.connection() else {
+                    throw .failedCall
+                }
+
+                typealias State = (done: Bool, data: LocationData?, sessionHandle: String)
+
                 let state = UnsafeMutablePointer<State>.allocate(capacity: 1)
                 state.initialize(to: (false, nil, sessionHandle))
                 defer {
@@ -612,10 +592,15 @@ public enum Freedesktop {
 
                 let callback: DBusSignalHandler = { _, _, _, _, _, params, data in
                     guard let params, let data else { return }
-                    let s = data.assumingMemoryBound(to: State.self)
-                    if let loc = parseLocationUpdate(params: params, sessionHandle: s.pointee.sh) {
-                        s.pointee.data = loc
-                        s.pointee.done = true
+
+                    let state = data.assumingMemoryBound(to: State.self)
+                    let locationUpdate = parseLocationUpdate(
+                        params: params,
+                        sessionHandle: state.pointee.sessionHandle
+                    )
+                    if let location = locationUpdate {
+                        state.pointee.data = location
+                        state.pointee.done = true
                     }
                 }
 
@@ -631,10 +616,19 @@ public enum Freedesktop {
                     UnsafeMutableRawPointer(state),
                     nil
                 )
-                defer { g_dbus_connection_signal_unsubscribe(connection, sub) }
 
-                while !state.pointee.done { g_main_context_iteration(nil, 1) }
-                guard let data = state.pointee.data else { throw .failedCall }
+                defer {
+                    g_dbus_connection_signal_unsubscribe(connection, sub)
+                }
+
+                while !state.pointee.done {
+                    g_main_context_iteration(nil, 1)
+                }
+
+                guard let data = state.pointee.data else {
+                    throw .failedCall
+                }
+
                 return data
             }
 
@@ -642,36 +636,53 @@ public enum Freedesktop {
                 options: Options = .init()
             ) -> AsyncStream<LocationData> {
                 AsyncStream { continuation in
-                    let sessionHandle: String
-                    let connection: OpaquePointer
                     do {
                         try startSession(options: options)
-                        guard let sh = session.withLock({ $0.handle }) else {
-                            continuation.finish()
-                            return
-                        }
-                        sessionHandle = sh
-                        let bus = try getBus()
-                        guard let conn = bus.connection() else {
-                            continuation.finish()
-                            return
-                        }
-                        connection = conn
                     } catch {
                         continuation.finish()
                         return
                     }
 
-                    nonisolated(unsafe) let conn = connection
-                    let box = CallbackBox((sessionHandle, continuation))
+                    guard let sessionHandle = session.withLock({ $0.handle }) else {
+                        continuation.finish()
+                        return
+                    }
+
+                    let bus: Bus
+                    do {
+                        bus = try getBus()
+                    } catch {
+                        continuation.finish()
+                        return
+                    }
+
+                    guard let connection = bus.connection() else {
+                        continuation.finish()
+                        return
+                    }
+
+                    let box = CallbackBox((
+                        sessionHandle: sessionHandle,
+                        continuation: continuation
+                    ))
 
                     let callback: DBusSignalHandler = { _, _, _, _, _, params, data in
                         guard let params, let data else { return }
-                        let b = Unmanaged<
-                            CallbackBox<(String, AsyncStream<LocationData>.Continuation)>
+
+                        let box = Unmanaged<
+                            CallbackBox<(
+                                sessionHandle: String,
+                                continuation: AsyncStream<LocationData>.Continuation
+                            )>
                         >.fromOpaque(data).takeUnretainedValue()
-                        if let loc = parseLocationUpdate(params: params, sessionHandle: b.value.0) {
-                            b.value.1.yield(loc)
+
+                        let locationUpdate = parseLocationUpdate(
+                            params: params,
+                            sessionHandle: box.value.sessionHandle
+                        )
+
+                        if let location = locationUpdate {
+                            box.value.continuation.yield(location)
                         }
                     }
 
@@ -688,20 +699,24 @@ public enum Freedesktop {
                         nil
                     )
 
+                    // Pointers aren't sendable, but we have to send it anyway
+                    nonisolated(unsafe) let conn = connection
                     continuation.onTermination = { _ in
                         g_dbus_connection_signal_unsubscribe(conn, sub)
                     }
                 }
             }
 
-            private struct LocationField<T> {
+            public struct LocationField<T> {
                 let keyPath: KeyPath<LocationData, T?>
 
-                func read(options: Options = .init()) throws(FreedesktopError.BusError) -> T? {
+                public func read(
+                    options: Options = Options()
+                ) throws(FreedesktopError.BusError) -> T? {
                     try readFull(options: options)[keyPath: keyPath]
                 }
 
-                func observe(options: Options = .init()) -> AsyncStream<T?> {
+                public func observe(options: Options = .init()) -> AsyncStream<T?> {
                     AsyncStream { continuation in
                         let task = Task {
                             for await data in observeFull(options: options) {
@@ -713,7 +728,7 @@ public enum Freedesktop {
                     }
                 }
 
-                func subscribe(
+                public func subscribe(
                     options: Options = .init(),
                     _ handler: @escaping (T?) -> Void
                 ) -> Task<Void, Never> {
@@ -725,174 +740,15 @@ public enum Freedesktop {
                 }
             }
 
-            public enum Latitude {
-                private static let field = LocationField(keyPath: \.latitude)
-
-                public static func read(options: Options = .init())
-                    throws(FreedesktopError.BusError) -> Double?
-                {
-                    try field.read(options: options)
-                }
-
-                public static func observe(options: Options = .init()) -> AsyncStream<Double?> {
-                    field.observe(options: options)
-                }
-
-                public static func subscribe(
-                    options: Options = .init(),
-                    _ handler: @escaping (Double?) -> Void
-                ) -> Task<Void, Never> {
-                    field.subscribe(options: options, handler)
-                }
-            }
-
-            public enum Longitude {
-                private static let field = LocationField(keyPath: \.longitude)
-
-                public static func read(options: Options = .init())
-                    throws(FreedesktopError.BusError) -> Double?
-                {
-                    try field.read(options: options)
-                }
-
-                public static func observe(options: Options = .init()) -> AsyncStream<Double?> {
-                    field.observe(options: options)
-                }
-
-                public static func subscribe(
-                    options: Options = .init(),
-                    _ handler: @escaping (Double?) -> Void
-                ) -> Task<Void, Never> {
-                    field.subscribe(options: options, handler)
-                }
-            }
-
-            public enum Altitude {
-                private static let field = LocationField(keyPath: \.altitude)
-
-                public static func read(options: Options = .init())
-                    throws(FreedesktopError.BusError) -> Double?
-                {
-                    try field.read(options: options)
-                }
-
-                public static func observe(options: Options = .init()) -> AsyncStream<Double?> {
-                    field.observe(options: options)
-                }
-
-                public static func subscribe(
-                    options: Options = .init(),
-                    _ handler: @escaping (Double?) -> Void
-                ) -> Task<Void, Never> {
-                    field.subscribe(options: options, handler)
-                }
-            }
-
-            public enum Accuracy {
-                private static let field = LocationField(keyPath: \.accuracy)
-
-                public static func read(options: Options = .init())
-                    throws(FreedesktopError.BusError) -> Double?
-                {
-                    try field.read(options: options)
-                }
-
-                public static func observe(options: Options = .init()) -> AsyncStream<Double?> {
-                    field.observe(options: options)
-                }
-
-                public static func subscribe(
-                    options: Options = .init(),
-                    _ handler: @escaping (Double?) -> Void
-                ) -> Task<Void, Never> {
-                    field.subscribe(options: options, handler)
-                }
-            }
-
-            public enum Speed {
-                private static let field = LocationField(keyPath: \.speed)
-
-                public static func read(options: Options = .init())
-                    throws(FreedesktopError.BusError) -> Double?
-                {
-                    try field.read(options: options)
-                }
-
-                public static func observe(options: Options = .init()) -> AsyncStream<Double?> {
-                    field.observe(options: options)
-                }
-
-                public static func subscribe(
-                    options: Options = .init(),
-                    _ handler: @escaping (Double?) -> Void
-                ) -> Task<Void, Never> {
-                    field.subscribe(options: options, handler)
-                }
-            }
-
-            public enum Heading {
-                private static let field = LocationField(keyPath: \.heading)
-
-                public static func read(options: Options = .init())
-                    throws(FreedesktopError.BusError) -> Double?
-                {
-                    try field.read(options: options)
-                }
-
-                public static func observe(options: Options = .init()) -> AsyncStream<Double?> {
-                    field.observe(options: options)
-                }
-
-                public static func subscribe(
-                    options: Options = .init(),
-                    _ handler: @escaping (Double?) -> Void
-                ) -> Task<Void, Never> {
-                    field.subscribe(options: options, handler)
-                }
-            }
-
-            public enum TimestampSeconds {
-                private static let field = LocationField(keyPath: \.timestampSeconds)
-
-                public static func read(options: Options = .init())
-                    throws(FreedesktopError.BusError) -> Int?
-                {
-                    try field.read(options: options)
-                }
-
-                public static func observe(options: Options = .init()) -> AsyncStream<Int?> {
-                    field.observe(options: options)
-                }
-
-                public static func subscribe(
-                    options: Options = .init(),
-                    _ handler: @escaping (Int?) -> Void
-                ) -> Task<Void, Never> {
-                    field.subscribe(options: options, handler)
-                }
-            }
-
-            public enum TimestampMicroseconds {
-                private static let field = LocationField(keyPath: \.timestampMicroseconds)
-
-                public static func read(options: Options = .init())
-                    throws(FreedesktopError.BusError) -> Int?
-                {
-                    try field.read(options: options)
-                }
-
-                public static func observe(options: Options = .init()) -> AsyncStream<Int?> {
-                    field.observe(options: options)
-                }
-
-                public static func subscribe(
-                    options: Options = .init(),
-                    _ handler: @escaping (Int?) -> Void
-                ) -> Task<Void, Never> {
-                    field.subscribe(options: options, handler)
-                }
-            }
+            public static let Latitude = LocationField(keyPath: \.latitude)
+            public static let Longitude = LocationField(keyPath: \.longitude)
+            public static let Altitude = LocationField(keyPath: \.altitude)
+            public static let Accuracy = LocationField(keyPath: \.accuracy)
+            public static let Speed = LocationField(keyPath: \.speed)
+            public static let Heading = LocationField(keyPath: \.heading)
+            public static let TimestampSeconds = LocationField(keyPath: \.timestampSeconds)
+            public static let TimestampMicroseconds =
+                LocationField(keyPath: \.timestampMicroseconds)
         }
-
     }
 }
