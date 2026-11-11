@@ -32,9 +32,7 @@ extension GtkBackend {
             $0.color.resolve(in: environment)
         }
 
-        drawingArea.setDrawFunc { [weak self] cairo, _, _ in
-            guard let self else { return }
-
+        drawingArea.setDrawFunc { cairo, _, _ in
             let pattern = cairo_pattern_create_linear(
                 startPoint.x,
                 startPoint.y,
@@ -87,9 +85,7 @@ extension GtkBackend {
             $0.color.resolve(in: environment)
         }
 
-        drawingArea.setDrawFunc { [weak self] cairo, _, _ in
-            guard let self else { return }
-
+        drawingArea.setDrawFunc { cairo, _, _ in
             let pattern = cairo_pattern_create_radial(
                 centerX,
                 centerY,

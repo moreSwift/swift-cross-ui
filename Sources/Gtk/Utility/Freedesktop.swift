@@ -21,8 +21,12 @@ private class CallbackBox<T> {
 
 private typealias DBusSignalHandler =
     @convention(c) (
-        OpaquePointer?, UnsafePointer<CChar>?, UnsafePointer<CChar>?,
-        UnsafePointer<CChar>?, UnsafePointer<CChar>?, OpaquePointer?,
+        OpaquePointer?,
+        UnsafePointer<CChar>?,
+        UnsafePointer<CChar>?,
+        UnsafePointer<CChar>?,
+        UnsafePointer<CChar>?,
+        OpaquePointer?,
         UnsafeMutableRawPointer?
     ) -> Void
 
@@ -35,7 +39,7 @@ public class Bus {
         self.interfaceName = interfaceName
         let p = g_dbus_proxy_new_for_bus_sync(
             G_BUS_TYPE_SESSION,
-            G_DBUS_PROXY_FLAGS_NONE,
+            DBUS_PROXY_FLAGS_NONE,
             nil,
             "org.freedesktop.portal.Desktop",
             "/org/freedesktop/portal/desktop",
@@ -65,7 +69,7 @@ public class Bus {
             proxy,
             method,
             v.pointer,
-            G_DBUS_CALL_FLAGS_NONE,
+            DBUS_CALL_FLAGS_NONE,
             gint(-1),
             nil,
             nil
@@ -83,7 +87,7 @@ public class Bus {
             proxy,
             method,
             parameters.pointer,
-            G_DBUS_CALL_FLAGS_NONE,
+            DBUS_CALL_FLAGS_NONE,
             gint(-1),
             nil,
             nil
@@ -104,12 +108,18 @@ public class Bus {
     }
 
     public func subscribe(
-        signal: String, namespace: String, key: String, handler: @escaping (OpaquePointer) -> Void
+        signal: String,
+        namespace: String,
+        key: String,
+        handler: @escaping (OpaquePointer) -> Void
     ) -> UInt {
         let callback:
             @convention(c) (
-                OpaquePointer?, UnsafePointer<CChar>?, UnsafePointer<CChar>?,
-                OpaquePointer?, UnsafeMutableRawPointer?
+                OpaquePointer?,
+                UnsafePointer<CChar>?,
+                UnsafePointer<CChar>?,
+                OpaquePointer?,
+                UnsafeMutableRawPointer?
             ) -> Void = { _, _, sig, params, data in
                 let dataTyped =
                     Unmanaged<CallbackBox<(String, String, (OpaquePointer) -> Void)>>.fromOpaque(
@@ -118,8 +128,8 @@ public class Bus {
                 let (namespaceInner, keyInner, handlerInner) = dataTyped.value
 
                 guard let walker = GVariant(params),
-                    walker.child(0)?.string() == namespaceInner,
-                    walker.child(1)?.string() == keyInner
+                      walker.child(0)?.string() == namespaceInner,
+                      walker.child(1)?.string() == keyInner
                 else { return }
 
                 if let ptr = walker.child(2)?.pointer { handlerInner(ptr) }
@@ -127,11 +137,19 @@ public class Bus {
 
         let data = CallbackBox((namespace, key, handler))
 
+        #if os(macOS)
+            let flags = GConnectFlags()
+        #else
+            let flags = GConnectFlags(0)
+        #endif
+
         let handlerId = g_signal_connect_data(
-            self.proxy, signal,
+            self.proxy,
+            signal,
             unsafeBitCast(callback, to: GCallback.self),
             Unmanaged.passUnretained(data).toOpaque(),
-            nil, .init(0)
+            nil,
+            flags
         )
 
         subscriptions.append((handlerId, data))
@@ -163,14 +181,17 @@ private func decodeLocationData(from raw: OpaquePointer)
 }
 
 private func parseLocationUpdate(
-    params: OpaquePointer, sessionHandle: String
+    params: OpaquePointer,
+    sessionHandle: String
 ) -> Freedesktop.Portal.Location.LocationData? {
     guard GVariant(params)?.child(0)?.string() == sessionHandle else { return nil }
     return GVariant(params)?.child(1).flatMap { decodeLocationData(from: $0.pointer) }
 }
 
 private func requestResponse(
-    bus: Bus, method: String, input: (String) -> GVariant?
+    bus: Bus,
+    method: String,
+    input: (String) -> GVariant?
 ) throws(FreedesktopError.BusError) -> GVariant {
     guard let connection = bus.connection() else { throw .failedCall }
     guard let uniqueName = g_dbus_connection_get_unique_name(connection) else { throw .failedCall }
@@ -193,7 +214,7 @@ private func requestResponse(
         guard let params, let data else { return }
         let s = data.assumingMemoryBound(to: State.self)
         guard let walker = GVariant(params),
-            let response = walker.child(0)?.uint32()
+              let response = walker.child(0)?.uint32()
         else { return }
         s.pointee.response = response
         if let child1 = walker.child(1) {
@@ -203,10 +224,16 @@ private func requestResponse(
     }
 
     var sub = g_dbus_connection_signal_subscribe(
-        connection, "org.freedesktop.portal.Desktop",
-        "org.freedesktop.portal.Request", "Response",
-        expectedHandle, nil, G_DBUS_SIGNAL_FLAGS_NONE,
-        callback, UnsafeMutableRawPointer(state), nil
+        connection,
+        "org.freedesktop.portal.Desktop",
+        "org.freedesktop.portal.Request",
+        "Response",
+        expectedHandle,
+        nil,
+        DBUS_SIGNAL_FLAGS_NONE,
+        callback,
+        UnsafeMutableRawPointer(state),
+        nil
     )
 
     guard let parameters = input(token) else {
@@ -224,10 +251,16 @@ private func requestResponse(
     if actualHandle != expectedHandle {
         g_dbus_connection_signal_unsubscribe(connection, sub)
         sub = g_dbus_connection_signal_subscribe(
-            connection, "org.freedesktop.portal.Desktop",
-            "org.freedesktop.portal.Request", "Response",
-            actualHandle, nil, G_DBUS_SIGNAL_FLAGS_NONE,
-            callback, UnsafeMutableRawPointer(state), nil
+            connection,
+            "org.freedesktop.portal.Desktop",
+            "org.freedesktop.portal.Request",
+            "Response",
+            actualHandle,
+            nil,
+            DBUS_SIGNAL_FLAGS_NONE,
+            callback,
+            UnsafeMutableRawPointer(state),
+            nil
         )
     }
     defer { g_dbus_connection_signal_unsubscribe(connection, sub) }
@@ -324,16 +357,16 @@ public enum Freedesktop {
                             guard let triple = GVariant(raw)?.child(0)?.variant()?.variant()
                             else { return nil }
                             guard let r = triple.child(0)?.double(),
-                                let g = triple.child(1)?.double(),
-                                let b = triple.child(2)?.double()
+                                  let g = triple.child(1)?.double(),
+                                  let b = triple.child(2)?.double()
                             else { return nil }
                             return (r, g, b)
                         },
                         decodeSignal: { raw in
                             guard let inner = GVariant(raw)?.variant() else { return nil }
                             guard let r = inner.child(0)?.double(),
-                                let g = inner.child(1)?.double(),
-                                let b = inner.child(2)?.double()
+                                  let g = inner.child(1)?.double(),
+                                  let b = inner.child(2)?.double()
                             else { return nil }
                             return (r, g, b)
                         }
@@ -587,11 +620,16 @@ public enum Freedesktop {
                 }
 
                 let sub = g_dbus_connection_signal_subscribe(
-                    connection, "org.freedesktop.portal.Desktop",
-                    "org.freedesktop.portal.Location", "LocationUpdated",
-                    "/org/freedesktop/portal/desktop", nil,
-                    G_DBUS_SIGNAL_FLAGS_NONE,
-                    callback, UnsafeMutableRawPointer(state), nil
+                    connection,
+                    "org.freedesktop.portal.Desktop",
+                    "org.freedesktop.portal.Location",
+                    "LocationUpdated",
+                    "/org/freedesktop/portal/desktop",
+                    nil,
+                    DBUS_SIGNAL_FLAGS_NONE,
+                    callback,
+                    UnsafeMutableRawPointer(state),
+                    nil
                 )
                 defer { g_dbus_connection_signal_unsubscribe(connection, sub) }
 
@@ -638,11 +676,16 @@ public enum Freedesktop {
                     }
 
                     let sub = g_dbus_connection_signal_subscribe(
-                        connection, "org.freedesktop.portal.Desktop",
-                        "org.freedesktop.portal.Location", "LocationUpdated",
-                        "/org/freedesktop/portal/desktop", nil,
-                        G_DBUS_SIGNAL_FLAGS_NONE,
-                        callback, Unmanaged.passUnretained(box).toOpaque(), nil
+                        connection,
+                        "org.freedesktop.portal.Desktop",
+                        "org.freedesktop.portal.Location",
+                        "LocationUpdated",
+                        "/org/freedesktop/portal/desktop",
+                        nil,
+                        DBUS_SIGNAL_FLAGS_NONE,
+                        callback,
+                        Unmanaged.passUnretained(box).toOpaque(),
+                        nil
                     )
 
                     continuation.onTermination = { _ in

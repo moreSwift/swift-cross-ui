@@ -258,7 +258,11 @@ let package = Package(
         ),
         .target(
             name: "Gtk",
-            dependencies: ["CGtk", "GtkCHelpers"],
+            dependencies: [
+                "CGtk",
+                "GtkCHelpers",
+                .product(name: "Mutex", package: "swift-mutex"),
+            ],
             exclude: ["LICENSE.md"]
         ),
         .executableTarget(

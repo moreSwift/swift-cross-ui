@@ -550,7 +550,7 @@ public final class GtkBackend:
     ) {
         // TODO: React to theme changes
         self.rootEnvironmentChangeHandler = action
-        Freedesktop.Portal.Settings.Appearance.ColorScheme.subscribe { _ in
+        _ = Freedesktop.Portal.Settings.Appearance.ColorScheme.subscribe { _ in
             action()
         }
     }
@@ -2099,7 +2099,7 @@ final class TooltipContainer: Fixed {
                 deallocateText()
 
                 tooltip = .allocate(capacity: buf.count)
-                tooltip.initialize(from: buf)
+                _ = tooltip.initialize(from: buf)
             }
         }
 
@@ -2248,7 +2248,7 @@ final class TimePicker: Box {
         )
 
         if self.hourCycle == .oneToTwelve || self.hourCycle == .zeroToEleven {
-            if let amPmPicker {
+            if amPmPicker != nil {
                 // update strings if necessary
             } else {
                 amPmPicker = DropDown(strings: [calendar.amSymbol, calendar.pmSymbol])
