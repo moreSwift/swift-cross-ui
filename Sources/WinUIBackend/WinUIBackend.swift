@@ -766,6 +766,9 @@ public final class WinUIBackend:
             // https://github.com/marcelwgn/microsoft-ui-xaml/blob/ff21f9b212cea2191b959649e45e52486c8465aa/src/controls/dev/CommonStyles/DatePicker_themeresources.xaml#L261
             // Height is experimentally 29 which I don't see anywhere in that file.
             return SIMD2(296, 29)
+        } else if widget is ColorButton {
+            // Same size rectangle as appkit rectangle size + button padding
+            return SIMD2(66, 31)
         }
 
         let oldWidth = widget.width
@@ -2405,7 +2408,9 @@ public class CustomWindow: WinUI.Window {
         self.activated.addHandler { [weak self] _, args in
             switch args?.windowActivationState {
                 case .codeActivated, .pointerActivated: self?.isActive = true
+
                 case .deactivated: self?.isActive = false
+
                 // NB: The compiler apparently thinks we didn't exhaustively switch
                 // over this enum without this `default` (even after adding a `case nil`).
                 // Might be because it doesn't treat the underlying C enum as a Swift enum?

@@ -264,7 +264,11 @@ let package = Package(
         ),
         .target(
             name: "Gtk",
-            dependencies: ["CGtk", "GtkCHelpers"],
+            dependencies: [
+                "CGtk",
+                "GtkCHelpers",
+                .product(name: "Mutex", package: "swift-mutex"),
+            ],
             exclude: ["LICENSE.md"]
         ),
         .executableTarget(
@@ -315,6 +319,11 @@ let package = Package(
             name: "WinUIBackend",
             dependencies: [
                 "SwiftCrossUI",
+                // Even though these dependencies should be able to be unconditional
+                // dependencies, we have to only include them on Windows to workaround
+                // a swift-build bug where SwiftPM 6.4+ tries to build some of our
+                // Windows-specific dependencies even when WinUIBackend hasn't been
+                // imported.
                 .target(name: "WinUIInterop", condition: .when(platforms: [.windows])),
                 .product(
                     name: "WinUI",
