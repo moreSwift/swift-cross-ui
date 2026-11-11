@@ -17,18 +17,9 @@ public class GVariant {
         self.shouldUnrefOnDeinit = true
     }
 
-    public convenience init?(parsing format: String) {
-        guard let v = g_variant_parse(nil, format, nil, nil, nil) else { return nil }
-        self.init(owning: v)
-    }
-
     public static func parse(_ format: String) -> GVariant? {
         guard let v = g_variant_parse(nil, format, nil, nil, nil) else { return nil }
         return GVariant(owning: v)
-    }
-
-    public func copy() -> GVariant {
-        GVariant(owning: g_variant_ref(pointer))
     }
 
     deinit {

@@ -528,6 +528,7 @@ public final class GtkBackend:
             let colorSchemeId: UInt32? = try? Freedesktop.Portal.Settings.Appearance.ColorScheme
                 .read()
 
+            // https://github.com/flatpak/xdg-desktop-portal/blob/fae2c09a530eeef30af8d6401870fd5bae5d3989/data/org.freedesktop.portal.Settings.xml#L38
             if colorSchemeId == 1 {
                 return .dark
             } else if colorSchemeId == 2 {
