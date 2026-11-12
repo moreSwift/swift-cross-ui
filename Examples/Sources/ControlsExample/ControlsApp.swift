@@ -3,7 +3,7 @@ import Foundation
 import SwiftCrossUI
 
 #if canImport(SwiftBundlerRuntime)
-import SwiftBundlerRuntime
+    import SwiftBundlerRuntime
 #endif
 
 enum BuiltInPickerStyle: CaseIterable, Equatable {
@@ -13,7 +13,7 @@ enum BuiltInPickerStyle: CaseIterable, Equatable {
     case radioGroup
     case segmented
     case wheel
-    
+
     var asPickerStyle: any PickerStyle {
         switch self {
             case .automatic: .automatic
@@ -50,11 +50,11 @@ struct ControlsApp: App {
     @State var isColorPickerResizable: Bool = false
     @State var colorPickerSize: Double = 20
     @State var opacity: Double = 1
-    
+
     @Environment(\.supportedDatePickerStyles) var supportedDatePickerStyles
     @Environment(\.isPickerStyleSupported) var isPickerStyleSupported
     @Environment(\.defaultButtonStyle) var defaultButtonStyle
-    
+
     var body: some Scene {
         WindowGroup("ControlsApp") {
             #hotReloadable {
@@ -63,23 +63,23 @@ struct ControlsApp: App {
                         VStack {
                             Text("Button (persisted)")
                             Text("Default ButtonStyle: \(defaultButtonStyle)")
-#if !canImport(Gtk3Backend)
-                            Picker(
-                                of: [
-                                    ButtonStyle.bordered,
-                                    ButtonStyle.plain,
-                                    ButtonStyle.borderless
-                                ],
-                                selection: $buttonStyle
-                            )
-#endif
+                            #if !canImport(Gtk3Backend)
+                                Picker(
+                                    of: [
+                                        ButtonStyle.bordered,
+                                        ButtonStyle.plain,
+                                        ButtonStyle.borderless
+                                    ],
+                                    selection: $buttonStyle
+                                )
+                            #endif
                             Button("Click me!") {
                                 count += 1
                             }
                             .buttonStyle(buttonStyle)
                             Text("Count: \(count)")
                         }
-                        
+
                         if #available(tvOS 17, *) {
                             VStack {
                                 Text("Menu button")
@@ -96,132 +96,132 @@ struct ControlsApp: App {
                                 }
                             }
                         }
-                        
-#if !canImport(UIKitBackend)
-                        VStack {
-                            Text("Toggle button")
-                            Toggle("Toggle me!", isOn: $exampleButtonState)
-                                .toggleStyle(.button)
-                            Text("Currently enabled: \(exampleButtonState)")
-                        }
-#endif
-                        
+
+                        #if !canImport(UIKitBackend)
+                            VStack {
+                                Text("Toggle button")
+                                Toggle("Toggle me!", isOn: $exampleButtonState)
+                                    .toggleStyle(.button)
+                                Text("Currently enabled: \(exampleButtonState)")
+                            }
+                        #endif
+
                         VStack {
                             Text("Toggle switch")
                             Toggle("Toggle me:", isOn: $exampleSwitchState)
                                 .toggleStyle(.switch)
                             Text("Currently enabled: \(exampleSwitchState)")
                         }
-                        
+
                         VStack {
                             Text("Checkbox")
                             Toggle("Toggle me:", isOn: $exampleCheckboxState)
                                 .toggleStyle(.checkbox)
                             Text("Currently enabled: \(exampleCheckboxState)")
                         }
-                        
-#if !os(tvOS)
-                        VStack {
-                            Text("Slider")
-                            Slider(value: $sliderValue, in: 0...10)
-                                .frame(maxWidth: 200)
-                            Text("Value: \(String(format: "%.02f", sliderValue))")
-                        }
-#endif
-                        
+
+                        #if !os(tvOS)
+                            VStack {
+                                Text("Slider")
+                                Slider(value: $sliderValue, in: 0...10)
+                                    .frame(maxWidth: 200)
+                                Text("Value: \(String(format: "%.02f", sliderValue))")
+                            }
+                        #endif
+
                         VStack {
                             Text("Text field")
                             TextField("Text field", text: $text)
                             Text("Value: \(text)")
                         }
-                        
+
                         VStack {
                             Text("Secure text field")
                             SecureField("Secure text field", text: $secureText)
                             Text("Value: \(secureText)")
                         }
-                        
-#if !os(tvOS)
-                        VStack {
-                            Toggle(
-                                "Enable ProgressView resizability",
-                                isOn: $isProgressViewResizable
-                            )
-                            Slider(value: $progressViewSize, in: 10...100)
-                            ProgressView()
-                                .resizable(isProgressViewResizable)
-                                .frame(width: progressViewSize, height: progressViewSize)
-                        }
-#endif
-#if !canImport(Gtk3Backend)
-                        VStack {
-                            Text("Picker")
-                            
-                            HStack {
-                                Text("Picker Style:")
-                                Picker(
-                                    of: BuiltInPickerStyle.allCases.filter {
-                                        isPickerStyleSupported($0.asPickerStyle)
-                                    },
-                                    selection: $pickerStyle
+
+                        #if !os(tvOS)
+                            VStack {
+                                Toggle(
+                                    "Enable ProgressView resizability",
+                                    isOn: $isProgressViewResizable
                                 )
+                                Slider(value: $progressViewSize, in: 10...100)
+                                ProgressView()
+                                    .resizable(isProgressViewResizable)
+                                    .frame(width: progressViewSize, height: progressViewSize)
                             }
-                            
-                            HStack {
-                                Text("Flavor: ")
-                                
-                                Picker(
-                                    of: ["Vanilla", "Chocolate", "Strawberry"],
-                                    selection: $flavor
+                        #endif
+                        #if !canImport(Gtk3Backend)
+                            VStack {
+                                Text("Picker")
+
+                                HStack {
+                                    Text("Picker Style:")
+                                    Picker(
+                                        of: BuiltInPickerStyle.allCases.filter {
+                                            isPickerStyleSupported($0.asPickerStyle)
+                                        },
+                                        selection: $pickerStyle
+                                    )
+                                }
+
+                                HStack {
+                                    Text("Flavor: ")
+
+                                    Picker(
+                                        of: ["Vanilla", "Chocolate", "Strawberry"],
+                                        selection: $flavor
+                                    )
+                                    .pickerStyle(
+                                        pickerStyle?.asPickerStyle ?? DefaultPickerStyle()
+                                    )
+                                }
+                                Text("You chose: \(flavor ?? "Nothing yet!")")
+                            }
+
+                            #if !os(tvOS)
+                                VStack {
+                                    Text("Selected date: \(date)")
+
+                                    HStack {
+                                        Text("Date picker style: ")
+                                        Picker(
+                                            of: supportedDatePickerStyles,
+                                            selection: $datePickerStyle
+                                        )
+                                    }
+
+                                    DatePicker(selection: $date) {}
+                                        .datePickerStyle(datePickerStyle ?? .automatic)
+
+                                    Button("Reset date to now") {
+                                        date = Date()
+                                    }
+                                }
+                            #endif
+                        #endif
+
+                        #if !os(tvOS) && !canImport(AndroidBackend)
+                            VStack {
+                                Toggle(
+                                    "Enable ColorPicker resizability",
+                                    isOn: $isColorPickerResizable
                                 )
-                                .pickerStyle(
-                                    pickerStyle?.asPickerStyle ?? DefaultPickerStyle()
-                                )
+                                Slider(value: $colorPickerSize, in: 10...100)
+                                ColorPicker("Choose a color:", selection: $color)
+                                    .resizable(isColorPickerResizable)
+                                    .frame(height: 20 + colorPickerSize)
+
+                                HStack {
+                                    Text("You chose:")
+
+                                    color.frame(maxWidth: 50, maxHeight: 20)
+                                }
                             }
-                            Text("You chose: \(flavor ?? "Nothing yet!")")
-                        }
-                        
-#if !os(tvOS)
-                        VStack {
-                            Text("Selected date: \(date)")
-                            
-                            HStack {
-                                Text("Date picker style: ")
-                                Picker(
-                                    of: supportedDatePickerStyles,
-                                    selection: $datePickerStyle
-                                )
-                            }
-                            
-                            DatePicker(selection: $date) {}
-                                .datePickerStyle(datePickerStyle ?? .automatic)
-                            
-                            Button("Reset date to now") {
-                                date = Date()
-                            }
-                        }
-#endif
-#endif
-                        
-#if !os(tvOS) && !canImport(AndroidBackend)
-                        VStack {
-                            Toggle(
-                                "Enable ColorPicker resizability",
-                                isOn: $isColorPickerResizable
-                            )
-                            Slider(value: $colorPickerSize, in: 10...100)
-                            ColorPicker("Choose a color:", selection: $color)
-                                .resizable(isColorPickerResizable)
-                                .frame(height: 20 + colorPickerSize)
-                            
-                            HStack {
-                                Text("You chose:")
-                                
-                                color.frame(maxWidth: 50, maxHeight: 20)
-                            }
-                        }
-#endif
-                        
+                        #endif
+
                         VStack {
                             Text("View Opacity")
                             Color.red.frame(width: 30, height: 30)
@@ -229,7 +229,7 @@ struct ControlsApp: App {
                         }
                         .opacity(opacity)
                     }.padding().disabled(!enabled)
-                    
+
                     Toggle(enabled ? "Disable all" : "Enable all", isOn: $enabled)
                         .padding()
                     Toggle(hideLabels ? "Show Labels": "Hide labels", isOn: $hideLabels)
