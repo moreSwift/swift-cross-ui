@@ -1,0 +1,74 @@
+name: Reject AI co-authors
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check-co-authors:
+    name: "check-ai-co-authors"
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # Full history so that every commit in the pull request can be inspected.
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Reject commits co-authored by Claude, Codex, or Copilot
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          # Fail loudly rather than silently passing if the SHAs can't be resolved.
+          git cat-file -e "$BASE_SHA^{commit}"
+          git cat-file -e "$HEAD_SHA^{commit}"
+
+          # Commits introduced by this pull request, oldest first.
+          mapfile -t commits < <(git rev-list --reverse "$BASE_SHA..$HEAD_SHA")
+
+          failed=0
+
+          # Report co-authored-by trailers that match an AI agent. Vendor email
+          # domains are included so that custom attribution strings (e.g. a model
+          # name instead of the tool name) are still caught.
+          check_coauthor() {
+            local commit="$1" subject="$2" body="$3" label="$4" pattern="$5"
+            local matches
+            if matches=$(grep -iE "^[[:space:]]*co-authored-by:.*(${pattern})" <<<"$body"); then
+              while IFS= read -r trailer; do
+                echo "::error::Commit ${commit} is co-authored by ${label}: ${subject}"
+                echo "  ${trailer}"
+              done <<<"$matches"
+              failed=1
+            fi
+          }
+
+          for commit in "${commits[@]}"; do
+            subject=$(git show -s --format=%s "$commit")
+            body=$(git show -s --format=%B "$commit")
+
+            check_coauthor "$commit" "$subject" "$body" "Claude" 'claude|anthropic\.com'
+            check_coauthor "$commit" "$subject" "$body" "Codex" 'codex|openai\.com'
+            check_coauthor "$commit" "$subject" "$body" "Copilot" 'copilot'
+
+            # Some agents (e.g. the Copilot coding agent and Codex cloud) commit
+            # under their own bot account rather than adding a co-author trailer.
+            identity=$(git show -s --format='%an <%ae>%n%cn <%ce>' "$commit")
+            if grep -qiE 'copilot-swe-agent|copilot\[bot\]|github copilot|chatgpt-codex-connector|codex\[bot\]|claude\[bot\]' <<<"$identity"; then
+              echo "::error::Commit ${commit} is authored by an AI agent: ${subject}"
+              grep -iE 'copilot|codex|claude' <<<"$identity" | sed 's/^/  /'
+              failed=1
+            fi
+          done
+
+          if [ "$failed" -ne 0 ]; then
+            echo "Pull requests must not contain commits co-authored by Claude, Codex, or Copilot." >&2
+            echo "Remove the attribution from the offending commits (e.g. amend or rebase them)." >&2
+            exit 1
+          fi
+
+          echo "No commits co-authored by Claude, Codex, or Copilot found."
