@@ -49,6 +49,7 @@ struct ControlsApp: App {
     @State var hideLabels = false
     @State var isColorPickerResizable: Bool = false
     @State var colorPickerSize: Double = 20
+    @State var opacity: Double = 1
 
     @Environment(\.supportedDatePickerStyles) var supportedDatePickerStyles
     @Environment(\.isPickerStyleSupported) var isPickerStyleSupported
@@ -220,6 +221,13 @@ struct ControlsApp: App {
                                 }
                             }
                         #endif
+
+                        VStack {
+                            Text("View Opacity")
+                            Color.red.frame(width: 30, height: 30)
+                            Slider(value: $opacity, in: 0.1...1.0)
+                        }
+                        .opacity(opacity)
                     }.padding().disabled(!enabled)
 
                     Toggle(enabled ? "Disable all" : "Enable all", isOn: $enabled)
