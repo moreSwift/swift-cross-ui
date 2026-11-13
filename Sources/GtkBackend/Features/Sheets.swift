@@ -59,8 +59,9 @@ extension GtkBackend: BackendFeatures.Sheets {
         sheet.onDismiss = onDismiss
 
         // Add a slight border to not be just a flat corner
-        sheet.css.clear()
-        sheet.css.set(
+        var css = sheet.css
+        css.clear()
+        css.set(
             property: .border(
                 color: SwiftCrossUI.Color.gray.resolve(in: environment).gtkColor,
                 width: 1
@@ -69,10 +70,11 @@ extension GtkBackend: BackendFeatures.Sheets {
 
         // Respect corner radius and background Color
         let radius = cornerRadius.map(Int.init) ?? Self.defaultSheetCornerRadius
-        sheet.css.set(property: .cornerRadius(radius))
+        css.set(property: .cornerRadius(radius))
         if let backgroundColor {
-            sheet.css.set(property: .backgroundColor(backgroundColor.gtkColor))
+            css.set(property: .backgroundColor(backgroundColor.gtkColor))
         }
+        sheet.css = css
 
         sheet.interactiveDismissDisabled = interactiveDismissDisabled
 

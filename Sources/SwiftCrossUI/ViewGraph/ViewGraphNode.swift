@@ -205,7 +205,7 @@ public class ViewGraphNode<NodeView: View, Backend: BaseAppBackend>: ModelObserv
 
         if proposedSize == lastProposedSize && !resultCache.isEmpty
             && (!parentEnvironment.allowLayoutCaching || environment.allowLayoutCaching),
-            let currentLayout
+           let currentLayout
         {
             // If the previous proposal is the same as the current one, and our
             // cache hasn't been invalidated, then we can reuse the current layout.

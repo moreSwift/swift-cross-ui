@@ -9,6 +9,9 @@ public struct ColorPicker<Label: View> {
     private var label: Label
     private var selection: Binding<Color>
     private var supportsOpacity: Bool
+    var isResizable = false
+
+    @Environment(\.labelsHidden) var labelsHidden
 
     /// Creates a color picker with a text label generated from a title string.
     /// - Parameters:
@@ -48,18 +51,31 @@ public struct ColorPicker<Label: View> {
 extension ColorPicker: View {
     public var body: some View {
         HStack {
-            label
+            if !labelsHidden {
+                label
 
-            HorizontalControlSpacer()
+                HorizontalControlSpacer()
+            }
 
-            ColorPickerImplementation(selection: selection, supportsOpacity: supportsOpacity)
+            ColorPickerImplementation(
+                selection: selection,
+                supportsOpacity: supportsOpacity,
+                isResizable: isResizable
+            )
         }
+    }
+
+    /// Makes the ``ColorPicker`` freely resizable.
+    public consuming func resizable(_ isResizable: Bool = true) -> Self {
+        self.isResizable = isResizable
+        return self
     }
 }
 
 struct ColorPickerImplementation: ElementaryView {
     @Binding var selection: Color
     var supportsOpacity: Bool
+    var isResizable: Bool
 
     let body = EmptyView()
 
@@ -84,7 +100,15 @@ struct ColorPickerImplementation: ElementaryView {
         }
 
         let naturalSize = backend.naturalSize(of: widget)
-        return ViewLayoutResult.leafView(size: ViewSize(naturalSize))
+
+        if !isResizable {
+            return ViewLayoutResult.leafView(size: ViewSize(naturalSize))
+        }
+
+        return ViewLayoutResult.leafView(size: ViewSize(
+            proposedSize.width ?? Double(naturalSize.x),
+            proposedSize.height ?? Double(naturalSize.y)
+        ))
     }
 
     @CastBackend<BackendFeatures.ColorPickers>

@@ -127,7 +127,7 @@ if env["SCUI_BENCHMARK_VIZ"] == "1" {
 
 let package = Package(
     name: "swift-cross-ui",
-    platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .macCatalyst(.v13), .visionOS(.v1)],
+    platforms: [.macOS(.v12), .iOS(.v15), .tvOS(.v15), .visionOS(.v1)],
     products: [
         .library(name: "SwiftCrossUI", type: libraryType, targets: ["SwiftCrossUI"]),
         .library(name: "AppKitBackend", type: libraryType, targets: ["AppKitBackend"]),
@@ -167,7 +167,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/stackotter/swift-image-formats",
-            .upToNextMinor(from: "0.5.0")
+            .upToNextMinor(from: "0.6.0")
         ),
         .package(
             url: "https://github.com/moreSwift/swift-winui",
@@ -264,7 +264,11 @@ let package = Package(
         ),
         .target(
             name: "Gtk",
-            dependencies: ["CGtk", "GtkCHelpers"],
+            dependencies: [
+                "CGtk",
+                "GtkCHelpers",
+                .product(name: "Mutex", package: "swift-mutex"),
+            ],
             exclude: ["LICENSE.md"]
         ),
         .executableTarget(
@@ -315,13 +319,42 @@ let package = Package(
             name: "WinUIBackend",
             dependencies: [
                 "SwiftCrossUI",
-                "WinUIInterop",
-                .product(name: "WinUI", package: "swift-winui"),
-                .product(name: "UWP", package: "swift-winui"),
-                .product(name: "CWinRT", package: "swift-winui"),
-                .product(name: "WinAppSDK", package: "swift-winui"),
-                .product(name: "WindowsFoundation", package: "swift-winui"),
-                .product(name: "Mutex", package: "swift-mutex"),
+                // Even though these dependencies should be able to be unconditional
+                // dependencies, we have to only include them on Windows to workaround
+                // a swift-build bug where SwiftPM 6.4+ tries to build some of our
+                // Windows-specific dependencies even when WinUIBackend hasn't been
+                // imported.
+                .target(name: "WinUIInterop", condition: .when(platforms: [.windows])),
+                .product(
+                    name: "WinUI",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "UWP",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "CWinRT",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "WinAppSDK",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "WindowsFoundation",
+                    package: "swift-winui",
+                    condition: .when(platforms: [.windows])
+                ),
+                .product(
+                    name: "Mutex",
+                    package: "swift-mutex",
+                    condition: .when(platforms: [.windows])
+                ),
             ]
         ),
         .target(

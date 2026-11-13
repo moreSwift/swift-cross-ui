@@ -47,6 +47,10 @@ final class GtkCustomButton: Gtk.Button {
                 button.customButton.flat:disabled {
                     opacity: 0.5;
                 }
+
+                button.focusEffectDisabled {
+                    outline: none;
+                }
             """)
         // Why 50% disabled opacity was chosen:
         // https://gnome.pages.gitlab.gnome.org/libadwaita/doc/main/css-variables.html#opacity

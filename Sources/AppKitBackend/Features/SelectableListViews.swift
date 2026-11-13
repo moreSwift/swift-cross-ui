@@ -20,9 +20,7 @@ extension AppKitBackend: BackendFeatures.SelectableListViews {
         listView.backgroundColor = .clear
         listView.headerView = nil
         listView.addTableColumn(column)
-        if #available(macOS 11.0, *) {
-            listView.style = .plain
-        }
+        listView.style = .plain
 
         scrollView.documentView = listView
         listView.enclosingScrollView?.drawsBackground = false

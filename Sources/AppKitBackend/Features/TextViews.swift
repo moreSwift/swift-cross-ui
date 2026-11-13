@@ -134,7 +134,7 @@ extension AppKitBackend: BackendFeatures.TextViews {
         }
     }
 
-    private static func weight(for weight: Font.Weight) -> NSFont.Weight {
+    static func weight(for weight: Font.Weight) -> NSFont.Weight {
         switch weight {
             case .thin:
                 .thin

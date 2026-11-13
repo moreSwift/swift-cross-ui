@@ -13,6 +13,9 @@ extension Optional where Wrapped == Focus {
         guard self != .focused else { return self }
 
         if state == match { return .focused }
-        return .unfocused
+        // If we return unfocus for non-nil cases, state
+        // will be reset to nil by widgets commited after the one gaining focus.
+        if state == nil { return .unfocused }
+        return nil
     }
 }
