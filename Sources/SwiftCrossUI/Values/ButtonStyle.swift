@@ -6,7 +6,6 @@ public struct BaseButtonStyle: Hashable, Sendable {
     package enum Kind {
         case bordered
         case plain
-        case borderless
     }
 
     package var kind: Kind
@@ -17,29 +16,14 @@ public struct BaseButtonStyle: Hashable, Sendable {
     /// A base button style that doesn’t style or decorate its content while idle,
     /// but may apply a visual effect to indicate the pressed, focused, or enabled state of the button.
     public static let plain = Self(kind: .plain)
-    /// A button style that doesn’t apply a border.
-    ///
-    /// On desktop operating systems it behaves mostly the same as ``ButtonStyle/plain``
-    /// due to the SwiftUI borderless behavior on mac being stupid.
-    /// The only difference is a default foreground color of gray being applied.
-    public static let borderless = Self(kind: .borderless)
-}
-
-/// A protocol allowing buttons to tell the backend what base canvas to use before drawing
-/// a button label and ``ButtonStyle`` on top.
-@MainActor
-public protocol _InternalButtonStyle {
-    /// The base canvans look of a button.
-    var baseButtonStyle: BaseButtonStyle { get }
-}
-
-extension _InternalButtonStyle {
-    public var baseButtonStyle: BaseButtonStyle { .plain }
 }
 
 /// A type that applies standard interaction behavior and a custom appearance to all buttons within a view hierarchy.
 @MainActor
-public protocol ButtonStyle: _InternalButtonStyle {
+public protocol ButtonStyle {
+    /// The base canvans look of a button.
+    var baseButtonStyle: BaseButtonStyle { get }
+    
     /// A view that represents the body of a button.
     associatedtype Body: View
     /// Creates a view that represents the body of a button.
@@ -48,6 +32,8 @@ public protocol ButtonStyle: _InternalButtonStyle {
 }
 
 extension ButtonStyle {
+    public var baseButtonStyle: BaseButtonStyle { .plain }
+    
     /// The properties of a button.
     public typealias Configuration = ButtonStyleConfiguration
 }
@@ -74,10 +60,13 @@ extension ButtonStyle where Self == BorderlessButtonStyle {
 
 /// The properties of a button.
 public struct ButtonStyleConfiguration {
+    let backend: any BackendFeatures.ButtonStyles
     /// A Boolean that indicates whether the user is currently pressing the button.
     public let isPressed: Bool
     /// A view that's rendered as the label of a button.
     public let label: Label
+    /// The environment of the button.
+    public let environment: EnvironmentValues
     // TODO: Add button role support (ie .destructive, .cancel,...)
     // public let role: ButtonRole
     
@@ -94,7 +83,7 @@ public struct ButtonStyleConfiguration {
 public struct BorderedButtonStyle: ButtonStyle {
     public init() {}
     public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
+        configuration.backend.borderedButtonStyleModification(with: configuration)
     }
 }
 
@@ -106,7 +95,7 @@ public struct BorderedButtonStyle: ButtonStyle {
 public struct BorderlessButtonStyle: ButtonStyle {
     public init() {}
     public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
+        configuration.backend.borderlessButtonStyleModification(with: configuration)
     }
 }
 
@@ -115,10 +104,10 @@ public struct BorderlessButtonStyle: ButtonStyle {
 public struct PlainButtonStyle: ButtonStyle {
     public init() {}
     public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
+        configuration.backend.plainButtonStyleModification(with: configuration)
     }
 }
 
-extension BorderedButtonStyle: _InternalButtonStyle {
+extension BorderedButtonStyle {
     public var baseButtonStyle: BaseButtonStyle { .bordered }
 }

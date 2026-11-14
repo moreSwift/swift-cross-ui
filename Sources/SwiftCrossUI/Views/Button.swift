@@ -1,7 +1,6 @@
 /// A control that initiates an action.
 public struct Button<Label: View> {
-    @State
-    private var isPressed: Bool = false
+    @State private var isPressed: Bool = false
     
     public typealias Content = TupleView1<Label>
     /// The label to show on the button.
@@ -77,8 +76,10 @@ extension Button: TypeSafeView {
         environment: EnvironmentValues
     ) -> Children {
         let configuration = ButtonStyleConfiguration(
+            backend: backend,
             isPressed: isPressed,
-            label: ButtonStyleConfiguration.Label(body: label())
+            label: ButtonStyleConfiguration.Label(body: label()),
+            environment: environment
         )
         let buttonStyle = environment.resolvedButtonStyle
         return Children(
@@ -104,10 +105,6 @@ extension Button: TypeSafeView {
         backend: Backend
     ) -> ViewLayoutResult {
         let buttonPadding = backend.buttonPadding(in: environment)
-        let childEnvironment = backend.computeButtonLabelEnvironment(
-            from: environment,
-            withPressedState: isPressed
-        )
 
         var childProposal = proposedSize
         if let proposedWidth = proposedSize.width {
@@ -118,15 +115,17 @@ extension Button: TypeSafeView {
         }
         
         let configuration = ButtonStyleConfiguration(
+            backend: backend,
             isPressed: isPressed,
-            label: ButtonStyleConfiguration.Label(body: label())
+            label: ButtonStyleConfiguration.Label(body: label()),
+            environment: environment
         )
         let buttonStyle = environment.resolvedButtonStyle
 
         let childResult = children.child0.computeLayout(
             with: AnyView(buttonStyle.makeBody(configuration: configuration)),
             proposedSize: childProposal,
-            environment: childEnvironment
+            environment: environment
         )
 
         backend.updateButton(

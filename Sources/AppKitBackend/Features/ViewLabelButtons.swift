@@ -30,11 +30,9 @@ extension AppKitBackend: BackendFeatures.ViewLabelButtons {
     public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
         switch environment.resolvedButtonStyle.baseButtonStyle.kind {
             case .bordered: measureBorderedButtonPadding()
-            case .plain, .borderless: SIMD2<Int>(0, 0)
+            case .plain: SIMD2<Int>(0, 0)
         }
     }
-
-    public func defaultButtonStyle() -> any ButtonStyle { BorderedButtonStyle() }
 
     func measureBorderedButtonPadding() -> SIMD2<Int> {
         if let borderedButtonPadding { return borderedButtonPadding }
@@ -69,17 +67,8 @@ extension BaseButtonStyle.Kind {
                 button.setupButton()
                 button.button?.isEnabled = button.isEnabled
                 button.button?.isHighlighted = button.isHighlighted
-            case .plain, .borderless:
+            case .plain:
                 button.removeButton()
-                button.alphaValue = button.isEnabled
-                    ? button.isHighlighted ? 0.80: 1.0
-                    : 0.5
-                // Why 50% disabled opacity was chosen:
-                // A disabled SwiftUI .plain button looks visually the same as
-                // an enabled one at 0.5 opacity.
-                // Why 80% for active(pressed) was chosen:
-                // A pressed SwiftUI .plain button looks visually the same as
-                // a not pressed one at 0.8 opacity.
         }
     }
 
@@ -87,7 +76,7 @@ extension BaseButtonStyle.Kind {
         switch self {
             case .bordered:
                 true
-            case .plain, .borderless:
+            case .plain:
                 false
         }
     }
@@ -96,7 +85,7 @@ extension BaseButtonStyle.Kind {
         switch self {
             case .bordered:
                 button.button?.drawFocusRingMask()
-            case .plain, .borderless:
+            case .plain:
                 let maskPath = NSBezierPath(rect: button.bounds)
                 maskPath.fill()
         }

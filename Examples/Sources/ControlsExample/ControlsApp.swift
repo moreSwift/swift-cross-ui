@@ -32,11 +32,12 @@ enum ButtonStyle: String, CaseIterable {
 
 extension View {
     @ViewBuilder
-    func applyButtonStyle(_ style: ButtonStyle) -> some View {
+    func applyButtonStyle(_ style: ButtonStyle?, defaultButtonStyle: any SwiftCrossUI.ButtonStyle) -> some View {
         switch style {
             case .plain: self.buttonStyle(.plain)
             case .bordered: self.buttonStyle(.bordered)
             case .borderless: self.buttonStyle(.borderless)
+            default: self.environment(\.buttonStyle, nil)
         }
     }
 }
@@ -91,7 +92,7 @@ struct ControlsApp: App {
                             Button("Click me!") {
                                 count += 1
                             }
-                            .buttonStyle(buttonStyle)
+                            .applyButtonStyle(buttonStyle, defaultButtonStyle: defaultButtonStyle)
                             Text("Count: \(count)")
                         }
 
