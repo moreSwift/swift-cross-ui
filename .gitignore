@@ -15,5 +15,6 @@ vcpkg_installed/
 notes.json
 /Tools
 .docc-build/
+/.docs/
 .idea
 ._*
