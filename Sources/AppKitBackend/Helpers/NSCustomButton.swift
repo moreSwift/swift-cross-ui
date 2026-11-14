@@ -3,8 +3,9 @@ import SwiftCrossUI
 
 public final class NSCustomButton: NSView {
     var action: (() -> Void)?
+    var onPressStateChange: ((Bool) -> Void)?
     var button: NSButtonBackground?
-    var buttonStyle: ButtonStyle.Kind = .bordered {
+    var buttonStyle: BaseButtonStyle.Kind = .bordered {
         didSet { updateButtonAppearance() }
     }
 
@@ -26,6 +27,7 @@ public final class NSCustomButton: NSView {
 
     public var isHighlighted = false {
         didSet {
+            onPressStateChange?(isHighlighted)
             buttonStyle.applyModifications(to: self)
             needsDisplay = true
         }

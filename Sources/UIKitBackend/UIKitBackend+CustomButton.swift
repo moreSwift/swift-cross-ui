@@ -55,7 +55,7 @@ extension UIKitBackend {
         #endif
     }
 
-    public func defaultButtonStyle() -> ButtonStyle {
+    public func defaultButtonStyle() -> any ButtonStyle {
         .borderless
     }
 

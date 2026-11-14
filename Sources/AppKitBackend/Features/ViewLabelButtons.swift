@@ -16,23 +16,23 @@ extension AppKitBackend: BackendFeatures.ViewLabelButtons {
     public func updateButton(
         _ button: NSView,
         environment: EnvironmentValues,
+        pressStateChanged: @escaping (Bool) -> Void,
         action: @escaping () -> Void
     ) {
         let button = button as! NSCustomButton
 
+        button.onPressStateChange = pressStateChanged
         button.action = action
         button.isEnabled = environment.isEnabled
-        button.buttonStyle = environment.resolvedButtonStyle.kind
+        button.buttonStyle = environment.resolvedButtonStyle.baseButtonStyle.kind
     }
 
     public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
-        switch environment.resolvedButtonStyle.kind {
+        switch environment.resolvedButtonStyle.baseButtonStyle.kind {
             case .bordered: measureBorderedButtonPadding()
-            case .plain, .borderless: SIMD2<Int>(0, 0)
+            case .plain: SIMD2<Int>(0, 0)
         }
     }
-
-    public func defaultButtonStyle() -> ButtonStyle { .bordered }
 
     func measureBorderedButtonPadding() -> SIMD2<Int> {
         if let borderedButtonPadding { return borderedButtonPadding }
@@ -60,24 +60,15 @@ extension AppKitBackend: BackendFeatures.ViewLabelButtons {
     }
 }
 
-extension ButtonStyle.Kind {
+extension BaseButtonStyle.Kind {
     func applyModifications(to button: NSCustomButton) {
         switch self {
             case .bordered:
                 button.setupButton()
                 button.button?.isEnabled = button.isEnabled
                 button.button?.isHighlighted = button.isHighlighted
-            case .plain, .borderless:
+            case .plain:
                 button.removeButton()
-                button.alphaValue = button.isEnabled
-                    ? button.isHighlighted ? 0.80: 1.0
-                    : 0.5
-                // Why 50% disabled opacity was chosen:
-                // A disabled SwiftUI .plain button looks visually the same as
-                // an enabled one at 0.5 opacity.
-                // Why 80% for active(pressed) was chosen:
-                // A pressed SwiftUI .plain button looks visually the same as
-                // a not pressed one at 0.8 opacity.
         }
     }
 
@@ -85,7 +76,7 @@ extension ButtonStyle.Kind {
         switch self {
             case .bordered:
                 true
-            case .plain, .borderless:
+            case .plain:
                 false
         }
     }
@@ -94,7 +85,7 @@ extension ButtonStyle.Kind {
         switch self {
             case .bordered:
                 button.button?.drawFocusRingMask()
-            case .plain, .borderless:
+            case .plain:
                 let maskPath = NSBezierPath(rect: button.bounds)
                 maskPath.fill()
         }

@@ -1,5 +1,7 @@
 /// A control that initiates an action.
 public struct Button<Label: View> {
+    @State private var isPressed: Bool = false
+
     public typealias Content = TupleView1<Label>
     /// The label to show on the button.
     @_spi(Backends) public var label: () -> Label
@@ -66,14 +68,26 @@ extension Button: TypeSafeView {
         label()
     }
 
-    typealias Children = TupleViewChildren1<Label>
+    typealias Children = TupleViewChildren1<AnyView>
 
     func children<Backend: BaseAppBackend>(
         backend: Backend,
         snapshots: [ViewGraphSnapshotter.NodeSnapshot]?,
         environment: EnvironmentValues
     ) -> Children {
-        Children(label(), backend: backend, snapshots: snapshots, environment: environment)
+        let configuration = ButtonStyleConfiguration(
+            backend: backend,
+            isPressed: isPressed,
+            label: ButtonStyleConfiguration.Label(body: label()),
+            environment: environment
+        )
+        let buttonStyle = environment.resolvedButtonStyle
+        return Children(
+            AnyView(buttonStyle.makeBody(configuration: configuration)),
+            backend: backend,
+            snapshots: snapshots,
+            environment: environment
+        )
     }
 
     func asWidget<Backend: BaseAppBackend>(
@@ -91,7 +105,6 @@ extension Button: TypeSafeView {
         backend: Backend
     ) -> ViewLayoutResult {
         let buttonPadding = backend.buttonPadding(in: environment)
-        let childEnvironment = backend.computeButtonLabelEnvironment(from: environment)
 
         var childProposal = proposedSize
         if let proposedWidth = proposedSize.width {
@@ -101,15 +114,28 @@ extension Button: TypeSafeView {
             childProposal.height = max(proposedHeight - Double(buttonPadding.y), 0)
         }
 
+        let configuration = ButtonStyleConfiguration(
+            backend: backend,
+            isPressed: isPressed,
+            label: ButtonStyleConfiguration.Label(body: label()),
+            environment: environment
+        )
+        let buttonStyle = environment.resolvedButtonStyle
+
         let childResult = children.child0.computeLayout(
-            with: body.view0,
+            with: AnyView(buttonStyle.makeBody(configuration: configuration)),
             proposedSize: childProposal,
-            environment: childEnvironment
+            environment: environment
         )
 
         backend.updateButton(
             widget,
             environment: environment,
+            pressStateChanged: { isPressed in
+                if self.isPressed != isPressed {
+                    self.isPressed = isPressed
+                }
+            },
             action: action
         )
 
