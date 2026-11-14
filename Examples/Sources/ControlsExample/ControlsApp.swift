@@ -27,12 +27,17 @@ enum BuiltInPickerStyle: CaseIterable, Equatable {
 }
 
 enum ButtonStyle: String, CaseIterable {
-    case plain, bordered, borderless
+    case plain
+    case bordered
+    case borderless
 }
 
 extension View {
     @ViewBuilder
-    func applyButtonStyle(_ style: ButtonStyle?, defaultButtonStyle: any SwiftCrossUI.ButtonStyle) -> some View {
+    func applyButtonStyle(
+        _ style: ButtonStyle?,
+        defaultButtonStyle: any SwiftCrossUI.ButtonStyle
+    ) -> some View {
         switch style {
             case .plain: self.buttonStyle(.plain)
             case .bordered: self.buttonStyle(.bordered)

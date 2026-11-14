@@ -10,15 +10,15 @@ extension BackendFeatures {
         ///
         /// - Returns: The default ``ButtonStyle``.
         func defaultButtonStyle() -> any ButtonStyle
-        
+
         func borderedButtonStyleModification(
             with config: ButtonStyleConfiguration
         ) -> AnyView
-        
+
         func borderlessButtonStyleModification(
             with config: ButtonStyleConfiguration
         ) -> AnyView
-        
+
         func plainButtonStyleModification(
             with config: ButtonStyleConfiguration
         ) -> AnyView
@@ -33,13 +33,13 @@ extension BackendFeatures.ButtonStyles {
             config.label
                 .foregroundColor(
                     !config.environment.isEnabled ?
-                    // SwiftUI uses tertiary afaict.
-                    config.environment.suggestedForegroundColor.opacity(0.3)
-                    : config.environment.suggestedForegroundColor
+                        // SwiftUI uses tertiary afaict.
+                        config.environment.suggestedForegroundColor.opacity(0.3)
+                        : config.environment.suggestedForegroundColor
                 )
         )
     }
-    
+
     // Why 80% for active(pressed) was chosen:
     // A pressed SwiftUI .plain button looks visually the same as
     // a not pressed one at 0.8 opacity.
@@ -51,16 +51,17 @@ extension BackendFeatures.ButtonStyles {
     ) -> AnyView {
         AnyView(
             config.label
-            .foregroundColor(
-                config.environment.foregroundColor ?? config.environment.suggestedForegroundColor
-                    .opacity(config.environment.colorScheme == .dark ? 0.7 : 0.5)
-            )
-            .opacity(
-                config.environment.isEnabled ? config.isPressed ? 0.80: 1.0 : 0.5
-            )
+                .foregroundColor(
+                    config.environment.foregroundColor ?? config.environment
+                        .suggestedForegroundColor
+                        .opacity(config.environment.colorScheme == .dark ? 0.7 : 0.5)
+                )
+                .opacity(
+                    config.environment.isEnabled ? config.isPressed ? 0.80: 1.0 : 0.5
+                )
         )
     }
-    
+
     public func plainButtonStyleModification(
         with config: ButtonStyleConfiguration
     ) -> AnyView {

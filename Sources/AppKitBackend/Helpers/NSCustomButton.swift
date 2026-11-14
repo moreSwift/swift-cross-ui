@@ -90,7 +90,7 @@ public final class NSCustomButton: NSView {
             super.keyDown(with: event)
             return
         }
-        
+
         highlightResetWorkItem?.cancel()
         isHighlighted = true
         action?()

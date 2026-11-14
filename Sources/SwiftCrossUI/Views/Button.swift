@@ -1,7 +1,7 @@
 /// A control that initiates an action.
 public struct Button<Label: View> {
     @State private var isPressed: Bool = false
-    
+
     public typealias Content = TupleView1<Label>
     /// The label to show on the button.
     @_spi(Backends) public var label: () -> Label
@@ -113,7 +113,7 @@ extension Button: TypeSafeView {
         if let proposedHeight = proposedSize.height {
             childProposal.height = max(proposedHeight - Double(buttonPadding.y), 0)
         }
-        
+
         let configuration = ButtonStyleConfiguration(
             backend: backend,
             isPressed: isPressed,

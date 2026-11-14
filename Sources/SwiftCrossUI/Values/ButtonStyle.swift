@@ -23,7 +23,7 @@ public struct BaseButtonStyle: Hashable, Sendable {
 public protocol ButtonStyle {
     /// The base canvans look of a button.
     var baseButtonStyle: BaseButtonStyle { get }
-    
+
     /// A view that represents the body of a button.
     associatedtype Body: View
     /// Creates a view that represents the body of a button.
@@ -33,7 +33,7 @@ public protocol ButtonStyle {
 
 extension ButtonStyle {
     public var baseButtonStyle: BaseButtonStyle { .plain }
-    
+
     /// The properties of a button.
     public typealias Configuration = ButtonStyleConfiguration
 }
@@ -69,7 +69,7 @@ public struct ButtonStyleConfiguration {
     public let environment: EnvironmentValues
     // TODO: Add button role support (ie .destructive, .cancel,...)
     // public let role: ButtonRole
-    
+
     /// A type-erased label of a button.
     public struct Label: View {
         init<V: View>(body: V) {
