@@ -2,10 +2,14 @@ import AppKit
 @_spi(Backends) import SwiftCrossUI
 
 final class CustomScrollView: NSScrollView {
-    lazy var verticalScrollingConstraint = documentView!.heightAnchor.constraint(greaterThanOrEqualTo: contentView.heightAnchor)
-    lazy var verticalNonScrollingConstraint = documentView!.heightAnchor.constraint(lessThanOrEqualTo: contentView.heightAnchor)
-    lazy var horizontalScrollingConstraint = documentView!.widthAnchor.constraint(greaterThanOrEqualTo: contentView.widthAnchor)
-    lazy var horizontalNonScrollingConstraint = documentView!.widthAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor)
+    lazy var verticalScrollingConstraint = documentView!.heightAnchor
+        .constraint(greaterThanOrEqualTo: contentView.heightAnchor)
+    lazy var verticalNonScrollingConstraint = documentView!.heightAnchor
+        .constraint(lessThanOrEqualTo: contentView.heightAnchor)
+    lazy var horizontalScrollingConstraint = documentView!.widthAnchor
+        .constraint(greaterThanOrEqualTo: contentView.widthAnchor)
+    lazy var horizontalNonScrollingConstraint = documentView!.widthAnchor
+        .constraint(lessThanOrEqualTo: contentView.widthAnchor)
 }
 
 extension AppKitBackend: BackendFeatures.ScrollContainers {
