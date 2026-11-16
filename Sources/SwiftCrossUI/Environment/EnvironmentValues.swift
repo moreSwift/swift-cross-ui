@@ -461,17 +461,17 @@ extension EnvironmentValues {
     @Entry public var isCircularScreen: Bool = false
 
     /// The display style used by ``Button``.
-    @Entry public var buttonStyle: ButtonStyle?
+    @Entry public var buttonStyle: any ButtonStyle?
 
     /// The default button style as declared by the backend.
     @MainActor
-    public var defaultButtonStyle: ButtonStyle {
+    public var defaultButtonStyle: any ButtonStyle {
         backend.defaultButtonStyle()
     }
 
     /// The resolved ``ButtonStyle``. Either ``buttonStyle``, or ``defaultButtonStyle`` if nil.
     @MainActor
-    public var resolvedButtonStyle: ButtonStyle {
+    public var resolvedButtonStyle: any ButtonStyle {
         buttonStyle ?? defaultButtonStyle
     }
 

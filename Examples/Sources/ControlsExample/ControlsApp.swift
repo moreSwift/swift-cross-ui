@@ -26,6 +26,27 @@ enum BuiltInPickerStyle: CaseIterable, Equatable {
     }
 }
 
+enum ButtonStyle: String, CaseIterable {
+    case plain
+    case bordered
+    case borderless
+}
+
+extension View {
+    @ViewBuilder
+    func applyButtonStyle(
+        _ style: ButtonStyle?,
+        defaultButtonStyle: any SwiftCrossUI.ButtonStyle
+    ) -> some View {
+        switch style {
+            case .plain: self.buttonStyle(.plain)
+            case .bordered: self.buttonStyle(.bordered)
+            case .borderless: self.buttonStyle(.borderless)
+            default: self.environment(\.buttonStyle, nil)
+        }
+    }
+}
+
 @main
 @HotReloadable
 struct ControlsApp: App {
@@ -76,7 +97,7 @@ struct ControlsApp: App {
                             Button("Click me!") {
                                 count += 1
                             }
-                            .buttonStyle(buttonStyle)
+                            .applyButtonStyle(buttonStyle, defaultButtonStyle: defaultButtonStyle)
                             Text("Count: \(count)")
                         }
 
@@ -198,7 +219,7 @@ struct ControlsApp: App {
 
                                     Button("Reset date to now") {
                                         date = Date()
-                                    }
+                                    }.buttonStyle(InverseColorSchemeButtonStyle())
                                 }
                             #endif
                         #endif
@@ -242,4 +263,12 @@ struct ControlsApp: App {
 
 extension AppStorageValues {
     @Entry var count: Int = 0
+}
+
+struct InverseColorSchemeButtonStyle: SwiftCrossUI.ButtonStyle {
+    var baseButtonStyle: BaseButtonStyle { .bordered }
+    func makeBody(configuration: SwiftCrossUI.ButtonStyle.Configuration) -> some View {
+        configuration.label
+            .colorScheme(configuration.isPressed ? .dark: .light)
+    }
 }

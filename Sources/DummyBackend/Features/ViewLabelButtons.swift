@@ -22,7 +22,7 @@ extension DummyBackend: BackendFeatures.ViewLabelButtons {
         SIMD2<Int>(0, 0)
     }
 
-    public func defaultButtonStyle() -> ButtonStyle {
+    public func defaultButtonStyle() -> any ButtonStyle {
         .bordered
     }
 }

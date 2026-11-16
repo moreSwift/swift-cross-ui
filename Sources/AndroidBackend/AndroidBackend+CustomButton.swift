@@ -35,7 +35,7 @@ extension AndroidBackend {
         }
     }
 
-    public func defaultButtonStyle() -> ButtonStyle {
+    public func defaultButtonStyle() -> any ButtonStyle {
         .bordered
     }
 }
