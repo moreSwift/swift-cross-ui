@@ -96,8 +96,8 @@ open class Button: Widget, Actionable {
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -110,8 +110,8 @@ open class Button: Widget, Actionable {
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> Widget = { _, value1, data in
+            SignalBox1<OpaquePointer, Widget>.run(data, value1)
         }
 
         addSignal(
@@ -124,8 +124,8 @@ open class Button: Widget, Actionable {
 
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -138,8 +138,8 @@ open class Button: Widget, Actionable {
 
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> utf8 = { _, value1, data in
+            SignalBox1<OpaquePointer, utf8>.run(data, value1)
         }
 
         addSignal(
@@ -152,8 +152,8 @@ open class Button: Widget, Actionable {
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> utf8 = { _, value1, data in
+            SignalBox1<OpaquePointer, utf8>.run(data, value1)
         }
 
         addSignal(
@@ -166,8 +166,8 @@ open class Button: Widget, Actionable {
 
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -180,8 +180,8 @@ open class Button: Widget, Actionable {
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> utf8 = { _, value1, data in
+            SignalBox1<OpaquePointer, utf8>.run(data, value1)
         }
 
         addSignal(
@@ -194,8 +194,8 @@ open class Button: Widget, Actionable {
 
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> GLib.Variant = { _, value1, data in
+            SignalBox1<OpaquePointer, GLib.Variant>.run(data, value1)
         }
 
         addSignal(

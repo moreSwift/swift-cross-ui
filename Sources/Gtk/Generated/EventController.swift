@@ -24,8 +24,8 @@ open class EventController: GObject {
 
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> utf8 = { _, value1, data in
+            SignalBox1<OpaquePointer, utf8>.run(data, value1)
         }
 
         addSignal(
@@ -38,8 +38,8 @@ open class EventController: GObject {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> PropagationLimit = { _, value1, data in
+            SignalBox1<OpaquePointer, PropagationLimit>.run(data, value1)
         }
 
         addSignal(
@@ -52,8 +52,8 @@ open class EventController: GObject {
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> PropagationPhase = { _, value1, data in
+            SignalBox1<OpaquePointer, PropagationPhase>.run(data, value1)
         }
 
         addSignal(
@@ -66,8 +66,8 @@ open class EventController: GObject {
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> Widget = { _, value1, data in
+            SignalBox1<OpaquePointer, Widget>.run(data, value1)
         }
 
         addSignal(

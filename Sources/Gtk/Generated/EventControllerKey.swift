@@ -24,38 +24,38 @@ open class EventControllerKey: EventController {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, UInt, UInt, GdkModifierType, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, value2, value3, data in
-            SignalBox3<UInt, UInt, GdkModifierType>.run(data, value1, value2, value3)
+        ) -> gboolean = { _, value1, value2, value3, data in
+            SignalBox3<UInt, UInt, GdkModifierType, gboolean>.run(data, value1, value2, value3)
         }
 
         addSignal(name: "key-pressed", handler: gCallback(handler1)) { [weak self] (
             param0: UInt,
             param1: UInt,
             param2: GdkModifierType
-        ) in
+        ) -> gboolean in
             guard let self else { return }
-            self.keyPressed?(self, param0, param1, param2)
+            return self.keyPressed?(self, param0, param1, param2) ?? false.toGBoolean()
         }
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, UInt, UInt, GdkModifierType, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, value3, data in
-            SignalBox3<UInt, UInt, GdkModifierType>.run(data, value1, value2, value3)
+            SignalBox3<UInt, UInt, GdkModifierType, Void>.run(data, value1, value2, value3)
         }
 
         addSignal(name: "key-released", handler: gCallback(handler2)) { [weak self] (
             param0: UInt,
             param1: UInt,
             param2: GdkModifierType
-        ) in
-            guard let self else { return }
-            self.keyReleased?(self, param0, param1, param2)
+        ) -> gboolean in
+            guard let self else { return false.toGBoolean() }
+            return self.keyReleased?(self, param0, param1, param2) ?? false.toGBoolean()
         }
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, GdkModifierType, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<GdkModifierType>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<GdkModifierType, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -75,10 +75,10 @@ open class EventControllerKey: EventController {
     public var imUpdate: ((EventControllerKey) -> Void)?
 
     /// Emitted whenever a key is pressed.
-    public var keyPressed: ((EventControllerKey, UInt, UInt, GdkModifierType) -> Void)?
+    public var keyPressed: ((EventControllerKey, UInt, UInt, GdkModifierType) -> gboolean)?
 
     /// Emitted whenever a key is released.
-    public var keyReleased: ((EventControllerKey, UInt, UInt, GdkModifierType) -> Void)?
+    public var keyReleased: ((EventControllerKey, UInt, UInt, GdkModifierType) -> gboolean)?
 
     /// Emitted whenever the state of modifier keys and pointer buttons change.
     public var modifiers: ((EventControllerKey, GdkModifierType) -> Void)?

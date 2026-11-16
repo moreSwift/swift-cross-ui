@@ -98,8 +98,8 @@ open class Calendar: Widget {
 
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gint = { _, value1, data in
+            SignalBox1<OpaquePointer, gint>.run(data, value1)
         }
 
         addSignal(
@@ -112,8 +112,8 @@ open class Calendar: Widget {
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gint = { _, value1, data in
+            SignalBox1<OpaquePointer, gint>.run(data, value1)
         }
 
         addSignal(
@@ -126,8 +126,8 @@ open class Calendar: Widget {
 
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -140,8 +140,8 @@ open class Calendar: Widget {
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -154,8 +154,8 @@ open class Calendar: Widget {
 
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -168,8 +168,8 @@ open class Calendar: Widget {
 
         let handler10: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gint = { _, value1, data in
+            SignalBox1<OpaquePointer, gint>.run(data, value1)
         }
 
         addSignal(

@@ -40,7 +40,7 @@ open class MenuShell: Container {
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, Bool, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<Bool>.run(data, value1)
+            SignalBox1<Bool, Void>.run(data, value1)
         }
 
         addSignal(
@@ -59,7 +59,7 @@ open class MenuShell: Container {
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, GtkDirectionType, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<GtkDirectionType>.run(data, value1)
+            SignalBox1<GtkDirectionType, Void>.run(data, value1)
         }
 
         addSignal(
@@ -78,7 +78,7 @@ open class MenuShell: Container {
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, GtkWidget, Int, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, data in
-            SignalBox2<GtkWidget, Int>.run(data, value1, value2)
+            SignalBox2<GtkWidget, Int, Void>.run(data, value1, value2)
         }
 
         addSignal(name: "insert", handler: gCallback(handler4)) { [weak self] (
@@ -92,7 +92,7 @@ open class MenuShell: Container {
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, GtkMenuDirectionType, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<GtkMenuDirectionType>.run(data, value1)
+            SignalBox1<GtkMenuDirectionType, Void>.run(data, value1)
         }
 
         addSignal(
@@ -106,7 +106,7 @@ open class MenuShell: Container {
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, Int, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<Int>.run(data, value1)
+            SignalBox1<Int, Void>.run(data, value1)
         }
 
         addSignal(
@@ -125,7 +125,7 @@ open class MenuShell: Container {
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

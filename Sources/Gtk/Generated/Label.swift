@@ -253,8 +253,8 @@ open class Label: Widget {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, UnsafePointer<CChar>, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<UnsafePointer<CChar>>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<UnsafePointer<CChar>, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -273,7 +273,7 @@ open class Label: Widget {
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, GtkMovementStep, Int, Bool, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, value3, data in
-            SignalBox3<GtkMovementStep, Int, Bool>.run(data, value1, value2, value3)
+            SignalBox3<GtkMovementStep, Int, Bool, Void>.run(data, value1, value2, value3)
         }
 
         addSignal(name: "move-cursor", handler: gCallback(handler3)) { [weak self] (
@@ -287,8 +287,8 @@ open class Label: Widget {
 
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> Pango.AttrList = { _, value1, data in
+            SignalBox1<OpaquePointer, Pango.AttrList>.run(data, value1)
         }
 
         addSignal(
@@ -301,8 +301,8 @@ open class Label: Widget {
 
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> Pango.EllipsizeMode = { _, value1, data in
+            SignalBox1<OpaquePointer, Pango.EllipsizeMode>.run(data, value1)
         }
 
         addSignal(
@@ -315,8 +315,8 @@ open class Label: Widget {
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> Gio.MenuModel = { _, value1, data in
+            SignalBox1<OpaquePointer, Gio.MenuModel>.run(data, value1)
         }
 
         addSignal(
@@ -329,8 +329,8 @@ open class Label: Widget {
 
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> Justification = { _, value1, data in
+            SignalBox1<OpaquePointer, Justification>.run(data, value1)
         }
 
         addSignal(
@@ -343,8 +343,8 @@ open class Label: Widget {
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> utf8 = { _, value1, data in
+            SignalBox1<OpaquePointer, utf8>.run(data, value1)
         }
 
         addSignal(
@@ -357,8 +357,8 @@ open class Label: Widget {
 
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gint = { _, value1, data in
+            SignalBox1<OpaquePointer, gint>.run(data, value1)
         }
 
         addSignal(
@@ -371,8 +371,8 @@ open class Label: Widget {
 
         let handler10: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gint = { _, value1, data in
+            SignalBox1<OpaquePointer, gint>.run(data, value1)
         }
 
         addSignal(
@@ -385,8 +385,8 @@ open class Label: Widget {
 
         let handler11: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> guint = { _, value1, data in
+            SignalBox1<OpaquePointer, guint>.run(data, value1)
         }
 
         addSignal(
@@ -399,8 +399,8 @@ open class Label: Widget {
 
         let handler12: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> NaturalWrapMode = { _, value1, data in
+            SignalBox1<OpaquePointer, NaturalWrapMode>.run(data, value1)
         }
 
         addSignal(
@@ -413,8 +413,8 @@ open class Label: Widget {
 
         let handler13: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -427,8 +427,8 @@ open class Label: Widget {
 
         let handler14: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -441,8 +441,8 @@ open class Label: Widget {
 
         let handler15: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> Pango.TabArray = { _, value1, data in
+            SignalBox1<OpaquePointer, Pango.TabArray>.run(data, value1)
         }
 
         addSignal(
@@ -455,8 +455,8 @@ open class Label: Widget {
 
         let handler16: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -469,8 +469,8 @@ open class Label: Widget {
 
         let handler17: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -483,8 +483,8 @@ open class Label: Widget {
 
         let handler18: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gint = { _, value1, data in
+            SignalBox1<OpaquePointer, gint>.run(data, value1)
         }
 
         addSignal(
@@ -497,8 +497,8 @@ open class Label: Widget {
 
         let handler19: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -511,8 +511,8 @@ open class Label: Widget {
 
         let handler20: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> Pango.WrapMode = { _, value1, data in
+            SignalBox1<OpaquePointer, Pango.WrapMode>.run(data, value1)
         }
 
         addSignal(
@@ -525,8 +525,8 @@ open class Label: Widget {
 
         let handler21: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gfloat = { _, value1, data in
+            SignalBox1<OpaquePointer, gfloat>.run(data, value1)
         }
 
         addSignal(
@@ -539,8 +539,8 @@ open class Label: Widget {
 
         let handler22: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gfloat = { _, value1, data in
+            SignalBox1<OpaquePointer, gfloat>.run(data, value1)
         }
 
         addSignal(

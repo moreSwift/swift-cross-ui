@@ -609,6 +609,17 @@ struct GtkCodeGen {
                 }
                 """
             )
+            
+            let returnVal: String
+            if
+                let returnTypeName = signal.returnValue.type?.name,
+                returnTypeName != "none"
+            {
+                returnVal = returnTypeName
+            } else {
+                returnVal = "Void"
+            }
+            
             let expr: ExprSyntax
             if parameterCount == 0 {
                 expr = ExprSyntax(
@@ -618,15 +629,15 @@ struct GtkCodeGen {
                 )
             } else {
                 let typeParameters = parameterTypes.joined(separator: ", ")
-
+                
                 let arguments = (1...parameterCount).map { "value\($0)" }.joined(separator: ", ")
                 exprs.append(
                     DeclSyntax(
                         """
                         let handler\(raw: signalIndex): @convention(c) (
                             UnsafeMutableRawPointer, \(raw: typeParameters), UnsafeMutableRawPointer
-                        ) -> Void = { _, \(raw: arguments), data in
-                            SignalBox\(raw: parameterCount)<\(raw: typeParameters)>.run(data, \(
+                        ) -> \(raw: returnVal) = { _, \(raw: arguments), data in
+                            SignalBox\(raw: parameterCount)<\(raw: typeParameters), \(raw: returnVal)>.run(data, \(
                                 raw: arguments
                             ))
                         }

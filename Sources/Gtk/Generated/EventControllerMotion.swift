@@ -27,7 +27,7 @@ open class EventControllerMotion: EventController {
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, Double, Double, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, data in
-            SignalBox2<Double, Double>.run(data, value1, value2)
+            SignalBox2<Double, Double, Void>.run(data, value1, value2)
         }
 
         addSignal(name: "enter", handler: gCallback(handler0)) { [weak self] (
@@ -46,7 +46,7 @@ open class EventControllerMotion: EventController {
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, Double, Double, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, data in
-            SignalBox2<Double, Double>.run(data, value1, value2)
+            SignalBox2<Double, Double, Void>.run(data, value1, value2)
         }
 
         addSignal(name: "motion", handler: gCallback(handler2)) { [weak self] (
@@ -59,8 +59,8 @@ open class EventControllerMotion: EventController {
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -73,8 +73,8 @@ open class EventControllerMotion: EventController {
 
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(

@@ -40,7 +40,7 @@ open class Switch: Widget, Activatable {
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, Bool, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<Bool>.run(data, value1)
+            SignalBox1<Bool, Void>.run(data, value1)
         }
 
         addSignal(name: "state-set", handler: gCallback(handler1)) { [weak self] (param0: Bool) in
@@ -51,7 +51,7 @@ open class Switch: Widget, Activatable {
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -65,7 +65,7 @@ open class Switch: Widget, Activatable {
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -79,7 +79,7 @@ open class Switch: Widget, Activatable {
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -93,7 +93,7 @@ open class Switch: Widget, Activatable {
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

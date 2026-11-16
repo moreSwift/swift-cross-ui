@@ -72,8 +72,8 @@ open class DropDown: Widget {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -86,8 +86,8 @@ open class DropDown: Widget {
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> Expression = { _, value1, data in
+            SignalBox1<OpaquePointer, Expression>.run(data, value1)
         }
 
         addSignal(
@@ -100,8 +100,8 @@ open class DropDown: Widget {
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> ListItemFactory = { _, value1, data in
+            SignalBox1<OpaquePointer, ListItemFactory>.run(data, value1)
         }
 
         addSignal(
@@ -114,8 +114,8 @@ open class DropDown: Widget {
 
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> ListItemFactory = { _, value1, data in
+            SignalBox1<OpaquePointer, ListItemFactory>.run(data, value1)
         }
 
         addSignal(
@@ -128,8 +128,8 @@ open class DropDown: Widget {
 
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> ListItemFactory = { _, value1, data in
+            SignalBox1<OpaquePointer, ListItemFactory>.run(data, value1)
         }
 
         addSignal(
@@ -142,8 +142,8 @@ open class DropDown: Widget {
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> Gio.ListModel = { _, value1, data in
+            SignalBox1<OpaquePointer, Gio.ListModel>.run(data, value1)
         }
 
         addSignal(
@@ -156,8 +156,8 @@ open class DropDown: Widget {
 
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> StringFilterMatchMode = { _, value1, data in
+            SignalBox1<OpaquePointer, StringFilterMatchMode>.run(data, value1)
         }
 
         addSignal(
@@ -170,8 +170,8 @@ open class DropDown: Widget {
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> guint = { _, value1, data in
+            SignalBox1<OpaquePointer, guint>.run(data, value1)
         }
 
         addSignal(
@@ -184,8 +184,8 @@ open class DropDown: Widget {
 
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> GObject.Object = { _, value1, data in
+            SignalBox1<OpaquePointer, GObject.Object>.run(data, value1)
         }
 
         addSignal(
@@ -198,8 +198,8 @@ open class DropDown: Widget {
 
         let handler10: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(

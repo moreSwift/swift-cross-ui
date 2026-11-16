@@ -97,7 +97,7 @@ open class DrawingArea: Widget {
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, Int, Int, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, data in
-            SignalBox2<Int, Int>.run(data, value1, value2)
+            SignalBox2<Int, Int, Void>.run(data, value1, value2)
         }
 
         addSignal(name: "resize", handler: gCallback(handler0)) { [weak self] (
@@ -110,8 +110,8 @@ open class DrawingArea: Widget {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gint = { _, value1, data in
+            SignalBox1<OpaquePointer, gint>.run(data, value1)
         }
 
         addSignal(
@@ -124,8 +124,8 @@ open class DrawingArea: Widget {
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gint = { _, value1, data in
+            SignalBox1<OpaquePointer, gint>.run(data, value1)
         }
 
         addSignal(

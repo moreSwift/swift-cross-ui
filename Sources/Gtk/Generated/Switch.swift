@@ -60,8 +60,8 @@ open class Switch: Widget, Actionable {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, Bool, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<Bool>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<Bool, gboolean>.run(data, value1)
         }
 
         addSignal(name: "state-set", handler: gCallback(handler1)) { [weak self] (param0: Bool) in
@@ -71,8 +71,8 @@ open class Switch: Widget, Actionable {
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -85,8 +85,8 @@ open class Switch: Widget, Actionable {
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -99,8 +99,8 @@ open class Switch: Widget, Actionable {
 
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> utf8 = { _, value1, data in
+            SignalBox1<OpaquePointer, utf8>.run(data, value1)
         }
 
         addSignal(
@@ -113,8 +113,8 @@ open class Switch: Widget, Actionable {
 
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> GLib.Variant = { _, value1, data in
+            SignalBox1<OpaquePointer, GLib.Variant>.run(data, value1)
         }
 
         addSignal(

@@ -27,7 +27,7 @@ open class Range: Widget, Orientable {
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, Double, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<Double>.run(data, value1)
+            SignalBox1<Double, Void>.run(data, value1)
         }
 
         addSignal(
@@ -40,8 +40,8 @@ open class Range: Widget, Orientable {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, GtkScrollType, Double, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, value2, data in
-            SignalBox2<GtkScrollType, Double>.run(data, value1, value2)
+        ) -> gboolean = { _, value1, value2, data in
+            SignalBox2<GtkScrollType, Double, gboolean>.run(data, value1, value2)
         }
 
         addSignal(name: "change-value", handler: gCallback(handler1)) { [weak self] (
@@ -55,7 +55,7 @@ open class Range: Widget, Orientable {
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, GtkScrollType, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<GtkScrollType>.run(data, value1)
+            SignalBox1<GtkScrollType, Void>.run(data, value1)
         }
 
         addSignal(
@@ -73,8 +73,8 @@ open class Range: Widget, Orientable {
 
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> Adjustment = { _, value1, data in
+            SignalBox1<OpaquePointer, Adjustment>.run(data, value1)
         }
 
         addSignal(
@@ -87,8 +87,8 @@ open class Range: Widget, Orientable {
 
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gdouble = { _, value1, data in
+            SignalBox1<OpaquePointer, gdouble>.run(data, value1)
         }
 
         addSignal(
@@ -101,8 +101,8 @@ open class Range: Widget, Orientable {
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -115,8 +115,8 @@ open class Range: Widget, Orientable {
 
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -129,8 +129,8 @@ open class Range: Widget, Orientable {
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gint = { _, value1, data in
+            SignalBox1<OpaquePointer, gint>.run(data, value1)
         }
 
         addSignal(
@@ -143,8 +143,8 @@ open class Range: Widget, Orientable {
 
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -157,8 +157,8 @@ open class Range: Widget, Orientable {
 
         let handler10: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> Orientation = { _, value1, data in
+            SignalBox1<OpaquePointer, Orientation>.run(data, value1)
         }
 
         addSignal(

@@ -31,7 +31,7 @@ open class GestureLongPress: GestureSingle {
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, Double, Double, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, data in
-            SignalBox2<Double, Double>.run(data, value1, value2)
+            SignalBox2<Double, Double, Void>.run(data, value1, value2)
         }
 
         addSignal(name: "pressed", handler: gCallback(handler1)) { [weak self] (
@@ -45,7 +45,7 @@ open class GestureLongPress: GestureSingle {
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

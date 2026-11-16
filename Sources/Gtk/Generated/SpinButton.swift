@@ -164,7 +164,7 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, GtkScrollType, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<GtkScrollType>.run(data, value1)
+            SignalBox1<GtkScrollType, Void>.run(data, value1)
         }
 
         addSignal(
@@ -177,8 +177,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, gpointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<gpointer>.run(data, value1)
+        ) -> gint = { _, value1, data in
+            SignalBox1<gpointer, gint>.run(data, value1)
         }
 
         addSignal(name: "input", handler: gCallback(handler2)) { [weak self] (param0: gpointer) in
@@ -219,7 +219,7 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, Int, Int, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, data in
-            SignalBox2<Int, Int>.run(data, value1, value2)
+            SignalBox2<Int, Int, Void>.run(data, value1, value2)
         }
 
         addSignal(name: "delete-text", handler: gCallback(handler9)) { [weak self] (
@@ -233,7 +233,7 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
         let handler10: @convention(c) (
             UnsafeMutableRawPointer, UnsafePointer<CChar>, Int, gpointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, value3, data in
-            SignalBox3<UnsafePointer<CChar>, Int, gpointer>.run(data, value1, value2, value3)
+            SignalBox3<UnsafePointer<CChar>, Int, gpointer, Void>.run(data, value1, value2, value3)
         }
 
         addSignal(name: "insert-text", handler: gCallback(handler10)) { [weak self] (
@@ -247,8 +247,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler11: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -261,8 +261,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler12: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> Adjustment = { _, value1, data in
+            SignalBox1<OpaquePointer, Adjustment>.run(data, value1)
         }
 
         addSignal(
@@ -275,8 +275,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler13: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gdouble = { _, value1, data in
+            SignalBox1<OpaquePointer, gdouble>.run(data, value1)
         }
 
         addSignal(
@@ -289,8 +289,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler14: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> guint = { _, value1, data in
+            SignalBox1<OpaquePointer, guint>.run(data, value1)
         }
 
         addSignal(
@@ -303,8 +303,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler15: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -317,8 +317,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler16: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -331,8 +331,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler17: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> SpinButtonUpdatePolicy = { _, value1, data in
+            SignalBox1<OpaquePointer, SpinButtonUpdatePolicy>.run(data, value1)
         }
 
         addSignal(
@@ -345,8 +345,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler18: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gdouble = { _, value1, data in
+            SignalBox1<OpaquePointer, gdouble>.run(data, value1)
         }
 
         addSignal(
@@ -359,8 +359,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler19: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -373,8 +373,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler20: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -387,8 +387,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler21: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gint = { _, value1, data in
+            SignalBox1<OpaquePointer, gint>.run(data, value1)
         }
 
         addSignal(
@@ -401,8 +401,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler22: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -415,8 +415,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler23: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
@@ -429,8 +429,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler24: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gint = { _, value1, data in
+            SignalBox1<OpaquePointer, gint>.run(data, value1)
         }
 
         addSignal(
@@ -443,8 +443,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler25: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gint = { _, value1, data in
+            SignalBox1<OpaquePointer, gint>.run(data, value1)
         }
 
         addSignal(
@@ -457,8 +457,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler26: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> utf8 = { _, value1, data in
+            SignalBox1<OpaquePointer, utf8>.run(data, value1)
         }
 
         addSignal(
@@ -471,8 +471,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler27: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gint = { _, value1, data in
+            SignalBox1<OpaquePointer, gint>.run(data, value1)
         }
 
         addSignal(
@@ -485,8 +485,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler28: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gfloat = { _, value1, data in
+            SignalBox1<OpaquePointer, gfloat>.run(data, value1)
         }
 
         addSignal(
@@ -499,8 +499,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler29: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> Orientation = { _, value1, data in
+            SignalBox1<OpaquePointer, Orientation>.run(data, value1)
         }
 
         addSignal(
