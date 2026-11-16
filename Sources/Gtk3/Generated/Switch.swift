@@ -39,41 +39,41 @@ open class Switch: Widget, Activatable {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, Bool, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<Bool, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<Bool, gboolean>.run(data, value1)
         }
 
         addSignal(name: "state-set", handler: gCallback(handler1)) { [weak self] (param0: Bool) in
-            guard let self else { return }
-            self.stateSet?(self, param0)
+            guard let self else { return 0 }
+            return self.stateSet?(self, param0).toGBoolean() ?? 0
         }
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::active",
             handler: gCallback(handler2)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyActive?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyActive?(self, param0).toGBoolean() ?? 0
         }
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::state",
             handler: gCallback(handler3)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyState?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyState?(self, param0).toGBoolean() ?? 0
         }
 
         let handler4: @convention(c) (
@@ -92,16 +92,16 @@ open class Switch: Widget, Activatable {
 
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::use-action-appearance",
             handler: gCallback(handler5)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyUseActionAppearance?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyUseActionAppearance?(self, param0).toGBoolean() ?? 0
         }
     }
 
@@ -127,13 +127,13 @@ open class Switch: Widget, Activatable {
     /// Visually, the underlying state is represented by the trough color of
     /// the switch, while the #GtkSwitch:active property is represented by the
     /// position of the switch.
-    public var stateSet: ((Switch, Bool) -> Void)?
+    public var stateSet: ((Switch, Bool) -> Bool)?
 
-    public var notifyActive: ((Switch, OpaquePointer) -> Void)?
+    public var notifyActive: ((Switch, OpaquePointer) -> Bool)?
 
-    public var notifyState: ((Switch, OpaquePointer) -> Void)?
+    public var notifyState: ((Switch, OpaquePointer) -> Bool)?
 
     public var notifyRelatedAction: ((Switch, OpaquePointer) -> Void)?
 
-    public var notifyUseActionAppearance: ((Switch, OpaquePointer) -> Void)?
+    public var notifyUseActionAppearance: ((Switch, OpaquePointer) -> Bool)?
 }

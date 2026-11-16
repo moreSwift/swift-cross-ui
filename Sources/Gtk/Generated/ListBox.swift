@@ -155,8 +155,8 @@ open class ListBox: Widget {
             name: "notify::accept-unpaired-release",
             handler: gCallback(handler6)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyAcceptUnpairedRelease?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyAcceptUnpairedRelease?(self, param0).toGBoolean() ?? 0
         }
 
         let handler7: @convention(c) (
@@ -169,8 +169,8 @@ open class ListBox: Widget {
             name: "notify::activate-on-single-click",
             handler: gCallback(handler7)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyActivateOnSingleClick?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyActivateOnSingleClick?(self, param0).toGBoolean() ?? 0
         }
 
         let handler8: @convention(c) (
@@ -197,8 +197,8 @@ open class ListBox: Widget {
             name: "notify::show-separators",
             handler: gCallback(handler9)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowSeparators?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowSeparators?(self, param0).toGBoolean() ?? 0
         }
 
         let handler10: @convention(c) (
@@ -261,13 +261,13 @@ open class ListBox: Widget {
     /// The default bindings for this signal is <kbd>Ctrl</kbd>+<kbd>␣</kbd>.
     public var toggleCursorRow: ((ListBox) -> Void)?
 
-    public var notifyAcceptUnpairedRelease: ((ListBox, OpaquePointer) -> Void)?
+    public var notifyAcceptUnpairedRelease: ((ListBox, OpaquePointer) -> Bool)?
 
-    public var notifyActivateOnSingleClick: ((ListBox, OpaquePointer) -> Void)?
+    public var notifyActivateOnSingleClick: ((ListBox, OpaquePointer) -> Bool)?
 
     public var notifySelectionMode: ((ListBox, OpaquePointer) -> Void)?
 
-    public var notifyShowSeparators: ((ListBox, OpaquePointer) -> Void)?
+    public var notifyShowSeparators: ((ListBox, OpaquePointer) -> Bool)?
 
     public var notifyTabBehavior: ((ListBox, OpaquePointer) -> Void)?
 }

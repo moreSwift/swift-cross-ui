@@ -122,16 +122,16 @@ open class GLArea: Widget {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "render",
             handler: gCallback(handler1)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.render?(self, param0)
+            guard let self else { return 0 }
+            return self.render?(self, param0).toGBoolean() ?? 0
         }
 
         let handler2: @convention(c) (
@@ -150,16 +150,16 @@ open class GLArea: Widget {
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::auto-render",
             handler: gCallback(handler3)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyAutoRender?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyAutoRender?(self, param0).toGBoolean() ?? 0
         }
 
         let handler4: @convention(c) (
@@ -178,58 +178,58 @@ open class GLArea: Widget {
 
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::has-alpha",
             handler: gCallback(handler5)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyHasAlpha?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyHasAlpha?(self, param0).toGBoolean() ?? 0
         }
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::has-depth-buffer",
             handler: gCallback(handler6)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyHasDepthBuffer?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyHasDepthBuffer?(self, param0).toGBoolean() ?? 0
         }
 
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::has-stencil-buffer",
             handler: gCallback(handler7)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyHasStencilBuffer?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyHasStencilBuffer?(self, param0).toGBoolean() ?? 0
         }
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::use-es",
             handler: gCallback(handler8)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyUseEs?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyUseEs?(self, param0).toGBoolean() ?? 0
         }
     }
 
@@ -249,7 +249,7 @@ open class GLArea: Widget {
     ///
     /// The @context is bound to the @area prior to emitting this function,
     /// and the buffers are painted to the window once the emission terminates.
-    public var render: ((GLArea, OpaquePointer) -> Void)?
+    public var render: ((GLArea, OpaquePointer) -> Bool)?
 
     /// The ::resize signal is emitted once when the widget is realized, and
     /// then each time the widget is changed while realized. This is useful
@@ -262,15 +262,15 @@ open class GLArea: Widget {
     /// The default handler sets up the GL viewport.
     public var resize: ((GLArea, Int, Int) -> Void)?
 
-    public var notifyAutoRender: ((GLArea, OpaquePointer) -> Void)?
+    public var notifyAutoRender: ((GLArea, OpaquePointer) -> Bool)?
 
     public var notifyContext: ((GLArea, OpaquePointer) -> Void)?
 
-    public var notifyHasAlpha: ((GLArea, OpaquePointer) -> Void)?
+    public var notifyHasAlpha: ((GLArea, OpaquePointer) -> Bool)?
 
-    public var notifyHasDepthBuffer: ((GLArea, OpaquePointer) -> Void)?
+    public var notifyHasDepthBuffer: ((GLArea, OpaquePointer) -> Bool)?
 
-    public var notifyHasStencilBuffer: ((GLArea, OpaquePointer) -> Void)?
+    public var notifyHasStencilBuffer: ((GLArea, OpaquePointer) -> Bool)?
 
-    public var notifyUseEs: ((GLArea, OpaquePointer) -> Void)?
+    public var notifyUseEs: ((GLArea, OpaquePointer) -> Bool)?
 }

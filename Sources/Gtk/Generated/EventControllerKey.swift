@@ -33,8 +33,8 @@ open class EventControllerKey: EventController {
             param1: UInt,
             param2: GdkModifierType
         ) in
-            guard let self else { return }
-            self.keyPressed?(self, param0, param1, param2)
+            guard let self else { return 0 }
+            return self.keyPressed?(self, param0, param1, param2).toGBoolean() ?? 0
         }
 
         let handler2: @convention(c) (
@@ -62,8 +62,8 @@ open class EventControllerKey: EventController {
             name: "modifiers",
             handler: gCallback(handler3)
         ) { [weak self] (param0: GdkModifierType) in
-            guard let self else { return }
-            self.modifiers?(self, param0)
+            guard let self else { return 0 }
+            return self.modifiers?(self, param0).toGBoolean() ?? 0
         }
     }
 
@@ -75,11 +75,11 @@ open class EventControllerKey: EventController {
     public var imUpdate: ((EventControllerKey) -> Void)?
 
     /// Emitted whenever a key is pressed.
-    public var keyPressed: ((EventControllerKey, UInt, UInt, GdkModifierType) -> Void)?
+    public var keyPressed: ((EventControllerKey, UInt, UInt, GdkModifierType) -> Bool)?
 
     /// Emitted whenever a key is released.
     public var keyReleased: ((EventControllerKey, UInt, UInt, GdkModifierType) -> Void)?
 
     /// Emitted whenever the state of modifier keys and pointer buttons change.
-    public var modifiers: ((EventControllerKey, GdkModifierType) -> Void)?
+    public var modifiers: ((EventControllerKey, GdkModifierType) -> Bool)?
 }

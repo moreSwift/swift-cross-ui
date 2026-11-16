@@ -86,16 +86,16 @@ open class ColorButton: Button {
 
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::show-editor",
             handler: gCallback(handler4)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowEditor?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowEditor?(self, param0).toGBoolean() ?? 0
         }
 
         let handler5: @convention(c) (
@@ -114,16 +114,16 @@ open class ColorButton: Button {
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::use-alpha",
             handler: gCallback(handler6)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyUseAlpha?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyUseAlpha?(self, param0).toGBoolean() ?? 0
         }
     }
 
@@ -142,9 +142,9 @@ open class ColorButton: Button {
 
     public var notifyRgba: ((ColorButton, OpaquePointer) -> Void)?
 
-    public var notifyShowEditor: ((ColorButton, OpaquePointer) -> Void)?
+    public var notifyShowEditor: ((ColorButton, OpaquePointer) -> Bool)?
 
     public var notifyTitle: ((ColorButton, OpaquePointer) -> Void)?
 
-    public var notifyUseAlpha: ((ColorButton, OpaquePointer) -> Void)?
+    public var notifyUseAlpha: ((ColorButton, OpaquePointer) -> Bool)?
 }

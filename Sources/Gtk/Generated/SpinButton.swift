@@ -187,8 +187,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
         }
 
         addSignal(name: "output") { [weak self] () in
-            guard let self else { return }
-            self.output?(self)
+            guard let self else { return 0 }
+            return self.output?(self).toGBoolean() ?? 0
         }
 
         addSignal(name: "value-changed") { [weak self] () in
@@ -255,8 +255,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
             name: "notify::activates-default",
             handler: gCallback(handler11)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyActivatesDefault?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyActivatesDefault?(self, param0).toGBoolean() ?? 0
         }
 
         let handler12: @convention(c) (
@@ -311,8 +311,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
             name: "notify::numeric",
             handler: gCallback(handler15)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyNumeric?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyNumeric?(self, param0).toGBoolean() ?? 0
         }
 
         let handler16: @convention(c) (
@@ -325,8 +325,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
             name: "notify::snap-to-ticks",
             handler: gCallback(handler16)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifySnapToTicks?(self, param0)
+            guard let self else { return 0 }
+            return self.notifySnapToTicks?(self, param0).toGBoolean() ?? 0
         }
 
         let handler17: @convention(c) (
@@ -367,8 +367,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
             name: "notify::wrap",
             handler: gCallback(handler19)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyWrap?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyWrap?(self, param0).toGBoolean() ?? 0
         }
 
         let handler20: @convention(c) (
@@ -381,8 +381,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
             name: "notify::editing-canceled",
             handler: gCallback(handler20)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyEditingCanceled?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyEditingCanceled?(self, param0).toGBoolean() ?? 0
         }
 
         let handler21: @convention(c) (
@@ -409,8 +409,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
             name: "notify::editable",
             handler: gCallback(handler22)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyEditable?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyEditable?(self, param0).toGBoolean() ?? 0
         }
 
         let handler23: @convention(c) (
@@ -423,8 +423,8 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
             name: "notify::enable-undo",
             handler: gCallback(handler23)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyEnableUndo?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyEnableUndo?(self, param0).toGBoolean() ?? 0
         }
 
         let handler24: @convention(c) (
@@ -609,7 +609,7 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
     /// return TRUE;
     /// }
     /// ```
-    public var output: ((SpinButton) -> Void)?
+    public var output: ((SpinButton) -> Bool)?
 
     /// Emitted when the value is changed.
     ///
@@ -676,7 +676,7 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
     /// to modify the inserted text, or prevent it from being inserted entirely.
     public var insertText: ((SpinButton, UnsafePointer<CChar>, Int, gpointer) -> Void)?
 
-    public var notifyActivatesDefault: ((SpinButton, OpaquePointer) -> Void)?
+    public var notifyActivatesDefault: ((SpinButton, OpaquePointer) -> Bool)?
 
     public var notifyAdjustment: ((SpinButton, OpaquePointer) -> Void)?
 
@@ -684,23 +684,23 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
     public var notifyDigits: ((SpinButton, OpaquePointer) -> Void)?
 
-    public var notifyNumeric: ((SpinButton, OpaquePointer) -> Void)?
+    public var notifyNumeric: ((SpinButton, OpaquePointer) -> Bool)?
 
-    public var notifySnapToTicks: ((SpinButton, OpaquePointer) -> Void)?
+    public var notifySnapToTicks: ((SpinButton, OpaquePointer) -> Bool)?
 
     public var notifyUpdatePolicy: ((SpinButton, OpaquePointer) -> Void)?
 
     public var notifyValue: ((SpinButton, OpaquePointer) -> Void)?
 
-    public var notifyWrap: ((SpinButton, OpaquePointer) -> Void)?
+    public var notifyWrap: ((SpinButton, OpaquePointer) -> Bool)?
 
-    public var notifyEditingCanceled: ((SpinButton, OpaquePointer) -> Void)?
+    public var notifyEditingCanceled: ((SpinButton, OpaquePointer) -> Bool)?
 
     public var notifyCursorPosition: ((SpinButton, OpaquePointer) -> Void)?
 
-    public var notifyEditable: ((SpinButton, OpaquePointer) -> Void)?
+    public var notifyEditable: ((SpinButton, OpaquePointer) -> Bool)?
 
-    public var notifyEnableUndo: ((SpinButton, OpaquePointer) -> Void)?
+    public var notifyEnableUndo: ((SpinButton, OpaquePointer) -> Bool)?
 
     public var notifyMaxWidthChars: ((SpinButton, OpaquePointer) -> Void)?
 

@@ -65,8 +65,8 @@ open class Switch: Widget, Actionable {
         }
 
         addSignal(name: "state-set", handler: gCallback(handler1)) { [weak self] (param0: Bool) in
-            guard let self else { return }
-            self.stateSet?(self, param0)
+            guard let self else { return 0 }
+            return self.stateSet?(self, param0).toGBoolean() ?? 0
         }
 
         let handler2: @convention(c) (
@@ -79,8 +79,8 @@ open class Switch: Widget, Actionable {
             name: "notify::active",
             handler: gCallback(handler2)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyActive?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyActive?(self, param0).toGBoolean() ?? 0
         }
 
         let handler3: @convention(c) (
@@ -93,8 +93,8 @@ open class Switch: Widget, Actionable {
             name: "notify::state",
             handler: gCallback(handler3)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyState?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyState?(self, param0).toGBoolean() ?? 0
         }
 
         let handler4: @convention(c) (
@@ -158,11 +158,11 @@ open class Switch: Widget, Actionable {
     /// [method@Gtk.Switch.set_state] when the underlying state change is
     /// complete. The signal handler should return %TRUE to prevent the
     /// default handler from running.
-    public var stateSet: ((Switch, Bool) -> Void)?
+    public var stateSet: ((Switch, Bool) -> Bool)?
 
-    public var notifyActive: ((Switch, OpaquePointer) -> Void)?
+    public var notifyActive: ((Switch, OpaquePointer) -> Bool)?
 
-    public var notifyState: ((Switch, OpaquePointer) -> Void)?
+    public var notifyState: ((Switch, OpaquePointer) -> Bool)?
 
     public var notifyActionName: ((Switch, OpaquePointer) -> Void)?
 

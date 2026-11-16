@@ -261,16 +261,16 @@ open class Entry: Widget, CellEditable, Editable {
 
         let handler18: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::activates-default",
             handler: gCallback(handler18)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyActivatesDefault?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyActivatesDefault?(self, param0).toGBoolean() ?? 0
         }
 
         let handler19: @convention(c) (
@@ -303,16 +303,16 @@ open class Entry: Widget, CellEditable, Editable {
 
         let handler21: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::caps-lock-warning",
             handler: gCallback(handler21)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyCapsLockWarning?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyCapsLockWarning?(self, param0).toGBoolean() ?? 0
         }
 
         let handler22: @convention(c) (
@@ -345,44 +345,44 @@ open class Entry: Widget, CellEditable, Editable {
 
         let handler24: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::editable",
             handler: gCallback(handler24)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyEditable?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyEditable?(self, param0).toGBoolean() ?? 0
         }
 
         let handler25: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::enable-emoji-completion",
             handler: gCallback(handler25)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyEnableEmojiCompletion?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyEnableEmojiCompletion?(self, param0).toGBoolean() ?? 0
         }
 
         let handler26: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::has-frame",
             handler: gCallback(handler26)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyHasFrame?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyHasFrame?(self, param0).toGBoolean() ?? 0
         }
 
         let handler27: @convention(c) (
@@ -457,16 +457,16 @@ open class Entry: Widget, CellEditable, Editable {
 
         let handler32: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::invisible-char-set",
             handler: gCallback(handler32)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyInvisibleCharacterSet?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyInvisibleCharacterSet?(self, param0).toGBoolean() ?? 0
         }
 
         let handler33: @convention(c) (
@@ -499,16 +499,16 @@ open class Entry: Widget, CellEditable, Editable {
 
         let handler35: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::overwrite-mode",
             handler: gCallback(handler35)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyOverwriteMode?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyOverwriteMode?(self, param0).toGBoolean() ?? 0
         }
 
         let handler36: @convention(c) (
@@ -527,30 +527,30 @@ open class Entry: Widget, CellEditable, Editable {
 
         let handler37: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::populate-all",
             handler: gCallback(handler37)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyPopulateAll?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyPopulateAll?(self, param0).toGBoolean() ?? 0
         }
 
         let handler38: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::primary-icon-activatable",
             handler: gCallback(handler38)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyPrimaryIconActivatable?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyPrimaryIconActivatable?(self, param0).toGBoolean() ?? 0
         }
 
         let handler39: @convention(c) (
@@ -597,16 +597,16 @@ open class Entry: Widget, CellEditable, Editable {
 
         let handler42: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::primary-icon-sensitive",
             handler: gCallback(handler42)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyPrimaryIconSensitive?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyPrimaryIconSensitive?(self, param0).toGBoolean() ?? 0
         }
 
         let handler43: @convention(c) (
@@ -709,16 +709,16 @@ open class Entry: Widget, CellEditable, Editable {
 
         let handler50: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::secondary-icon-activatable",
             handler: gCallback(handler50)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifySecondaryIconActivatable?(self, param0)
+            guard let self else { return 0 }
+            return self.notifySecondaryIconActivatable?(self, param0).toGBoolean() ?? 0
         }
 
         let handler51: @convention(c) (
@@ -765,16 +765,16 @@ open class Entry: Widget, CellEditable, Editable {
 
         let handler54: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::secondary-icon-sensitive",
             handler: gCallback(handler54)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifySecondaryIconSensitive?(self, param0)
+            guard let self else { return 0 }
+            return self.notifySecondaryIconSensitive?(self, param0).toGBoolean() ?? 0
         }
 
         let handler55: @convention(c) (
@@ -863,16 +863,16 @@ open class Entry: Widget, CellEditable, Editable {
 
         let handler61: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::show-emoji-icon",
             handler: gCallback(handler61)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowEmojiIcon?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowEmojiIcon?(self, param0).toGBoolean() ?? 0
         }
 
         let handler62: @convention(c) (
@@ -919,30 +919,30 @@ open class Entry: Widget, CellEditable, Editable {
 
         let handler65: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::truncate-multiline",
             handler: gCallback(handler65)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyTruncateMultiline?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyTruncateMultiline?(self, param0).toGBoolean() ?? 0
         }
 
         let handler66: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::visibility",
             handler: gCallback(handler66)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyVisibility?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyVisibility?(self, param0).toGBoolean() ?? 0
         }
 
         let handler67: @convention(c) (
@@ -975,16 +975,16 @@ open class Entry: Widget, CellEditable, Editable {
 
         let handler69: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::editing-canceled",
             handler: gCallback(handler69)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyEditingCanceled?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyEditingCanceled?(self, param0).toGBoolean() ?? 0
         }
     }
 
@@ -1172,23 +1172,23 @@ open class Entry: Widget, CellEditable, Editable {
     /// it from being inserted entirely.
     public var insertText: ((Entry, UnsafePointer<CChar>, Int, gpointer) -> Void)?
 
-    public var notifyActivatesDefault: ((Entry, OpaquePointer) -> Void)?
+    public var notifyActivatesDefault: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyAttributes: ((Entry, OpaquePointer) -> Void)?
 
     public var notifyBuffer: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyCapsLockWarning: ((Entry, OpaquePointer) -> Void)?
+    public var notifyCapsLockWarning: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyCompletion: ((Entry, OpaquePointer) -> Void)?
 
     public var notifyCursorPosition: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyEditable: ((Entry, OpaquePointer) -> Void)?
+    public var notifyEditable: ((Entry, OpaquePointer) -> Bool)?
 
-    public var notifyEnableEmojiCompletion: ((Entry, OpaquePointer) -> Void)?
+    public var notifyEnableEmojiCompletion: ((Entry, OpaquePointer) -> Bool)?
 
-    public var notifyHasFrame: ((Entry, OpaquePointer) -> Void)?
+    public var notifyHasFrame: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyImModule: ((Entry, OpaquePointer) -> Void)?
 
@@ -1200,19 +1200,19 @@ open class Entry: Widget, CellEditable, Editable {
 
     public var notifyInvisibleCharacter: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyInvisibleCharacterSet: ((Entry, OpaquePointer) -> Void)?
+    public var notifyInvisibleCharacterSet: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyMaxLength: ((Entry, OpaquePointer) -> Void)?
 
     public var notifyMaxWidthChars: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyOverwriteMode: ((Entry, OpaquePointer) -> Void)?
+    public var notifyOverwriteMode: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyPlaceholderText: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyPopulateAll: ((Entry, OpaquePointer) -> Void)?
+    public var notifyPopulateAll: ((Entry, OpaquePointer) -> Bool)?
 
-    public var notifyPrimaryIconActivatable: ((Entry, OpaquePointer) -> Void)?
+    public var notifyPrimaryIconActivatable: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyPrimaryIconGicon: ((Entry, OpaquePointer) -> Void)?
 
@@ -1220,7 +1220,7 @@ open class Entry: Widget, CellEditable, Editable {
 
     public var notifyPrimaryIconPixbuf: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyPrimaryIconSensitive: ((Entry, OpaquePointer) -> Void)?
+    public var notifyPrimaryIconSensitive: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyPrimaryIconStock: ((Entry, OpaquePointer) -> Void)?
 
@@ -1236,7 +1236,7 @@ open class Entry: Widget, CellEditable, Editable {
 
     public var notifyScrollOffset: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifySecondaryIconActivatable: ((Entry, OpaquePointer) -> Void)?
+    public var notifySecondaryIconActivatable: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifySecondaryIconGicon: ((Entry, OpaquePointer) -> Void)?
 
@@ -1244,7 +1244,7 @@ open class Entry: Widget, CellEditable, Editable {
 
     public var notifySecondaryIconPixbuf: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifySecondaryIconSensitive: ((Entry, OpaquePointer) -> Void)?
+    public var notifySecondaryIconSensitive: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifySecondaryIconStock: ((Entry, OpaquePointer) -> Void)?
 
@@ -1258,7 +1258,7 @@ open class Entry: Widget, CellEditable, Editable {
 
     public var notifyShadowType: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyShowEmojiIcon: ((Entry, OpaquePointer) -> Void)?
+    public var notifyShowEmojiIcon: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyTabs: ((Entry, OpaquePointer) -> Void)?
 
@@ -1266,13 +1266,13 @@ open class Entry: Widget, CellEditable, Editable {
 
     public var notifyTextLength: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyTruncateMultiline: ((Entry, OpaquePointer) -> Void)?
+    public var notifyTruncateMultiline: ((Entry, OpaquePointer) -> Bool)?
 
-    public var notifyVisibility: ((Entry, OpaquePointer) -> Void)?
+    public var notifyVisibility: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyWidthChars: ((Entry, OpaquePointer) -> Void)?
 
     public var notifyXalign: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyEditingCanceled: ((Entry, OpaquePointer) -> Void)?
+    public var notifyEditingCanceled: ((Entry, OpaquePointer) -> Bool)?
 }

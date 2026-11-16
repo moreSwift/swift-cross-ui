@@ -261,8 +261,8 @@ open class Label: Widget {
             name: "activate-link",
             handler: gCallback(handler1)
         ) { [weak self] (param0: UnsafePointer<CChar>) in
-            guard let self else { return }
-            self.activateLink?(self, param0)
+            guard let self else { return 0 }
+            return self.activateLink?(self, param0).toGBoolean() ?? 0
         }
 
         addSignal(name: "copy-clipboard") { [weak self] () in
@@ -421,8 +421,8 @@ open class Label: Widget {
             name: "notify::selectable",
             handler: gCallback(handler13)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifySelectable?(self, param0)
+            guard let self else { return 0 }
+            return self.notifySelectable?(self, param0).toGBoolean() ?? 0
         }
 
         let handler14: @convention(c) (
@@ -435,8 +435,8 @@ open class Label: Widget {
             name: "notify::single-line-mode",
             handler: gCallback(handler14)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifySingleLineMode?(self, param0)
+            guard let self else { return 0 }
+            return self.notifySingleLineMode?(self, param0).toGBoolean() ?? 0
         }
 
         let handler15: @convention(c) (
@@ -463,8 +463,8 @@ open class Label: Widget {
             name: "notify::use-markup",
             handler: gCallback(handler16)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyUseMarkup?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyUseMarkup?(self, param0).toGBoolean() ?? 0
         }
 
         let handler17: @convention(c) (
@@ -477,8 +477,8 @@ open class Label: Widget {
             name: "notify::use-underline",
             handler: gCallback(handler17)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyUseUnderline?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyUseUnderline?(self, param0).toGBoolean() ?? 0
         }
 
         let handler18: @convention(c) (
@@ -505,8 +505,8 @@ open class Label: Widget {
             name: "notify::wrap",
             handler: gCallback(handler19)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyWrap?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyWrap?(self, param0).toGBoolean() ?? 0
         }
 
         let handler20: @convention(c) (
@@ -672,7 +672,7 @@ open class Label: Widget {
     ///
     /// Applications may connect to it to override the default behaviour,
     /// which is to call [method@Gtk.FileLauncher.launch].
-    public var activateLink: ((Label, UnsafePointer<CChar>) -> Void)?
+    public var activateLink: ((Label, UnsafePointer<CChar>) -> Bool)?
 
     /// Gets emitted to copy the selection to the clipboard.
     ///
@@ -720,19 +720,19 @@ open class Label: Widget {
 
     public var notifyNaturalWrapMode: ((Label, OpaquePointer) -> Void)?
 
-    public var notifySelectable: ((Label, OpaquePointer) -> Void)?
+    public var notifySelectable: ((Label, OpaquePointer) -> Bool)?
 
-    public var notifySingleLineMode: ((Label, OpaquePointer) -> Void)?
+    public var notifySingleLineMode: ((Label, OpaquePointer) -> Bool)?
 
     public var notifyTabs: ((Label, OpaquePointer) -> Void)?
 
-    public var notifyUseMarkup: ((Label, OpaquePointer) -> Void)?
+    public var notifyUseMarkup: ((Label, OpaquePointer) -> Bool)?
 
-    public var notifyUseUnderline: ((Label, OpaquePointer) -> Void)?
+    public var notifyUseUnderline: ((Label, OpaquePointer) -> Bool)?
 
     public var notifyWidthChars: ((Label, OpaquePointer) -> Void)?
 
-    public var notifyWrap: ((Label, OpaquePointer) -> Void)?
+    public var notifyWrap: ((Label, OpaquePointer) -> Bool)?
 
     public var notifyWrapMode: ((Label, OpaquePointer) -> Void)?
 

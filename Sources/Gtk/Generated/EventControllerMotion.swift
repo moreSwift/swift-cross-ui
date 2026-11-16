@@ -67,8 +67,8 @@ open class EventControllerMotion: EventController {
             name: "notify::contains-pointer",
             handler: gCallback(handler3)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyContainsPointer?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyContainsPointer?(self, param0).toGBoolean() ?? 0
         }
 
         let handler4: @convention(c) (
@@ -81,8 +81,8 @@ open class EventControllerMotion: EventController {
             name: "notify::is-pointer",
             handler: gCallback(handler4)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyIsPointer?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyIsPointer?(self, param0).toGBoolean() ?? 0
         }
     }
 
@@ -114,7 +114,7 @@ open class EventControllerMotion: EventController {
     /// Emitted when the pointer moves inside the widget.
     public var motion: ((EventControllerMotion, Double, Double) -> Void)?
 
-    public var notifyContainsPointer: ((EventControllerMotion, OpaquePointer) -> Void)?
+    public var notifyContainsPointer: ((EventControllerMotion, OpaquePointer) -> Bool)?
 
-    public var notifyIsPointer: ((EventControllerMotion, OpaquePointer) -> Void)?
+    public var notifyIsPointer: ((EventControllerMotion, OpaquePointer) -> Bool)?
 }

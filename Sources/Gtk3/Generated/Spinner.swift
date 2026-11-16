@@ -29,18 +29,18 @@ open class Spinner: Widget {
 
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::active",
             handler: gCallback(handler0)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyActive?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyActive?(self, param0).toGBoolean() ?? 0
         }
     }
 
-    public var notifyActive: ((Spinner, OpaquePointer) -> Void)?
+    public var notifyActive: ((Spinner, OpaquePointer) -> Bool)?
 }

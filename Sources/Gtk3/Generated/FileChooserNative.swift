@@ -247,30 +247,30 @@ open class FileChooserNative: NativeDialog, FileChooser {
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::create-folders",
             handler: gCallback(handler8)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyCreateFolders?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyCreateFolders?(self, param0).toGBoolean() ?? 0
         }
 
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::do-overwrite-confirmation",
             handler: gCallback(handler9)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyDoOverwriteConfirmation?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyDoOverwriteConfirmation?(self, param0).toGBoolean() ?? 0
         }
 
         let handler10: @convention(c) (
@@ -303,16 +303,16 @@ open class FileChooserNative: NativeDialog, FileChooser {
 
         let handler12: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::local-only",
             handler: gCallback(handler12)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyLocalOnly?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyLocalOnly?(self, param0).toGBoolean() ?? 0
         }
 
         let handler13: @convention(c) (
@@ -331,58 +331,58 @@ open class FileChooserNative: NativeDialog, FileChooser {
 
         let handler14: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::preview-widget-active",
             handler: gCallback(handler14)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyPreviewWidgetActive?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyPreviewWidgetActive?(self, param0).toGBoolean() ?? 0
         }
 
         let handler15: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::select-multiple",
             handler: gCallback(handler15)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifySelectMultiple?(self, param0)
+            guard let self else { return 0 }
+            return self.notifySelectMultiple?(self, param0).toGBoolean() ?? 0
         }
 
         let handler16: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::show-hidden",
             handler: gCallback(handler16)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowHidden?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowHidden?(self, param0).toGBoolean() ?? 0
         }
 
         let handler17: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::use-preview-label",
             handler: gCallback(handler17)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyUsePreviewLabel?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyUsePreviewLabel?(self, param0).toGBoolean() ?? 0
         }
     }
 
@@ -540,23 +540,23 @@ open class FileChooserNative: NativeDialog, FileChooser {
 
     public var notifyAction: ((FileChooserNative, OpaquePointer) -> Void)?
 
-    public var notifyCreateFolders: ((FileChooserNative, OpaquePointer) -> Void)?
+    public var notifyCreateFolders: ((FileChooserNative, OpaquePointer) -> Bool)?
 
-    public var notifyDoOverwriteConfirmation: ((FileChooserNative, OpaquePointer) -> Void)?
+    public var notifyDoOverwriteConfirmation: ((FileChooserNative, OpaquePointer) -> Bool)?
 
     public var notifyExtraWidget: ((FileChooserNative, OpaquePointer) -> Void)?
 
     public var notifyFilter: ((FileChooserNative, OpaquePointer) -> Void)?
 
-    public var notifyLocalOnly: ((FileChooserNative, OpaquePointer) -> Void)?
+    public var notifyLocalOnly: ((FileChooserNative, OpaquePointer) -> Bool)?
 
     public var notifyPreviewWidget: ((FileChooserNative, OpaquePointer) -> Void)?
 
-    public var notifyPreviewWidgetActive: ((FileChooserNative, OpaquePointer) -> Void)?
+    public var notifyPreviewWidgetActive: ((FileChooserNative, OpaquePointer) -> Bool)?
 
-    public var notifySelectMultiple: ((FileChooserNative, OpaquePointer) -> Void)?
+    public var notifySelectMultiple: ((FileChooserNative, OpaquePointer) -> Bool)?
 
-    public var notifyShowHidden: ((FileChooserNative, OpaquePointer) -> Void)?
+    public var notifyShowHidden: ((FileChooserNative, OpaquePointer) -> Bool)?
 
-    public var notifyUsePreviewLabel: ((FileChooserNative, OpaquePointer) -> Void)?
+    public var notifyUsePreviewLabel: ((FileChooserNative, OpaquePointer) -> Bool)?
 }

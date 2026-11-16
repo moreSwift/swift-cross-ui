@@ -33,16 +33,16 @@ open class Range: Widget, Orientable {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, GtkScrollType, Double, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, value2, data in
-            SignalBox2<GtkScrollType, Double, Void>.run(data, value1, value2)
+        ) -> gboolean = { _, value1, value2, data in
+            SignalBox2<GtkScrollType, Double, gboolean>.run(data, value1, value2)
         }
 
         addSignal(name: "change-value", handler: gCallback(handler1)) { [weak self] (
             param0: GtkScrollType,
             param1: Double
         ) in
-            guard let self else { return }
-            self.changeValue?(self, param0, param1)
+            guard let self else { return 0 }
+            return self.changeValue?(self, param0, param1).toGBoolean() ?? 0
         }
 
         let handler2: @convention(c) (
@@ -94,16 +94,16 @@ open class Range: Widget, Orientable {
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::inverted",
             handler: gCallback(handler6)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyInverted?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyInverted?(self, param0).toGBoolean() ?? 0
         }
 
         let handler7: @convention(c) (
@@ -122,16 +122,16 @@ open class Range: Widget, Orientable {
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::restrict-to-fill-level",
             handler: gCallback(handler8)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyRestrictToFillLevel?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyRestrictToFillLevel?(self, param0).toGBoolean() ?? 0
         }
 
         let handler9: @convention(c) (
@@ -150,16 +150,16 @@ open class Range: Widget, Orientable {
 
         let handler10: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::show-fill-level",
             handler: gCallback(handler10)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowFillLevel?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowFillLevel?(self, param0).toGBoolean() ?? 0
         }
 
         let handler11: @convention(c) (
@@ -217,7 +217,7 @@ open class Range: Widget, Orientable {
     /// the GtkRange::change-value signal is responsible for clamping the
     /// value to the desired number of decimal digits; the default GTK+
     /// handler clamps the value based on #GtkRange:round-digits.
-    public var changeValue: ((Range, GtkScrollType, Double) -> Void)?
+    public var changeValue: ((Range, GtkScrollType, Double) -> Bool)?
 
     /// Virtual function that moves the slider. Used for keybindings.
     public var moveSlider: ((Range, GtkScrollType) -> Void)?
@@ -229,15 +229,15 @@ open class Range: Widget, Orientable {
 
     public var notifyFillLevel: ((Range, OpaquePointer) -> Void)?
 
-    public var notifyInverted: ((Range, OpaquePointer) -> Void)?
+    public var notifyInverted: ((Range, OpaquePointer) -> Bool)?
 
     public var notifyLowerStepperSensitivity: ((Range, OpaquePointer) -> Void)?
 
-    public var notifyRestrictToFillLevel: ((Range, OpaquePointer) -> Void)?
+    public var notifyRestrictToFillLevel: ((Range, OpaquePointer) -> Bool)?
 
     public var notifyRoundDigits: ((Range, OpaquePointer) -> Void)?
 
-    public var notifyShowFillLevel: ((Range, OpaquePointer) -> Void)?
+    public var notifyShowFillLevel: ((Range, OpaquePointer) -> Bool)?
 
     public var notifyUpperStepperSensitivity: ((Range, OpaquePointer) -> Void)?
 

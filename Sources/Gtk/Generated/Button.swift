@@ -104,8 +104,8 @@ open class Button: Widget, Actionable {
             name: "notify::can-shrink",
             handler: gCallback(handler2)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyCanShrink?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyCanShrink?(self, param0).toGBoolean() ?? 0
         }
 
         let handler3: @convention(c) (
@@ -132,8 +132,8 @@ open class Button: Widget, Actionable {
             name: "notify::has-frame",
             handler: gCallback(handler4)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyHasFrame?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyHasFrame?(self, param0).toGBoolean() ?? 0
         }
 
         let handler5: @convention(c) (
@@ -174,8 +174,8 @@ open class Button: Widget, Actionable {
             name: "notify::use-underline",
             handler: gCallback(handler7)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyUseUnderline?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyUseUnderline?(self, param0).toGBoolean() ?? 0
         }
 
         let handler8: @convention(c) (
@@ -235,17 +235,17 @@ open class Button: Widget, Actionable {
     /// Emitted when the button has been activated (pressed and released).
     public var clicked: ((Button) -> Void)?
 
-    public var notifyCanShrink: ((Button, OpaquePointer) -> Void)?
+    public var notifyCanShrink: ((Button, OpaquePointer) -> Bool)?
 
     public var notifyChild: ((Button, OpaquePointer) -> Void)?
 
-    public var notifyHasFrame: ((Button, OpaquePointer) -> Void)?
+    public var notifyHasFrame: ((Button, OpaquePointer) -> Bool)?
 
     public var notifyIconName: ((Button, OpaquePointer) -> Void)?
 
     public var notifyLabel: ((Button, OpaquePointer) -> Void)?
 
-    public var notifyUseUnderline: ((Button, OpaquePointer) -> Void)?
+    public var notifyUseUnderline: ((Button, OpaquePointer) -> Bool)?
 
     public var notifyActionName: ((Button, OpaquePointer) -> Void)?
 

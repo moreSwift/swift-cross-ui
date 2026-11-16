@@ -192,8 +192,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::activates-default",
             handler: gCallback(handler8)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyActivatesDefault?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyActivatesDefault?(self, param0).toGBoolean() ?? 0
         }
 
         let handler9: @convention(c) (
@@ -248,8 +248,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::enable-emoji-completion",
             handler: gCallback(handler12)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyEnableEmojiCompletion?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyEnableEmojiCompletion?(self, param0).toGBoolean() ?? 0
         }
 
         let handler13: @convention(c) (
@@ -276,8 +276,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::has-frame",
             handler: gCallback(handler14)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyHasFrame?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyHasFrame?(self, param0).toGBoolean() ?? 0
         }
 
         let handler15: @convention(c) (
@@ -346,8 +346,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::invisible-char-set",
             handler: gCallback(handler19)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyInvisibleCharacterSet?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyInvisibleCharacterSet?(self, param0).toGBoolean() ?? 0
         }
 
         let handler20: @convention(c) (
@@ -374,8 +374,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::overwrite-mode",
             handler: gCallback(handler21)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyOverwriteMode?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyOverwriteMode?(self, param0).toGBoolean() ?? 0
         }
 
         let handler22: @convention(c) (
@@ -402,8 +402,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::primary-icon-activatable",
             handler: gCallback(handler23)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyPrimaryIconActivatable?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyPrimaryIconActivatable?(self, param0).toGBoolean() ?? 0
         }
 
         let handler24: @convention(c) (
@@ -458,8 +458,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::primary-icon-sensitive",
             handler: gCallback(handler27)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyPrimaryIconSensitive?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyPrimaryIconSensitive?(self, param0).toGBoolean() ?? 0
         }
 
         let handler28: @convention(c) (
@@ -556,8 +556,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::secondary-icon-activatable",
             handler: gCallback(handler34)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifySecondaryIconActivatable?(self, param0)
+            guard let self else { return 0 }
+            return self.notifySecondaryIconActivatable?(self, param0).toGBoolean() ?? 0
         }
 
         let handler35: @convention(c) (
@@ -612,8 +612,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::secondary-icon-sensitive",
             handler: gCallback(handler38)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifySecondaryIconSensitive?(self, param0)
+            guard let self else { return 0 }
+            return self.notifySecondaryIconSensitive?(self, param0).toGBoolean() ?? 0
         }
 
         let handler39: @convention(c) (
@@ -668,8 +668,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::show-emoji-icon",
             handler: gCallback(handler42)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowEmojiIcon?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowEmojiIcon?(self, param0).toGBoolean() ?? 0
         }
 
         let handler43: @convention(c) (
@@ -710,8 +710,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::truncate-multiline",
             handler: gCallback(handler45)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyTruncateMultiline?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyTruncateMultiline?(self, param0).toGBoolean() ?? 0
         }
 
         let handler46: @convention(c) (
@@ -724,8 +724,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::visibility",
             handler: gCallback(handler46)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyVisibility?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyVisibility?(self, param0).toGBoolean() ?? 0
         }
 
         let handler47: @convention(c) (
@@ -738,8 +738,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::editing-canceled",
             handler: gCallback(handler47)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyEditingCanceled?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyEditingCanceled?(self, param0).toGBoolean() ?? 0
         }
 
         let handler48: @convention(c) (
@@ -766,8 +766,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::editable",
             handler: gCallback(handler49)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyEditable?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyEditable?(self, param0).toGBoolean() ?? 0
         }
 
         let handler50: @convention(c) (
@@ -780,8 +780,8 @@ open class Entry: Widget, CellEditable, Editable {
             name: "notify::enable-undo",
             handler: gCallback(handler50)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyEnableUndo?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyEnableUndo?(self, param0).toGBoolean() ?? 0
         }
 
         let handler51: @convention(c) (
@@ -991,7 +991,7 @@ open class Entry: Widget, CellEditable, Editable {
     /// to modify the inserted text, or prevent it from being inserted entirely.
     public var insertText: ((Entry, UnsafePointer<CChar>, Int, gpointer) -> Void)?
 
-    public var notifyActivatesDefault: ((Entry, OpaquePointer) -> Void)?
+    public var notifyActivatesDefault: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyAttributes: ((Entry, OpaquePointer) -> Void)?
 
@@ -999,11 +999,11 @@ open class Entry: Widget, CellEditable, Editable {
 
     public var notifyCompletion: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyEnableEmojiCompletion: ((Entry, OpaquePointer) -> Void)?
+    public var notifyEnableEmojiCompletion: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyExtraMenu: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyHasFrame: ((Entry, OpaquePointer) -> Void)?
+    public var notifyHasFrame: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyImModule: ((Entry, OpaquePointer) -> Void)?
 
@@ -1013,15 +1013,15 @@ open class Entry: Widget, CellEditable, Editable {
 
     public var notifyInvisibleCharacter: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyInvisibleCharacterSet: ((Entry, OpaquePointer) -> Void)?
+    public var notifyInvisibleCharacterSet: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyMaxLength: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyOverwriteMode: ((Entry, OpaquePointer) -> Void)?
+    public var notifyOverwriteMode: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyPlaceholderText: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyPrimaryIconActivatable: ((Entry, OpaquePointer) -> Void)?
+    public var notifyPrimaryIconActivatable: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyPrimaryIconGicon: ((Entry, OpaquePointer) -> Void)?
 
@@ -1029,7 +1029,7 @@ open class Entry: Widget, CellEditable, Editable {
 
     public var notifyPrimaryIconPaintable: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyPrimaryIconSensitive: ((Entry, OpaquePointer) -> Void)?
+    public var notifyPrimaryIconSensitive: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyPrimaryIconStorageType: ((Entry, OpaquePointer) -> Void)?
 
@@ -1043,7 +1043,7 @@ open class Entry: Widget, CellEditable, Editable {
 
     public var notifyScrollOffset: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifySecondaryIconActivatable: ((Entry, OpaquePointer) -> Void)?
+    public var notifySecondaryIconActivatable: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifySecondaryIconGicon: ((Entry, OpaquePointer) -> Void)?
 
@@ -1051,7 +1051,7 @@ open class Entry: Widget, CellEditable, Editable {
 
     public var notifySecondaryIconPaintable: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifySecondaryIconSensitive: ((Entry, OpaquePointer) -> Void)?
+    public var notifySecondaryIconSensitive: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifySecondaryIconStorageType: ((Entry, OpaquePointer) -> Void)?
 
@@ -1059,23 +1059,23 @@ open class Entry: Widget, CellEditable, Editable {
 
     public var notifySecondaryIconTooltipText: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyShowEmojiIcon: ((Entry, OpaquePointer) -> Void)?
+    public var notifyShowEmojiIcon: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyTabs: ((Entry, OpaquePointer) -> Void)?
 
     public var notifyTextLength: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyTruncateMultiline: ((Entry, OpaquePointer) -> Void)?
+    public var notifyTruncateMultiline: ((Entry, OpaquePointer) -> Bool)?
 
-    public var notifyVisibility: ((Entry, OpaquePointer) -> Void)?
+    public var notifyVisibility: ((Entry, OpaquePointer) -> Bool)?
 
-    public var notifyEditingCanceled: ((Entry, OpaquePointer) -> Void)?
+    public var notifyEditingCanceled: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyCursorPosition: ((Entry, OpaquePointer) -> Void)?
 
-    public var notifyEditable: ((Entry, OpaquePointer) -> Void)?
+    public var notifyEditable: ((Entry, OpaquePointer) -> Bool)?
 
-    public var notifyEnableUndo: ((Entry, OpaquePointer) -> Void)?
+    public var notifyEnableUndo: ((Entry, OpaquePointer) -> Bool)?
 
     public var notifyMaxWidthChars: ((Entry, OpaquePointer) -> Void)?
 

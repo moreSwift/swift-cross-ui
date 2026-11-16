@@ -134,8 +134,8 @@ open class Calendar: Widget {
             name: "notify::show-day-names",
             handler: gCallback(handler7)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowDayNames?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowDayNames?(self, param0).toGBoolean() ?? 0
         }
 
         let handler8: @convention(c) (
@@ -148,8 +148,8 @@ open class Calendar: Widget {
             name: "notify::show-heading",
             handler: gCallback(handler8)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowHeading?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowHeading?(self, param0).toGBoolean() ?? 0
         }
 
         let handler9: @convention(c) (
@@ -162,8 +162,8 @@ open class Calendar: Widget {
             name: "notify::show-week-numbers",
             handler: gCallback(handler9)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowWeekNumbers?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowWeekNumbers?(self, param0).toGBoolean() ?? 0
         }
 
         let handler10: @convention(c) (
@@ -222,11 +222,11 @@ open class Calendar: Widget {
 
     public var notifyMonth: ((Calendar, OpaquePointer) -> Void)?
 
-    public var notifyShowDayNames: ((Calendar, OpaquePointer) -> Void)?
+    public var notifyShowDayNames: ((Calendar, OpaquePointer) -> Bool)?
 
-    public var notifyShowHeading: ((Calendar, OpaquePointer) -> Void)?
+    public var notifyShowHeading: ((Calendar, OpaquePointer) -> Bool)?
 
-    public var notifyShowWeekNumbers: ((Calendar, OpaquePointer) -> Void)?
+    public var notifyShowWeekNumbers: ((Calendar, OpaquePointer) -> Bool)?
 
     public var notifyYear: ((Calendar, OpaquePointer) -> Void)?
 }

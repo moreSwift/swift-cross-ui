@@ -251,8 +251,8 @@ open class Image: Widget {
             name: "notify::use-fallback",
             handler: gCallback(handler8)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyUseFallback?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyUseFallback?(self, param0).toGBoolean() ?? 0
         }
     }
 
@@ -293,5 +293,5 @@ open class Image: Widget {
 
     public var notifyStorageType: ((Image, OpaquePointer) -> Void)?
 
-    public var notifyUseFallback: ((Image, OpaquePointer) -> Void)?
+    public var notifyUseFallback: ((Image, OpaquePointer) -> Bool)?
 }

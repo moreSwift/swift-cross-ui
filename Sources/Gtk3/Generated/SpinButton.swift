@@ -168,8 +168,8 @@ open class SpinButton: Entry, Orientable {
         }
 
         addSignal(name: "output") { [weak self] () in
-            guard let self else { return }
-            self.output?(self)
+            guard let self else { return 0 }
+            return self.output?(self).toGBoolean() ?? 0
         }
 
         addSignal(name: "value-changed") { [weak self] () in
@@ -226,30 +226,30 @@ open class SpinButton: Entry, Orientable {
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::numeric",
             handler: gCallback(handler8)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyNumeric?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyNumeric?(self, param0).toGBoolean() ?? 0
         }
 
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::snap-to-ticks",
             handler: gCallback(handler9)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifySnapToTicks?(self, param0)
+            guard let self else { return 0 }
+            return self.notifySnapToTicks?(self, param0).toGBoolean() ?? 0
         }
 
         let handler10: @convention(c) (
@@ -282,16 +282,16 @@ open class SpinButton: Entry, Orientable {
 
         let handler12: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::wrap",
             handler: gCallback(handler12)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyWrap?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyWrap?(self, param0).toGBoolean() ?? 0
         }
 
         let handler13: @convention(c) (
@@ -360,7 +360,7 @@ open class SpinButton: Entry, Orientable {
     /// return TRUE;
     /// }
     /// ]|
-    public var output: ((SpinButton) -> Void)?
+    public var output: ((SpinButton) -> Bool)?
 
     /// The ::value-changed signal is emitted when the value represented by
     /// @spinbutton changes. Also see the #GtkSpinButton::output signal.
@@ -376,15 +376,15 @@ open class SpinButton: Entry, Orientable {
 
     public var notifyDigits: ((SpinButton, OpaquePointer) -> Void)?
 
-    public var notifyNumeric: ((SpinButton, OpaquePointer) -> Void)?
+    public var notifyNumeric: ((SpinButton, OpaquePointer) -> Bool)?
 
-    public var notifySnapToTicks: ((SpinButton, OpaquePointer) -> Void)?
+    public var notifySnapToTicks: ((SpinButton, OpaquePointer) -> Bool)?
 
     public var notifyUpdatePolicy: ((SpinButton, OpaquePointer) -> Void)?
 
     public var notifyValue: ((SpinButton, OpaquePointer) -> Void)?
 
-    public var notifyWrap: ((SpinButton, OpaquePointer) -> Void)?
+    public var notifyWrap: ((SpinButton, OpaquePointer) -> Bool)?
 
     public var notifyOrientation: ((SpinButton, OpaquePointer) -> Void)?
 }

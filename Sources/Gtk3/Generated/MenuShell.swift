@@ -105,16 +105,16 @@ open class MenuShell: Container {
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, Int, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<Int, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<Int, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "move-selected",
             handler: gCallback(handler6)
         ) { [weak self] (param0: Int) in
-            guard let self else { return }
-            self.moveSelected?(self, param0)
+            guard let self else { return 0 }
+            return self.moveSelected?(self, param0).toGBoolean() ?? 0
         }
 
         addSignal(name: "selection-done") { [weak self] () in
@@ -124,16 +124,16 @@ open class MenuShell: Container {
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::take-focus",
             handler: gCallback(handler8)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyTakeFocus?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyTakeFocus?(self, param0).toGBoolean() ?? 0
         }
     }
 
@@ -166,11 +166,11 @@ open class MenuShell: Container {
 
     /// The ::move-selected signal is emitted to move the selection to
     /// another item.
-    public var moveSelected: ((MenuShell, Int) -> Void)?
+    public var moveSelected: ((MenuShell, Int) -> Bool)?
 
     /// This signal is emitted when a selection has been
     /// completed within a menu shell.
     public var selectionDone: ((MenuShell) -> Void)?
 
-    public var notifyTakeFocus: ((MenuShell, OpaquePointer) -> Void)?
+    public var notifyTakeFocus: ((MenuShell, OpaquePointer) -> Bool)?
 }

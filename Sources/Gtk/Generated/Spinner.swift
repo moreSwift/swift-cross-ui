@@ -41,13 +41,13 @@ open class Spinner: Widget {
             name: "notify::spinning",
             handler: gCallback(handler0)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifySpinning?(self, param0)
+            guard let self else { return 0 }
+            return self.notifySpinning?(self, param0).toGBoolean() ?? 0
         }
     }
 
     /// Whether the spinner is spinning
     @GObjectProperty(named: "spinning") public var spinning: Bool
 
-    public var notifySpinning: ((Spinner, OpaquePointer) -> Void)?
+    public var notifySpinning: ((Spinner, OpaquePointer) -> Bool)?
 }

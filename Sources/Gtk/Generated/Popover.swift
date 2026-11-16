@@ -107,8 +107,8 @@ open class Popover: Widget, Native, ShortcutManager {
             name: "notify::autohide",
             handler: gCallback(handler2)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyAutohide?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyAutohide?(self, param0).toGBoolean() ?? 0
         }
 
         let handler3: @convention(c) (
@@ -121,8 +121,8 @@ open class Popover: Widget, Native, ShortcutManager {
             name: "notify::cascade-popdown",
             handler: gCallback(handler3)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyCascadePopdown?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyCascadePopdown?(self, param0).toGBoolean() ?? 0
         }
 
         let handler4: @convention(c) (
@@ -163,8 +163,8 @@ open class Popover: Widget, Native, ShortcutManager {
             name: "notify::has-arrow",
             handler: gCallback(handler6)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyHasArrow?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyHasArrow?(self, param0).toGBoolean() ?? 0
         }
 
         let handler7: @convention(c) (
@@ -177,8 +177,8 @@ open class Popover: Widget, Native, ShortcutManager {
             name: "notify::mnemonics-visible",
             handler: gCallback(handler7)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyMnemonicsVisible?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyMnemonicsVisible?(self, param0).toGBoolean() ?? 0
         }
 
         let handler8: @convention(c) (
@@ -237,17 +237,17 @@ open class Popover: Widget, Native, ShortcutManager {
     /// Emitted when the popover is closed.
     public var closed: ((Popover) -> Void)?
 
-    public var notifyAutohide: ((Popover, OpaquePointer) -> Void)?
+    public var notifyAutohide: ((Popover, OpaquePointer) -> Bool)?
 
-    public var notifyCascadePopdown: ((Popover, OpaquePointer) -> Void)?
+    public var notifyCascadePopdown: ((Popover, OpaquePointer) -> Bool)?
 
     public var notifyChild: ((Popover, OpaquePointer) -> Void)?
 
     public var notifyDefaultWidget: ((Popover, OpaquePointer) -> Void)?
 
-    public var notifyHasArrow: ((Popover, OpaquePointer) -> Void)?
+    public var notifyHasArrow: ((Popover, OpaquePointer) -> Bool)?
 
-    public var notifyMnemonicsVisible: ((Popover, OpaquePointer) -> Void)?
+    public var notifyMnemonicsVisible: ((Popover, OpaquePointer) -> Bool)?
 
     public var notifyPointingTo: ((Popover, OpaquePointer) -> Void)?
 

@@ -127,30 +127,30 @@ open class Scale: Range {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::draw-value",
             handler: gCallback(handler1)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyDrawValue?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyDrawValue?(self, param0).toGBoolean() ?? 0
         }
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::has-origin",
             handler: gCallback(handler2)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyHasOrigin?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyHasOrigin?(self, param0).toGBoolean() ?? 0
         }
 
         let handler3: @convention(c) (
@@ -178,9 +178,9 @@ open class Scale: Range {
 
     public var notifyDigits: ((Scale, OpaquePointer) -> Void)?
 
-    public var notifyDrawValue: ((Scale, OpaquePointer) -> Void)?
+    public var notifyDrawValue: ((Scale, OpaquePointer) -> Bool)?
 
-    public var notifyHasOrigin: ((Scale, OpaquePointer) -> Void)?
+    public var notifyHasOrigin: ((Scale, OpaquePointer) -> Bool)?
 
     public var notifyValuePos: ((Scale, OpaquePointer) -> Void)?
 }

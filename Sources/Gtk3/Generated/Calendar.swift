@@ -130,72 +130,72 @@ open class Calendar: Widget {
 
         let handler11: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::no-month-change",
             handler: gCallback(handler11)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyNoMonthChange?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyNoMonthChange?(self, param0).toGBoolean() ?? 0
         }
 
         let handler12: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::show-day-names",
             handler: gCallback(handler12)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowDayNames?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowDayNames?(self, param0).toGBoolean() ?? 0
         }
 
         let handler13: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::show-details",
             handler: gCallback(handler13)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowDetails?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowDetails?(self, param0).toGBoolean() ?? 0
         }
 
         let handler14: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::show-heading",
             handler: gCallback(handler14)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowHeading?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowHeading?(self, param0).toGBoolean() ?? 0
         }
 
         let handler15: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::show-week-numbers",
             handler: gCallback(handler15)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowWeekNumbers?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowWeekNumbers?(self, param0).toGBoolean() ?? 0
         }
 
         let handler16: @convention(c) (
@@ -243,15 +243,15 @@ open class Calendar: Widget {
 
     public var notifyMonth: ((Calendar, OpaquePointer) -> Void)?
 
-    public var notifyNoMonthChange: ((Calendar, OpaquePointer) -> Void)?
+    public var notifyNoMonthChange: ((Calendar, OpaquePointer) -> Bool)?
 
-    public var notifyShowDayNames: ((Calendar, OpaquePointer) -> Void)?
+    public var notifyShowDayNames: ((Calendar, OpaquePointer) -> Bool)?
 
-    public var notifyShowDetails: ((Calendar, OpaquePointer) -> Void)?
+    public var notifyShowDetails: ((Calendar, OpaquePointer) -> Bool)?
 
-    public var notifyShowHeading: ((Calendar, OpaquePointer) -> Void)?
+    public var notifyShowHeading: ((Calendar, OpaquePointer) -> Bool)?
 
-    public var notifyShowWeekNumbers: ((Calendar, OpaquePointer) -> Void)?
+    public var notifyShowWeekNumbers: ((Calendar, OpaquePointer) -> Bool)?
 
     public var notifyYear: ((Calendar, OpaquePointer) -> Void)?
 }

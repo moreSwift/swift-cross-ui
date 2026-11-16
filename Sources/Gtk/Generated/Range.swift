@@ -48,8 +48,8 @@ open class Range: Widget, Orientable {
             param0: GtkScrollType,
             param1: Double
         ) in
-            guard let self else { return }
-            self.changeValue?(self, param0, param1)
+            guard let self else { return 0 }
+            return self.changeValue?(self, param0, param1).toGBoolean() ?? 0
         }
 
         let handler2: @convention(c) (
@@ -109,8 +109,8 @@ open class Range: Widget, Orientable {
             name: "notify::inverted",
             handler: gCallback(handler6)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyInverted?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyInverted?(self, param0).toGBoolean() ?? 0
         }
 
         let handler7: @convention(c) (
@@ -123,8 +123,8 @@ open class Range: Widget, Orientable {
             name: "notify::restrict-to-fill-level",
             handler: gCallback(handler7)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyRestrictToFillLevel?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyRestrictToFillLevel?(self, param0).toGBoolean() ?? 0
         }
 
         let handler8: @convention(c) (
@@ -151,8 +151,8 @@ open class Range: Widget, Orientable {
             name: "notify::show-fill-level",
             handler: gCallback(handler9)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowFillLevel?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowFillLevel?(self, param0).toGBoolean() ?? 0
         }
 
         let handler10: @convention(c) (
@@ -209,7 +209,7 @@ open class Range: Widget, Orientable {
     /// the ::change-value signal is responsible for clamping the value
     /// to the desired number of decimal digits; the default GTK
     /// handler clamps the value based on [property@Gtk.Range:round-digits].
-    public var changeValue: ((Range, GtkScrollType, Double) -> Void)?
+    public var changeValue: ((Range, GtkScrollType, Double) -> Bool)?
 
     /// Virtual function that moves the slider.
     ///
@@ -223,13 +223,13 @@ open class Range: Widget, Orientable {
 
     public var notifyFillLevel: ((Range, OpaquePointer) -> Void)?
 
-    public var notifyInverted: ((Range, OpaquePointer) -> Void)?
+    public var notifyInverted: ((Range, OpaquePointer) -> Bool)?
 
-    public var notifyRestrictToFillLevel: ((Range, OpaquePointer) -> Void)?
+    public var notifyRestrictToFillLevel: ((Range, OpaquePointer) -> Bool)?
 
     public var notifyRoundDigits: ((Range, OpaquePointer) -> Void)?
 
-    public var notifyShowFillLevel: ((Range, OpaquePointer) -> Void)?
+    public var notifyShowFillLevel: ((Range, OpaquePointer) -> Bool)?
 
     public var notifyOrientation: ((Range, OpaquePointer) -> Void)?
 }

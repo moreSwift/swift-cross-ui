@@ -99,8 +99,8 @@ open class ProgressBar: Widget, Orientable {
             name: "notify::inverted",
             handler: gCallback(handler2)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyInverted?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyInverted?(self, param0).toGBoolean() ?? 0
         }
 
         let handler3: @convention(c) (
@@ -127,8 +127,8 @@ open class ProgressBar: Widget, Orientable {
             name: "notify::show-text",
             handler: gCallback(handler4)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowText?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowText?(self, param0).toGBoolean() ?? 0
         }
 
         let handler5: @convention(c) (
@@ -202,11 +202,11 @@ open class ProgressBar: Widget, Orientable {
 
     public var notifyFraction: ((ProgressBar, OpaquePointer) -> Void)?
 
-    public var notifyInverted: ((ProgressBar, OpaquePointer) -> Void)?
+    public var notifyInverted: ((ProgressBar, OpaquePointer) -> Bool)?
 
     public var notifyPulseStep: ((ProgressBar, OpaquePointer) -> Void)?
 
-    public var notifyShowText: ((ProgressBar, OpaquePointer) -> Void)?
+    public var notifyShowText: ((ProgressBar, OpaquePointer) -> Bool)?
 
     public var notifyText: ((ProgressBar, OpaquePointer) -> Void)?
 

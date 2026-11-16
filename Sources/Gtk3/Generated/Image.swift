@@ -334,16 +334,16 @@ open class Image: Misc {
 
         let handler12: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::use-fallback",
             handler: gCallback(handler12)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyUseFallback?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyUseFallback?(self, param0).toGBoolean() ?? 0
         }
     }
 
@@ -384,5 +384,5 @@ open class Image: Misc {
 
     public var notifySurface: ((Image, OpaquePointer) -> Void)?
 
-    public var notifyUseFallback: ((Image, OpaquePointer) -> Void)?
+    public var notifyUseFallback: ((Image, OpaquePointer) -> Bool)?
 }

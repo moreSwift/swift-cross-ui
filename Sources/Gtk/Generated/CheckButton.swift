@@ -113,8 +113,8 @@ open class CheckButton: Widget, Actionable {
             name: "notify::active",
             handler: gCallback(handler2)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyActive?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyActive?(self, param0).toGBoolean() ?? 0
         }
 
         let handler3: @convention(c) (
@@ -155,8 +155,8 @@ open class CheckButton: Widget, Actionable {
             name: "notify::inconsistent",
             handler: gCallback(handler5)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyInconsistent?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyInconsistent?(self, param0).toGBoolean() ?? 0
         }
 
         let handler6: @convention(c) (
@@ -183,8 +183,8 @@ open class CheckButton: Widget, Actionable {
             name: "notify::use-underline",
             handler: gCallback(handler7)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyUseUnderline?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyUseUnderline?(self, param0).toGBoolean() ?? 0
         }
 
         let handler8: @convention(c) (
@@ -254,17 +254,17 @@ open class CheckButton: Widget, Actionable {
     /// property changes.
     public var toggled: ((CheckButton) -> Void)?
 
-    public var notifyActive: ((CheckButton, OpaquePointer) -> Void)?
+    public var notifyActive: ((CheckButton, OpaquePointer) -> Bool)?
 
     public var notifyChild: ((CheckButton, OpaquePointer) -> Void)?
 
     public var notifyGroup: ((CheckButton, OpaquePointer) -> Void)?
 
-    public var notifyInconsistent: ((CheckButton, OpaquePointer) -> Void)?
+    public var notifyInconsistent: ((CheckButton, OpaquePointer) -> Bool)?
 
     public var notifyLabel: ((CheckButton, OpaquePointer) -> Void)?
 
-    public var notifyUseUnderline: ((CheckButton, OpaquePointer) -> Void)?
+    public var notifyUseUnderline: ((CheckButton, OpaquePointer) -> Bool)?
 
     public var notifyActionName: ((CheckButton, OpaquePointer) -> Void)?
 

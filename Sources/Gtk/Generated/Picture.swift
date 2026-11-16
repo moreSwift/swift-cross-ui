@@ -116,8 +116,8 @@ open class Picture: Widget {
             name: "notify::can-shrink",
             handler: gCallback(handler1)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyCanShrink?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyCanShrink?(self, param0).toGBoolean() ?? 0
         }
 
         let handler2: @convention(c) (
@@ -158,8 +158,8 @@ open class Picture: Widget {
             name: "notify::keep-aspect-ratio",
             handler: gCallback(handler4)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyKeepAspectRatio?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyKeepAspectRatio?(self, param0).toGBoolean() ?? 0
         }
 
         let handler5: @convention(c) (
@@ -192,13 +192,13 @@ open class Picture: Widget {
 
     public var notifyAlternativeText: ((Picture, OpaquePointer) -> Void)?
 
-    public var notifyCanShrink: ((Picture, OpaquePointer) -> Void)?
+    public var notifyCanShrink: ((Picture, OpaquePointer) -> Bool)?
 
     public var notifyContentFit: ((Picture, OpaquePointer) -> Void)?
 
     public var notifyFile: ((Picture, OpaquePointer) -> Void)?
 
-    public var notifyKeepAspectRatio: ((Picture, OpaquePointer) -> Void)?
+    public var notifyKeepAspectRatio: ((Picture, OpaquePointer) -> Bool)?
 
     public var notifyPaintable: ((Picture, OpaquePointer) -> Void)?
 }

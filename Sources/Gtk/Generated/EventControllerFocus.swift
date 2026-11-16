@@ -44,8 +44,8 @@ open class EventControllerFocus: EventController {
             name: "notify::contains-focus",
             handler: gCallback(handler2)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyContainsFocus?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyContainsFocus?(self, param0).toGBoolean() ?? 0
         }
 
         let handler3: @convention(c) (
@@ -58,8 +58,8 @@ open class EventControllerFocus: EventController {
             name: "notify::is-focus",
             handler: gCallback(handler3)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyIsFocus?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyIsFocus?(self, param0).toGBoolean() ?? 0
         }
     }
 
@@ -106,7 +106,7 @@ open class EventControllerFocus: EventController {
     /// property for changes.
     public var leave: ((EventControllerFocus) -> Void)?
 
-    public var notifyContainsFocus: ((EventControllerFocus, OpaquePointer) -> Void)?
+    public var notifyContainsFocus: ((EventControllerFocus, OpaquePointer) -> Bool)?
 
-    public var notifyIsFocus: ((EventControllerFocus, OpaquePointer) -> Void)?
+    public var notifyIsFocus: ((EventControllerFocus, OpaquePointer) -> Bool)?
 }

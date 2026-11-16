@@ -47,8 +47,8 @@ open class GestureSingle: Gesture {
             name: "notify::exclusive",
             handler: gCallback(handler1)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyExclusive?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyExclusive?(self, param0).toGBoolean() ?? 0
         }
 
         let handler2: @convention(c) (
@@ -61,8 +61,8 @@ open class GestureSingle: Gesture {
             name: "notify::touch-only",
             handler: gCallback(handler2)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyTouchOnly?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyTouchOnly?(self, param0).toGBoolean() ?? 0
         }
     }
 
@@ -79,7 +79,7 @@ open class GestureSingle: Gesture {
 
     public var notifyButton: ((GestureSingle, OpaquePointer) -> Void)?
 
-    public var notifyExclusive: ((GestureSingle, OpaquePointer) -> Void)?
+    public var notifyExclusive: ((GestureSingle, OpaquePointer) -> Bool)?
 
-    public var notifyTouchOnly: ((GestureSingle, OpaquePointer) -> Void)?
+    public var notifyTouchOnly: ((GestureSingle, OpaquePointer) -> Bool)?
 }

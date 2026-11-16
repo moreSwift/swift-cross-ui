@@ -38,36 +38,36 @@ open class GestureSingle: Gesture {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::exclusive",
             handler: gCallback(handler1)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyExclusive?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyExclusive?(self, param0).toGBoolean() ?? 0
         }
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer, Void>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "notify::touch-only",
             handler: gCallback(handler2)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyTouchOnly?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyTouchOnly?(self, param0).toGBoolean() ?? 0
         }
     }
 
     public var notifyButton: ((GestureSingle, OpaquePointer) -> Void)?
 
-    public var notifyExclusive: ((GestureSingle, OpaquePointer) -> Void)?
+    public var notifyExclusive: ((GestureSingle, OpaquePointer) -> Bool)?
 
-    public var notifyTouchOnly: ((GestureSingle, OpaquePointer) -> Void)?
+    public var notifyTouchOnly: ((GestureSingle, OpaquePointer) -> Bool)?
 }

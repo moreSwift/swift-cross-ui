@@ -80,8 +80,8 @@ open class DropDown: Widget {
             name: "notify::enable-search",
             handler: gCallback(handler1)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyEnableSearch?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyEnableSearch?(self, param0).toGBoolean() ?? 0
         }
 
         let handler2: @convention(c) (
@@ -206,8 +206,8 @@ open class DropDown: Widget {
             name: "notify::show-arrow",
             handler: gCallback(handler10)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.notifyShowArrow?(self, param0)
+            guard let self else { return 0 }
+            return self.notifyShowArrow?(self, param0).toGBoolean() ?? 0
         }
     }
 
@@ -232,7 +232,7 @@ open class DropDown: Widget {
     /// emitting it causes the drop down to pop up its dropdown.
     public var activate: ((DropDown) -> Void)?
 
-    public var notifyEnableSearch: ((DropDown, OpaquePointer) -> Void)?
+    public var notifyEnableSearch: ((DropDown, OpaquePointer) -> Bool)?
 
     public var notifyExpression: ((DropDown, OpaquePointer) -> Void)?
 
@@ -250,5 +250,5 @@ open class DropDown: Widget {
 
     public var notifySelectedItem: ((DropDown, OpaquePointer) -> Void)?
 
-    public var notifyShowArrow: ((DropDown, OpaquePointer) -> Void)?
+    public var notifyShowArrow: ((DropDown, OpaquePointer) -> Bool)?
 }
