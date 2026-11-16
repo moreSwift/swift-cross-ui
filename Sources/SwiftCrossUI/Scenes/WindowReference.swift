@@ -304,8 +304,8 @@ final class WindowReference<SceneType: WindowingScene>: ModelObserver {
         viewGraph.commit()
 
         if isFirstUpdate {
-            backend.show(window: window)
             isFirstUpdate = false
+            backend.show(window: window)
         }
     }
 
