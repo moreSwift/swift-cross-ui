@@ -170,8 +170,8 @@ open class FileChooserNative: NativeDialog, FileChooser {
 
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> utf8 = { _, value1, data in
-            SignalBox1<OpaquePointer, utf8>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -184,8 +184,8 @@ open class FileChooserNative: NativeDialog, FileChooser {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> utf8 = { _, value1, data in
-            SignalBox1<OpaquePointer, utf8>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -198,8 +198,8 @@ open class FileChooserNative: NativeDialog, FileChooser {
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> FileChooserAction = { _, value1, data in
-            SignalBox1<OpaquePointer, FileChooserAction>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -226,8 +226,8 @@ open class FileChooserNative: NativeDialog, FileChooser {
 
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> FileFilter = { _, value1, data in
-            SignalBox1<OpaquePointer, FileFilter>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -240,8 +240,8 @@ open class FileChooserNative: NativeDialog, FileChooser {
 
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Gio.ListModel = { _, value1, data in
-            SignalBox1<OpaquePointer, Gio.ListModel>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -268,8 +268,8 @@ open class FileChooserNative: NativeDialog, FileChooser {
 
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Gio.ListModel = { _, value1, data in
-            SignalBox1<OpaquePointer, Gio.ListModel>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

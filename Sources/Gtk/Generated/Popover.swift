@@ -127,8 +127,8 @@ open class Popover: Widget, Native, ShortcutManager {
 
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Widget = { _, value1, data in
-            SignalBox1<OpaquePointer, Widget>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -141,8 +141,8 @@ open class Popover: Widget, Native, ShortcutManager {
 
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Widget = { _, value1, data in
-            SignalBox1<OpaquePointer, Widget>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -183,8 +183,8 @@ open class Popover: Widget, Native, ShortcutManager {
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Gdk.Rectangle = { _, value1, data in
-            SignalBox1<OpaquePointer, Gdk.Rectangle>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -197,8 +197,8 @@ open class Popover: Widget, Native, ShortcutManager {
 
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> PositionType = { _, value1, data in
-            SignalBox1<OpaquePointer, PositionType>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

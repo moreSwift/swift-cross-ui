@@ -54,8 +54,8 @@ open class NativeDialog: GObject {
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> utf8 = { _, value1, data in
-            SignalBox1<OpaquePointer, utf8>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -68,8 +68,8 @@ open class NativeDialog: GObject {
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Window = { _, value1, data in
-            SignalBox1<OpaquePointer, Window>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

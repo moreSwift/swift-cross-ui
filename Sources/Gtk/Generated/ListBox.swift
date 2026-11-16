@@ -175,8 +175,8 @@ open class ListBox: Widget {
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> SelectionMode = { _, value1, data in
-            SignalBox1<OpaquePointer, SelectionMode>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -203,8 +203,8 @@ open class ListBox: Widget {
 
         let handler10: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> ListTabBehavior = { _, value1, data in
-            SignalBox1<OpaquePointer, ListTabBehavior>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

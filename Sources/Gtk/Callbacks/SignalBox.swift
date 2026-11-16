@@ -14,8 +14,8 @@ func gCallback<T>(_ closure: T) -> GCallback {
     return unsafeBitCast(closure, to: GCallback.self)
 }
 
-class SignalBox0<R>: SignalBox {
-    typealias CallbackType = () -> R
+class SignalBox0: SignalBox {
+    typealias CallbackType = () -> Void
 
     let callback: CallbackType
 

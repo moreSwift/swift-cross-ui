@@ -52,8 +52,8 @@ open class GestureLongPress: GestureSingle {
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gdouble = { _, value1, data in
-            SignalBox1<OpaquePointer, gdouble>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

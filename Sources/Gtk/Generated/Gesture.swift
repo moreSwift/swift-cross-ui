@@ -171,8 +171,8 @@ open class Gesture: EventController {
 
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> guint = { _, value1, data in
-            SignalBox1<OpaquePointer, guint>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

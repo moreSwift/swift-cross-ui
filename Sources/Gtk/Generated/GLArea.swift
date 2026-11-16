@@ -157,8 +157,8 @@ open class GLArea: Widget {
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Gdk.GLAPI = { _, value1, data in
-            SignalBox1<OpaquePointer, Gdk.GLAPI>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -171,8 +171,8 @@ open class GLArea: Widget {
 
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Gdk.GLAPI = { _, value1, data in
-            SignalBox1<OpaquePointer, Gdk.GLAPI>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -199,8 +199,8 @@ open class GLArea: Widget {
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Gdk.GLContext = { _, value1, data in
-            SignalBox1<OpaquePointer, Gdk.GLContext>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

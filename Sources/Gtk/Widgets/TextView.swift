@@ -112,7 +112,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, GtkDeleteType, Int, UnsafeMutableRawPointer) ->
             Void =
             { _, value1, value2, data in
-                SignalBox2<GtkDeleteType, Int>.run(data, value1, value2)
+                SignalBox2<GtkDeleteType, Int, Void>.run(data, value1, value2)
             }
 
         addSignal(name: "delete-from-cursor", handler: gCallback(handler3)) {
@@ -131,7 +131,7 @@ open class TextView: Widget, Scrollable {
                 UnsafeMutableRawPointer
             ) -> Void =
             { _, value1, value2, value3, value4, data in
-                SignalBox4<GtkTextExtendSelection, GtkTextIter, GtkTextIter, GtkTextIter>.run(
+                SignalBox4<GtkTextExtendSelection, GtkTextIter, GtkTextIter, GtkTextIter, Void>.run(
                     data,
                     value1,
                     value2,
@@ -156,7 +156,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, UnsafePointer<CChar>, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<UnsafePointer<CChar>>.run(data, value1)
+                SignalBox1<UnsafePointer<CChar>, Void>.run(data, value1)
             }
 
         addSignal(name: "insert-at-cursor", handler: gCallback(handler5)) {
@@ -179,7 +179,7 @@ open class TextView: Widget, Scrollable {
                 UnsafeMutableRawPointer
             ) -> Void =
             { _, value1, value2, value3, data in
-                SignalBox3<GtkMovementStep, Int, Bool>.run(data, value1, value2, value3)
+                SignalBox3<GtkMovementStep, Int, Bool, Void>.run(data, value1, value2, value3)
             }
 
         addSignal(name: "move-cursor", handler: gCallback(handler7)) {
@@ -192,7 +192,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, GtkScrollStep, Int, UnsafeMutableRawPointer) ->
             Void =
             { _, value1, value2, data in
-                SignalBox2<GtkScrollStep, Int>.run(data, value1, value2)
+                SignalBox2<GtkScrollStep, Int, Void>.run(data, value1, value2)
             }
 
         addSignal(name: "move-viewport", handler: gCallback(handler8)) {
@@ -210,7 +210,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, UnsafePointer<CChar>, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<UnsafePointer<CChar>>.run(data, value1)
+                SignalBox1<UnsafePointer<CChar>, Void>.run(data, value1)
             }
 
         addSignal(name: "preedit-changed", handler: gCallback(handler10)) {
@@ -238,7 +238,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::accepts-tab", handler: gCallback(handler14)) {
@@ -251,7 +251,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::bottom-margin", handler: gCallback(handler15)) {
@@ -264,7 +264,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::buffer", handler: gCallback(handler16)) {
@@ -277,7 +277,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::cursor-visible", handler: gCallback(handler17)) {
@@ -290,7 +290,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::editable", handler: gCallback(handler18)) {
@@ -303,7 +303,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::extra-menu", handler: gCallback(handler19)) {
@@ -316,7 +316,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::im-module", handler: gCallback(handler20)) {
@@ -329,7 +329,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::indent", handler: gCallback(handler21)) {
@@ -342,7 +342,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::input-hints", handler: gCallback(handler22)) {
@@ -355,7 +355,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::input-purpose", handler: gCallback(handler23)) {
@@ -368,7 +368,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::justification", handler: gCallback(handler24)) {
@@ -381,7 +381,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::left-margin", handler: gCallback(handler25)) {
@@ -394,7 +394,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::monospace", handler: gCallback(handler26)) {
@@ -407,7 +407,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::overwrite", handler: gCallback(handler27)) {
@@ -420,7 +420,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::pixels-above-lines", handler: gCallback(handler28)) {
@@ -433,7 +433,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::pixels-below-lines", handler: gCallback(handler29)) {
@@ -446,7 +446,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::pixels-inside-wrap", handler: gCallback(handler30)) {
@@ -459,7 +459,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::right-margin", handler: gCallback(handler31)) {
@@ -472,7 +472,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::tabs", handler: gCallback(handler32)) {
@@ -485,7 +485,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::top-margin", handler: gCallback(handler33)) {
@@ -498,7 +498,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::wrap-mode", handler: gCallback(handler34)) {
@@ -511,7 +511,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::hadjustment", handler: gCallback(handler35)) {
@@ -524,7 +524,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::hscroll-policy", handler: gCallback(handler36)) {
@@ -537,7 +537,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::vadjustment", handler: gCallback(handler37)) {
@@ -550,7 +550,7 @@ open class TextView: Widget, Scrollable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::vscroll-policy", handler: gCallback(handler38)) {

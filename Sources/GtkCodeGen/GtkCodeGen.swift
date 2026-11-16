@@ -613,7 +613,7 @@ struct GtkCodeGen {
             let returnVal: String
             if
                 let returnTypeName = signal.returnValue.type?.name,
-                returnTypeName != "none"
+                returnTypeName == "gboolean"
             {
                 returnVal = returnTypeName
             } else {
