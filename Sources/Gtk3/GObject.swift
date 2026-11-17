@@ -46,28 +46,20 @@ open class GObject: GObjectRepresentable {
     }
 
     /// Adds a signal that is not carrying any additional information.
-    func addSignal(name: String, callback: @escaping () -> Void) {
+    func addSignal<R>(name: String, handler: GCallback, callback: @escaping () -> R) {
         let box = SignalBox0(callback: callback)
-        let handler:
-            @convention(c) (
-                UnsafeMutableRawPointer,
-                UnsafeMutableRawPointer
-            ) -> Void = { _, data in
-                let box = Unmanaged<SignalBox0>.fromOpaque(data).takeUnretainedValue()
-                box.callback()
-            }
-
+        
         let handlerId = connectSignal(
             gobjectPointer,
             name: name,
             data: Unmanaged.passUnretained(box).toOpaque(),
-            handler: unsafeBitCast(handler, to: GCallback.self)
+            handler: handler
         )
-
+        
         signals.append((handlerId, box))
     }
 
-    func addSignal<T1>(name: String, handler: GCallback, callback: @escaping (T1) -> Void) {
+    func addSignal<T1, R>(name: String, handler: GCallback, callback: @escaping (T1) -> R) {
         let box = SignalBox1(callback: callback)
 
         let handlerId = connectSignal(
@@ -80,7 +72,7 @@ open class GObject: GObjectRepresentable {
         signals.append((handlerId, box))
     }
 
-    func addSignal<T1, T2>(name: String, handler: GCallback, callback: @escaping (T1, T2) -> Void) {
+    func addSignal<T1, T2, R>(name: String, handler: GCallback, callback: @escaping (T1, T2) -> R) {
         let box = SignalBox2(callback: callback)
 
         let handlerId = connectSignal(
@@ -93,10 +85,10 @@ open class GObject: GObjectRepresentable {
         signals.append((handlerId, box))
     }
 
-    func addSignal<T1, T2, T3>(
+    func addSignal<T1, T2, T3, R>(
         name: String,
         handler: GCallback,
-        callback: @escaping (T1, T2, T3) -> Void
+        callback: @escaping (T1, T2, T3) -> R
     ) {
         let box = SignalBox3(callback: callback)
 
@@ -110,10 +102,10 @@ open class GObject: GObjectRepresentable {
         signals.append((handlerId, box))
     }
 
-    func addSignal<T1, T2, T3, T4>(
+    func addSignal<T1, T2, T3, T4, R>(
         name: String,
         handler: GCallback,
-        callback: @escaping (T1, T2, T3, T4) -> Void
+        callback: @escaping (T1, T2, T3, T4) -> R
     ) {
         let box = SignalBox4(callback: callback)
 
@@ -127,10 +119,10 @@ open class GObject: GObjectRepresentable {
         signals.append((handlerId, box))
     }
 
-    func addSignal<T1, T2, T3, T4, T5>(
+    func addSignal<T1, T2, T3, T4, T5, R>(
         name: String,
         handler: GCallback,
-        callback: @escaping (T1, T2, T3, T4, T5) -> Void
+        callback: @escaping (T1, T2, T3, T4, T5) -> R
     ) {
         let box = SignalBox5(callback: callback)
 
@@ -144,10 +136,10 @@ open class GObject: GObjectRepresentable {
         signals.append((handlerId, box))
     }
 
-    func addSignal<T1, T2, T3, T4, T5, T6>(
+    func addSignal<T1, T2, T3, T4, T5, T6, R>(
         name: String,
         handler: GCallback,
-        callback: @escaping (T1, T2, T3, T4, T5, T6) -> Void
+        callback: @escaping (T1, T2, T3, T4, T5, T6) -> R
     ) {
         let box = SignalBox6(callback: callback)
 

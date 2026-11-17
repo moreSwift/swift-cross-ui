@@ -127,16 +127,11 @@ public class Menu: MenuShell {
     }
 
     private func registerSignalHandlers() {
-        addSignal(name: "hide") { [weak self] in
-            guard let self else { return }
-            self.onHide?()
-        }
-
         let handler0:
             @convention(c) (UnsafeMutableRawPointer, GtkScrollType, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<GtkScrollType>.run(data, value1)
+                SignalBox1<GtkScrollType, Void>.run(data, value1)
             }
 
         addSignal(name: "move-scroll", handler: gCallback(handler0)) {
@@ -155,7 +150,7 @@ public class Menu: MenuShell {
                 UnsafeMutableRawPointer
             ) -> Void =
             { _, value1, value2, value3, value4, data in
-                SignalBox4<gpointer, gpointer, Bool, Bool>.run(
+                SignalBox4<gpointer, gpointer, Bool, Bool, Void>.run(
                     data,
                     value1,
                     value2,
@@ -174,7 +169,7 @@ public class Menu: MenuShell {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::accel-group", handler: gCallback(handler2)) {
@@ -187,7 +182,7 @@ public class Menu: MenuShell {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::accel-path", handler: gCallback(handler3)) {
@@ -200,7 +195,7 @@ public class Menu: MenuShell {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::active", handler: gCallback(handler4)) {
@@ -213,7 +208,7 @@ public class Menu: MenuShell {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::anchor-hints", handler: gCallback(handler5)) {
@@ -226,7 +221,7 @@ public class Menu: MenuShell {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::attach-widget", handler: gCallback(handler6)) {
@@ -239,7 +234,7 @@ public class Menu: MenuShell {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::menu-type-hint", handler: gCallback(handler7)) {
@@ -252,7 +247,7 @@ public class Menu: MenuShell {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::monitor", handler: gCallback(handler8)) {
@@ -265,7 +260,7 @@ public class Menu: MenuShell {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::rect-anchor-dx", handler: gCallback(handler9)) {
@@ -278,7 +273,7 @@ public class Menu: MenuShell {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::rect-anchor-dy", handler: gCallback(handler10)) {
@@ -291,7 +286,7 @@ public class Menu: MenuShell {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::reserve-toggle-size", handler: gCallback(handler11)) {
@@ -304,7 +299,7 @@ public class Menu: MenuShell {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::tearoff-state", handler: gCallback(handler12)) {
@@ -317,13 +312,24 @@ public class Menu: MenuShell {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::tearoff-title", handler: gCallback(handler13)) {
             [weak self] (_: OpaquePointer) in
             guard let self else { return }
             self.notifyTearoffTitle?(self)
+        }
+        
+        let handler14: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+        
+        addSignal(name: "hide", handler: gCallback(handler0)) { [weak self] () in
+            guard let self else { return }
+            self.hide()
         }
     }
 
