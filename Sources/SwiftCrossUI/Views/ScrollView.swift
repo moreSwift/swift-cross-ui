@@ -174,24 +174,24 @@ public struct ScrollView<Content: View>: TypeSafeView, View {
         let horizontalScrollBarHeight = children.hasHorizontalScrollBar ? scrollBarWidth : 0
 
         let contentX: Double
-        if finalContentSize.width + verticalScrollBarWidth < scrollViewSize.width {
+        if finalContentSize.width < scrollViewSize.width - verticalScrollBarWidth {
             let alignment = axes.contains(.vertical)
                 ? HorizontalAlignment.center : HorizontalAlignment.leading
             contentX = alignment.position(
                 ofChild: finalContentSize.width,
-                in: scrollViewSize.width
+                in: scrollViewSize.width - verticalScrollBarWidth
             )
         } else {
             contentX = 0
         }
 
         let contentY: Double
-        if finalContentSize.height + horizontalScrollBarHeight < scrollViewSize.height {
+        if finalContentSize.height < scrollViewSize.height - horizontalScrollBarHeight {
             let alignment = axes.contains(.horizontal)
                 ? VerticalAlignment.center : VerticalAlignment.top
             contentY = alignment.position(
                 ofChild: finalContentSize.height,
-                in: scrollViewSize.height
+                in: scrollViewSize.height - horizontalScrollBarHeight
             )
         } else {
             contentY = 0
