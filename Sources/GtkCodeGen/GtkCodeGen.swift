@@ -644,7 +644,6 @@ struct GtkCodeGen {
                 )
             }
 
-            let expr: ExprSyntax
             if parameterCount == 0 {
                 exprs.append(
                     DeclSyntax(
@@ -656,13 +655,6 @@ struct GtkCodeGen {
                         }
                         """
                     ).description
-                )
-                expr = ExprSyntax(
-                    """
-                    addSignal(name: \(literal: signal.name), handler: gCallback(handler\(
-                        raw: signalIndex
-                    ))) \(raw: closure)
-                    """
                 )
             } else {
                 let typeParameters = parameterTypes.joined(separator: ", ")
@@ -681,15 +673,17 @@ struct GtkCodeGen {
                         """
                     ).description
                 )
-                expr = ExprSyntax(
+            }
+
+            exprs.append(
+                ExprSyntax(
                     """
                     addSignal(name: \(literal: signal.name), handler: gCallback(handler\(
                         raw: signalIndex
                     ))) \(raw: closure)
                     """
                 )
-            }
-            exprs.append(expr.description)
+            )
         }
 
         let methodName = "registerSignals"
