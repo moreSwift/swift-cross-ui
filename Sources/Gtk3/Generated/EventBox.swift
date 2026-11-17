@@ -21,30 +21,30 @@ open class EventBox: Bin {
 
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::above-child",
             handler: gCallback(handler0)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyAboveChild?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyAboveChild?(self, param0)
         }
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::visible-window",
             handler: gCallback(handler1)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyVisibleWindow?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyVisibleWindow?(self, param0)
         }
     }
 
@@ -52,7 +52,7 @@ open class EventBox: Bin {
 
     @GObjectProperty(named: "visible-window") public var visibleWindow: Bool
 
-    public var notifyAboveChild: ((EventBox, OpaquePointer) -> Bool)?
+    public var notifyAboveChild: ((EventBox, OpaquePointer) -> Void)?
 
-    public var notifyVisibleWindow: ((EventBox, OpaquePointer) -> Bool)?
+    public var notifyVisibleWindow: ((EventBox, OpaquePointer) -> Void)?
 }

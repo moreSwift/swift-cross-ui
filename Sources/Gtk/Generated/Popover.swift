@@ -87,42 +87,54 @@ open class Popover: Widget, Native, ShortcutManager {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "activate-default") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "activate-default", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.activateDefault?(self)
         }
 
-        addSignal(name: "closed") { [weak self] () in
+        let handler1: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "closed", handler: gCallback(handler1)) { [weak self] () in
             guard let self else { return }
             self.closed?(self)
         }
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::autohide",
             handler: gCallback(handler2)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyAutohide?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyAutohide?(self, param0)
         }
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::cascade-popdown",
             handler: gCallback(handler3)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyCascadePopdown?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyCascadePopdown?(self, param0)
         }
 
         let handler4: @convention(c) (
@@ -155,30 +167,30 @@ open class Popover: Widget, Native, ShortcutManager {
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::has-arrow",
             handler: gCallback(handler6)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyHasArrow?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyHasArrow?(self, param0)
         }
 
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::mnemonics-visible",
             handler: gCallback(handler7)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyMnemonicsVisible?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyMnemonicsVisible?(self, param0)
         }
 
         let handler8: @convention(c) (
@@ -237,17 +249,17 @@ open class Popover: Widget, Native, ShortcutManager {
     /// Emitted when the popover is closed.
     public var closed: ((Popover) -> Void)?
 
-    public var notifyAutohide: ((Popover, OpaquePointer) -> Bool)?
+    public var notifyAutohide: ((Popover, OpaquePointer) -> Void)?
 
-    public var notifyCascadePopdown: ((Popover, OpaquePointer) -> Bool)?
+    public var notifyCascadePopdown: ((Popover, OpaquePointer) -> Void)?
 
     public var notifyChild: ((Popover, OpaquePointer) -> Void)?
 
     public var notifyDefaultWidget: ((Popover, OpaquePointer) -> Void)?
 
-    public var notifyHasArrow: ((Popover, OpaquePointer) -> Bool)?
+    public var notifyHasArrow: ((Popover, OpaquePointer) -> Void)?
 
-    public var notifyMnemonicsVisible: ((Popover, OpaquePointer) -> Bool)?
+    public var notifyMnemonicsVisible: ((Popover, OpaquePointer) -> Void)?
 
     public var notifyPointingTo: ((Popover, OpaquePointer) -> Void)?
 

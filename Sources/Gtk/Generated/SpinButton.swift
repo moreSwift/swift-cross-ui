@@ -156,7 +156,13 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "activate") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "activate", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.activate?(self)
         }
@@ -186,32 +192,68 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
             self.input?(self, param0)
         }
 
-        addSignal(name: "output") { [weak self] () in
+        let handler3: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> gboolean = { _, data in
+            SignalBox0<gboolean>.run(data)
+        }
+
+        addSignal(name: "output", handler: gCallback(handler3)) { [weak self] () -> gboolean in
             guard let self else { return 0 }
             return self.output?(self).toGBoolean() ?? 0
         }
 
-        addSignal(name: "value-changed") { [weak self] () in
+        let handler4: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "value-changed", handler: gCallback(handler4)) { [weak self] () in
             guard let self else { return }
             self.valueChanged?(self)
         }
 
-        addSignal(name: "wrapped") { [weak self] () in
+        let handler5: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "wrapped", handler: gCallback(handler5)) { [weak self] () in
             guard let self else { return }
             self.wrapped?(self)
         }
 
-        addSignal(name: "editing-done") { [weak self] () in
+        let handler6: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "editing-done", handler: gCallback(handler6)) { [weak self] () in
             guard let self else { return }
             self.editingDone?(self)
         }
 
-        addSignal(name: "remove-widget") { [weak self] () in
+        let handler7: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "remove-widget", handler: gCallback(handler7)) { [weak self] () in
             guard let self else { return }
             self.removeWidget?(self)
         }
 
-        addSignal(name: "changed") { [weak self] () in
+        let handler8: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "changed", handler: gCallback(handler8)) { [weak self] () in
             guard let self else { return }
             self.changed?(self)
         }
@@ -247,16 +289,16 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler11: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::activates-default",
             handler: gCallback(handler11)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyActivatesDefault?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyActivatesDefault?(self, param0)
         }
 
         let handler12: @convention(c) (
@@ -303,30 +345,30 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler15: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::numeric",
             handler: gCallback(handler15)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyNumeric?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyNumeric?(self, param0)
         }
 
         let handler16: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::snap-to-ticks",
             handler: gCallback(handler16)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifySnapToTicks?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifySnapToTicks?(self, param0)
         }
 
         let handler17: @convention(c) (
@@ -359,30 +401,30 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler19: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::wrap",
             handler: gCallback(handler19)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyWrap?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyWrap?(self, param0)
         }
 
         let handler20: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::editing-canceled",
             handler: gCallback(handler20)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyEditingCanceled?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyEditingCanceled?(self, param0)
         }
 
         let handler21: @convention(c) (
@@ -401,30 +443,30 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
         let handler22: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::editable",
             handler: gCallback(handler22)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyEditable?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyEditable?(self, param0)
         }
 
         let handler23: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::enable-undo",
             handler: gCallback(handler23)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyEnableUndo?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyEnableUndo?(self, param0)
         }
 
         let handler24: @convention(c) (
@@ -676,7 +718,7 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
     /// to modify the inserted text, or prevent it from being inserted entirely.
     public var insertText: ((SpinButton, UnsafePointer<CChar>, Int, gpointer) -> Void)?
 
-    public var notifyActivatesDefault: ((SpinButton, OpaquePointer) -> Bool)?
+    public var notifyActivatesDefault: ((SpinButton, OpaquePointer) -> Void)?
 
     public var notifyAdjustment: ((SpinButton, OpaquePointer) -> Void)?
 
@@ -684,23 +726,23 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
 
     public var notifyDigits: ((SpinButton, OpaquePointer) -> Void)?
 
-    public var notifyNumeric: ((SpinButton, OpaquePointer) -> Bool)?
+    public var notifyNumeric: ((SpinButton, OpaquePointer) -> Void)?
 
-    public var notifySnapToTicks: ((SpinButton, OpaquePointer) -> Bool)?
+    public var notifySnapToTicks: ((SpinButton, OpaquePointer) -> Void)?
 
     public var notifyUpdatePolicy: ((SpinButton, OpaquePointer) -> Void)?
 
     public var notifyValue: ((SpinButton, OpaquePointer) -> Void)?
 
-    public var notifyWrap: ((SpinButton, OpaquePointer) -> Bool)?
+    public var notifyWrap: ((SpinButton, OpaquePointer) -> Void)?
 
-    public var notifyEditingCanceled: ((SpinButton, OpaquePointer) -> Bool)?
+    public var notifyEditingCanceled: ((SpinButton, OpaquePointer) -> Void)?
 
     public var notifyCursorPosition: ((SpinButton, OpaquePointer) -> Void)?
 
-    public var notifyEditable: ((SpinButton, OpaquePointer) -> Bool)?
+    public var notifyEditable: ((SpinButton, OpaquePointer) -> Void)?
 
-    public var notifyEnableUndo: ((SpinButton, OpaquePointer) -> Bool)?
+    public var notifyEnableUndo: ((SpinButton, OpaquePointer) -> Void)?
 
     public var notifyMaxWidthChars: ((SpinButton, OpaquePointer) -> Void)?
 

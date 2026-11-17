@@ -58,22 +58,14 @@ open class GObject: GObjectRepresentable {
     }
 
     /// Adds a signal that is not carrying any additional information.
-    func addSignal(name: String, callback: @escaping () -> Void) {
-        let box = SignalBox0(callback: callback)
-        let handler:
-            @convention(c) (
-                UnsafeMutableRawPointer,
-                UnsafeMutableRawPointer
-            ) -> Void = { _, data in
-                let box = Unmanaged<SignalBox0>.fromOpaque(data).takeUnretainedValue()
-                box.callback()
-            }
+    func addSignal<R>(name: String, handler: GCallback, callback: @escaping () -> R) {
+        let box = SignalBox0<R>(callback: callback)
 
         let handlerId = connectSignal(
             gobjectPointer,
             name: name,
             data: Unmanaged.passUnretained(box).toOpaque(),
-            handler: unsafeBitCast(handler, to: GCallback.self)
+            handler: handler
         )
 
         storeHandler(handlerId, box: box, for: name)

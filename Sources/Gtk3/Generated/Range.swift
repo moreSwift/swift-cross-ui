@@ -40,7 +40,7 @@ open class Range: Widget, Orientable {
         addSignal(name: "change-value", handler: gCallback(handler1)) { [weak self] (
             param0: GtkScrollType,
             param1: Double
-        ) in
+        ) -> gboolean in
             guard let self else { return 0 }
             return self.changeValue?(self, param0, param1).toGBoolean() ?? 0
         }
@@ -59,7 +59,13 @@ open class Range: Widget, Orientable {
             self.moveSlider?(self, param0)
         }
 
-        addSignal(name: "value-changed") { [weak self] () in
+        let handler3: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "value-changed", handler: gCallback(handler3)) { [weak self] () in
             guard let self else { return }
             self.valueChanged?(self)
         }
@@ -94,16 +100,16 @@ open class Range: Widget, Orientable {
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::inverted",
             handler: gCallback(handler6)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyInverted?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyInverted?(self, param0)
         }
 
         let handler7: @convention(c) (
@@ -122,16 +128,16 @@ open class Range: Widget, Orientable {
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::restrict-to-fill-level",
             handler: gCallback(handler8)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyRestrictToFillLevel?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyRestrictToFillLevel?(self, param0)
         }
 
         let handler9: @convention(c) (
@@ -150,16 +156,16 @@ open class Range: Widget, Orientable {
 
         let handler10: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::show-fill-level",
             handler: gCallback(handler10)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyShowFillLevel?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyShowFillLevel?(self, param0)
         }
 
         let handler11: @convention(c) (
@@ -229,15 +235,15 @@ open class Range: Widget, Orientable {
 
     public var notifyFillLevel: ((Range, OpaquePointer) -> Void)?
 
-    public var notifyInverted: ((Range, OpaquePointer) -> Bool)?
+    public var notifyInverted: ((Range, OpaquePointer) -> Void)?
 
     public var notifyLowerStepperSensitivity: ((Range, OpaquePointer) -> Void)?
 
-    public var notifyRestrictToFillLevel: ((Range, OpaquePointer) -> Bool)?
+    public var notifyRestrictToFillLevel: ((Range, OpaquePointer) -> Void)?
 
     public var notifyRoundDigits: ((Range, OpaquePointer) -> Void)?
 
-    public var notifyShowFillLevel: ((Range, OpaquePointer) -> Bool)?
+    public var notifyShowFillLevel: ((Range, OpaquePointer) -> Void)?
 
     public var notifyUpperStepperSensitivity: ((Range, OpaquePointer) -> Void)?
 

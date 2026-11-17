@@ -189,10 +189,6 @@ public class PopoverMenu: Popover {
 
         super.didMoveToParent()
 
-        addSignal(name: "hid") { [weak self] in
-            self?.onHide?()
-        }
-
         let handler0:
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
@@ -230,6 +226,20 @@ public class PopoverMenu: Popover {
             [weak self] (_: OpaquePointer) in
             guard let self else { return }
             self.notifyVisibleSubmenu?(self)
+        }
+        
+        let handler3: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+        
+        addSignal(
+            name: "hid",
+            handler: gCallback(handler3)
+        ) { [weak self] in
+            guard let self else { return }
+            self.onHide?()
         }
     }
 

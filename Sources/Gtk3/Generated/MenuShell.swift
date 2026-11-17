@@ -51,7 +51,13 @@ open class MenuShell: Container {
             self.activateCurrent?(self, param0)
         }
 
-        addSignal(name: "cancel") { [weak self] () in
+        let handler1: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "cancel", handler: gCallback(handler1)) { [weak self] () in
             guard let self else { return }
             self.cancel?(self)
         }
@@ -70,7 +76,13 @@ open class MenuShell: Container {
             self.cycleFocus?(self, param0)
         }
 
-        addSignal(name: "deactivate") { [weak self] () in
+        let handler3: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "deactivate", handler: gCallback(handler3)) { [weak self] () in
             guard let self else { return }
             self.deactivate?(self)
         }
@@ -112,28 +124,34 @@ open class MenuShell: Container {
         addSignal(
             name: "move-selected",
             handler: gCallback(handler6)
-        ) { [weak self] (param0: Int) in
+        ) { [weak self] (param0: Int) -> gboolean in
             guard let self else { return 0 }
             return self.moveSelected?(self, param0).toGBoolean() ?? 0
         }
 
-        addSignal(name: "selection-done") { [weak self] () in
+        let handler7: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "selection-done", handler: gCallback(handler7)) { [weak self] () in
             guard let self else { return }
             self.selectionDone?(self)
         }
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::take-focus",
             handler: gCallback(handler8)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyTakeFocus?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyTakeFocus?(self, param0)
         }
     }
 
@@ -172,5 +190,5 @@ open class MenuShell: Container {
     /// completed within a menu shell.
     public var selectionDone: ((MenuShell) -> Void)?
 
-    public var notifyTakeFocus: ((MenuShell, OpaquePointer) -> Bool)?
+    public var notifyTakeFocus: ((MenuShell, OpaquePointer) -> Void)?
 }

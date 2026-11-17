@@ -92,18 +92,45 @@ open class TextView: Widget, Scrollable {
 
     open override func didMoveToParent() {
         super.didMoveToParent()
-
-        addSignal(name: "backspace") { [weak self] () in
+        
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+        
+        addSignal(
+            name: "backspace",
+            handler: gCallback(handler0)
+        ) { [weak self] in
             guard let self else { return }
             self.backspace?(self)
         }
-
-        addSignal(name: "copy-clipboard") { [weak self] () in
+        
+        let handler1: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+        
+        addSignal(
+            name: "copy-clipboard",
+            handler: gCallback(handler1)
+        ) { [weak self] in
             guard let self else { return }
             self.copyClipboard?(self)
         }
-
-        addSignal(name: "cut-clipboard") { [weak self] () in
+        
+        let handler2: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+        
+        addSignal(
+            name: "cut-clipboard",
+            handler: gCallback(handler2)
+        ) { [weak self] in
             guard let self else { return }
             self.cutClipboard?(self)
         }
@@ -164,8 +191,17 @@ open class TextView: Widget, Scrollable {
             guard let self else { return }
             self.insertAtCursor?(self, param0)
         }
-
-        addSignal(name: "insert-emoji") { [weak self] () in
+        
+        let handler6: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+        
+        addSignal(
+            name: "insert-emoji",
+            handler: gCallback(handler6)
+        ) { [weak self] in
             guard let self else { return }
             self.insertEmoji?(self)
         }
@@ -200,8 +236,17 @@ open class TextView: Widget, Scrollable {
             guard let self else { return }
             self.moveViewport?(self, param0, param1)
         }
-
-        addSignal(name: "paste-clipboard") { [weak self] () in
+        
+        let handler9: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+        
+        addSignal(
+            name: "paste-clipboard",
+            handler: gCallback(handler9)
+        ) { [weak self] in
             guard let self else { return }
             self.pasteClipboard?(self)
         }
@@ -218,18 +263,45 @@ open class TextView: Widget, Scrollable {
             guard let self else { return }
             self.preeditChanged?(self, param0)
         }
-
-        addSignal(name: "set-anchor") { [weak self] () in
+        
+        let handler11: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+        
+        addSignal(
+            name: "set-anchor",
+            handler: gCallback(handler11)
+        ) { [weak self] in
             guard let self else { return }
             self.setAnchor?(self)
         }
-
-        addSignal(name: "toggle-cursor-visible") { [weak self] () in
+        
+        let handler12: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+        
+        addSignal(
+            name: "toggle-cursor-visible",
+            handler: gCallback(handler12)
+        ) { [weak self] in
             guard let self else { return }
             self.toggleCursorVisible?(self)
         }
-
-        addSignal(name: "toggle-overwrite") { [weak self] () in
+        
+        let handler13: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+        
+        addSignal(
+            name: "toggle-overwrite",
+            handler: gCallback(handler13)
+        ) { [weak self] in
             guard let self else { return }
             self.toggleOverwrite?(self)
         }

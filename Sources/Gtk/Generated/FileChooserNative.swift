@@ -212,16 +212,16 @@ open class FileChooserNative: NativeDialog, FileChooser {
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::create-folders",
             handler: gCallback(handler3)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyCreateFolders?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyCreateFolders?(self, param0)
         }
 
         let handler4: @convention(c) (
@@ -254,16 +254,16 @@ open class FileChooserNative: NativeDialog, FileChooser {
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::select-multiple",
             handler: gCallback(handler6)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifySelectMultiple?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifySelectMultiple?(self, param0)
         }
 
         let handler7: @convention(c) (
@@ -319,13 +319,13 @@ open class FileChooserNative: NativeDialog, FileChooser {
 
     public var notifyAction: ((FileChooserNative, OpaquePointer) -> Void)?
 
-    public var notifyCreateFolders: ((FileChooserNative, OpaquePointer) -> Bool)?
+    public var notifyCreateFolders: ((FileChooserNative, OpaquePointer) -> Void)?
 
     public var notifyFilter: ((FileChooserNative, OpaquePointer) -> Void)?
 
     public var notifyFilters: ((FileChooserNative, OpaquePointer) -> Void)?
 
-    public var notifySelectMultiple: ((FileChooserNative, OpaquePointer) -> Bool)?
+    public var notifySelectMultiple: ((FileChooserNative, OpaquePointer) -> Void)?
 
     public var notifyShortcutFolders: ((FileChooserNative, OpaquePointer) -> Void)?
 }

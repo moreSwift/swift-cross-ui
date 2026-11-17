@@ -614,7 +614,9 @@ struct GtkCodeGen {
             
             let closure: ExprSyntax
             let returnVal: String
+            
             if
+                !signal.name.hasPrefix("notify:"),
                 let returnTypeName = signal.returnValue.type?.name,
                 let information = Self.allowedSignalReturnTypeInformation[returnTypeName]
             {
@@ -624,7 +626,7 @@ struct GtkCodeGen {
                     ?? information.defaultReturnValue
                 closure = ExprSyntax(
                 """
-                { [weak self] (\(raw: parameters)) in
+                { [weak self] (\(raw: parameters)) -> \(raw: returnVal) in
                     guard let self else { return \(raw: defaultVal) }
                     return self.\(raw: name)?(\(raw: arguments))\(raw: suffix) ?? \(raw: defaultVal)
                 }
@@ -644,9 +646,22 @@ struct GtkCodeGen {
             
             let expr: ExprSyntax
             if parameterCount == 0 {
+                exprs.append(
+                    DeclSyntax(
+                        """
+                        let handler\(raw: signalIndex): @convention(c) (
+                            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+                        ) -> \(raw: returnVal) = { _, data in
+                            SignalBox\(raw: parameterCount)<\(raw: returnVal)>.run(data)
+                        }
+                        """
+                    ).description
+                )
                 expr = ExprSyntax(
                     """
-                    addSignal(name: \(literal: signal.name)) \(raw: closure)
+                    addSignal(name: \(literal: signal.name), handler: gCallback(handler\(
+                        raw: signalIndex
+                    ))) \(raw: closure)
                     """
                 )
             } else {
@@ -726,6 +741,7 @@ struct GtkCodeGen {
         }
         
         if
+            !signal.name.hasPrefix("notify:"),
             let returnTypeName = signal.returnValue.type?.name,
             let information = Self.allowedSignalReturnTypeInformation[returnTypeName]
         {

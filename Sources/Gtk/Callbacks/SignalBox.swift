@@ -14,13 +14,19 @@ func gCallback<T>(_ closure: T) -> GCallback {
     return unsafeBitCast(closure, to: GCallback.self)
 }
 
-class SignalBox0: SignalBox {
-    typealias CallbackType = () -> Void
+class SignalBox0<R>: SignalBox {
+    typealias CallbackType = () -> R
 
     let callback: CallbackType
 
     required init(callback: @escaping CallbackType) {
         self.callback = callback
+    }
+    
+    static func run(_ data: UnsafeMutableRawPointer) -> R {
+        let box = Unmanaged<SignalBox0<R>>.fromOpaque(data)
+            .takeUnretainedValue()
+        return box.callback()
     }
 }
 

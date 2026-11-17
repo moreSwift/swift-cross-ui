@@ -84,28 +84,40 @@ open class Button: Widget, Actionable {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "activate") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "activate", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.activate?(self)
         }
 
-        addSignal(name: "clicked") { [weak self] () in
+        let handler1: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "clicked", handler: gCallback(handler1)) { [weak self] () in
             guard let self else { return }
             self.clicked?(self)
         }
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::can-shrink",
             handler: gCallback(handler2)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyCanShrink?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyCanShrink?(self, param0)
         }
 
         let handler3: @convention(c) (
@@ -124,16 +136,16 @@ open class Button: Widget, Actionable {
 
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::has-frame",
             handler: gCallback(handler4)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyHasFrame?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyHasFrame?(self, param0)
         }
 
         let handler5: @convention(c) (
@@ -166,16 +178,16 @@ open class Button: Widget, Actionable {
 
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::use-underline",
             handler: gCallback(handler7)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyUseUnderline?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyUseUnderline?(self, param0)
         }
 
         let handler8: @convention(c) (
@@ -235,17 +247,17 @@ open class Button: Widget, Actionable {
     /// Emitted when the button has been activated (pressed and released).
     public var clicked: ((Button) -> Void)?
 
-    public var notifyCanShrink: ((Button, OpaquePointer) -> Bool)?
+    public var notifyCanShrink: ((Button, OpaquePointer) -> Void)?
 
     public var notifyChild: ((Button, OpaquePointer) -> Void)?
 
-    public var notifyHasFrame: ((Button, OpaquePointer) -> Bool)?
+    public var notifyHasFrame: ((Button, OpaquePointer) -> Void)?
 
     public var notifyIconName: ((Button, OpaquePointer) -> Void)?
 
     public var notifyLabel: ((Button, OpaquePointer) -> Void)?
 
-    public var notifyUseUnderline: ((Button, OpaquePointer) -> Bool)?
+    public var notifyUseUnderline: ((Button, OpaquePointer) -> Void)?
 
     public var notifyActionName: ((Button, OpaquePointer) -> Void)?
 

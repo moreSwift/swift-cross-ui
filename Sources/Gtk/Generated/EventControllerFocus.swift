@@ -24,42 +24,54 @@ open class EventControllerFocus: EventController {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "enter") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "enter", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.enter?(self)
         }
 
-        addSignal(name: "leave") { [weak self] () in
+        let handler1: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "leave", handler: gCallback(handler1)) { [weak self] () in
             guard let self else { return }
             self.leave?(self)
         }
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::contains-focus",
             handler: gCallback(handler2)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyContainsFocus?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyContainsFocus?(self, param0)
         }
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::is-focus",
             handler: gCallback(handler3)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyIsFocus?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyIsFocus?(self, param0)
         }
     }
 
@@ -106,7 +118,7 @@ open class EventControllerFocus: EventController {
     /// property for changes.
     public var leave: ((EventControllerFocus) -> Void)?
 
-    public var notifyContainsFocus: ((EventControllerFocus, OpaquePointer) -> Bool)?
+    public var notifyContainsFocus: ((EventControllerFocus, OpaquePointer) -> Void)?
 
-    public var notifyIsFocus: ((EventControllerFocus, OpaquePointer) -> Bool)?
+    public var notifyIsFocus: ((EventControllerFocus, OpaquePointer) -> Void)?
 }

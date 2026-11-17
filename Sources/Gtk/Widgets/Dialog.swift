@@ -125,8 +125,17 @@ open class Dialog: Window {
         removeSignals()
 
         super.didMoveToParent()
-
-        addSignal(name: "close") { [weak self] () in
+        
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+        
+        addSignal(
+            name: "close",
+            handler: gCallback(handler0)
+        ) { [weak self] in
             guard let self else { return }
             self.close?(self)
         }

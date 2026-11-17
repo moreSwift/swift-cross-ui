@@ -80,7 +80,13 @@ open class ListBox: Widget {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "activate-cursor-row") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "activate-cursor-row", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.activateCursorRow?(self)
         }
@@ -135,42 +141,54 @@ open class ListBox: Widget {
             self.rowSelected?(self, param0)
         }
 
-        addSignal(name: "selected-rows-changed") { [weak self] () in
+        let handler4: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "selected-rows-changed", handler: gCallback(handler4)) { [weak self] () in
             guard let self else { return }
             self.selectedRowsChanged?(self)
         }
 
-        addSignal(name: "toggle-cursor-row") { [weak self] () in
+        let handler5: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "toggle-cursor-row", handler: gCallback(handler5)) { [weak self] () in
             guard let self else { return }
             self.toggleCursorRow?(self)
         }
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::accept-unpaired-release",
             handler: gCallback(handler6)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyAcceptUnpairedRelease?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyAcceptUnpairedRelease?(self, param0)
         }
 
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::activate-on-single-click",
             handler: gCallback(handler7)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyActivateOnSingleClick?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyActivateOnSingleClick?(self, param0)
         }
 
         let handler8: @convention(c) (
@@ -189,16 +207,16 @@ open class ListBox: Widget {
 
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::show-separators",
             handler: gCallback(handler9)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyShowSeparators?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyShowSeparators?(self, param0)
         }
 
         let handler10: @convention(c) (
@@ -261,13 +279,13 @@ open class ListBox: Widget {
     /// The default bindings for this signal is <kbd>Ctrl</kbd>+<kbd>␣</kbd>.
     public var toggleCursorRow: ((ListBox) -> Void)?
 
-    public var notifyAcceptUnpairedRelease: ((ListBox, OpaquePointer) -> Bool)?
+    public var notifyAcceptUnpairedRelease: ((ListBox, OpaquePointer) -> Void)?
 
-    public var notifyActivateOnSingleClick: ((ListBox, OpaquePointer) -> Bool)?
+    public var notifyActivateOnSingleClick: ((ListBox, OpaquePointer) -> Void)?
 
     public var notifySelectionMode: ((ListBox, OpaquePointer) -> Void)?
 
-    public var notifyShowSeparators: ((ListBox, OpaquePointer) -> Bool)?
+    public var notifyShowSeparators: ((ListBox, OpaquePointer) -> Void)?
 
     public var notifyTabBehavior: ((ListBox, OpaquePointer) -> Void)?
 }

@@ -38,16 +38,16 @@ open class NativeDialog: GObject {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::modal",
             handler: gCallback(handler1)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyModal?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyModal?(self, param0)
         }
 
         let handler2: @convention(c) (
@@ -80,16 +80,16 @@ open class NativeDialog: GObject {
 
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::visible",
             handler: gCallback(handler4)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyVisible?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyVisible?(self, param0)
         }
     }
 
@@ -101,11 +101,11 @@ open class NativeDialog: GObject {
     /// the dialog this signal will not be emitted.
     public var response: ((NativeDialog, Int) -> Void)?
 
-    public var notifyModal: ((NativeDialog, OpaquePointer) -> Bool)?
+    public var notifyModal: ((NativeDialog, OpaquePointer) -> Void)?
 
     public var notifyTitle: ((NativeDialog, OpaquePointer) -> Void)?
 
     public var notifyTransientFor: ((NativeDialog, OpaquePointer) -> Void)?
 
-    public var notifyVisible: ((NativeDialog, OpaquePointer) -> Bool)?
+    public var notifyVisible: ((NativeDialog, OpaquePointer) -> Void)?
 }

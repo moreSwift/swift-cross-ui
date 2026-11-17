@@ -73,48 +73,84 @@ open class Button: Bin, Activatable {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "activate") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "activate", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.activate?(self)
         }
 
-        addSignal(name: "clicked") { [weak self] () in
+        let handler1: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "clicked", handler: gCallback(handler1)) { [weak self] () in
             guard let self else { return }
             self.clicked?(self)
         }
 
-        addSignal(name: "enter") { [weak self] () in
+        let handler2: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "enter", handler: gCallback(handler2)) { [weak self] () in
             guard let self else { return }
             self.enter?(self)
         }
 
-        addSignal(name: "leave") { [weak self] () in
+        let handler3: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "leave", handler: gCallback(handler3)) { [weak self] () in
             guard let self else { return }
             self.leave?(self)
         }
 
-        addSignal(name: "pressed") { [weak self] () in
+        let handler4: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "pressed", handler: gCallback(handler4)) { [weak self] () in
             guard let self else { return }
             self.pressed?(self)
         }
 
-        addSignal(name: "released") { [weak self] () in
+        let handler5: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "released", handler: gCallback(handler5)) { [weak self] () in
             guard let self else { return }
             self.released?(self)
         }
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::always-show-image",
             handler: gCallback(handler6)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyAlwaysShowImage?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyAlwaysShowImage?(self, param0)
         }
 
         let handler7: @convention(c) (
@@ -175,30 +211,30 @@ open class Button: Bin, Activatable {
 
         let handler11: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::use-stock",
             handler: gCallback(handler11)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyUseStock?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyUseStock?(self, param0)
         }
 
         let handler12: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::use-underline",
             handler: gCallback(handler12)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyUseUnderline?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyUseUnderline?(self, param0)
         }
 
         let handler13: @convention(c) (
@@ -245,16 +281,16 @@ open class Button: Bin, Activatable {
 
         let handler16: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::use-action-appearance",
             handler: gCallback(handler16)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyUseActionAppearance?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyUseActionAppearance?(self, param0)
         }
     }
 
@@ -287,7 +323,7 @@ open class Button: Bin, Activatable {
     /// Emitted when the button is released.
     public var released: ((Button) -> Void)?
 
-    public var notifyAlwaysShowImage: ((Button, OpaquePointer) -> Bool)?
+    public var notifyAlwaysShowImage: ((Button, OpaquePointer) -> Void)?
 
     public var notifyImage: ((Button, OpaquePointer) -> Void)?
 
@@ -297,9 +333,9 @@ open class Button: Bin, Activatable {
 
     public var notifyRelief: ((Button, OpaquePointer) -> Void)?
 
-    public var notifyUseStock: ((Button, OpaquePointer) -> Bool)?
+    public var notifyUseStock: ((Button, OpaquePointer) -> Void)?
 
-    public var notifyUseUnderline: ((Button, OpaquePointer) -> Bool)?
+    public var notifyUseUnderline: ((Button, OpaquePointer) -> Void)?
 
     public var notifyXalign: ((Button, OpaquePointer) -> Void)?
 
@@ -307,5 +343,5 @@ open class Button: Bin, Activatable {
 
     public var notifyRelatedAction: ((Button, OpaquePointer) -> Void)?
 
-    public var notifyUseActionAppearance: ((Button, OpaquePointer) -> Bool)?
+    public var notifyUseActionAppearance: ((Button, OpaquePointer) -> Void)?
 }

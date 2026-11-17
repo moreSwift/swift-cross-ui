@@ -208,7 +208,13 @@ open class Label: Misc {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "activate-current-link") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "activate-current-link", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.activateCurrentLink?(self)
         }
@@ -222,12 +228,18 @@ open class Label: Misc {
         addSignal(
             name: "activate-link",
             handler: gCallback(handler1)
-        ) { [weak self] (param0: UnsafePointer<CChar>) in
+        ) { [weak self] (param0: UnsafePointer<CChar>) -> gboolean in
             guard let self else { return 0 }
             return self.activateLink?(self, param0).toGBoolean() ?? 0
         }
 
-        addSignal(name: "copy-clipboard") { [weak self] () in
+        let handler2: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "copy-clipboard", handler: gCallback(handler2)) { [weak self] () in
             guard let self else { return }
             self.copyClipboard?(self)
         }
@@ -389,16 +401,16 @@ open class Label: Misc {
 
         let handler14: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::selectable",
             handler: gCallback(handler14)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifySelectable?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifySelectable?(self, param0)
         }
 
         let handler15: @convention(c) (
@@ -417,58 +429,58 @@ open class Label: Misc {
 
         let handler16: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::single-line-mode",
             handler: gCallback(handler16)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifySingleLineMode?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifySingleLineMode?(self, param0)
         }
 
         let handler17: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::track-visited-links",
             handler: gCallback(handler17)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyTrackVisitedLinks?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyTrackVisitedLinks?(self, param0)
         }
 
         let handler18: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::use-markup",
             handler: gCallback(handler18)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyUseMarkup?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyUseMarkup?(self, param0)
         }
 
         let handler19: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::use-underline",
             handler: gCallback(handler19)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyUseUnderline?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyUseUnderline?(self, param0)
         }
 
         let handler20: @convention(c) (
@@ -487,16 +499,16 @@ open class Label: Misc {
 
         let handler21: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::wrap",
             handler: gCallback(handler21)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyWrap?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyWrap?(self, param0)
         }
 
         let handler22: @convention(c) (
@@ -667,21 +679,21 @@ open class Label: Misc {
 
     public var notifyPattern: ((Label, OpaquePointer) -> Void)?
 
-    public var notifySelectable: ((Label, OpaquePointer) -> Bool)?
+    public var notifySelectable: ((Label, OpaquePointer) -> Void)?
 
     public var notifySelectionBound: ((Label, OpaquePointer) -> Void)?
 
-    public var notifySingleLineMode: ((Label, OpaquePointer) -> Bool)?
+    public var notifySingleLineMode: ((Label, OpaquePointer) -> Void)?
 
-    public var notifyTrackVisitedLinks: ((Label, OpaquePointer) -> Bool)?
+    public var notifyTrackVisitedLinks: ((Label, OpaquePointer) -> Void)?
 
-    public var notifyUseMarkup: ((Label, OpaquePointer) -> Bool)?
+    public var notifyUseMarkup: ((Label, OpaquePointer) -> Void)?
 
-    public var notifyUseUnderline: ((Label, OpaquePointer) -> Bool)?
+    public var notifyUseUnderline: ((Label, OpaquePointer) -> Void)?
 
     public var notifyWidthChars: ((Label, OpaquePointer) -> Void)?
 
-    public var notifyWrap: ((Label, OpaquePointer) -> Bool)?
+    public var notifyWrap: ((Label, OpaquePointer) -> Void)?
 
     public var notifyWrapMode: ((Label, OpaquePointer) -> Void)?
 

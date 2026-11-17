@@ -38,7 +38,13 @@ open class EventControllerMotion: EventController {
             self.enter?(self, param0, param1)
         }
 
-        addSignal(name: "leave") { [weak self] () in
+        let handler1: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "leave", handler: gCallback(handler1)) { [weak self] () in
             guard let self else { return }
             self.leave?(self)
         }
@@ -59,30 +65,30 @@ open class EventControllerMotion: EventController {
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::contains-pointer",
             handler: gCallback(handler3)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyContainsPointer?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyContainsPointer?(self, param0)
         }
 
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::is-pointer",
             handler: gCallback(handler4)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyIsPointer?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyIsPointer?(self, param0)
         }
     }
 
@@ -114,7 +120,7 @@ open class EventControllerMotion: EventController {
     /// Emitted when the pointer moves inside the widget.
     public var motion: ((EventControllerMotion, Double, Double) -> Void)?
 
-    public var notifyContainsPointer: ((EventControllerMotion, OpaquePointer) -> Bool)?
+    public var notifyContainsPointer: ((EventControllerMotion, OpaquePointer) -> Void)?
 
-    public var notifyIsPointer: ((EventControllerMotion, OpaquePointer) -> Bool)?
+    public var notifyIsPointer: ((EventControllerMotion, OpaquePointer) -> Void)?
 }

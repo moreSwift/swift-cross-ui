@@ -102,19 +102,42 @@ open class Window: Widget {
 
         let keyEventController = EventControllerKey()
         keyEventController.keyPressed = { [weak self] _, keyval, _, _ in
-            guard keyval == GDK_KEY_Escape else { return }
-            self?.escapeKeyPressed?()
+            guard keyval == GDK_KEY_Escape else { return false }
+            if let escapeKeyPressed = self?.escapeKeyPressed {
+                escapeKeyPressed()
+                return true
+            }
+            return false
         }
         escapeKeyEventController = keyEventController
         addEventController(keyEventController)
     }
 
     open override func registerSignals() {
-        addSignal(name: "close-request") { [weak self] () in
+        let handler: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+        
+        addSignal(
+            name: "close-request",
+            handler: gCallback(handler)
+        ) { [weak self] in
             guard let self else { return }
             self.onCloseRequest?(self)
         }
-        addSignal(name: "destroy") { [weak self] () in
+        
+        let handler2: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+        
+        addSignal(
+            name: "destroy",
+            handler: gCallback(handler)
+        ) { [weak self] in
             guard let self else { return }
             self.onDestroy?(self)
         }

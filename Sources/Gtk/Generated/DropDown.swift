@@ -65,23 +65,29 @@ open class DropDown: Widget {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "activate") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "activate", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.activate?(self)
         }
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::enable-search",
             handler: gCallback(handler1)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyEnableSearch?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyEnableSearch?(self, param0)
         }
 
         let handler2: @convention(c) (
@@ -198,16 +204,16 @@ open class DropDown: Widget {
 
         let handler10: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::show-arrow",
             handler: gCallback(handler10)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyShowArrow?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyShowArrow?(self, param0)
         }
     }
 
@@ -232,7 +238,7 @@ open class DropDown: Widget {
     /// emitting it causes the drop down to pop up its dropdown.
     public var activate: ((DropDown) -> Void)?
 
-    public var notifyEnableSearch: ((DropDown, OpaquePointer) -> Bool)?
+    public var notifyEnableSearch: ((DropDown, OpaquePointer) -> Void)?
 
     public var notifyExpression: ((DropDown, OpaquePointer) -> Void)?
 
@@ -250,5 +256,5 @@ open class DropDown: Widget {
 
     public var notifySelectedItem: ((DropDown, OpaquePointer) -> Void)?
 
-    public var notifyShowArrow: ((DropDown, OpaquePointer) -> Bool)?
+    public var notifyShowArrow: ((DropDown, OpaquePointer) -> Void)?
 }

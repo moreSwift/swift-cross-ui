@@ -31,7 +31,13 @@ open class GestureLongPress: GestureSingle {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "cancelled") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "cancelled", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.cancelled?(self)
         }

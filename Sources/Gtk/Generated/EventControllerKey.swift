@@ -17,7 +17,13 @@ open class EventControllerKey: EventController {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "im-update") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "im-update", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.imUpdate?(self)
         }
@@ -32,7 +38,7 @@ open class EventControllerKey: EventController {
             param0: UInt,
             param1: UInt,
             param2: GdkModifierType
-        ) in
+        ) -> gboolean in
             guard let self else { return 0 }
             return self.keyPressed?(self, param0, param1, param2).toGBoolean() ?? 0
         }
@@ -61,7 +67,7 @@ open class EventControllerKey: EventController {
         addSignal(
             name: "modifiers",
             handler: gCallback(handler3)
-        ) { [weak self] (param0: GdkModifierType) in
+        ) { [weak self] (param0: GdkModifierType) -> gboolean in
             guard let self else { return 0 }
             return self.modifiers?(self, param0).toGBoolean() ?? 0
         }

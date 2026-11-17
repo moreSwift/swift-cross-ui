@@ -54,7 +54,13 @@ open class GestureClick: GestureSingle {
             self.released?(self, param0, param1, param2)
         }
 
-        addSignal(name: "stopped") { [weak self] () in
+        let handler2: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "stopped", handler: gCallback(handler2)) { [weak self] () in
             guard let self else { return }
             self.stopped?(self)
         }

@@ -243,16 +243,16 @@ open class Image: Widget {
 
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> gboolean = { _, value1, data in
-            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
+        ) -> Void = { _, value1, data in
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
             name: "notify::use-fallback",
             handler: gCallback(handler8)
         ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return 0 }
-            return self.notifyUseFallback?(self, param0).toGBoolean() ?? 0
+            guard let self else { return }
+            self.notifyUseFallback?(self, param0)
         }
     }
 
@@ -293,5 +293,5 @@ open class Image: Widget {
 
     public var notifyStorageType: ((Image, OpaquePointer) -> Void)?
 
-    public var notifyUseFallback: ((Image, OpaquePointer) -> Bool)?
+    public var notifyUseFallback: ((Image, OpaquePointer) -> Void)?
 }
