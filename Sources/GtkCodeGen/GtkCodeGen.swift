@@ -627,8 +627,11 @@ struct GtkCodeGen {
                 closure = ExprSyntax(
                     """
                     { [weak self] (\(raw: parameters)) -> \(raw: returnVal) in
-                        guard let self else { return \(raw: defaultVal) }
-                        return self.\(raw: name)?(\(raw: arguments))\(raw: suffix) ?? \(raw: defaultVal)
+                        guard 
+                            let self,
+                            let \(raw: name) = self.\(raw: name)
+                        else { return \(raw: defaultVal) }
+                        return \(raw: name)(\(raw: arguments))\(raw: suffix)
                     }
                     """
                 )
@@ -682,7 +685,7 @@ struct GtkCodeGen {
                         raw: signalIndex
                     ))) \(raw: closure)
                     """
-                )
+                ).description
             )
         }
 

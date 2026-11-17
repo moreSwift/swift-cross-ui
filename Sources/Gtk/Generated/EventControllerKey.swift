@@ -39,8 +39,11 @@ open class EventControllerKey: EventController {
             param1: UInt,
             param2: GdkModifierType
         ) -> gboolean in
-            guard let self else { return 0 }
-            return self.keyPressed?(self, param0, param1, param2).toGBoolean() ?? 0
+            guard
+                let self,
+                let keyPressed = self.keyPressed
+            else { return 0 }
+            return keyPressed(self, param0, param1, param2).toGBoolean()
         }
 
         let handler2: @convention(c) (
@@ -68,8 +71,11 @@ open class EventControllerKey: EventController {
             name: "modifiers",
             handler: gCallback(handler3)
         ) { [weak self] (param0: GdkModifierType) -> gboolean in
-            guard let self else { return 0 }
-            return self.modifiers?(self, param0).toGBoolean() ?? 0
+            guard
+                let self,
+                let modifiers = self.modifiers
+            else { return 0 }
+            return modifiers(self, param0).toGBoolean()
         }
     }
 

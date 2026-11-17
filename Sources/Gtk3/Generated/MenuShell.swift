@@ -125,8 +125,11 @@ open class MenuShell: Container {
             name: "move-selected",
             handler: gCallback(handler6)
         ) { [weak self] (param0: Int) -> gboolean in
-            guard let self else { return 0 }
-            return self.moveSelected?(self, param0).toGBoolean() ?? 0
+            guard
+                let self,
+                let moveSelected = self.moveSelected
+            else { return 0 }
+            return moveSelected(self, param0).toGBoolean()
         }
 
         let handler7: @convention(c) (

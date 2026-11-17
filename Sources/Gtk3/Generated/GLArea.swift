@@ -136,8 +136,11 @@ open class GLArea: Widget {
             name: "render",
             handler: gCallback(handler1)
         ) { [weak self] (param0: OpaquePointer) -> gboolean in
-            guard let self else { return 0 }
-            return self.render?(self, param0).toGBoolean() ?? 0
+            guard
+                let self,
+                let render = self.render
+            else { return 0 }
+            return render(self, param0).toGBoolean()
         }
 
         let handler2: @convention(c) (

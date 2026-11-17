@@ -53,8 +53,11 @@ open class Switch: Widget, Activatable {
             name: "state-set",
             handler: gCallback(handler1)
         ) { [weak self] (param0: Bool) -> gboolean in
-            guard let self else { return 0 }
-            return self.stateSet?(self, param0).toGBoolean() ?? 0
+            guard
+                let self,
+                let stateSet = self.stateSet
+            else { return 0 }
+            return stateSet(self, param0).toGBoolean()
         }
 
         let handler2: @convention(c) (

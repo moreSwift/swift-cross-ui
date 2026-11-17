@@ -199,8 +199,11 @@ open class SpinButton: Widget, CellEditable, Editable, Orientable {
         }
 
         addSignal(name: "output", handler: gCallback(handler3)) { [weak self] () -> gboolean in
-            guard let self else { return 0 }
-            return self.output?(self).toGBoolean() ?? 0
+            guard
+                let self,
+                let output = self.output
+            else { return 0 }
+            return output(self).toGBoolean()
         }
 
         let handler4: @convention(c) (

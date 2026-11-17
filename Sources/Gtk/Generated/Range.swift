@@ -48,8 +48,11 @@ open class Range: Widget, Orientable {
             param0: GtkScrollType,
             param1: Double
         ) -> gboolean in
-            guard let self else { return 0 }
-            return self.changeValue?(self, param0, param1).toGBoolean() ?? 0
+            guard
+                let self,
+                let changeValue = self.changeValue
+            else { return 0 }
+            return changeValue(self, param0, param1).toGBoolean()
         }
 
         let handler2: @convention(c) (

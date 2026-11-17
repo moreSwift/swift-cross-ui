@@ -229,8 +229,11 @@ open class Label: Misc {
             name: "activate-link",
             handler: gCallback(handler1)
         ) { [weak self] (param0: UnsafePointer<CChar>) -> gboolean in
-            guard let self else { return 0 }
-            return self.activateLink?(self, param0).toGBoolean() ?? 0
+            guard
+                let self,
+                let activateLink = self.activateLink
+            else { return 0 }
+            return activateLink(self, param0).toGBoolean()
         }
 
         let handler2: @convention(c) (

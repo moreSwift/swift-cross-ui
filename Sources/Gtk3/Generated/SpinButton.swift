@@ -174,8 +174,11 @@ open class SpinButton: Entry, Orientable {
         }
 
         addSignal(name: "output", handler: gCallback(handler2)) { [weak self] () -> gboolean in
-            guard let self else { return 0 }
-            return self.output?(self).toGBoolean() ?? 0
+            guard
+                let self,
+                let output = self.output
+            else { return 0 }
+            return output(self).toGBoolean()
         }
 
         let handler3: @convention(c) (
