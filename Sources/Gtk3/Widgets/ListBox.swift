@@ -48,13 +48,14 @@ open class ListBox: Container {
 
     open override func didMoveToParent() {
         super.didMoveToParent()
-        
+
         let handler0: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(name: "activate-cursor-row", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.activateCursorRow?(self)
@@ -104,24 +105,26 @@ open class ListBox: Container {
             guard let self else { return }
             self.rowSelected?(self, param0)
         }
-        
+
         let handler4: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(name: "selected-rows-changed", handler: gCallback(handler4)) { [weak self] () in
             guard let self else { return }
             self.selectedRowsChanged?(self)
         }
-        
+
         let handler5: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(name: "toggle-cursor-row", handler: gCallback(handler5)) { [weak self] () in
             guard let self else { return }
             self.toggleCursorRow?(self)

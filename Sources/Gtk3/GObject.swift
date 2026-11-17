@@ -48,14 +48,14 @@ open class GObject: GObjectRepresentable {
     /// Adds a signal that is not carrying any additional information.
     func addSignal<R>(name: String, handler: GCallback, callback: @escaping () -> R) {
         let box = SignalBox0(callback: callback)
-        
+
         let handlerId = connectSignal(
             gobjectPointer,
             name: name,
             data: Unmanaged.passUnretained(box).toOpaque(),
             handler: handler
         )
-        
+
         signals.append((handlerId, box))
     }
 

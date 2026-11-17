@@ -22,7 +22,7 @@ class SignalBox0<R>: SignalBox {
     required init(callback: @escaping CallbackType) {
         self.callback = callback
     }
-    
+
     static func run(_ data: UnsafeMutableRawPointer) -> R {
         let box = Unmanaged<SignalBox0<R>>.fromOpaque(data)
             .takeUnretainedValue()

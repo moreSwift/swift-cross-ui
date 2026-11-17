@@ -92,13 +92,14 @@ open class TextView: Widget, Scrollable {
 
     open override func didMoveToParent() {
         super.didMoveToParent()
-        
+
         let handler0: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "backspace",
             handler: gCallback(handler0)
@@ -106,13 +107,14 @@ open class TextView: Widget, Scrollable {
             guard let self else { return }
             self.backspace?(self)
         }
-        
+
         let handler1: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "copy-clipboard",
             handler: gCallback(handler1)
@@ -120,13 +122,14 @@ open class TextView: Widget, Scrollable {
             guard let self else { return }
             self.copyClipboard?(self)
         }
-        
+
         let handler2: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "cut-clipboard",
             handler: gCallback(handler2)
@@ -191,13 +194,14 @@ open class TextView: Widget, Scrollable {
             guard let self else { return }
             self.insertAtCursor?(self, param0)
         }
-        
+
         let handler6: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "insert-emoji",
             handler: gCallback(handler6)
@@ -236,13 +240,14 @@ open class TextView: Widget, Scrollable {
             guard let self else { return }
             self.moveViewport?(self, param0, param1)
         }
-        
+
         let handler9: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "paste-clipboard",
             handler: gCallback(handler9)
@@ -263,13 +268,14 @@ open class TextView: Widget, Scrollable {
             guard let self else { return }
             self.preeditChanged?(self, param0)
         }
-        
+
         let handler11: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "set-anchor",
             handler: gCallback(handler11)
@@ -277,13 +283,14 @@ open class TextView: Widget, Scrollable {
             guard let self else { return }
             self.setAnchor?(self)
         }
-        
+
         let handler12: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "toggle-cursor-visible",
             handler: gCallback(handler12)
@@ -291,13 +298,14 @@ open class TextView: Widget, Scrollable {
             guard let self else { return }
             self.toggleCursorVisible?(self)
         }
-        
+
         let handler13: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "toggle-overwrite",
             handler: gCallback(handler13)

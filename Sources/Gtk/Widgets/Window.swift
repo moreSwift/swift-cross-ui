@@ -115,11 +115,12 @@ open class Window: Widget {
 
     open override func registerSignals() {
         let handler: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "close-request",
             handler: gCallback(handler)
@@ -127,13 +128,14 @@ open class Window: Widget {
             guard let self else { return }
             self.onCloseRequest?(self)
         }
-        
+
         let handler2: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "destroy",
             handler: gCallback(handler)

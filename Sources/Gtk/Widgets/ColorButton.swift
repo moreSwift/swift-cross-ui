@@ -27,13 +27,14 @@ open class ColorButton: Widget {
 
     open override func registerSignals() {
         super.registerSignals()
-        
+
         let handler: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "color-set",
             handler: gCallback(handler)

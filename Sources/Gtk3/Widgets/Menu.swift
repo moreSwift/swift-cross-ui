@@ -320,13 +320,14 @@ public class Menu: MenuShell {
             guard let self else { return }
             self.notifyTearoffTitle?(self)
         }
-        
+
         let handler14: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(name: "hide", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.hide()

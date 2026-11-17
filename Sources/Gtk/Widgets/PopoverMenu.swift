@@ -227,13 +227,14 @@ public class PopoverMenu: Popover {
             guard let self else { return }
             self.notifyVisibleSubmenu?(self)
         }
-        
+
         let handler3: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "hid",
             handler: gCallback(handler3)

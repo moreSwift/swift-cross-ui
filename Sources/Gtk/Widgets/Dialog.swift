@@ -125,13 +125,14 @@ open class Dialog: Window {
         removeSignals()
 
         super.didMoveToParent()
-        
+
         let handler0: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "close",
             handler: gCallback(handler0)

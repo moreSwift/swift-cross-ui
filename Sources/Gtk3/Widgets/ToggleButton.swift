@@ -15,13 +15,14 @@ open class ToggleButton: Button {
 
     open override func didMoveToParent() {
         super.didMoveToParent()
-        
+
         let handler0: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(name: "toggled", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.toggled?(self)

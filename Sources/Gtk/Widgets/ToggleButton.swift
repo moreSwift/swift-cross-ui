@@ -21,13 +21,14 @@ public class ToggleButton: Button {
 
     open override func didMoveToParent() {
         super.didMoveToParent()
-        
+
         let handler: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "toggled",
             handler: gCallback(handler)

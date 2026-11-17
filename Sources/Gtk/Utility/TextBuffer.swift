@@ -47,13 +47,14 @@ open class TextBuffer: GObject {
         //     guard let self else { return }
         //     self.beginUserAction?(self)
         // }
-        
+
         let handler: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(
             name: "changed",
             handler: gCallback(handler)

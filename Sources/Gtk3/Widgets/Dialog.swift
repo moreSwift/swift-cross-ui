@@ -127,13 +127,14 @@ open class Dialog: Window {
         // it presents as a crash inside swift_retain inside SignalBox1.run (when
         // the callback gets called) for the "button-press-event" signal.
         //   super.didMoveToParent()
-        
+
         let handler0: @convention(c) (
-            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
         ) -> Void = { _, data in
             SignalBox0<Void>.run(data)
         }
-        
+
         addSignal(name: "close", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.close?(self)
