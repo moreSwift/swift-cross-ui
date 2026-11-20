@@ -613,30 +613,30 @@ struct GtkCodeGen {
             let arguments = (["self"] + extraArguments).joined(separator: ", ")
 
             let closure: ExprSyntax
-            let returnVal: String
+            let returnType: String
 
             if
                 !signal.name.hasPrefix("notify:"),
                 let returnTypeName = signal.returnValue.type?.name,
                 let information = Self.allowedSignalReturnTypeInformation[returnTypeName]
             {
-                returnVal = returnTypeName
+                returnType = returnTypeName
                 let suffix = information.handlerReturnValueConversionSuffix
-                let defaultVal = Self.signalDefaultReturnOverrides[signal.name]
+                let defaultValue = Self.signalDefaultReturnOverrides[signal.name]
                     ?? information.defaultReturnValue
                 closure = ExprSyntax(
                     """
-                    { [weak self] (\(raw: parameters)) -> \(raw: returnVal) in
+                    { [weak self] (\(raw: parameters)) -> \(raw: returnType) in
                         guard 
                             let self,
                             let \(raw: name) = self.\(raw: name)
-                        else { return \(raw: defaultVal) }
+                        else { return \(raw: defaultValue) }
                         return \(raw: name)(\(raw: arguments))\(raw: suffix)
                     }
                     """
                 )
             } else {
-                returnVal = "Void"
+                returnType = "Void"
                 closure = ExprSyntax(
                     """
                     { [weak self] (\(raw: parameters)) in
@@ -647,36 +647,28 @@ struct GtkCodeGen {
                 )
             }
 
-            if parameterCount == 0 {
-                exprs.append(
-                    DeclSyntax(
-                        """
-                        let handler\(raw: signalIndex): @convention(c) (
-                            UnsafeMutableRawPointer, UnsafeMutableRawPointer
-                        ) -> \(raw: returnVal) = { _, data in
-                            SignalBox\(raw: parameterCount)<\(raw: returnVal)>.run(data)
-                        }
-                        """
-                    ).description
-                )
-            } else {
-                let typeParameters = parameterTypes.joined(separator: ", ")
+            let typeParameters = parameterTypes.map { "\($0), " }.joined()
 
-                let arguments = (1...parameterCount).map { "value\($0)" }.joined(separator: ", ")
-                exprs.append(
-                    DeclSyntax(
-                        """
-                        let handler\(raw: signalIndex): @convention(c) (
-                            UnsafeMutableRawPointer, \(raw: typeParameters), UnsafeMutableRawPointer
-                        ) -> \(raw: returnVal) = { _, \(raw: arguments), data in
-                            SignalBox\(raw: parameterCount)<\(raw: typeParameters), \(raw: returnVal)>.run(data, \(
-                                raw: arguments
-                            ))
-                        }
-                        """
-                    ).description
-                )
+            let handlerArguments: String
+            if parameterCount == 0 {
+                handlerArguments = ""
+            } else {
+                handlerArguments = (1...parameterCount).map { "value\($0), " }.joined()
             }
+
+            exprs.append(
+                DeclSyntax(
+                    """
+                    let handler\(raw: signalIndex): @convention(c) (
+                        UnsafeMutableRawPointer, \(raw: typeParameters)UnsafeMutableRawPointer
+                    ) -> \(raw: returnType) = { _, \(raw: handlerArguments)data in
+                        SignalBox\(raw: parameterCount)<\(raw: typeParameters)\(raw: returnType)>.run(data\(
+                            raw: parameterCount >= 1 ? ", \(handlerArguments.dropLast(2))": ""
+                        ))
+                    }
+                    """
+                ).description
+            )
 
             exprs.append(
                 ExprSyntax(
@@ -737,23 +729,20 @@ struct GtkCodeGen {
             prefix = "public "
         }
 
+        let returnType: String
         if
             !signal.name.hasPrefix("notify:"),
             let returnTypeName = signal.returnValue.type?.name,
             let information = Self.allowedSignalReturnTypeInformation[returnTypeName]
         {
-            let type = information.handlerReturnTypeName
-            return DeclSyntax(
-                """
-                \(raw: docComment(signal.doc))
-                \(raw: prefix)var \(raw: name): ((\(raw: parameters)) -> \(raw: type))?\(raw: suffix)
-                """
-            )
+            returnType = information.handlerReturnTypeName
+        } else {
+            returnType = "Void"
         }
         return DeclSyntax(
             """
             \(raw: docComment(signal.doc))
-            \(raw: prefix)var \(raw: name): ((\(raw: parameters)) -> Void)?\(raw: suffix)
+            \(raw: prefix)var \(raw: name): ((\(raw: parameters)) -> \(raw: returnType))?\(raw: suffix)
             """
         )
     }
