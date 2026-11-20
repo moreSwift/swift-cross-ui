@@ -31,7 +31,13 @@ open class GestureLongPress: GestureSingle {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "cancelled") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "cancelled", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.cancelled?(self)
         }
@@ -39,7 +45,7 @@ open class GestureLongPress: GestureSingle {
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, Double, Double, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, data in
-            SignalBox2<Double, Double>.run(data, value1, value2)
+            SignalBox2<Double, Double, Void>.run(data, value1, value2)
         }
 
         addSignal(name: "pressed", handler: gCallback(handler1)) { [weak self] (
@@ -53,7 +59,7 @@ open class GestureLongPress: GestureSingle {
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

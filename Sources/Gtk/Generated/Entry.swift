@@ -105,7 +105,13 @@ open class Entry: Widget, CellEditable, Editable {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "activate") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "activate", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.activate?(self)
         }
@@ -113,7 +119,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, GtkEntryIconPosition, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<GtkEntryIconPosition>.run(data, value1)
+            SignalBox1<GtkEntryIconPosition, Void>.run(data, value1)
         }
 
         addSignal(
@@ -127,7 +133,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, GtkEntryIconPosition, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<GtkEntryIconPosition>.run(data, value1)
+            SignalBox1<GtkEntryIconPosition, Void>.run(data, value1)
         }
 
         addSignal(
@@ -138,17 +144,35 @@ open class Entry: Widget, CellEditable, Editable {
             self.iconRelease?(self, param0)
         }
 
-        addSignal(name: "editing-done") { [weak self] () in
+        let handler3: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "editing-done", handler: gCallback(handler3)) { [weak self] () in
             guard let self else { return }
             self.editingDone?(self)
         }
 
-        addSignal(name: "remove-widget") { [weak self] () in
+        let handler4: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "remove-widget", handler: gCallback(handler4)) { [weak self] () in
             guard let self else { return }
             self.removeWidget?(self)
         }
 
-        addSignal(name: "changed") { [weak self] () in
+        let handler5: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "changed", handler: gCallback(handler5)) { [weak self] () in
             guard let self else { return }
             self.changed?(self)
         }
@@ -156,7 +180,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, Int, Int, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, data in
-            SignalBox2<Int, Int>.run(data, value1, value2)
+            SignalBox2<Int, Int, Void>.run(data, value1, value2)
         }
 
         addSignal(name: "delete-text", handler: gCallback(handler6)) { [weak self] (
@@ -170,7 +194,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, UnsafePointer<CChar>, Int, gpointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, value3, data in
-            SignalBox3<UnsafePointer<CChar>, Int, gpointer>.run(data, value1, value2, value3)
+            SignalBox3<UnsafePointer<CChar>, Int, gpointer, Void>.run(data, value1, value2, value3)
         }
 
         addSignal(name: "insert-text", handler: gCallback(handler7)) { [weak self] (
@@ -185,7 +209,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -199,7 +223,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -213,7 +237,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler10: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -227,7 +251,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler11: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -241,7 +265,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler12: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -255,7 +279,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler13: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -269,7 +293,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler14: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -283,7 +307,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler15: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -297,7 +321,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler16: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -311,7 +335,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler17: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -325,7 +349,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler18: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -339,7 +363,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler19: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -353,7 +377,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler20: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -367,7 +391,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler21: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -381,7 +405,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler22: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -395,7 +419,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler23: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -409,7 +433,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler24: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -423,7 +447,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler25: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -437,7 +461,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler26: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -451,7 +475,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler27: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -465,7 +489,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler28: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -479,7 +503,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler29: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -493,7 +517,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler30: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -507,7 +531,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler31: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -521,7 +545,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler32: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -535,7 +559,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler33: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -549,7 +573,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler34: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -563,7 +587,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler35: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -577,7 +601,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler36: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -591,7 +615,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler37: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -605,7 +629,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler38: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -619,7 +643,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler39: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -633,7 +657,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler40: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -647,7 +671,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler41: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -661,7 +685,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler42: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -675,7 +699,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler43: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -689,7 +713,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler44: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -703,7 +727,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler45: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -717,7 +741,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler46: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -731,7 +755,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler47: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -745,7 +769,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler48: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -759,7 +783,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler49: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -773,7 +797,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler50: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -787,7 +811,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler51: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -801,7 +825,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler52: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -815,7 +839,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler53: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -829,7 +853,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler54: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -843,7 +867,7 @@ open class Entry: Widget, CellEditable, Editable {
         let handler55: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

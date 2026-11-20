@@ -71,7 +71,7 @@ public class MessageDialog: Dialog {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::buttons", handler: gCallback(handler0)) {
@@ -84,7 +84,7 @@ public class MessageDialog: Dialog {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::message-area", handler: gCallback(handler1)) {
@@ -97,7 +97,7 @@ public class MessageDialog: Dialog {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::message-type", handler: gCallback(handler2)) {
@@ -110,7 +110,7 @@ public class MessageDialog: Dialog {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::secondary-text", handler: gCallback(handler3)) {
@@ -123,7 +123,7 @@ public class MessageDialog: Dialog {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::secondary-use-markup", handler: gCallback(handler4)) {
@@ -136,7 +136,7 @@ public class MessageDialog: Dialog {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::text", handler: gCallback(handler5)) {
@@ -149,7 +149,7 @@ public class MessageDialog: Dialog {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::use-markup", handler: gCallback(handler6)) {

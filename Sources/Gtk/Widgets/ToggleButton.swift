@@ -22,7 +22,17 @@ public class ToggleButton: Button {
     open override func didMoveToParent() {
         super.didMoveToParent()
 
-        addSignal(name: "toggled") { [weak self] in
+        let handler: @convention(c) (
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(
+            name: "toggled",
+            handler: gCallback(handler)
+        ) { [weak self] in
             guard let self else { return }
             self.toggled?(self)
         }

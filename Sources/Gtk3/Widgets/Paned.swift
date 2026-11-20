@@ -37,7 +37,7 @@ open class Paned: Container, Orientable {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::position", handler: gCallback(handler)) {

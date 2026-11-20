@@ -48,7 +48,15 @@ public class Application: GObject, GActionMap {
     }
 
     public override func registerSignals() {
-        addSignal(name: "activate") {
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "activate", handler: gCallback(handler0)) { [weak self] () in
+            guard let self else { return }
             self.activate()
         }
 
@@ -60,7 +68,11 @@ public class Application: GObject, GActionMap {
                 UnsafeMutableRawPointer,
                 UnsafeMutableRawPointer
             ) -> Void = { _, files, nFiles, _, data in
-                SignalBox2<UnsafeMutablePointer<OpaquePointer>, Int>.run(data, files, Int(nFiles))
+                SignalBox2<UnsafeMutablePointer<OpaquePointer>, Int, Void>.run(
+                    data,
+                    files,
+                    Int(nFiles)
+                )
             }
 
         addSignal(name: "open", handler: gCallback(handler1)) {

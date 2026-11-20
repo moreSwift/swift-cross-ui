@@ -189,15 +189,11 @@ public class PopoverMenu: Popover {
 
         super.didMoveToParent()
 
-        addSignal(name: "hid") { [weak self] in
-            self?.onHide?()
-        }
-
         let handler0:
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::flags", handler: gCallback(handler0)) {
@@ -210,7 +206,7 @@ public class PopoverMenu: Popover {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::menu-model", handler: gCallback(handler1)) {
@@ -223,13 +219,28 @@ public class PopoverMenu: Popover {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::visible-submenu", handler: gCallback(handler2)) {
             [weak self] (_: OpaquePointer) in
             guard let self else { return }
             self.notifyVisibleSubmenu?(self)
+        }
+
+        let handler3: @convention(c) (
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(
+            name: "hid",
+            handler: gCallback(handler3)
+        ) { [weak self] in
+            guard let self else { return }
+            self.onHide?()
         }
     }
 

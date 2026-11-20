@@ -43,4 +43,8 @@ return_type_init_parameters = ", ".join(["view%d" % j for j in range(i + 1)])
     public static func buildIf<V: View>(_ content: V?) -> OptionalView<V> {
         return OptionalView(content)
     }
+
+    public static func buildLimitedAvailability(_ component: some View) -> AnyView {
+        AnyView(component)
+    }
 }

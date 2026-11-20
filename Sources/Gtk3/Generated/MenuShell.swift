@@ -40,7 +40,7 @@ open class MenuShell: Container {
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, Bool, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<Bool>.run(data, value1)
+            SignalBox1<Bool, Void>.run(data, value1)
         }
 
         addSignal(
@@ -51,7 +51,13 @@ open class MenuShell: Container {
             self.activateCurrent?(self, param0)
         }
 
-        addSignal(name: "cancel") { [weak self] () in
+        let handler1: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "cancel", handler: gCallback(handler1)) { [weak self] () in
             guard let self else { return }
             self.cancel?(self)
         }
@@ -59,7 +65,7 @@ open class MenuShell: Container {
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, GtkDirectionType, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<GtkDirectionType>.run(data, value1)
+            SignalBox1<GtkDirectionType, Void>.run(data, value1)
         }
 
         addSignal(
@@ -70,7 +76,13 @@ open class MenuShell: Container {
             self.cycleFocus?(self, param0)
         }
 
-        addSignal(name: "deactivate") { [weak self] () in
+        let handler3: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "deactivate", handler: gCallback(handler3)) { [weak self] () in
             guard let self else { return }
             self.deactivate?(self)
         }
@@ -78,7 +90,7 @@ open class MenuShell: Container {
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, GtkWidget, Int, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, data in
-            SignalBox2<GtkWidget, Int>.run(data, value1, value2)
+            SignalBox2<GtkWidget, Int, Void>.run(data, value1, value2)
         }
 
         addSignal(name: "insert", handler: gCallback(handler4)) { [weak self] (
@@ -92,7 +104,7 @@ open class MenuShell: Container {
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, GtkMenuDirectionType, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<GtkMenuDirectionType>.run(data, value1)
+            SignalBox1<GtkMenuDirectionType, Void>.run(data, value1)
         }
 
         addSignal(
@@ -105,19 +117,28 @@ open class MenuShell: Container {
 
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, Int, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<Int>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<Int, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "move-selected",
             handler: gCallback(handler6)
-        ) { [weak self] (param0: Int) in
-            guard let self else { return }
-            self.moveSelected?(self, param0)
+        ) { [weak self] (param0: Int) -> gboolean in
+            guard
+                let self,
+                let moveSelected = self.moveSelected
+            else { return 0 }
+            return moveSelected(self, param0).toGBoolean()
         }
 
-        addSignal(name: "selection-done") { [weak self] () in
+        let handler7: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "selection-done", handler: gCallback(handler7)) { [weak self] () in
             guard let self else { return }
             self.selectionDone?(self)
         }
@@ -125,7 +146,7 @@ open class MenuShell: Container {
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -166,7 +187,7 @@ open class MenuShell: Container {
 
     /// The ::move-selected signal is emitted to move the selection to
     /// another item.
-    public var moveSelected: ((MenuShell, Int) -> Void)?
+    public var moveSelected: ((MenuShell, Int) -> Bool)?
 
     /// This signal is emitted when a selection has been
     /// completed within a menu shell.

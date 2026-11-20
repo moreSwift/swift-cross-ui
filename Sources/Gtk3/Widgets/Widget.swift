@@ -45,7 +45,7 @@ open class Widget: GObject {
                 UnsafePointer<GdkEventButton>,
                 UnsafeMutableRawPointer
             ) -> Void = { _, value1, data in
-                SignalBox1<GdkEventButton>.run(data, value1.pointee)
+                SignalBox1<GdkEventButton, Void>.run(data, value1.pointee)
             }
 
         addSignal(
@@ -62,7 +62,7 @@ open class Widget: GObject {
                 OpaquePointer,
                 UnsafeMutableRawPointer
             ) -> Bool = { _, cairo, data in
-                SignalBox1<OpaquePointer>.run(data, cairo)
+                SignalBox1<OpaquePointer, Void>.run(data, cairo)
                 // Propagate event to next handler
                 return false
             }
@@ -81,7 +81,7 @@ open class Widget: GObject {
                 OpaquePointer,
                 UnsafeMutableRawPointer
             ) -> Void = { _, screen, data in
-                SignalBox1<OpaquePointer>.run(data, screen)
+                SignalBox1<OpaquePointer, Void>.run(data, screen)
             }
 
         addSignal(
@@ -97,7 +97,7 @@ open class Widget: GObject {
                 UnsafeMutableRawPointer,
                 UnsafeMutableRawPointer
             ) -> Void = { _, data in
-                SignalBox1<Void>.run(data, ())
+                SignalBox1<Void, Void>.run(data, ())
             }
 
         addSignal(
@@ -119,7 +119,7 @@ open class Widget: GObject {
                 UnsafePointer<GdkEventKey>,
                 UnsafeMutableRawPointer
             ) -> Bool = { _, event, data in
-                SignalBox1<GdkEventKey>.run(data, event.pointee)
+                SignalBox1<GdkEventKey, Void>.run(data, event.pointee)
                 return false
             }
 

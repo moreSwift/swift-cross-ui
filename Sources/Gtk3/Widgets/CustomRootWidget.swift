@@ -49,11 +49,11 @@ public class CustomRootWidget: Widget {
     }
 
     public func setResizeHandler(_ handler: @escaping (Size) -> Void) {
-        let box = SignalBox1<Size>(callback: handler)
+        let box = SignalBox1<Size, Void>(callback: handler)
         gtk_custom_root_widget_set_resize_callback(
             castedPointer(),
             { data, size in
-                SignalBox1<Size>.run(
+                SignalBox1<Size, Void>.run(
                     data!,
                     Size(width: Int(size.width), height: Int(size.height))
                 )
