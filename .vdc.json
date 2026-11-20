@@ -1,0 +1,77 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DocCLab/VersionedDocC/0.1.2/Schema/VersionedDocC.schema.json",
+  "schemaVersion": 1,
+  "projectName": "swift-cross-ui",
+  "moduleName": "SwiftCrossUI",
+  "modulePath": "swiftcrossui",
+  "targetName": "SwiftCrossUI",
+  "catalogPath": "Sources/SwiftCrossUI/SwiftCrossUI.docc",
+  "additionalModules": [
+    {
+      "moduleName": "AppKitBackend",
+      "symbolGraphPath": ".docs/external-symbol-graphs/{version}/AppKitBackend-symbol-graphs"
+    },
+    {
+      "moduleName": "UIKitBackend",
+      "symbolGraphPath": ".docs/external-symbol-graphs/{version}/UIKitBackend-symbol-graphs"
+    },
+    {
+      "moduleName": "GtkBackend",
+      "symbolGraphPath": ".docs/external-symbol-graphs/{version}/GtkBackend-symbol-graphs"
+    },
+    {
+      "moduleName": "Gtk3Backend",
+      "symbolGraphPath": ".docs/external-symbol-graphs/{version}/Gtk3Backend-symbol-graphs"
+    },
+    {
+      "moduleName": "WinUIBackend",
+      "symbolGraphPath": ".docs/external-symbol-graphs/{version}/WinUIBackend-symbol-graphs"
+    },
+    {
+      "moduleName": "AndroidBackend",
+      "symbolGraphPath": ".docs/external-symbol-graphs/{version}/AndroidBackend-symbol-graphs"
+    }
+  ],
+  "hostingBasePath": "/",
+  "defaultVersion": "main",
+  "versions": [
+    {
+      "name": "main",
+      "ref": "HEAD",
+      "sourceRef": "main"
+    },
+    {
+      "name": "0.8.0",
+      "ref": "v0.8.0"
+    },
+    {
+      "name": "0.7.0",
+      "ref": "v0.7.0"
+    }
+  ],
+  "sourceRepository": "https://github.com/moreSwift/swift-cross-ui",
+  "buildArguments": [
+    "--disable-index-store",
+    "--disable-prefetching",
+    "--force-resolved-versions"
+  ],
+  "ociCache": {
+    "repository": "ghcr.io/docclab/swift-cross-ui-docc-cache"
+  },
+  "allowedModules": [
+    "SwiftCrossUI",
+    "AppKitBackend",
+    "UIKitBackend",
+    "GtkBackend",
+    "Gtk3Backend",
+    "WinUIBackend",
+    "AndroidBackend"
+  ],
+  "symbolGraph": {
+    "minimumAccessLevel": "public",
+    "skipProtocolImplementations": true
+  },
+  "apiChanges": {
+    "pageSize": 10
+  }
+}
