@@ -87,6 +87,7 @@ class WinUIApplication: SwiftApplication, @unchecked Sendable {
 }
 
 public final class WinUIBackend:
+    Sendable,
     BaseAppBackend,
     BackendFeatures.ApplicationMenus,
     BackendFeatures.ExternalURLs,

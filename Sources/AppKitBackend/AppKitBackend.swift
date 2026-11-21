@@ -10,7 +10,7 @@ extension App {
 }
 
 @MainActor
-public final class AppKitBackend {
+public final class AppKitBackend: Sendable {
     let appDelegate = NSCustomApplicationDelegate()
     let focusManager = FocusStateManager()
     var borderedButtonPadding: SIMD2<Int>?
