@@ -93,12 +93,24 @@ open class CheckButton: Widget, Actionable {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "activate") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "activate", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.activate?(self)
         }
 
-        addSignal(name: "toggled") { [weak self] () in
+        let handler1: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "toggled", handler: gCallback(handler1)) { [weak self] () in
             guard let self else { return }
             self.toggled?(self)
         }
@@ -106,7 +118,7 @@ open class CheckButton: Widget, Actionable {
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -120,7 +132,7 @@ open class CheckButton: Widget, Actionable {
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -134,7 +146,7 @@ open class CheckButton: Widget, Actionable {
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -148,7 +160,7 @@ open class CheckButton: Widget, Actionable {
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -162,7 +174,7 @@ open class CheckButton: Widget, Actionable {
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -176,7 +188,7 @@ open class CheckButton: Widget, Actionable {
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -190,7 +202,7 @@ open class CheckButton: Widget, Actionable {
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -204,7 +216,7 @@ open class CheckButton: Widget, Actionable {
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

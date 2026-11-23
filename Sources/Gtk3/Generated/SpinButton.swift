@@ -145,7 +145,7 @@ open class SpinButton: Entry, Orientable {
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, GtkScrollType, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<GtkScrollType>.run(data, value1)
+            SignalBox1<GtkScrollType, Void>.run(data, value1)
         }
 
         addSignal(
@@ -159,7 +159,7 @@ open class SpinButton: Entry, Orientable {
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, gpointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<gpointer>.run(data, value1)
+            SignalBox1<gpointer, Void>.run(data, value1)
         }
 
         addSignal(name: "input", handler: gCallback(handler1)) { [weak self] (param0: gpointer) in
@@ -167,17 +167,38 @@ open class SpinButton: Entry, Orientable {
             self.input?(self, param0)
         }
 
-        addSignal(name: "output") { [weak self] () in
-            guard let self else { return }
-            self.output?(self)
+        let handler2: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> gboolean = { _, data in
+            SignalBox0<gboolean>.run(data)
         }
 
-        addSignal(name: "value-changed") { [weak self] () in
+        addSignal(name: "output", handler: gCallback(handler2)) { [weak self] () -> gboolean in
+            guard
+                let self,
+                let output = self.output
+            else { return 0 }
+            return output(self).toGBoolean()
+        }
+
+        let handler3: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "value-changed", handler: gCallback(handler3)) { [weak self] () in
             guard let self else { return }
             self.valueChanged?(self)
         }
 
-        addSignal(name: "wrapped") { [weak self] () in
+        let handler4: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "wrapped", handler: gCallback(handler4)) { [weak self] () in
             guard let self else { return }
             self.wrapped?(self)
         }
@@ -185,7 +206,7 @@ open class SpinButton: Entry, Orientable {
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -199,7 +220,7 @@ open class SpinButton: Entry, Orientable {
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -213,7 +234,7 @@ open class SpinButton: Entry, Orientable {
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -227,7 +248,7 @@ open class SpinButton: Entry, Orientable {
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -241,7 +262,7 @@ open class SpinButton: Entry, Orientable {
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -255,7 +276,7 @@ open class SpinButton: Entry, Orientable {
         let handler10: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -269,7 +290,7 @@ open class SpinButton: Entry, Orientable {
         let handler11: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -283,7 +304,7 @@ open class SpinButton: Entry, Orientable {
         let handler12: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -297,7 +318,7 @@ open class SpinButton: Entry, Orientable {
         let handler13: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -360,7 +381,7 @@ open class SpinButton: Entry, Orientable {
     /// return TRUE;
     /// }
     /// ]|
-    public var output: ((SpinButton) -> Void)?
+    public var output: ((SpinButton) -> Bool)?
 
     /// The ::value-changed signal is emitted when the value represented by
     /// @spinbutton changes. Also see the #GtkSpinButton::output signal.

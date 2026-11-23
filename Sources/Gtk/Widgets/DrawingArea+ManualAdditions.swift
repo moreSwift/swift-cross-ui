@@ -8,21 +8,21 @@ extension DrawingArea {
             _ height: Int
         ) -> Void
     ) {
-        let box = SignalBox3<OpaquePointer, Int, Int> { cairo, width, height in
+        let box = SignalBox3<OpaquePointer, Int, Int, Void> { cairo, width, height in
             drawFunc(cairo, width, height)
         }
 
         gtk_drawing_area_set_draw_func(
             castedPointer(),
             { _, cairo, width, height, data in
-                let box = Unmanaged<SignalBox3<OpaquePointer, Int, Int>>
+                let box = Unmanaged<SignalBox3<OpaquePointer, Int, Int, Void>>
                     .fromOpaque(data!)
                     .takeUnretainedValue()
                 box.callback(cairo!, Int(width), Int(height))
             },
             Unmanaged.passRetained(box).toOpaque(),
             { data in
-                Unmanaged<SignalBox3<OpaquePointer, Int, Int>>
+                Unmanaged<SignalBox3<OpaquePointer, Int, Int, Void>>
                     .fromOpaque(data!)
                     .release()
             }

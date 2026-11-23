@@ -246,26 +246,41 @@ open class Label: Widget {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "activate-current-link") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "activate-current-link", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.activateCurrentLink?(self)
         }
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, UnsafePointer<CChar>, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<UnsafePointer<CChar>>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<UnsafePointer<CChar>, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "activate-link",
             handler: gCallback(handler1)
-        ) { [weak self] (param0: UnsafePointer<CChar>) in
-            guard let self else { return }
-            self.activateLink?(self, param0)
+        ) { [weak self] (param0: UnsafePointer<CChar>) -> gboolean in
+            guard
+                let self,
+                let activateLink = self.activateLink
+            else { return 0 }
+            return activateLink(self, param0).toGBoolean()
         }
 
-        addSignal(name: "copy-clipboard") { [weak self] () in
+        let handler2: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "copy-clipboard", handler: gCallback(handler2)) { [weak self] () in
             guard let self else { return }
             self.copyClipboard?(self)
         }
@@ -273,7 +288,7 @@ open class Label: Widget {
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, GtkMovementStep, Int, Bool, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, value3, data in
-            SignalBox3<GtkMovementStep, Int, Bool>.run(data, value1, value2, value3)
+            SignalBox3<GtkMovementStep, Int, Bool, Void>.run(data, value1, value2, value3)
         }
 
         addSignal(name: "move-cursor", handler: gCallback(handler3)) { [weak self] (
@@ -288,7 +303,7 @@ open class Label: Widget {
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -302,7 +317,7 @@ open class Label: Widget {
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -316,7 +331,7 @@ open class Label: Widget {
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -330,7 +345,7 @@ open class Label: Widget {
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -344,7 +359,7 @@ open class Label: Widget {
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -358,7 +373,7 @@ open class Label: Widget {
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -372,7 +387,7 @@ open class Label: Widget {
         let handler10: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -386,7 +401,7 @@ open class Label: Widget {
         let handler11: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -400,7 +415,7 @@ open class Label: Widget {
         let handler12: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -414,7 +429,7 @@ open class Label: Widget {
         let handler13: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -428,7 +443,7 @@ open class Label: Widget {
         let handler14: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -442,7 +457,7 @@ open class Label: Widget {
         let handler15: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -456,7 +471,7 @@ open class Label: Widget {
         let handler16: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -470,7 +485,7 @@ open class Label: Widget {
         let handler17: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -484,7 +499,7 @@ open class Label: Widget {
         let handler18: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -498,7 +513,7 @@ open class Label: Widget {
         let handler19: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -512,7 +527,7 @@ open class Label: Widget {
         let handler20: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -526,7 +541,7 @@ open class Label: Widget {
         let handler21: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -540,7 +555,7 @@ open class Label: Widget {
         let handler22: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -672,7 +687,7 @@ open class Label: Widget {
     ///
     /// Applications may connect to it to override the default behaviour,
     /// which is to call [method@Gtk.FileLauncher.launch].
-    public var activateLink: ((Label, UnsafePointer<CChar>) -> Void)?
+    public var activateLink: ((Label, UnsafePointer<CChar>) -> Bool)?
 
     /// Gets emitted to copy the selection to the clipboard.
     ///

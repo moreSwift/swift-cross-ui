@@ -171,7 +171,7 @@ open class FileChooserNative: NativeDialog, FileChooser {
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -185,7 +185,7 @@ open class FileChooserNative: NativeDialog, FileChooser {
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -199,7 +199,7 @@ open class FileChooserNative: NativeDialog, FileChooser {
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -213,7 +213,7 @@ open class FileChooserNative: NativeDialog, FileChooser {
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -227,7 +227,7 @@ open class FileChooserNative: NativeDialog, FileChooser {
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -241,7 +241,7 @@ open class FileChooserNative: NativeDialog, FileChooser {
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -255,7 +255,7 @@ open class FileChooserNative: NativeDialog, FileChooser {
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -269,7 +269,7 @@ open class FileChooserNative: NativeDialog, FileChooser {
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

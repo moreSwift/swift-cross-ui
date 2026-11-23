@@ -20,7 +20,7 @@ open class Range: Widget, Orientable {
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, Double, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<Double>.run(data, value1)
+            SignalBox1<Double, Void>.run(data, value1)
         }
 
         addSignal(
@@ -33,22 +33,25 @@ open class Range: Widget, Orientable {
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, GtkScrollType, Double, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, value2, data in
-            SignalBox2<GtkScrollType, Double>.run(data, value1, value2)
+        ) -> gboolean = { _, value1, value2, data in
+            SignalBox2<GtkScrollType, Double, gboolean>.run(data, value1, value2)
         }
 
         addSignal(name: "change-value", handler: gCallback(handler1)) { [weak self] (
             param0: GtkScrollType,
             param1: Double
-        ) in
-            guard let self else { return }
-            self.changeValue?(self, param0, param1)
+        ) -> gboolean in
+            guard
+                let self,
+                let changeValue = self.changeValue
+            else { return 0 }
+            return changeValue(self, param0, param1).toGBoolean()
         }
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, GtkScrollType, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<GtkScrollType>.run(data, value1)
+            SignalBox1<GtkScrollType, Void>.run(data, value1)
         }
 
         addSignal(
@@ -59,7 +62,13 @@ open class Range: Widget, Orientable {
             self.moveSlider?(self, param0)
         }
 
-        addSignal(name: "value-changed") { [weak self] () in
+        let handler3: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "value-changed", handler: gCallback(handler3)) { [weak self] () in
             guard let self else { return }
             self.valueChanged?(self)
         }
@@ -67,7 +76,7 @@ open class Range: Widget, Orientable {
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -81,7 +90,7 @@ open class Range: Widget, Orientable {
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -95,7 +104,7 @@ open class Range: Widget, Orientable {
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -109,7 +118,7 @@ open class Range: Widget, Orientable {
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -123,7 +132,7 @@ open class Range: Widget, Orientable {
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -137,7 +146,7 @@ open class Range: Widget, Orientable {
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -151,7 +160,7 @@ open class Range: Widget, Orientable {
         let handler10: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -165,7 +174,7 @@ open class Range: Widget, Orientable {
         let handler11: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -179,7 +188,7 @@ open class Range: Widget, Orientable {
         let handler12: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -217,7 +226,7 @@ open class Range: Widget, Orientable {
     /// the GtkRange::change-value signal is responsible for clamping the
     /// value to the desired number of decimal digits; the default GTK+
     /// handler clamps the value based on #GtkRange:round-digits.
-    public var changeValue: ((Range, GtkScrollType, Double) -> Void)?
+    public var changeValue: ((Range, GtkScrollType, Double) -> Bool)?
 
     /// Virtual function that moves the slider. Used for keybindings.
     public var moveSlider: ((Range, GtkScrollType) -> Void)?

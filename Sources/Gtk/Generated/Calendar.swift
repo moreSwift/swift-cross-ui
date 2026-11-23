@@ -71,27 +71,57 @@ open class Calendar: Widget {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "day-selected") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "day-selected", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.daySelected?(self)
         }
 
-        addSignal(name: "next-month") { [weak self] () in
+        let handler1: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "next-month", handler: gCallback(handler1)) { [weak self] () in
             guard let self else { return }
             self.nextMonth?(self)
         }
 
-        addSignal(name: "next-year") { [weak self] () in
+        let handler2: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "next-year", handler: gCallback(handler2)) { [weak self] () in
             guard let self else { return }
             self.nextYear?(self)
         }
 
-        addSignal(name: "prev-month") { [weak self] () in
+        let handler3: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "prev-month", handler: gCallback(handler3)) { [weak self] () in
             guard let self else { return }
             self.prevMonth?(self)
         }
 
-        addSignal(name: "prev-year") { [weak self] () in
+        let handler4: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "prev-year", handler: gCallback(handler4)) { [weak self] () in
             guard let self else { return }
             self.prevYear?(self)
         }
@@ -99,7 +129,7 @@ open class Calendar: Widget {
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -113,7 +143,7 @@ open class Calendar: Widget {
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -127,7 +157,7 @@ open class Calendar: Widget {
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -141,7 +171,7 @@ open class Calendar: Widget {
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -155,7 +185,7 @@ open class Calendar: Widget {
         let handler9: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -169,7 +199,7 @@ open class Calendar: Widget {
         let handler10: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(

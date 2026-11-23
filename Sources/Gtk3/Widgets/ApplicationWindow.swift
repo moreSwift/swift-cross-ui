@@ -21,7 +21,7 @@ public class ApplicationWindow: Window {
                 gint,
                 UnsafeMutableRawPointer
             ) -> Void = { _, value1, data in
-                SignalBox1<gint>.run(data, value1)
+                SignalBox1<gint, Void>.run(data, value1)
             }
         addSignal(
             name: "notify::scale-factor",
@@ -37,7 +37,7 @@ public class ApplicationWindow: Window {
                 gboolean,
                 UnsafeMutableRawPointer
             ) -> Void = { _, value1, data in
-                SignalBox1<gboolean>.run(data, value1)
+                SignalBox1<gboolean, Void>.run(data, value1)
             }
         addSignal(
             name: "notify::is-active",

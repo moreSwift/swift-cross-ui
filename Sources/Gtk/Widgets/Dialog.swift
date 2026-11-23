@@ -126,7 +126,17 @@ open class Dialog: Window {
 
         super.didMoveToParent()
 
-        addSignal(name: "close") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer,
+            UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(
+            name: "close",
+            handler: gCallback(handler0)
+        ) { [weak self] in
             guard let self else { return }
             self.close?(self)
         }
@@ -134,7 +144,7 @@ open class Dialog: Window {
         let handler1:
             @convention(c) (UnsafeMutableRawPointer, Int, UnsafeMutableRawPointer) -> Void =
             { _, value1, data in
-                SignalBox1<Int>.run(data, value1)
+                SignalBox1<Int, Void>.run(data, value1)
             }
 
         addSignal(name: "response", handler: gCallback(handler1)) { [weak self] (responseId: Int) in
@@ -146,7 +156,7 @@ open class Dialog: Window {
             @convention(c) (UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer)
             -> Void =
             { _, value1, data in
-                SignalBox1<OpaquePointer>.run(data, value1)
+                SignalBox1<OpaquePointer, Void>.run(data, value1)
             }
 
         addSignal(name: "notify::use-header-bar", handler: gCallback(handler2)) {

@@ -17,30 +17,39 @@ open class EventControllerKey: EventController {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "im-update") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "im-update", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.imUpdate?(self)
         }
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, UInt, UInt, GdkModifierType, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, value2, value3, data in
-            SignalBox3<UInt, UInt, GdkModifierType>.run(data, value1, value2, value3)
+        ) -> gboolean = { _, value1, value2, value3, data in
+            SignalBox3<UInt, UInt, GdkModifierType, gboolean>.run(data, value1, value2, value3)
         }
 
         addSignal(name: "key-pressed", handler: gCallback(handler1)) { [weak self] (
             param0: UInt,
             param1: UInt,
             param2: GdkModifierType
-        ) in
-            guard let self else { return }
-            self.keyPressed?(self, param0, param1, param2)
+        ) -> gboolean in
+            guard
+                let self,
+                let keyPressed = self.keyPressed
+            else { return 0 }
+            return keyPressed(self, param0, param1, param2).toGBoolean()
         }
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, UInt, UInt, GdkModifierType, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, value3, data in
-            SignalBox3<UInt, UInt, GdkModifierType>.run(data, value1, value2, value3)
+            SignalBox3<UInt, UInt, GdkModifierType, Void>.run(data, value1, value2, value3)
         }
 
         addSignal(name: "key-released", handler: gCallback(handler2)) { [weak self] (
@@ -54,16 +63,19 @@ open class EventControllerKey: EventController {
 
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, GdkModifierType, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<GdkModifierType>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<GdkModifierType, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "modifiers",
             handler: gCallback(handler3)
-        ) { [weak self] (param0: GdkModifierType) in
-            guard let self else { return }
-            self.modifiers?(self, param0)
+        ) { [weak self] (param0: GdkModifierType) -> gboolean in
+            guard
+                let self,
+                let modifiers = self.modifiers
+            else { return 0 }
+            return modifiers(self, param0).toGBoolean()
         }
     }
 
@@ -75,11 +87,11 @@ open class EventControllerKey: EventController {
     public var imUpdate: ((EventControllerKey) -> Void)?
 
     /// Emitted whenever a key is pressed.
-    public var keyPressed: ((EventControllerKey, UInt, UInt, GdkModifierType) -> Void)?
+    public var keyPressed: ((EventControllerKey, UInt, UInt, GdkModifierType) -> Bool)?
 
     /// Emitted whenever a key is released.
     public var keyReleased: ((EventControllerKey, UInt, UInt, GdkModifierType) -> Void)?
 
     /// Emitted whenever the state of modifier keys and pointer buttons change.
-    public var modifiers: ((EventControllerKey, GdkModifierType) -> Void)?
+    public var modifiers: ((EventControllerKey, GdkModifierType) -> Bool)?
 }

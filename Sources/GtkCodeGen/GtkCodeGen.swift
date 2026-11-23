@@ -30,6 +30,17 @@ struct GtkCodeGen {
         "int": "Int",
     ]
 
+    static let allowedSignalReturnTypeInformation: [String: SignalReturnInformation] = [
+        "gboolean": SignalReturnInformation(
+            handlerReturnTypeName: "Bool",
+            handlerReturnValueConversionSuffix: ".toGBoolean()",
+            defaultReturnValue: "0"
+        ),
+    ]
+
+    // signal name : default return value
+    static let signalDefaultReturnOverrides: [String: String] = [:]
+
     static let cTypesManuallyConverted: [String: String] = [
         "guint": "guint",
         "int": "CInt",
@@ -601,47 +612,73 @@ struct GtkCodeGen {
             }
             let arguments = (["self"] + extraArguments).joined(separator: ", ")
 
-            let closure = ExprSyntax(
-                """
-                { [weak self] (\(raw: parameters)) in
-                    guard let self else { return }
-                    self.\(raw: name)?(\(raw: arguments))
-                }
-                """
-            )
-            let expr: ExprSyntax
-            if parameterCount == 0 {
-                expr = ExprSyntax(
+            let closure: ExprSyntax
+            let returnType: String
+
+            if
+                !signal.name.hasPrefix("notify:"),
+                let returnTypeName = signal.returnValue.type?.name,
+                let information = Self.allowedSignalReturnTypeInformation[returnTypeName]
+            {
+                returnType = returnTypeName
+                let suffix = information.handlerReturnValueConversionSuffix
+                let defaultValue = Self.signalDefaultReturnOverrides[signal.name]
+                    ?? information.defaultReturnValue
+                closure = ExprSyntax(
                     """
-                    addSignal(name: \(literal: signal.name)) \(raw: closure)
+                    { [weak self] (\(raw: parameters)) -> \(raw: returnType) in
+                        guard 
+                            let self,
+                            let \(raw: name) = self.\(raw: name)
+                        else { return \(raw: defaultValue) }
+                        return \(raw: name)(\(raw: arguments))\(raw: suffix)
+                    }
                     """
                 )
             } else {
-                let typeParameters = parameterTypes.joined(separator: ", ")
-
-                let arguments = (1...parameterCount).map { "value\($0)" }.joined(separator: ", ")
-                exprs.append(
-                    DeclSyntax(
-                        """
-                        let handler\(raw: signalIndex): @convention(c) (
-                            UnsafeMutableRawPointer, \(raw: typeParameters), UnsafeMutableRawPointer
-                        ) -> Void = { _, \(raw: arguments), data in
-                            SignalBox\(raw: parameterCount)<\(raw: typeParameters)>.run(data, \(
-                                raw: arguments
-                            ))
-                        }
-                        """
-                    ).description
+                returnType = "Void"
+                closure = ExprSyntax(
+                    """
+                    { [weak self] (\(raw: parameters)) in
+                        guard let self else { return }
+                        self.\(raw: name)?(\(raw: arguments))
+                    }
+                    """
                 )
-                expr = ExprSyntax(
+            }
+
+            let typeParameters = parameterTypes.map { "\($0), " }.joined()
+
+            let handlerArguments: String
+            if parameterCount == 0 {
+                handlerArguments = ""
+            } else {
+                handlerArguments = (1...parameterCount).map { "value\($0), " }.joined()
+            }
+
+            exprs.append(
+                DeclSyntax(
+                    """
+                    let handler\(raw: signalIndex): @convention(c) (
+                        UnsafeMutableRawPointer, \(raw: typeParameters)UnsafeMutableRawPointer
+                    ) -> \(raw: returnType) = { _, \(raw: handlerArguments)data in
+                        SignalBox\(raw: parameterCount)<\(raw: typeParameters)\(raw: returnType)>.run(data\(
+                            raw: parameterCount >= 1 ? ", \(handlerArguments.dropLast(2))": ""
+                        ))
+                    }
+                    """
+                ).description
+            )
+
+            exprs.append(
+                ExprSyntax(
                     """
                     addSignal(name: \(literal: signal.name), handler: gCallback(handler\(
                         raw: signalIndex
                     ))) \(raw: closure)
                     """
-                )
-            }
-            exprs.append(expr.description)
+                ).description
+            )
         }
 
         let methodName = "registerSignals"
@@ -691,10 +728,21 @@ struct GtkCodeGen {
         } else {
             prefix = "public "
         }
+
+        let returnType: String
+        if
+            !signal.name.hasPrefix("notify:"),
+            let returnTypeName = signal.returnValue.type?.name,
+            let information = Self.allowedSignalReturnTypeInformation[returnTypeName]
+        {
+            returnType = information.handlerReturnTypeName
+        } else {
+            returnType = "Void"
+        }
         return DeclSyntax(
             """
             \(raw: docComment(signal.doc))
-            \(raw: prefix)var \(raw: name): ((\(raw: parameters)) -> Void)?\(raw: suffix)
+            \(raw: prefix)var \(raw: name): ((\(raw: parameters)) -> \(raw: returnType))?\(raw: suffix)
             """
         )
     }

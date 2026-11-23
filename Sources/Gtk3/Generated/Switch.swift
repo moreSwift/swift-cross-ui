@@ -32,26 +32,38 @@ open class Switch: Widget, Activatable {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "activate") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "activate", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.activate?(self)
         }
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, Bool, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<Bool>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<Bool, gboolean>.run(data, value1)
         }
 
-        addSignal(name: "state-set", handler: gCallback(handler1)) { [weak self] (param0: Bool) in
-            guard let self else { return }
-            self.stateSet?(self, param0)
+        addSignal(
+            name: "state-set",
+            handler: gCallback(handler1)
+        ) { [weak self] (param0: Bool) -> gboolean in
+            guard
+                let self,
+                let stateSet = self.stateSet
+            else { return 0 }
+            return stateSet(self, param0).toGBoolean()
         }
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -65,7 +77,7 @@ open class Switch: Widget, Activatable {
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -79,7 +91,7 @@ open class Switch: Widget, Activatable {
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -93,7 +105,7 @@ open class Switch: Widget, Activatable {
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -127,7 +139,7 @@ open class Switch: Widget, Activatable {
     /// Visually, the underlying state is represented by the trough color of
     /// the switch, while the #GtkSwitch:active property is represented by the
     /// position of the switch.
-    public var stateSet: ((Switch, Bool) -> Void)?
+    public var stateSet: ((Switch, Bool) -> Bool)?
 
     public var notifyActive: ((Switch, OpaquePointer) -> Void)?
 

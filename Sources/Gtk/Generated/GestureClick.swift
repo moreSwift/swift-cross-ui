@@ -27,7 +27,7 @@ open class GestureClick: GestureSingle {
         let handler0: @convention(c) (
             UnsafeMutableRawPointer, Int, Double, Double, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, value3, data in
-            SignalBox3<Int, Double, Double>.run(data, value1, value2, value3)
+            SignalBox3<Int, Double, Double, Void>.run(data, value1, value2, value3)
         }
 
         addSignal(name: "pressed", handler: gCallback(handler0)) { [weak self] (
@@ -42,7 +42,7 @@ open class GestureClick: GestureSingle {
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, Int, Double, Double, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, value3, data in
-            SignalBox3<Int, Double, Double>.run(data, value1, value2, value3)
+            SignalBox3<Int, Double, Double, Void>.run(data, value1, value2, value3)
         }
 
         addSignal(name: "released", handler: gCallback(handler1)) { [weak self] (
@@ -54,7 +54,13 @@ open class GestureClick: GestureSingle {
             self.released?(self, param0, param1, param2)
         }
 
-        addSignal(name: "stopped") { [weak self] () in
+        let handler2: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "stopped", handler: gCallback(handler2)) { [weak self] () in
             guard let self else { return }
             self.stopped?(self)
         }
@@ -62,7 +68,7 @@ open class GestureClick: GestureSingle {
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, Double, Double, UInt, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, value3, value4, data in
-            SignalBox4<Double, Double, UInt, OpaquePointer>.run(
+            SignalBox4<Double, Double, UInt, OpaquePointer, Void>.run(
                 data,
                 value1,
                 value2,

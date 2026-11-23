@@ -115,29 +115,38 @@ open class GLArea: Widget {
     open override func registerSignals() {
         super.registerSignals()
 
-        addSignal(name: "create-context") { [weak self] () in
+        let handler0: @convention(c) (
+            UnsafeMutableRawPointer, UnsafeMutableRawPointer
+        ) -> Void = { _, data in
+            SignalBox0<Void>.run(data)
+        }
+
+        addSignal(name: "create-context", handler: gCallback(handler0)) { [weak self] () in
             guard let self else { return }
             self.createContext?(self)
         }
 
         let handler1: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
-        ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+        ) -> gboolean = { _, value1, data in
+            SignalBox1<OpaquePointer, gboolean>.run(data, value1)
         }
 
         addSignal(
             name: "render",
             handler: gCallback(handler1)
-        ) { [weak self] (param0: OpaquePointer) in
-            guard let self else { return }
-            self.render?(self, param0)
+        ) { [weak self] (param0: OpaquePointer) -> gboolean in
+            guard
+                let self,
+                let render = self.render
+            else { return 0 }
+            return render(self, param0).toGBoolean()
         }
 
         let handler2: @convention(c) (
             UnsafeMutableRawPointer, Int, Int, UnsafeMutableRawPointer
         ) -> Void = { _, value1, value2, data in
-            SignalBox2<Int, Int>.run(data, value1, value2)
+            SignalBox2<Int, Int, Void>.run(data, value1, value2)
         }
 
         addSignal(name: "resize", handler: gCallback(handler2)) { [weak self] (
@@ -151,7 +160,7 @@ open class GLArea: Widget {
         let handler3: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -165,7 +174,7 @@ open class GLArea: Widget {
         let handler4: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -179,7 +188,7 @@ open class GLArea: Widget {
         let handler5: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -193,7 +202,7 @@ open class GLArea: Widget {
         let handler6: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -207,7 +216,7 @@ open class GLArea: Widget {
         let handler7: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -221,7 +230,7 @@ open class GLArea: Widget {
         let handler8: @convention(c) (
             UnsafeMutableRawPointer, OpaquePointer, UnsafeMutableRawPointer
         ) -> Void = { _, value1, data in
-            SignalBox1<OpaquePointer>.run(data, value1)
+            SignalBox1<OpaquePointer, Void>.run(data, value1)
         }
 
         addSignal(
@@ -249,7 +258,7 @@ open class GLArea: Widget {
     ///
     /// The @context is bound to the @area prior to emitting this function,
     /// and the buffers are painted to the window once the emission terminates.
-    public var render: ((GLArea, OpaquePointer) -> Void)?
+    public var render: ((GLArea, OpaquePointer) -> Bool)?
 
     /// The ::resize signal is emitted once when the widget is realized, and
     /// then each time the widget is changed while realized. This is useful
