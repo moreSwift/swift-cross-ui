@@ -1,5 +1,7 @@
 @_spi(Backends) import SwiftCrossUI
 import WinUI 
+import WinSDK
+import WinAppSDK
 
 extension WinUIBackend: BackendFeatures.Windowing {
     public func setBehaviors(

@@ -1,7 +1,7 @@
 import WinUI
 
 public class Alert: ContentDialog {
-    var window: Window?
+    var window: WinUIBackend.Window?
     var parentAlert: Alert?
     var handleResponse: ((Int) -> Void)?
     var ignoreNextDismissal = false

@@ -2,6 +2,7 @@
 import WinUI
 import UWP
 import WindowsFoundation
+import Foundation
 
 extension WinUIBackend: BackendFeatures.Paths {
     public typealias Path = GeometryGroupHolder

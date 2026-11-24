@@ -1,5 +1,6 @@
 @_spi(Backends) import SwiftCrossUI
 import WinUI
+import WindowsFoundation
 
 extension WinUIBackend: BackendFeatures.TextViews {
     public func size(
