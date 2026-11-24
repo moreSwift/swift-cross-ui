@@ -76,6 +76,13 @@ public final class WinUIBackend {
 
     var incomingURLHandler: ((URL) -> Void)?
 
+    public init(urlSchemes: [String]?) {
+        internalState = InternalState()
+        WinUIApplication.urlSchemes.withLock { schemes in
+            schemes = urlSchemes ?? []
+        }
+    }
+
     func processActivationArguments(_ args: AppActivationArguments) {
         if args.kind == .protocol {
             if let data = args.data as? IProtocolActivatedEventArgs {
@@ -369,11 +376,6 @@ class SwiftIInitializeWithWindow: WindowsFoundation.IUnknown {
             try CHECKED(pThis.pointee.lpVtbl.pointee.Initialize(pThis, hwnd))
         }
     }
-}
-
-public final class GeometryGroupHolder {
-    var group = GeometryGroup()
-    var strokeStyle: StrokeStyle?
 }
 
 extension WinUI.FrameworkElement {

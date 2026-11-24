@@ -42,3 +42,9 @@ extension WinUIBackend: BackendFeatures.TextFields {
         (textField as! TextBox).text
     }
 }
+
+protocol TextBoxProtocol: Control {
+    var inputScope: InputScope! { get set }
+}
+
+extension TextBox: TextBoxProtocol {}

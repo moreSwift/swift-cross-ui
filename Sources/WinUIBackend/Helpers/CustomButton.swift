@@ -125,18 +125,18 @@ extension ButtonStyle.Kind {
 
         switch self {
             case .bordered:
-                _ = try? button.clearValue(WinUI.Button.backgroundProperty)
-                _ = try? button.clearValue(WinUI.Button.borderBrushProperty)
-                _ = try? button.clearValue(WinUI.Button.borderThicknessProperty)
-                _ = try? button.clearValue(WinUI.Button.cornerRadiusProperty)
+                try? button.clearValue(WinUI.Button.backgroundProperty)
+                try? button.clearValue(WinUI.Button.borderBrushProperty)
+                try? button.clearValue(WinUI.Button.borderThicknessProperty)
+                try? button.clearValue(WinUI.Button.cornerRadiusProperty)
 
-                _ = resources.remove("ButtonBackgroundPointerOver")
-                _ = resources.remove("ButtonBackgroundPressed")
-                _ = resources.remove("ButtonBackgroundDisabled")
+                resources.remove("ButtonBackgroundPointerOver")
+                resources.remove("ButtonBackgroundPressed")
+                resources.remove("ButtonBackgroundDisabled")
 
-                _ = resources.remove("ButtonBorderBrushPointerOver")
-                _ = resources.remove("ButtonBorderBrushPressed")
-                _ = resources.remove("ButtonBorderBrushDisabled")
+                resources.remove("ButtonBorderBrushPointerOver")
+                resources.remove("ButtonBorderBrushPressed")
+                resources.remove("ButtonBorderBrushDisabled")
             case .plain, .borderless:
                 let transparentBrush = SolidColorBrush(UWP.Color.transparent)
                 button.background = transparentBrush

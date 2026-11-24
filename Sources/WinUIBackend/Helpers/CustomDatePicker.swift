@@ -1,5 +1,6 @@
 import Foundation
 import WinUI
+import WindowsFoundation
 
 @MainActor
 final class CustomDatePicker: StackPanel {

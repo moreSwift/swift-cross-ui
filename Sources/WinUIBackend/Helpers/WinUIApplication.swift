@@ -1,5 +1,7 @@
 import WinUI
+import WinAppSDK
 import Mutex
+import Foundation
 
 class WinUIApplication: SwiftApplication, @unchecked Sendable {
     static let callback = Mutex<(@MainActor (WinUIApplication, AppInstance) -> Void)?>(nil)

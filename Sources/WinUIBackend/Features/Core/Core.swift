@@ -8,13 +8,6 @@ extension WinUIBackend: BackendFeatures.Core {
         self.init(urlSchemes: nil)
     }
 
-    public init(urlSchemes: [String]?) {
-        internalState = InternalState()
-        WinUIApplication.urlSchemes.withLock { schemes in
-            schemes = urlSchemes ?? []
-        }
-    }
-
     public static func earlySetup() {
         do {
             try Self.attachToParentConsole()

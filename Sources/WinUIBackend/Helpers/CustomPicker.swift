@@ -1,3 +1,4 @@
+@_spi(Backends) import SwiftCrossUI
 import WinUI
 
 class CustomCheckBox: WinUI.CheckBox {
