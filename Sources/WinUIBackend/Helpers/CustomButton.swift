@@ -1,67 +1,8 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI 
 import WinUI
 import UWP
 
-extension WinUIBackend {
-    public func createButton(
-        wrapping widget: Widget
-    ) -> Widget {
-        let button = CustomButton()
-        button.content = widget
-        return button
-    }
-
-    public func updateButton(
-        _ button: Widget,
-        environment: EnvironmentValues,
-        action: @escaping () -> Void
-    ) {
-        let button = button as! CustomButton
-        button.action = action
-        button.buttonStyle = environment.resolvedButtonStyle.kind
-        button.enabled = environment.isEnabled
-        switch environment.colorScheme {
-            case .light:
-                button.requestedTheme = .light
-            case .dark:
-                button.requestedTheme = .dark
-        }
-    }
-
-    public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
-        switch environment.resolvedButtonStyle.kind {
-            case .bordered: measureBorderedButtonPadding()
-            case .plain, .borderless: SIMD2(0, 0)
-        }
-    }
-
-    public func defaultButtonStyle() -> ButtonStyle { .bordered }
-
-    func measureBorderedButtonPadding() -> SIMD2<Int> {
-        if let borderedButtonPadding {
-            return borderedButtonPadding
-        }
-
-        let dummyButton = Button()
-        let placeholder = Canvas()
-        let placeholderSize = SIMD2<Double>(40, 40)
-        placeholder.width = placeholderSize.x
-        placeholder.height = placeholderSize.y
-        dummyButton.content = placeholder
-
-        let buttonSize = Self.naturalSize(of: dummyButton)
-
-        let result = SIMD2(
-            buttonSize.x - Int(placeholderSize.x),
-            buttonSize.y - Int(placeholderSize.y)
-        )
-
-        borderedButtonPadding = result
-        return result
-    }
-}
-
-fileprivate final class CustomButton: WinUI.Button {
+final class CustomButton: WinUI.Button {
     fileprivate var action: (() -> Void)?
 
     private var isPointerCaptured = false
@@ -126,7 +67,7 @@ fileprivate final class CustomButton: WinUI.Button {
             if
                 (0..<width).contains(Double(position.x)),
                 (0..<height).contains(Double(position.y))
-            {
+                {
                 isHighlighted = true
             } else {
                 isHighlighted = false

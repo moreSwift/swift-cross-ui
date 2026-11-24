@@ -1,11 +1,9 @@
 @_spi(Backends) import SwiftCrossUI
-import UWP
 import WinUI
-import WindowsFoundation
+import UWP
+import WindowsFoundation 
 import CWinRT
 import WinSDK
-
-// swiftlint:disable force_try
 
 extension WinUIBackend: BackendFeatures.Sheets {
     public class Sheet: ContentDialog {
@@ -76,8 +74,8 @@ extension WinUIBackend: BackendFeatures.Sheets {
         }
 
         sheet.requestedTheme = switch environment.colorScheme {
-            case .light: .light
-            case .dark: .dark
+        case .light: .light
+        case .dark: .dark
         }
     }
 
