@@ -1,5 +1,6 @@
 @_spi(Backends) import SwiftCrossUI
 import WinUI
+import Foundation
 
 extension WinUIBackend: BackendFeatures.CoreWindowing {
     public typealias Window = CustomWindow

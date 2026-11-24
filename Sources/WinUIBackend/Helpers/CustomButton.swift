@@ -3,7 +3,7 @@ import WinUI
 import UWP
 
 final class CustomButton: WinUI.Button {
-    fileprivate var action: (() -> Void)?
+    var action: (() -> Void)?
 
     private var isPointerCaptured = false
     fileprivate var isHighlighted = false {
@@ -12,7 +12,7 @@ final class CustomButton: WinUI.Button {
         }
     }
 
-    fileprivate var buttonStyle: ButtonStyle.Kind = .bordered {
+    var buttonStyle: ButtonStyle.Kind = .bordered {
         didSet {
             if buttonStyle != oldValue {
                 updateButtonAppearance()

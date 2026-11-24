@@ -2,7 +2,7 @@
 import WinUI
 
 extension WinUIBackend: BackendFeatures.Pickers {
-    public let supportedPickerStyles: [BackendPickerStyle] = [.menu, .radioGroup]
+    public var supportedPickerStyles: [BackendPickerStyle] { [.menu, .radioGroup] }
     public func createPicker(style: BackendPickerStyle) -> Widget {
         switch style {
             case .menu:

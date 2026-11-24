@@ -1,5 +1,6 @@
 import WinUI
 import UWP
+import WindowsFoundation
 
 final class ColorButton: WinUI.Button {
     var buttonSizeChangedEventCleanup: EventCleanup?

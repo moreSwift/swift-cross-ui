@@ -1,4 +1,4 @@
-@_spi(Bakcends) import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import WinUI
 
 extension WinUIBackend: BackendFeatures.ToggleButtons {
