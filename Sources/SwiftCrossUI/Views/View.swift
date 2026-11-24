@@ -172,8 +172,7 @@ extension View {
         _ children: any ViewGraphNodeChildren,
         backend: Backend
     ) -> Backend.Widget {
-        let vStack = VStack(content: body)
-        return vStack.asWidget(children, backend: backend)
+        body.asWidget(children, backend: backend)
     }
 
     public func computeLayout<Backend: BaseAppBackend>(
