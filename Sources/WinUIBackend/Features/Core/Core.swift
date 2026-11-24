@@ -3,9 +3,10 @@ import WinUI
 import UWP
 import WinSDK
 import Foundation
+import WinAppSDK
 
 extension WinUIBackend: BackendFeatures.Core {
-    public var deviceClass: DeviceClass { .desktop }
+    public var deviceClass: SwiftCrossUI.DeviceClass { .desktop }
 
     public convenience init() {
         self.init(urlSchemes: nil)

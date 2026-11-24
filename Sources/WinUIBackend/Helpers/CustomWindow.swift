@@ -1,5 +1,7 @@
+@_spi(Backends) import SwiftCrossUI
 import WinUI
 import WinAppSDK
+import WinSDK
 
 public class CustomWindow: WinUI.Window {
     /// Hardcoded menu bar height from MenuBar_themeresources.xaml in the

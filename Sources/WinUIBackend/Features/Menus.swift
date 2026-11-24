@@ -38,7 +38,7 @@ extension WinUIBackend: BackendFeatures.AttachedMenus {
         button.flyout = menu
     }
 
-    private func renderMenuItem(
+    func renderMenuItem(
         _ item: ResolvedMenu.Item,
         environment: EnvironmentValues
     ) -> MenuFlyoutItemBase {

@@ -1,5 +1,7 @@
 @_spi(Backends) import SwiftCrossUI
 import WinUI
+import WindowsFoundation
+import WinAppSDK
 
 extension WinUIBackend: BackendFeatures.CornerRadius {
     public func createCornerRadiusContainer(wrapping child: Widget) -> Widget {

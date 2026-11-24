@@ -1,8 +1,9 @@
 @_spi(Backends) import SwiftCrossUI
 import WinUI
+import WinUIInterop
 
 extension WinUIBackend: BackendFeatures.Images {
-    public let requiresImageUpdateOnScaleFactorChange = false
+    public var requiresImageUpdateOnScaleFactorChange: Bool { false }
 
     public func createImageView() -> Widget {
         WinUI.Image()

@@ -1,6 +1,7 @@
 @_spi(Backends) import SwiftCrossUI
 import WinUI
 import UWP
+import WindowsFoundation
 
 extension WinUIBackend: BackendFeatures.Paths {
     public typealias Path = GeometryGroupHolder

@@ -35,7 +35,7 @@ extension WinUIBackend: BackendFeatures.Alerts {
 
     public func showAlert(
         _ alert: Alert,
-        window: Window?,
+        window: WinUIBackend.Window?,
         responseHandler handleResponse: @escaping (Int) -> Void
     ) {
         // WinUI only allows one dialog at a time so we limit ourselves using
@@ -66,7 +66,7 @@ extension WinUIBackend: BackendFeatures.Alerts {
         alert.showAttached()
     }
 
-    public func dismissAlert(_ alert: Alert, window: Window?) {
+    public func dismissAlert(_ alert: Alert, window: WinUIBackend.Window?) {
         try! alert.hide()
         alert.window?.currentAlert = alert.parentAlert
         alert.parentAlert?.showAttached()

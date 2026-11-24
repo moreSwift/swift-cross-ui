@@ -1,5 +1,7 @@
 @_spi(Backends) import SwiftCrossUI
 import WinUI
+import Foundation
+import WinAppSDK
 
 extension WinUIBackend: BackendFeatures.IncomingURLs {
     public func setIncomingURLHandler(to action: @escaping (URL) -> Void) {
