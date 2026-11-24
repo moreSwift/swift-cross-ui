@@ -209,7 +209,187 @@ struct SwiftCrossUITests {
         )
     }
 
+    @Test("Ensure that views with non-TupleView bodies create and commit the expected widgets")
+    @MainActor
+    func testDirectReturnBodyViews() throws {
+        struct DirectTextView: View {
+            var body: some View {
+                return Text("Hello")
+            }
+        }
+
+        struct DirectScrollView: View {
+            var body: some View {
+                return ScrollView {
+                    Text("Hello")
+                }
+            }
+        }
+
+        struct OuterDirectView: View {
+            var body: some View {
+                return DirectTextView()
+            }
+        }
+
+        struct ImplicitTupleTextView: View {
+            var body: some View {
+                Text("Hello")
+            }
+        }
+
+        let backend = DummyBackend()
+        let window = backend.createWindow(withDefaultSize: SIMD2(200, 200), id: "window")
+        let environment = EnvironmentValues(backend: backend)
+            .with(\.window, window)
+
+        let textGraph = ViewGraph(
+            for: DirectTextView(),
+            backend: backend,
+            environment: environment
+        )
+        _ = textGraph.computeLayout(
+            proposedSize: ProposedViewSize(200, 200),
+            environment: environment
+        )
+        textGraph.commit()
+
+        let textWidget: DummyBackend.Widget = textGraph.rootNode.widget.into()
+        let directTextView = try #require(textWidget as? DummyBackend.TextView)
+        #expect(directTextView.content == "Hello")
+
+        _ = textGraph.computeLayout(
+            proposedSize: ProposedViewSize(100, 100),
+            environment: environment
+        )
+        textGraph.commit()
+        #expect(directTextView.content == "Hello")
+
+        let scrollGraph = ViewGraph(
+            for: DirectScrollView(),
+            backend: backend,
+            environment: environment
+        )
+        _ = scrollGraph.computeLayout(
+            proposedSize: ProposedViewSize(80, 80),
+            environment: environment
+        )
+        scrollGraph.commit()
+
+        let scrollWidget: DummyBackend.Widget = scrollGraph.rootNode.widget.into()
+        #expect(scrollWidget is DummyBackend.ScrollContainer)
+
+        _ = scrollGraph.computeLayout(
+            proposedSize: ProposedViewSize(120, 120),
+            environment: environment
+        )
+        scrollGraph.commit()
+
+        let nestedGraph = ViewGraph(
+            for: OuterDirectView(),
+            backend: backend,
+            environment: environment
+        )
+        _ = nestedGraph.computeLayout(
+            proposedSize: ProposedViewSize(200, 200),
+            environment: environment
+        )
+        nestedGraph.commit()
+
+        let nestedWidget: DummyBackend.Widget = nestedGraph.rootNode.widget.into()
+        let nestedTextView = try #require(nestedWidget as? DummyBackend.TextView)
+        #expect(nestedTextView.content == "Hello")
+
+        _ = nestedGraph.computeLayout(
+            proposedSize: ProposedViewSize(100, 100),
+            environment: environment
+        )
+        nestedGraph.commit()
+        #expect(nestedTextView.content == "Hello")
+
+        let tupleGraph = ViewGraph(
+            for: ImplicitTupleTextView(),
+            backend: backend,
+            environment: environment
+        )
+        _ = tupleGraph.computeLayout(
+            proposedSize: ProposedViewSize(200, 200),
+            environment: environment
+        )
+        tupleGraph.commit()
+
+        let tupleWidget: DummyBackend.Widget = tupleGraph.rootNode.widget.into()
+        #expect(tupleWidget is DummyBackend.Container)
+        let tupleTextView = try #require(
+            tupleWidget.firstWidget(ofType: DummyBackend.TextView.self)
+        )
+        #expect(tupleTextView.content == "Hello")
+    }
+
     #if canImport(AppKitBackend)
+        @Test("Direct-return gesture modifiers commit on AppKit")
+        @MainActor
+        func testDirectReturnGestureModifiersAppKit() throws {
+            struct DirectHoverView: View {
+                var body: some View {
+                    return Text("Test").onHover { _ in }
+                }
+            }
+
+            struct DirectTapGestureView: View {
+                var body: some View {
+                    return Text("Test").onTapGesture {}
+                }
+            }
+
+            let backend = AppKitBackend()
+            let window = backend.createWindow(withDefaultSize: SIMD2(200, 200), id: "window")
+            let environment = EnvironmentValues(backend: backend)
+                .with(\.window, window)
+
+            let hoverGraph = ViewGraph(
+                for: DirectHoverView(),
+                backend: backend,
+                environment: environment
+            )
+            _ = hoverGraph.computeLayout(
+                proposedSize: ProposedViewSize(200, 200),
+                environment: environment
+            )
+            hoverGraph.commit()
+
+            let hoverWidget: NSView = hoverGraph.rootNode.widget.into()
+            try #require(hoverWidget.subviews.count >= 2)
+            #expect(hoverWidget.subviews[1] is NSCustomHoverTarget)
+
+            _ = hoverGraph.computeLayout(
+                proposedSize: ProposedViewSize(100, 100),
+                environment: environment
+            )
+            hoverGraph.commit()
+
+            let tapGraph = ViewGraph(
+                for: DirectTapGestureView(),
+                backend: backend,
+                environment: environment
+            )
+            _ = tapGraph.computeLayout(
+                proposedSize: ProposedViewSize(200, 200),
+                environment: environment
+            )
+            tapGraph.commit()
+
+            let tapWidget: NSView = tapGraph.rootNode.widget.into()
+            try #require(tapWidget.subviews.count >= 2)
+            #expect(tapWidget.subviews[1] is NSCustomTapGestureTarget)
+
+            _ = tapGraph.computeLayout(
+                proposedSize: ProposedViewSize(100, 100),
+                environment: environment
+            )
+            tapGraph.commit()
+        }
+
         /// Snapshots an AppKit view to a TIFF image.
         @MainActor
         static func snapshotView(_ view: NSView) throws -> Data {
