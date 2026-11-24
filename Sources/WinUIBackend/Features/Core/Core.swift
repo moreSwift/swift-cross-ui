@@ -1,5 +1,8 @@
 @_spi(Backends) import SwiftCrossUI
 import WinUI
+import UWP
+import WinSDK
+import Foundation
 
 extension WinUIBackend: BackendFeatures.Core {
     public var deviceClass: DeviceClass { .desktop }
@@ -101,8 +104,7 @@ extension WinUIBackend: BackendFeatures.Core {
 
         let locale = Foundation.Locale.windowsCurrent
 
-        return
-        defaultEnvironment
+        return defaultEnvironment
             .with(\.colorScheme, isLight ? .light : .dark)
             .with(\.appPhase, windows.contains(where: \.isActive) ? .active : .inactive)
             .with(\.locale, locale)

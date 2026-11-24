@@ -1,5 +1,8 @@
 @_spi(Backends) import SwiftCrossUI
 import WinUI
+import Foundation
+import UWP
+import WindowsFoundation
 
 extension WinUIBackend: BackendFeatures.ExternalURLs {
     public func openExternalURL(_ url: URL) throws {

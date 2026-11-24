@@ -1,5 +1,7 @@
 @_spi(Backends) import SwiftCrossUI
 import WinUI
+import Foundation
+import UWP
 
 extension WinUIBackend: BackendFeatures.FileOpenDialogs {
     public func showOpenDialog(
