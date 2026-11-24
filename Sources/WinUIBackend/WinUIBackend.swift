@@ -21,6 +21,7 @@ extension App {
     }
 }
 
+@MainActor
 public final class WinUIBackend {
     // Logging
     private struct LogLocation: Hashable, Equatable {

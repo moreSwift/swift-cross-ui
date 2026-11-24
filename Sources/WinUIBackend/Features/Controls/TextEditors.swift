@@ -1,5 +1,6 @@
 @_spi(Backends) import SwiftCrossUI
 import WinUI
+import UWP
 
 extension WinUIBackend: BackendFeatures.TextEditors {
     public func createTextEditor() -> Widget {
