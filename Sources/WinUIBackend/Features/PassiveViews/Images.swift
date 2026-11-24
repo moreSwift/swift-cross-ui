@@ -1,6 +1,6 @@
 @_spi(Backends) import SwiftCrossUI
 import WinUI
-import WinSDK
+import Foundation
 
 extension WinUIBackend: BackendFeatures.Images {
     public var requiresImageUpdateOnScaleFactorChange: Bool { false }
