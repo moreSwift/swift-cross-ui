@@ -26,10 +26,10 @@ extension WinUIBackend: BackendFeatures.Alerts {
         }
 
         switch environment.colorScheme {
-        case .light:
-            alert.requestedTheme = .light
-        case .dark:
-            alert.requestedTheme = .dark
+            case .light:
+                alert.requestedTheme = .light
+            case .dark:
+                alert.requestedTheme = .dark
         }
     }
 

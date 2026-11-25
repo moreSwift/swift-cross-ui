@@ -8,7 +8,7 @@ extension WinUIBackend: BackendFeatures.Widgets {
     public var defaultPaddingAmount: Int { 10 }
 
     public func show(widget _: Widget) {}
- 
+
     public func naturalSize(of widget: Widget) -> SIMD2<Int> {
         Self.naturalSize(of: widget)
     }
@@ -113,7 +113,7 @@ extension WinUIBackend: BackendFeatures.Widgets {
 
         return out
     }
- 
+
     public func setSize(of widget: Widget, to size: SIMD2<Int>) {
         widget.width = Double(size.x)
         widget.height = Double(size.y)

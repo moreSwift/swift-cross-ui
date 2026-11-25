@@ -24,11 +24,11 @@ extension WinUIBackend: BackendFeatures.FileSaveDialogs {
                 operation,
                 status
             ) { result in
-                    let file = URL(fileURLWithPath: result.path)
-                    return .success(file)
-                } onFailure: {
-                    return .cancelled
-                }
+                let file = URL(fileURLWithPath: result.path)
+                return .success(file)
+            } onFailure: {
+                return .cancelled
+            }
             handleResult(result)
         }
     }

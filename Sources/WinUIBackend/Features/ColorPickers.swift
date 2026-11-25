@@ -1,6 +1,6 @@
 import SwiftCrossUI
 import WindowsFoundation
-import WinUI 
+import WinUI
 import UWP
 
 extension WinUIBackend: BackendFeatures.ColorPickers {

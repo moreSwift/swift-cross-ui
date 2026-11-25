@@ -37,12 +37,12 @@ final class ColorButton: WinUI.Button {
 
                     if self.isEnabled, let operation, let result = try? operation.getResults() {
                         switch result {
-                        case .primary:
-                            self.onChange?(dialog.colorPicker.color)
-                        case .none:
-                            break
-                        default:
-                            fatalError("WinUIBackend: Invalid dialog response")
+                            case .primary:
+                                self.onChange?(dialog.colorPicker.color)
+                            case .none:
+                                break
+                            default:
+                                fatalError("WinUIBackend: Invalid dialog response")
                         }
                     }
                 }

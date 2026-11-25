@@ -9,7 +9,7 @@ extension WinUIBackend: BackendFeatures.TextEditors {
             guard
                 let internalState,
                 let textEditor
-                else { return }
+            else { return }
             guard !textEditor.shouldBlockNextChangedSignal else {
                 textEditor.shouldBlockNextChangedSignal = false
                 return

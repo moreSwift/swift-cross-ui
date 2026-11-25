@@ -1,7 +1,7 @@
 @_spi(Backends) import SwiftCrossUI
 import WindowsFoundation
 import WinUI
-import UWP 
+import UWP
 
 extension WinUIBackend: BackendFeatures.RadialGradients {
     public func createRadialGradientWidget() -> Widget {

@@ -1,7 +1,7 @@
 @_spi(Backends) import SwiftCrossUI
 import WinUI
 import UWP
-import WindowsFoundation 
+import WindowsFoundation
 import CWinRT
 import WinSDK
 
@@ -74,8 +74,8 @@ extension WinUIBackend: BackendFeatures.Sheets {
         }
 
         sheet.requestedTheme = switch environment.colorScheme {
-        case .light: .light
-        case .dark: .dark
+            case .light: .light
+            case .dark: .dark
         }
     }
 

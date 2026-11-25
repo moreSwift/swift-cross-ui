@@ -21,9 +21,9 @@ final class CustomDatePicker: StackPanel {
 
         var asControl: Control {
             switch self {
-            case .calendarView(let calendarView): calendarView
-            case .calendarDatePicker(let calendarDatePicker): calendarDatePicker
-            case .datePicker(let datePicker): datePicker
+                case .calendarView(let calendarView): calendarView
+                case .calendarDatePicker(let calendarDatePicker): calendarDatePicker
+                case .datePicker(let datePicker): datePicker
             }
         }
 
@@ -35,9 +35,9 @@ final class CustomDatePicker: StackPanel {
 
         var discriminator: Discriminator {
             switch self {
-            case .calendarView(_): .calendarView
-            case .calendarDatePicker(_): .calendarDatePicker
-            case .datePicker(_): .datePicker
+                case .calendarView(_): .calendarView
+                case .calendarDatePicker(_): .calendarDatePicker
+                case .datePicker(_): .datePicker
             }
         }
     }
@@ -62,7 +62,7 @@ final class CustomDatePicker: StackPanel {
                 guard let change else { return }
                 self.date =
                     calendar.startOfDay(for: date)
-                    + Double(change.newTime.duration) / ticksPerSecond
+                        + Double(change.newTime.duration) / ticksPerSecond
                 self.onChange?(self.date)
             }
             needsUpdate = true
@@ -88,66 +88,66 @@ final class CustomDatePicker: StackPanel {
         }
 
         switch newDiscriminator {
-        case .calendarView:
-            let calendarView = CalendarView()
-            dateView = .calendarView(calendarView)
-            children.insertAt(0, calendarView)
-            orientation = .vertical
-            dateChangedEvent = calendarView.selectedDatesChanged.addHandler {
-                [unowned self] _, _ in
+            case .calendarView:
+                let calendarView = CalendarView()
+                dateView = .calendarView(calendarView)
+                children.insertAt(0, calendarView)
+                orientation = .vertical
+                dateChangedEvent = calendarView.selectedDatesChanged.addHandler {
+                    [unowned self] _, _ in
 
-                guard calendarView.selectedDates.size > 0 else {
-                    let (dateTime, _) = foundationDateToComponents(self.date)
-                    calendarView.selectedDates.append(dateTime)
-                    return
+                    guard calendarView.selectedDates.size > 0 else {
+                        let (dateTime, _) = foundationDateToComponents(self.date)
+                        calendarView.selectedDates.append(dateTime)
+                        return
+                    }
+
+                    self.date = componentsToFoundationDate(
+                        dateTime: calendarView.selectedDates.getAt(0),
+                        timeSpan: timeView?.selectedTime
+                    )
+
+                    if calendarView.selectedDates.size > 1 {
+                        self.needsUpdate = true
+                    }
+
+                    self.onChange?(self.date)
                 }
+                needsUpdate = true
+            case .calendarDatePicker:
+                let calendarDatePicker = CalendarDatePicker()
+                dateView = .calendarDatePicker(calendarDatePicker)
+                children.insertAt(0, calendarDatePicker)
+                orientation = .horizontal
+                dateChangedEvent = calendarDatePicker.dateChanged.addHandler {
+                    [unowned self] _, change in
 
-                self.date = componentsToFoundationDate(
-                    dateTime: calendarView.selectedDates.getAt(0),
-                    timeSpan: timeView?.selectedTime
-                )
-
-                if calendarView.selectedDates.size > 1 {
-                    self.needsUpdate = true
+                    guard let newDate = change?.newDate else { return }
+                    self.date = componentsToFoundationDate(
+                        dateTime: newDate,
+                        timeSpan: timeView?.selectedTime
+                    )
+                    self.onChange?(self.date)
                 }
+                needsUpdate = true
+            case .datePicker:
+                let datePicker = WinUI.DatePicker()
+                dateView = .datePicker(datePicker)
+                children.insertAt(0, datePicker)
+                orientation = .horizontal
+                dateChangedEvent = datePicker.selectedDateChanged.addHandler {
+                    [unowned self] _, _ in
 
-                self.onChange?(self.date)
-            }
-            needsUpdate = true
-        case .calendarDatePicker:
-            let calendarDatePicker = CalendarDatePicker()
-            dateView = .calendarDatePicker(calendarDatePicker)
-            children.insertAt(0, calendarDatePicker)
-            orientation = .horizontal
-            dateChangedEvent = calendarDatePicker.dateChanged.addHandler {
-                [unowned self] _, change in
-
-                guard let newDate = change?.newDate else { return }
-                self.date = componentsToFoundationDate(
-                    dateTime: newDate,
-                    timeSpan: timeView?.selectedTime
-                )
-                self.onChange?(self.date)
-            }
-            needsUpdate = true
-        case .datePicker:
-            let datePicker = WinUI.DatePicker()
-            dateView = .datePicker(datePicker)
-            children.insertAt(0, datePicker)
-            orientation = .horizontal
-            dateChangedEvent = datePicker.selectedDateChanged.addHandler {
-                [unowned self] _, _ in
-
-                guard let selectedDate = datePicker.selectedDate else { return }
-                self.date = componentsToFoundationDate(
-                    dateTime: selectedDate,
-                    timeSpan: timeView?.selectedTime
-                )
-                self.onChange?(self.date)
-            }
-            needsUpdate = true
-        case nil:
-            break
+                    guard let selectedDate = datePicker.selectedDate else { return }
+                    self.date = componentsToFoundationDate(
+                        dateTime: selectedDate,
+                        timeSpan: timeView?.selectedTime
+                    )
+                    self.onChange?(self.date)
+                }
+                needsUpdate = true
+            case nil:
+                break
         }
     }
 
@@ -158,15 +158,15 @@ final class CustomDatePicker: StackPanel {
         let (endDate, _) = foundationDateToComponents(range.upperBound)
 
         switch dateView {
-        case .calendarView(let calendarView):
-            calendarView.minDate = startDate
-            calendarView.maxDate = endDate
-        case .calendarDatePicker(let calendarDatePicker):
-            calendarDatePicker.minDate = startDate
-            calendarDatePicker.maxDate = endDate
-        case .datePicker(let datePicker):
-            datePicker.minYear = startDate
-            datePicker.maxYear = endDate
+            case .calendarView(let calendarView):
+                calendarView.minDate = startDate
+                calendarView.maxDate = endDate
+            case .calendarDatePicker(let calendarDatePicker):
+                calendarDatePicker.minDate = startDate
+                calendarDatePicker.maxDate = endDate
+            case .datePicker(let datePicker):
+                datePicker.minYear = startDate
+                datePicker.maxYear = endDate
         }
     }
 
@@ -180,24 +180,24 @@ final class CustomDatePicker: StackPanel {
         let (dateTime, timeSpan) = foundationDateToComponents(date)
 
         switch dateView {
-        case .calendarView(let calendarView):
-            calendarView.calendarIdentifier = identifier(for: calendar)
-            switch calendarView.selectedDates.size {
-            case 0:
-                calendarView.selectedDates.append(dateTime)
-            case 1:
-                calendarView.selectedDates.setAt(0, dateTime)
-            default:
-                calendarView.selectedDates.clear()
-                calendarView.selectedDates.setAt(0, dateTime)
-            }
-        case .calendarDatePicker(let calendarDatePicker):
-            calendarDatePicker.calendarIdentifier = identifier(for: calendar)
-            calendarDatePicker.date = dateTime
-        case .datePicker(let datePicker):
-            datePicker.selectedDate = dateTime
-        case nil:
-            break
+            case .calendarView(let calendarView):
+                calendarView.calendarIdentifier = identifier(for: calendar)
+                switch calendarView.selectedDates.size {
+                    case 0:
+                        calendarView.selectedDates.append(dateTime)
+                    case 1:
+                        calendarView.selectedDates.setAt(0, dateTime)
+                    default:
+                        calendarView.selectedDates.clear()
+                        calendarView.selectedDates.setAt(0, dateTime)
+                }
+            case .calendarDatePicker(let calendarDatePicker):
+                calendarDatePicker.calendarIdentifier = identifier(for: calendar)
+                calendarDatePicker.date = dateTime
+            case .datePicker(let datePicker):
+                datePicker.selectedDate = dateTime
+            case nil:
+                break
         }
 
         if let timeView {
@@ -207,20 +207,20 @@ final class CustomDatePicker: StackPanel {
 
     private func identifier(for calendar: Calendar) -> String {
         switch calendar.identifier {
-        case .chinese: return "ChineseLunarCalendar"
-        case .gregorian, .iso8601: return "GregorianCalendar"
-        case .hebrew: return "HebrewCalendar"
-        case .islamicTabular: return "HijriCalendar"
-        case .islamicUmmAlQura: return "UmAlQuraCalendar"
-        case .japanese: return "JapaneseCalendar"
-        case .persian: return "PersianCalendar"
-        case .republicOfChina: return "TaiwanCalendar"
+            case .chinese: return "ChineseLunarCalendar"
+            case .gregorian, .iso8601: return "GregorianCalendar"
+            case .hebrew: return "HebrewCalendar"
+            case .islamicTabular: return "HijriCalendar"
+            case .islamicUmmAlQura: return "UmAlQuraCalendar"
+            case .japanese: return "JapaneseCalendar"
+            case .persian: return "PersianCalendar"
+            case .republicOfChina: return "TaiwanCalendar"
             #if compiler(>=6.2)
-        case .vietnamese: return "VietnameseLunarCalendar"
+                case .vietnamese: return "VietnameseLunarCalendar"
             #endif
-        case let id:
-            print("Unsupported calendar identifier '\(id)'. Falling back to Gregorian.")
-            return "GregorianCalendar"
+            case let id:
+                print("Unsupported calendar identifier '\(id)'. Falling back to Gregorian.")
+                return "GregorianCalendar"
         }
     }
 
@@ -244,7 +244,7 @@ final class CustomDatePicker: StackPanel {
     private func componentsToFoundationDate(dateTime: DateTime, timeSpan: TimeSpan?) -> Date {
         let baseDate = Date(
             timeIntervalSince1970: Double(dateTime.universalTime - unixEpochInUniversalTime)
-            / ticksPerSecond
+                / ticksPerSecond
         )
 
         if let timeSpan {
@@ -257,21 +257,21 @@ final class CustomDatePicker: StackPanel {
 
     func naturalSize() -> SIMD2<Int> {
         let timeViewSize =
-        if timeView != nil {
-            // Width is 242, as shown in the WinUI repository:
-            // https://github.com/marcelwgn/microsoft-ui-xaml/blob/ff21f9b212cea2191b959649e45e52486c8465aa/src/controls/dev/CommonStyles/TimePicker_themeresources.xaml#L116
-            // Height is experimentally 29 which I don't see anywhere in that file.
-            SIMD2(242, 29)
-        } else {
-            SIMD2<Int>.zero
-        }
+            if timeView != nil {
+                // Width is 242, as shown in the WinUI repository:
+                // https://github.com/marcelwgn/microsoft-ui-xaml/blob/ff21f9b212cea2191b959649e45e52486c8465aa/src/controls/dev/CommonStyles/TimePicker_themeresources.xaml#L116
+                // Height is experimentally 29 which I don't see anywhere in that file.
+                SIMD2(242, 29)
+            } else {
+                SIMD2<Int>.zero
+            }
 
         let dateViewSize =
-        if let dateControl = dateView?.asControl {
-            WinUIBackend.naturalSize(of: dateControl)
-        } else {
-            SIMD2<Int>.zero
-        }
+            if let dateControl = dateView?.asControl {
+                WinUIBackend.naturalSize(of: dateControl)
+            } else {
+                SIMD2<Int>.zero
+            }
 
         if orientation == .horizontal {
             return SIMD2(

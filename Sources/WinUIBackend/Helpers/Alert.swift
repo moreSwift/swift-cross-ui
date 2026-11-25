@@ -17,7 +17,7 @@ public class Alert: ContentDialog {
                 status == .completed,
                 let operation,
                 let result = try? operation.getResults()
-                else {
+            else {
                 return
             }
 
@@ -28,13 +28,13 @@ public class Alert: ContentDialog {
                 self.parentAlert?.showAttached()
 
                 let index =
-                switch result {
-                case .primary: 0
-                case .secondary: 1
-                case .none: 2
-                default:
-                    fatalError("WinUIBackend: Invalid dialog response")
-                }
+                    switch result {
+                        case .primary: 0
+                        case .secondary: 1
+                        case .none: 2
+                        default:
+                            fatalError("WinUIBackend: Invalid dialog response")
+                    }
                 self.handleResponse?(index)
             } else {
                 self.ignoreNextDismissal = false

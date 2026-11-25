@@ -39,10 +39,10 @@ public final class WinUIBackend {
         column: Int = #column
     ) {
         #if DEBUG
-        let location = LogLocation(file: file, line: line, column: column)
-        if logsPerformed.insert(location).inserted {
-            logger.notice("\(message)")
-        }
+            let location = LogLocation(file: file, line: line, column: column)
+            if logsPerformed.insert(location).inserted {
+                logger.notice("\(message)")
+            }
         #endif
     }
 
@@ -65,7 +65,7 @@ public final class WinUIBackend {
 
     var windows: [Window] = []
 
-    var measurementTextBlock: TextBlock! 
+    var measurementTextBlock: TextBlock!
 
     struct Error: LocalizedError {
         var message: String
@@ -133,8 +133,8 @@ public final class WinUIBackend {
                 5 + 6 + 2
             )
         } else if let toggleButton = widget as? WinUI.ToggleButton,
-            toggleButton.padding == noPadding
-            {
+                  toggleButton.padding == noPadding
+        {
             // See the above comment regarding Button. Very similar situation.
             adjustment = SIMD2(
                 11 + 11 + 2,
@@ -154,7 +154,7 @@ public final class WinUIBackend {
             adjustment = SIMD2(20, 0)
         } else if
             computedSize.width == 0 && computedSize.height == 0 && widget is CalendarDatePicker
-            {
+        {
             // I can't find any source on what the size of CalendarDatePicker is, but it reports 0x0
             // in at least some cases before initial render. In these cases, use a size derived
             // experimentally.
@@ -171,32 +171,32 @@ public final class WinUIBackend {
     ) {
 
         let inputScope: InputScopeNameValue? =
-        switch textField {
-        case is TextBox:
-            switch textContentType {
-            case .decimal(_): .number
-            case .digits(_): .digits
-            case .emailAddress: .emailSmtpAddress
-            case .name: .personalFullName
-            case .phoneNumber: .telephoneNumber
-            case .text: .default
-            case .url: .url
+            switch textField {
+                case is TextBox:
+                    switch textContentType {
+                        case .decimal(_): .number
+                        case .digits(_): .digits
+                        case .emailAddress: .emailSmtpAddress
+                        case .name: .personalFullName
+                        case .phoneNumber: .telephoneNumber
+                        case .text: .default
+                        case .url: .url
+                    }
+                case is PasswordBox:
+                    switch textContentType {
+                        case .digits(_): .numericPin
+                        case .text: .password
+                        default: nil
+                    }
+                default: nil
             }
-        case is PasswordBox:
-            switch textContentType {
-            case .digits(_): .numericPin
-            case .text: .password
-            default: nil
-            }
-        default: nil
-        }
         guard let inputScope else { return }
 
         let inputScopeName = InputScopeName(inputScope)
 
         if let inputScope = textField.inputScope,
-            inputScope.names.count == 1
-            {
+           inputScope.names.count == 1
+        {
             inputScope.names[0] = inputScopeName
         } else {
             let inputScope = InputScope()

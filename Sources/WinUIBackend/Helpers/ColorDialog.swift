@@ -1,4 +1,4 @@
-import WinUI 
+import WinUI
 
 final class ColorDialog: WinUI.ContentDialog {
     var colorPicker = WinUI.ColorPicker()

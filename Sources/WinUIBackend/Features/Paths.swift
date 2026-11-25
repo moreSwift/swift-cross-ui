@@ -252,25 +252,25 @@ extension WinUIBackend: BackendFeatures.Paths {
         winUiPath.strokeThickness = strokeStyle.width
 
         switch strokeStyle.cap {
-        case .butt:
-            winUiPath.strokeStartLineCap = .flat
-            winUiPath.strokeEndLineCap = .flat
-        case .round:
-            winUiPath.strokeStartLineCap = .round
-            winUiPath.strokeEndLineCap = .round
-        case .square:
-            winUiPath.strokeStartLineCap = .square
-            winUiPath.strokeEndLineCap = .square
+            case .butt:
+                winUiPath.strokeStartLineCap = .flat
+                winUiPath.strokeEndLineCap = .flat
+            case .round:
+                winUiPath.strokeStartLineCap = .round
+                winUiPath.strokeEndLineCap = .round
+            case .square:
+                winUiPath.strokeStartLineCap = .square
+                winUiPath.strokeEndLineCap = .square
         }
 
         switch strokeStyle.join {
-        case .miter(let limit):
-            winUiPath.strokeMiterLimit = limit
-            winUiPath.strokeLineJoin = .miter
-        case .round:
-            winUiPath.strokeLineJoin = .round
-        case .bevel:
-            winUiPath.strokeLineJoin = .bevel
+            case .miter(let limit):
+                winUiPath.strokeMiterLimit = limit
+                winUiPath.strokeLineJoin = .miter
+            case .round:
+                winUiPath.strokeLineJoin = .round
+            case .bevel:
+                winUiPath.strokeLineJoin = .bevel
         }
 
         winUiPath.data = path.group

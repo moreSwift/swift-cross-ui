@@ -54,22 +54,22 @@ extension WinUIBackend: BackendFeatures.CoreWindowing {
         }
         return window
     }
- 
+
     public func updateWindow(_ window: Window, environment: EnvironmentValues) {
         window.menuBar.requestedTheme = switch environment.colorScheme {
-        case .light: .light
-        case .dark: .dark
+            case .light: .light
+            case .dark: .dark
         }
 
         let backgroundColor: SwiftCrossUI.Color = switch environment.colorScheme {
-        case .light: .white
-        case .dark: .black
+            case .light: .white
+            case .dark: .black
         }
         let brush = WinUI.SolidColorBrush()
         brush.color = backgroundColor.resolve(in: environment).uwpColor
         window.grid.background = brush
     }
- 
+
     public func setTitle(ofWindow window: Window, to title: String) {
         window.title = title
     }
@@ -132,11 +132,11 @@ extension WinUIBackend: BackendFeatures.CoreWindowing {
             action(size)
         }
     }
- 
+
     public func show(window: Window) {
         activate(window: window)
     }
- 
+
     public func activate(window: Window) {
         do {
             try window.activate()
@@ -144,7 +144,7 @@ extension WinUIBackend: BackendFeatures.CoreWindowing {
             logger.warning("Failed to activate window: \(error)")
         }
     }
- 
+
     public func computeWindowEnvironment(
         window: Window,
         rootEnvironment: EnvironmentValues

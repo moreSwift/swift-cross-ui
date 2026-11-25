@@ -43,37 +43,37 @@ extension WinUIBackend: BackendFeatures.AttachedMenus {
         environment: EnvironmentValues
     ) -> MenuFlyoutItemBase {
         switch item {
-        case .button(let label, let action):
-            let widget = MenuFlyoutItem()
-            widget.text = label
-            widget.click.addHandler { _, _ in
-                action?()
-            }
-            widget.isEnabled = environment.isEnabled
-            return widget
-        case .toggle(let label, let value, let onChange):
-            let widget = ToggleMenuFlyoutItem()
-            widget.text = label
-            widget.isChecked = value
-            widget.click.addHandler { [weak widget] _, _ in
-                guard let widget else { return }
-                onChange(widget.isChecked)
-            }
-            widget.isEnabled = environment.isEnabled
-            return widget
-        case .separator:
-            return MenuFlyoutSeparator()
-        case .submenu(let submenu):
-            let widget = MenuFlyoutSubItem()
-            widget.text = submenu.label
-            for subitem in submenu.content.items {
-                widget.items.append(
-                    renderMenuItem(subitem, environment: environment)
-                )
-            }
-            return widget
-        case .modifiedEnvironment(let item, let modification):
-            return renderMenuItem(item, environment: modification(environment))
+            case .button(let label, let action):
+                let widget = MenuFlyoutItem()
+                widget.text = label
+                widget.click.addHandler { _, _ in
+                    action?()
+                }
+                widget.isEnabled = environment.isEnabled
+                return widget
+            case .toggle(let label, let value, let onChange):
+                let widget = ToggleMenuFlyoutItem()
+                widget.text = label
+                widget.isChecked = value
+                widget.click.addHandler { [weak widget] _, _ in
+                    guard let widget else { return }
+                    onChange(widget.isChecked)
+                }
+                widget.isEnabled = environment.isEnabled
+                return widget
+            case .separator:
+                return MenuFlyoutSeparator()
+            case .submenu(let submenu):
+                let widget = MenuFlyoutSubItem()
+                widget.text = submenu.label
+                for subitem in submenu.content.items {
+                    widget.items.append(
+                        renderMenuItem(subitem, environment: environment)
+                    )
+                }
+                return widget
+            case .modifiedEnvironment(let item, let modification):
+                return renderMenuItem(item, environment: modification(environment))
         }
     }
 }

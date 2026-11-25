@@ -1,5 +1,5 @@
 @_spi(Backends) import SwiftCrossUI
-import WinUI 
+import WinUI
 import WinSDK
 import WinAppSDK
 

@@ -39,18 +39,18 @@ extension WinUIBackend: BackendFeatures.DatePickers {
         }
 
         let dateViewType: CustomDatePicker.DateViewType.Discriminator? =
-        if components.contains(.date) {
-            switch environment.datePickerStyle {
-            case .automatic, .wheel:
-                .datePicker
-            case .compact:
-                .calendarDatePicker
-            case .graphical:
-                .calendarView
+            if components.contains(.date) {
+                switch environment.datePickerStyle {
+                    case .automatic, .wheel:
+                        .datePicker
+                    case .compact:
+                        .calendarDatePicker
+                    case .graphical:
+                        .calendarView
+                }
+            } else {
+                nil
             }
-        } else {
-            nil
-        }
 
         customDatePicker.onChange = onChange
         customDatePicker.changeDateView(to: dateViewType)

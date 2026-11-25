@@ -27,8 +27,8 @@ extension WinUIBackend: BackendFeatures.ToggleButtons {
         environment.with(
             \.colorScheme,
             toggle.isChecked == true
-            ? environment.colorScheme.opposite
-            : environment.colorScheme
+                ? environment.colorScheme.opposite
+                : environment.colorScheme
         ).apply(to: block)
 
         environment.apply(to: toggle)

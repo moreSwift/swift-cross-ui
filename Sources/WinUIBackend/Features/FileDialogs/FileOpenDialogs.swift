@@ -26,13 +26,13 @@ extension WinUIBackend: BackendFeatures.FileOpenDialogs {
                     operation,
                     status
                 ) { result in
-                        let files = Array(result).compactMap { $0 }
-                            .map(\.path)
-                            .map(URL.init(fileURLWithPath:))
-                        return .success(files)
-                    } onFailure: {
-                        return .cancelled
-                    }
+                    let files = Array(result).compactMap { $0 }
+                        .map(\.path)
+                        .map(URL.init(fileURLWithPath:))
+                    return .success(files)
+                } onFailure: {
+                    return .cancelled
+                }
                 handleResult(result)
             }
         } else {
@@ -42,11 +42,11 @@ extension WinUIBackend: BackendFeatures.FileOpenDialogs {
                     operation,
                     status
                 ) { result in
-                        let file = URL(fileURLWithPath: result.path)
-                        return .success([file])
-                    } onFailure: {
-                        return .cancelled
-                    }
+                    let file = URL(fileURLWithPath: result.path)
+                    return .success([file])
+                } onFailure: {
+                    return .cancelled
+                }
                 handleResult(result)
             }
         }

@@ -91,7 +91,7 @@ extension WinUIBackend: BackendFeatures.Core {
             MainActor.assumeIsolated(action)
         }
     }
- 
+
     public func computeRootEnvironment(
         defaultEnvironment: EnvironmentValues
     ) -> EnvironmentValues {

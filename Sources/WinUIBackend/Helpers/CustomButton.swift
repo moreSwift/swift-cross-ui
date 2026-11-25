@@ -1,4 +1,4 @@
-@_spi(Backends) import SwiftCrossUI 
+@_spi(Backends) import SwiftCrossUI
 import WinUI
 import UWP
 
@@ -67,7 +67,7 @@ final class CustomButton: WinUI.Button {
             if
                 (0..<width).contains(Double(position.x)),
                 (0..<height).contains(Double(position.y))
-                {
+            {
                 isHighlighted = true
             } else {
                 isHighlighted = false
