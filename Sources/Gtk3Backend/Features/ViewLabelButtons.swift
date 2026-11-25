@@ -32,7 +32,7 @@ extension Gtk3Backend: BackendFeatures.ViewLabelButtons {
         }
     }
 
-    public func defaultButtonStyle() -> ButtonStyle {
+    public func defaultButtonStyle() -> any ButtonStyle {
         .bordered
     }
 }

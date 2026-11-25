@@ -33,7 +33,7 @@ extension BackendFeatures {
     ///
     /// These are used by ``Button``.
     @MainActor
-    public protocol ViewLabelButtons: Core {
+    public protocol ViewLabelButtons: ButtonStyles {
         /// Creates a button that uses `widget` as its label with an action triggered on click/tap.
         ///
         /// Predominantly used by ``Button``.
@@ -54,6 +54,7 @@ extension BackendFeatures {
         func updateButton(
             _ button: Widget,
             environment: EnvironmentValues,
+            pressStateChanged: @escaping (Bool) -> Void,
             action: @escaping () -> Void
         )
 
@@ -67,60 +68,5 @@ extension BackendFeatures {
         ///
         /// - Returns: A vector containing the **total** spacing horizontally and vertically.
         func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int>
-
-        /// The default button style that the backend desires.
-        ///
-        /// - Returns: The default ``ButtonStyle``.
-        func defaultButtonStyle() -> ButtonStyle
-
-        /// Modifies the environment for the body of a button label.
-        ///
-        /// Backends may implement their own to align with the platform's conventions more closely.
-        /// The default implementation applies SwiftUI-like behavior.
-        ///
-        /// - Returns: The modified environment.
-        func computeButtonLabelEnvironment(
-            from environment: EnvironmentValues
-        ) -> EnvironmentValues
-    }
-}
-
-// MARK: - Default Implementations
-extension BackendFeatures.ViewLabelButtons {
-    public func computeButtonLabelEnvironment(
-        from environment: EnvironmentValues
-    ) -> EnvironmentValues {
-        var labelEnvironment = environment
-
-        let buttonStyle = environment.resolvedButtonStyle.kind
-        let deviceClass = environment.backend.deviceClass
-
-        if
-            !environment.isEnabled, buttonStyle == .bordered,
-            deviceClass == .desktop || deviceClass == .tv
-        {
-            labelEnvironment = labelEnvironment.with(
-                \.foregroundColor,
-                environment.suggestedForegroundColor.opacity(0.3) // SwiftUI uses tertiary afaict.
-            )
-        }
-
-        // The disabled opacities and defaults are based on discoveries in SwiftUI.
-
-        // Set the default foregroundColor for the label unless overridden.
-        // Uses the same colors as SwiftUI.
-        if
-            buttonStyle == .borderless,
-            deviceClass == .desktop
-        {
-            // Approximately equivalent to Color.secondary in SwiftUI.
-            let opacity = environment.colorScheme == .dark ? 0.7 : 0.5
-            labelEnvironment = labelEnvironment.with(
-                \.foregroundColor,
-                environment.foregroundColor ?? environment.suggestedForegroundColor.opacity(opacity)
-            )
-        }
-
-        return labelEnvironment
     }
 }
