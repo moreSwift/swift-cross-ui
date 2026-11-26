@@ -3,6 +3,7 @@ import WinAppSDK
 import Mutex
 import Foundation
 
+// swift-lint:disable force_try
 class WinUIApplication: SwiftApplication, @unchecked Sendable {
     static let callback = Mutex<(@MainActor (WinUIApplication, AppInstance) -> Void)?>(nil)
     static let urlSchemes = Mutex<[String]>([])
