@@ -3,6 +3,7 @@ import WinUI
 import Foundation
 import UWP
 
+// swiftlint:disable force_try
 extension WinUIBackend: BackendFeatures.FileSaveDialogs {
     public func showSaveDialog(
         fileDialogOptions: FileDialogOptions,

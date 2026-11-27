@@ -5,7 +5,7 @@ import WindowsFoundation
 import CWinRT
 import WinSDK
 
-// swift-lint:disable force_try
+// swiftlint:disable force_try
 extension WinUIBackend: BackendFeatures.Sheets {
     public class Sheet: ContentDialog {
         var dismissHandler: (() -> Void)?

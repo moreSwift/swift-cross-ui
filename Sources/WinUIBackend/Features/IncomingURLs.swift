@@ -3,6 +3,7 @@ import WinUI
 import Foundation
 import WinAppSDK
 
+// swiftlint:disable force_try
 extension WinUIBackend: BackendFeatures.IncomingURLs {
     public func setIncomingURLHandler(to action: @escaping (URL) -> Void) {
         let isFirstCall = incomingURLHandler == nil

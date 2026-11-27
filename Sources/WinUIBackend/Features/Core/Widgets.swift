@@ -2,6 +2,7 @@
 import WinUI
 import WindowsFoundation
 
+// swiftlint:disable force_try
 extension WinUIBackend: BackendFeatures.Widgets {
     public typealias Widget = WinUI.FrameworkElement
 

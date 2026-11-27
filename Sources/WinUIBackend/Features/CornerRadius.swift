@@ -3,6 +3,7 @@ import WinUI
 import WindowsFoundation
 import WinAppSDK
 
+// swiftlint:disable force_try
 extension WinUIBackend: BackendFeatures.CornerRadius {
     public func createCornerRadiusContainer(wrapping child: Widget) -> Widget {
         child

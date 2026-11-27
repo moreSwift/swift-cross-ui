@@ -2,6 +2,7 @@
 import WinUI
 import Foundation
 
+// swiftlint:disable force_try
 extension WinUIBackend: BackendFeatures.Images {
     public var requiresImageUpdateOnScaleFactorChange: Bool { false }
 

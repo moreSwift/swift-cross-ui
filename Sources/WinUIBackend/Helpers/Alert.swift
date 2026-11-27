@@ -1,5 +1,6 @@
 import WinUI
 
+// swiftlint:disable force_try
 public class Alert: ContentDialog {
     var window: WinUIBackend.Window?
     var parentAlert: Alert?

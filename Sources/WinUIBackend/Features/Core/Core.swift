@@ -5,6 +5,7 @@ import WinSDK
 import Foundation
 import WinAppSDK
 
+// swiftlint:disable force_try
 extension WinUIBackend: BackendFeatures.Core {
     public var deviceClass: SwiftCrossUI.DeviceClass { .desktop }
 
