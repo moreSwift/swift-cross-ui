@@ -1,7 +1,22 @@
 @_spi(Backends) import SwiftCrossUI
+import WinUI
 import UWP
 
-extension WinUIBackend {
+extension WinUIBackend: BackendFeatures.Colors {
+    public func createColorableRectangle() -> Widget {
+        Canvas()
+    }
+
+    public func setColor(
+        ofColorableRectangle widget: Widget,
+        to color: SwiftCrossUI.Color.Resolved
+    ) {
+        let canvas = widget as! Canvas
+        let brush = WinUI.SolidColorBrush()
+        brush.color = color.uwpColor
+        canvas.background = brush
+    }
+
     public func resolveAdaptiveColor(
         _ adaptiveColor: SwiftCrossUI.Color.SystemAdaptive,
         in environment: EnvironmentValues

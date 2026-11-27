@@ -1,68 +1,9 @@
-import SwiftCrossUI
+@_spi(Backends) import SwiftCrossUI
 import WinUI
 import UWP
 
-extension WinUIBackend {
-    public func createButton(
-        wrapping widget: Widget
-    ) -> Widget {
-        let button = CustomButton()
-        button.content = widget
-        return button
-    }
-
-    public func updateButton(
-        _ button: Widget,
-        environment: EnvironmentValues,
-        action: @escaping () -> Void
-    ) {
-        let button = button as! CustomButton
-        button.action = action
-        button.buttonStyle = environment.resolvedButtonStyle.kind
-        button.enabled = environment.isEnabled
-        switch environment.colorScheme {
-            case .light:
-                button.requestedTheme = .light
-            case .dark:
-                button.requestedTheme = .dark
-        }
-    }
-
-    public func buttonPadding(in environment: EnvironmentValues) -> SIMD2<Int> {
-        switch environment.resolvedButtonStyle.kind {
-            case .bordered: measureBorderedButtonPadding()
-            case .plain, .borderless: SIMD2(0, 0)
-        }
-    }
-
-    public func defaultButtonStyle() -> ButtonStyle { .bordered }
-
-    func measureBorderedButtonPadding() -> SIMD2<Int> {
-        if let borderedButtonPadding {
-            return borderedButtonPadding
-        }
-
-        let dummyButton = Button()
-        let placeholder = Canvas()
-        let placeholderSize = SIMD2<Double>(40, 40)
-        placeholder.width = placeholderSize.x
-        placeholder.height = placeholderSize.y
-        dummyButton.content = placeholder
-
-        let buttonSize = Self.naturalSize(of: dummyButton)
-
-        let result = SIMD2(
-            buttonSize.x - Int(placeholderSize.x),
-            buttonSize.y - Int(placeholderSize.y)
-        )
-
-        borderedButtonPadding = result
-        return result
-    }
-}
-
-fileprivate final class CustomButton: WinUI.Button {
-    fileprivate var action: (() -> Void)?
+final class CustomButton: WinUI.Button {
+    var action: (() -> Void)?
 
     private var isPointerCaptured = false
     fileprivate var isHighlighted = false {
@@ -71,7 +12,7 @@ fileprivate final class CustomButton: WinUI.Button {
         }
     }
 
-    fileprivate var buttonStyle: ButtonStyle.Kind = .bordered {
+    var buttonStyle: ButtonStyle.Kind = .bordered {
         didSet {
             if buttonStyle != oldValue {
                 updateButtonAppearance()
@@ -184,18 +125,18 @@ extension ButtonStyle.Kind {
 
         switch self {
             case .bordered:
-                _ = try? button.clearValue(WinUI.Button.backgroundProperty)
-                _ = try? button.clearValue(WinUI.Button.borderBrushProperty)
-                _ = try? button.clearValue(WinUI.Button.borderThicknessProperty)
-                _ = try? button.clearValue(WinUI.Button.cornerRadiusProperty)
+                try? button.clearValue(WinUI.Button.backgroundProperty)
+                try? button.clearValue(WinUI.Button.borderBrushProperty)
+                try? button.clearValue(WinUI.Button.borderThicknessProperty)
+                try? button.clearValue(WinUI.Button.cornerRadiusProperty)
 
-                _ = resources.remove("ButtonBackgroundPointerOver")
-                _ = resources.remove("ButtonBackgroundPressed")
-                _ = resources.remove("ButtonBackgroundDisabled")
+                resources.remove("ButtonBackgroundPointerOver")
+                resources.remove("ButtonBackgroundPressed")
+                resources.remove("ButtonBackgroundDisabled")
 
-                _ = resources.remove("ButtonBorderBrushPointerOver")
-                _ = resources.remove("ButtonBorderBrushPressed")
-                _ = resources.remove("ButtonBorderBrushDisabled")
+                resources.remove("ButtonBorderBrushPointerOver")
+                resources.remove("ButtonBorderBrushPressed")
+                resources.remove("ButtonBorderBrushDisabled")
             case .plain, .borderless:
                 let transparentBrush = SolidColorBrush(UWP.Color.transparent)
                 button.background = transparentBrush
