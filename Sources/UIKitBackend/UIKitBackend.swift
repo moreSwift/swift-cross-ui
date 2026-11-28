@@ -3,6 +3,7 @@ import Logging
 import UIKit
 
 public final class UIKitBackend:
+    Sendable,
     BaseAppBackend,
     BackendFeatures.ExternalURLs,
     BackendFeatures.IncomingURLs,

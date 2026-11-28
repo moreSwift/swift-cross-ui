@@ -13,7 +13,7 @@ extension App {
 }
 
 @MainActor
-public final class GtkBackend {
+public final class GtkBackend: Sendable {
     var gtkApp: Application
 
     /// A window to be returned on the next call to ``GtkBackend/createWindow``.

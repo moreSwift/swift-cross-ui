@@ -80,7 +80,7 @@ extension EnvironmentValues {
     @Entry public var jniEnv: UnsafeMutablePointer<JNIEnv?>? = nil
 }
 
-public final class AndroidBackend: BaseAppBackend {
+public final class AndroidBackend: Sendable, BaseAppBackend {
     public final class Window {
         var content: Widget?
     }
